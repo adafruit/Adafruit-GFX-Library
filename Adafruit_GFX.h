@@ -28,26 +28,40 @@ All text above must be included in any redistribution
 class Adafruit_GFX : public Print{
  public:
   // this must be defined by the subclass
-  virtual void drawPixel(uint8_t x, uint8_t y, uint8_t color);
+  virtual void drawPixel(uint16_t x, uint16_t y, uint16_t color);
 
   // these are 'generic' drawing functions, so we can share them!
   void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
-		uint8_t color);
-  virtual void drawFastVLine(uint8_t x, uint8_t y, uint8_t h, uint8_t color);
-  void drawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, 
-		uint8_t color);
-  void fillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, 
-		uint8_t color);
+		uint16_t color);
+  virtual void drawFastVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t color);
+  virtual void drawFastHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color);
+  void drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
+		uint16_t color);
+  void fillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
+		uint16_t color);
 
-  void drawCircle(uint8_t x0, uint8_t y0, uint8_t r, 
-		  uint8_t color);
-  void fillCircle(uint8_t x0, uint8_t y0, uint8_t r, 
-		  uint8_t color);
+  void drawCircle(uint16_t x0, uint16_t y0, uint16_t r, 
+		  uint16_t color);
+  void drawCircleHelper(uint16_t x0, uint16_t y0,
+			uint16_t r, uint8_t cornername, uint16_t color);
+  void fillCircle(uint16_t x0, uint16_t y0, uint16_t r, 
+		  uint16_t color);
+  void fillCircleHelper(uint16_t x0, uint16_t y0, uint16_t r,
+		      uint8_t cornername, uint16_t delta, uint16_t color);
 
-  void drawBitmap(uint8_t x, uint8_t y, 
-		  const uint8_t *bitmap, uint8_t w, uint8_t h,
-		  uint8_t color);
-  void drawChar(uint8_t x, uint8_t y, char c,
+  void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+		    uint16_t x2, uint16_t y2, uint16_t color);
+  void fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+		    uint16_t x2, uint16_t y2, uint16_t color);
+  void drawRoundRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
+		     uint16_t radius, uint16_t color);
+  void fillRoundRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
+		     uint16_t radius, uint16_t color);
+
+  void drawBitmap(uint16_t x, uint16_t y, 
+		  const uint8_t *bitmap, uint16_t w, uint16_t h,
+		  uint16_t color);
+  void drawChar(uint16_t x, uint16_t y, char c,
 		uint16_t color, uint16_t bg, uint8_t size);
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
