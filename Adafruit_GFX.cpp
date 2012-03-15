@@ -175,11 +175,9 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
 void Adafruit_GFX::drawRect(uint16_t x, uint16_t y, 
 			    uint16_t w, uint16_t h, 
 			    uint16_t color) {
-  // stupidest version - update in subclasses if desired!
-  for (uint16_t i=x; i<x+w; i++) {
-    drawPixel(i, y, color);
-    drawPixel(i, y+h-1, color);
-  }
+  Serial.println('[]');
+  drawFastHLine(x, y, w, color);
+  drawFastHLine(x, y+h-1, w, color);
   drawFastVLine(x, y, h, color);
   drawFastVLine(x+w-1, y, h, color);
 }
@@ -348,6 +346,10 @@ void Adafruit_GFX::write(uint8_t c) {
   } else {
     drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
     cursor_x += textsize*6;
+    if (cursor_x > (width() - textsize*6)) {
+      cursor_y += textsize*8;
+      cursor_x = 0;
+    }
   }
 #if ARDUINO >= 100
   return 1;
