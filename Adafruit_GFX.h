@@ -34,6 +34,7 @@ class Adafruit_GFX : public Print {
 
   // this must be defined by the subclass
   virtual void drawPixel(uint16_t x, uint16_t y, uint16_t color);
+  virtual void invertDisplay(boolean i);
 
   // these are 'generic' drawing functions, so we can share them!
   virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
