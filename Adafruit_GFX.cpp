@@ -440,6 +440,10 @@ void Adafruit_GFX::setRotation(uint8_t x) {
  }
 }
 
+ void Adafruit_GFX::invertDisplay(boolean i) {
+   // do nothing, can be subclassed
+}
+
 
 // return the size of the display which depends on the rotation!
  uint16_t Adafruit_GFX::width(void) { 
