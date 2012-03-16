@@ -18,6 +18,18 @@ All text above must be included in any redistribution
 #include "glcdfont.c"
 #include <avr/pgmspace.h>
 
+void Adafruit_GFX::constructor(uint16_t w, uint16_t h) {
+  _width = WIDTH = w;
+  _height = HEIGHT = h;
+
+  rotation = 0;    
+  cursor_y = cursor_x = 0;
+  textsize = 1;
+  textcolor = 0xFFFF;
+  textbgcolor = 0x0000;
+}
+
+
 // draw a circle outline
 void Adafruit_GFX::drawCircle(uint16_t x0, uint16_t y0, uint16_t r, 
 			      uint16_t color) {
@@ -46,7 +58,6 @@ void Adafruit_GFX::drawCircle(uint16_t x0, uint16_t y0, uint16_t r,
     drawPixel(x0 - x, y0 + y, color);
     drawPixel(x0 + x, y0 - y, color);
     drawPixel(x0 - x, y0 - y, color);
-    
     drawPixel(x0 + y, y0 + x, color);
     drawPixel(x0 - y, y0 + x, color);
     drawPixel(x0 + y, y0 - x, color);
@@ -175,7 +186,6 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
 void Adafruit_GFX::drawRect(uint16_t x, uint16_t y, 
 			    uint16_t w, uint16_t h, 
 			    uint16_t color) {
-  Serial.println('[]');
   drawFastHLine(x, y, w, color);
   drawFastHLine(x, y+h-1, w, color);
   drawFastVLine(x, y, h, color);
@@ -185,18 +195,14 @@ void Adafruit_GFX::drawRect(uint16_t x, uint16_t y,
 void Adafruit_GFX::drawFastVLine(uint16_t x, uint16_t y, 
 				 uint16_t h, uint16_t color) {
   // stupidest version - update in subclasses if desired!
-  for (uint16_t j=y; j<y+h; j++) {
-    drawPixel(x, j, color);
-  }
+  drawLine(x, y, x, y+h-1, color);
 }
 
 
 void Adafruit_GFX::drawFastHLine(uint16_t x, uint16_t y, 
 				 uint16_t w, uint16_t color) {
   // stupidest version - update in subclasses if desired!
-  for (uint16_t i=x; i<x+w; i++) {
-    drawPixel(i, y, color);
-  }
+  drawLine(x, y, x+w-1, y, color);
 }
 
 void Adafruit_GFX::fillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
@@ -205,6 +211,11 @@ void Adafruit_GFX::fillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
   for (uint16_t i=x; i<x+w; i++) {
     drawFastVLine(i, y, h, color); 
   }
+}
+
+
+void Adafruit_GFX::fillScreen(uint16_t color) {
+  fillRect(0, 0, _width, _height, color);
 }
 
 // draw a rounded rectangle!
@@ -403,6 +414,38 @@ void Adafruit_GFX::setTextColor(uint16_t c) {
 }
 
  void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
-  textcolor = c;
-  textbgcolor = b; 
+   textcolor = c;
+   textbgcolor = b; 
+ }
+
+uint8_t Adafruit_GFX::getRotation(void) {
+  rotation %= 4;
+  return rotation;
 }
+
+void Adafruit_GFX::setRotation(uint8_t x) {
+  x %= 4;  // cant be higher than 3
+  rotation = x;
+  switch (x) {
+  case 0:
+  case 2:
+    _width = WIDTH;
+    _height = HEIGHT;
+    break;
+  case 1:
+  case 3:
+    _width = HEIGHT;
+    _height = WIDTH;
+    break;
+ }
+}
+
+
+// return the size of the display which depends on the rotation!
+ uint16_t Adafruit_GFX::width(void) { 
+   return _width; 
+}
+ 
+ uint16_t Adafruit_GFX::height(void) { 
+   return _height; 
+ }

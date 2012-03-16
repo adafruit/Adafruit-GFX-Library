@@ -25,20 +25,26 @@ All text above must be included in any redistribution
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-class Adafruit_GFX : public Print{
+class Adafruit_GFX : public Print {
  public:
+
+  //Adafruit_GFX();
+  // i have no idea why we have to formally call the constructor. kinda sux
+  void constructor(uint16_t w, uint16_t h);
+
   // this must be defined by the subclass
   virtual void drawPixel(uint16_t x, uint16_t y, uint16_t color);
 
   // these are 'generic' drawing functions, so we can share them!
-  void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
+  virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
 		uint16_t color);
   virtual void drawFastVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t color);
   virtual void drawFastHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color);
-  void drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
+  virtual void drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
 		uint16_t color);
-  void fillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
+  virtual void fillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
 		uint16_t color);
+  virtual void fillScreen(uint16_t color);
 
   void drawCircle(uint16_t x0, uint16_t y0, uint16_t r, 
 		  uint16_t color);
@@ -73,15 +79,18 @@ class Adafruit_GFX : public Print{
   void setTextColor(uint16_t c, uint16_t bg);
   void setTextSize(uint8_t s);
 
+  uint16_t height(void);
+  uint16_t width(void);
 
-  // return the size of the display
-  uint16_t width() { return WIDTH; }
-  uint16_t height() { return HEIGHT; }
+  void setRotation(uint8_t r);
+  uint8_t getRotation(void);
 
  protected:
-  uint16_t WIDTH, HEIGHT;
+  uint16_t WIDTH, HEIGHT;       // this is the 'raw' display w/h - never changes
+  uint16_t _width, _height;     // dependant on rotation
   uint16_t cursor_x, cursor_y, textcolor, textbgcolor;
   uint8_t textsize;
+  uint8_t rotation;
 };
 
 #endif
