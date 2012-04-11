@@ -368,7 +368,7 @@ void Adafruit_GFX::write(uint8_t c) {
 }
 
 // draw a character
-void Adafruit_GFX::drawChar(int16_t x, int16_t y, char c,
+void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 			    uint16_t color, uint16_t bg, uint8_t size) {
 
   if((x >= _width)            || // Clip right
