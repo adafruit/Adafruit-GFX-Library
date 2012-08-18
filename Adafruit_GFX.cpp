@@ -18,7 +18,7 @@ All text above must be included in any redistribution
 #include "glcdfont.c"
 #include <avr/pgmspace.h>
 
-void Adafruit_GFX::constructor(int16_t w, int16_t h) {
+Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) {
   _width = WIDTH = w;
   _height = HEIGHT = h;
 
