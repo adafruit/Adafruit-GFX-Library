@@ -1,18 +1,17 @@
-/***********************************
-This is a our graphics core library, for all our displays. 
-We'll be adapting all the
-existing libaries to use this core to make updating, support 
-and upgrading easier!
-
-Adafruit invests time and resources providing this open source code, 
-please support Adafruit and open-source hardware by purchasing 
-products from Adafruit!
-
-Written by Limor Fried/Ladyada  for Adafruit Industries.  
-BSD license, check license.txt for more information
-All text above must be included in any redistribution
-****************************************/
-
+/******************************************************************
+ This is the core graphics library for all our displays, providing
+ basic graphics primitives (points, lines, circles, etc.). It needs
+ to be paired with a hardware-specific library for each display
+ device we carry (handling the lower-level functions).
+ 
+ Adafruit invests time and resources providing this open
+ source code, please support Adafruit and open-source hardware
+ by purchasing products from Adafruit!
+ 
+ Written by Limor Fried/Ladyada for Adafruit Industries.
+ BSD license, check license.txt for more information.
+ All text above must be included in any redistribution.
+ ******************************************************************/
 
 #include "Adafruit_GFX.h"
 #include "glcdfont.c"
