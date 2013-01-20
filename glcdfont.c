@@ -1,5 +1,15 @@
+#include <Arduino.h>
+
+#ifdef ArduinoDueX_DevEd
+// This is a DUE board
+#define PROGMEM
+#define pgm_read_byte(x) (*(x))
+#define pgm_read_word(x) (*(x))
+#define pgm_read_float(x) (*(x))
+#else
 #include <avr/io.h>
 #include <avr/pgmspace.h> 
+#endif
  
 #ifndef FONT5X7_H
 #define FONT5X7_H
