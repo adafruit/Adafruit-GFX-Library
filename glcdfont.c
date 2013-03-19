@@ -1,12 +1,22 @@
+#ifdef __SAM3X8E__
+
+#else
 #include <avr/io.h>
 #include <avr/pgmspace.h> 
- 
+#endif
+
 #ifndef FONT5X7_H
 #define FONT5X7_H
 
 // standard ascii 5x7 font
-
+// START: top left(LSB of frist byte), 
+// END bottom right(MSB of last byte)
+// DIR: top left --> bottom left
+#ifdef __SAM3X8E__
+const unsigned char  font[] = {
+#else
 static unsigned char  font[] PROGMEM = {
+#endif
         0x00, 0x00, 0x00, 0x00, 0x00,   
 	0x3E, 0x5B, 0x4F, 0x5B, 0x3E, 	
 	0x3E, 0x6B, 0x4F, 0x6B, 0x3E, 	
