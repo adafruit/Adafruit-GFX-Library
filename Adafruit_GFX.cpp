@@ -15,8 +15,9 @@
 
 #include "Adafruit_GFX.h"
 #include "glcdfont.c"
+#ifndef __SAM3X8E__
 #include <avr/pgmspace.h>
-
+#endif
 void Adafruit_GFX::constructor(int16_t w, int16_t h) {
   _width = WIDTH = w;
   _height = HEIGHT = h;
@@ -338,7 +339,11 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
+#ifdef __SAM3X8E__
+	  if( (*(bitmap + j * byteWidth + i / 8)) & (128 >> (i & 7))) {
+#else
       if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
+#endif
 	drawPixel(x+i, y+j, color);
       }
     }
@@ -384,8 +389,12 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     if (i == 5) 
       line = 0x0;
     else 
+#ifdef __SAM3X8E__
+      line = *(font+(c*5)+i);
+#else
       line = pgm_read_byte(font+(c*5)+i);
-    for (int8_t j = 0; j<8; j++) {
+#endif
+	for (int8_t j = 0; j<8; j++) {
       if (line & 0x1) {
         if (size == 1) // default size
           drawPixel(x+i, y+j, color);
