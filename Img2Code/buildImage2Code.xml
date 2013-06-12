@@ -2,7 +2,7 @@
 
 <project name="Image2Code" default="build" basedir=".">
 	<target name="build" >	
-		<javac srcdir=".">
+		<javac includeantruntime="false" srcdir=".">
 			<include name="*.java"/>
 			<exclude name="*.xml" />
 		</javac>
