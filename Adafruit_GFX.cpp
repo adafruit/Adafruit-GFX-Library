@@ -375,7 +375,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
   if((x >= _width)            || // Clip right
      (y >= _height)           || // Clip bottom
-     ((x + 5 * size - 1) < 0) || // Clip left
+     ((x + 6 * size - 1) < 0) || // Clip left
      ((y + 8 * size - 1) < 0))   // Clip top
     return;
 
