@@ -70,8 +70,9 @@ class Adafruit_GFX : public Print {
   uint8_t getRotation(void);
 
  protected:
+  const int16_t
+    WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
   int16_t
-    WIDTH, HEIGHT,   // This is the 'raw' display w/h - never changes
     _width, _height, // Display w/h as modified by current rotation
     cursor_x, cursor_y;
   uint16_t
