@@ -1,17 +1,17 @@
-/******************************************************************
- This is the core graphics library for all our displays, providing
- basic graphics primitives (points, lines, circles, etc.). It needs
- to be paired with a hardware-specific library for each display
- device we carry (handling the lower-level functions).
- 
- Adafruit invests time and resources providing this open
- source code, please support Adafruit and open-source hardware
- by purchasing products from Adafruit!
- 
- Written by Limor Fried/Ladyada for Adafruit Industries.
- BSD license, check license.txt for more information.
- All text above must be included in any redistribution.
- ******************************************************************/
+/***********************************
+This is a our graphics core library, for all our displays. 
+We'll be adapting all the
+existing libaries to use this core to make updating, support 
+and upgrading easier!
+
+Adafruit invests time and resources providing this open source code, 
+please support Adafruit and open-source hardware by purchasing 
+products from Adafruit!
+
+Written by Limor Fried/Ladyada  for Adafruit Industries.  
+BSD license, check license.txt for more information
+All text above must be included in any redistribution
+****************************************/
 
 #ifndef _ADAFRUIT_GFX_H
 #define _ADAFRUIT_GFX_H
@@ -31,9 +31,9 @@ class Adafruit_GFX : public Print {
   //Adafruit_GFX();
   // i have no idea why we have to formally call the constructor. kinda sux
   void constructor(int16_t w, int16_t h);
-
+  virtual ~Adafruit_GFX() {} // force inclusion of vtable.
   // this must be defined by the subclass
-  virtual void drawPixel(int16_t x, int16_t y, uint16_t color);
+  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
   virtual void invertDisplay(boolean i);
 
   // these are 'generic' drawing functions, so we can share them!
