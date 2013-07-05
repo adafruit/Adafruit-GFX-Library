@@ -15,7 +15,10 @@
 
 #include "Adafruit_GFX.h"
 #include "glcdfont.c"
+#ifdef ArduinoDueX_DevEd
+#else
 #include <avr/pgmspace.h>
+#endif
 
 void Adafruit_GFX::constructor(int16_t w, int16_t h) {
   _width = WIDTH = w;

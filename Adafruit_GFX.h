@@ -16,6 +16,14 @@
 #ifndef _ADAFRUIT_GFX_H
 #define _ADAFRUIT_GFX_H
 
+#include <Arduino.h>
+#ifdef ArduinoDueX_DevEd
+// This is a DUE board
+#define pgm_read_byte(x) (*(x))
+#define pgm_read_word(x) (*(x))
+#define pgm_read_float(x) (*(x))
+#endif
+
 #if ARDUINO >= 100
  #include "Arduino.h"
  #include "Print.h"
