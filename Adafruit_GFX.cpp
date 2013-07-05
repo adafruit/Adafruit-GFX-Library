@@ -39,9 +39,11 @@ POSSIBILITY OF SUCH DAMAGE.
  #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 #endif
 
-Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) {
-  _width    = WIDTH       = w;
-  _height   = HEIGHT      = h;
+Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
+  WIDTH(w), HEIGHT(h)
+{
+  _width    = WIDTH;
+  _height   = HEIGHT;
   rotation  = 0;
   cursor_y  = cursor_x    = 0;
   textsize  = 1;
