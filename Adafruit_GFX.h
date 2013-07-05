@@ -28,12 +28,11 @@
 class Adafruit_GFX : public Print {
  public:
 
-  //Adafruit_GFX();
-  // i have no idea why we have to formally call the constructor. kinda sux
-  void constructor(int16_t w, int16_t h);
+  Adafruit_GFX(int16_t w, int16_t h);
 
   // this must be defined by the subclass
-  virtual void drawPixel(int16_t x, int16_t y, uint16_t color);
+  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
+
   virtual void invertDisplay(boolean i);
 
   // these are 'generic' drawing functions, so we can share them!
