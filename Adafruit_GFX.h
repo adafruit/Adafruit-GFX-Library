@@ -8,51 +8,92 @@
  #include "WProgram.h"
 #endif
 
-#define swap(a, b) { int16_t t = a; a = b; b = t; }
+#define GFX_COLOR_DEFAULT 0
+#define GFX_COLOR_16BIT 0
+#define GFX_COLOR_8BIT 1
+#define GFX_COLOR_RGB24BIT 2
+// Don't forget to define GFX_Color_t if you use the CUSTOM mode
+#define GFX_COLOR_CUSTOM 255
+
+#define GFX_MODE_DEFAULT 0
+#define GFX_MODE_16BIT 0
+#define GFX_MODE_8BIT 1
+
+/*
+ * Begin config section
+ */
+#define GFX_COLOR_MODE GFX_COLOR_DEFAULT
+#define GFX_MODE GFX_MODE_DEFAULT
+/*
+ * End config section
+ */
+
+#if GFX_COLOR_MODE == GFX_COLOR_16BIT
+typedef uint16_t GFX_Color_t;
+#elif GFX_COLOR_MODE == GFX_COLOR_8BIT
+typedef uint8_t GFX_Color_t;
+#elif GFX_COLOR_MODE == GFX_COLOR_RGB24BIT
+typedef struct {uint8_t r; uint8_t g; uint8_t b;} GFX_Color_t;
+#elif GFX_COLOR_MODE == GFX_COLOR_CUSTOM
+
+#else
+#warning "Unknown color mode specified"
+#endif
+
+#if GFX_MODE == GFX_MODE_16BIT
+typedef int16_t GFX_Coord_t;
+#elif GFX_MODE == GFX_MODE_8BIT
+typedef int8_t GFX_Coord_t;
+#else
+#warning "Unknown mode specified"
+#endif
+
+
+#define swap(a, b) { GFX_Coord_t t = a; a = b; b = t; }
 
 class Adafruit_GFX : public Print {
 
  public:
 
-  Adafruit_GFX(int16_t w, int16_t h); // Constructor
+  Adafruit_GFX(GFX_Coord_t w, GFX_Coord_t h); // Constructor
 
   // This MUST be defined by the subclass:
-  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
+  virtual void drawPixel(GFX_Coord_t x, GFX_Coord_t y, GFX_Color_t color) = 0;
 
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void
-    drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
-    drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
-    drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
-    drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
-    fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
-    fillScreen(uint16_t color),
+    drawLine(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t x1, GFX_Coord_t y1, GFX_Color_t color),
+    drawFastVLine(GFX_Coord_t x, GFX_Coord_t y, GFX_Coord_t h, GFX_Color_t color),
+    drawFastHLine(GFX_Coord_t x, GFX_Coord_t y, GFX_Coord_t w, GFX_Color_t color),
+    drawRect(GFX_Coord_t x, GFX_Coord_t y, GFX_Coord_t w, GFX_Coord_t h, GFX_Color_t color),
+    fillRect(GFX_Coord_t x, GFX_Coord_t y, GFX_Coord_t w, GFX_Coord_t h, GFX_Color_t color),
+    fillScreen(GFX_Color_t color),
     invertDisplay(boolean i);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void
-    drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color),
-    drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
-      uint16_t color),
-    fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color),
-    fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
-      int16_t delta, uint16_t color),
-    drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-      int16_t x2, int16_t y2, uint16_t color),
-    fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-      int16_t x2, int16_t y2, uint16_t color),
-    drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
-      int16_t radius, uint16_t color),
-    fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
-      int16_t radius, uint16_t color),
-    drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
-      int16_t w, int16_t h, uint16_t color),
-    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-      uint16_t bg, uint8_t size),
-    setCursor(int16_t x, int16_t y),
-    setTextColor(uint16_t c),
-    setTextColor(uint16_t c, uint16_t bg),
+    drawCircle(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t r, GFX_Color_t color),
+    drawCircleHelper(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t r, uint8_t cornername,
+      GFX_Color_t color),
+    fillCircle(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t r, GFX_Color_t color),
+    fillCircleHelper(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t r, uint8_t cornername,
+      GFX_Coord_t delta, GFX_Color_t color),
+    drawTriangle(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t x1, GFX_Coord_t y1,
+      GFX_Coord_t x2, GFX_Coord_t y2, GFX_Color_t color),
+    fillTriangle(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t x1, GFX_Coord_t y1,
+      GFX_Coord_t x2, GFX_Coord_t y2, GFX_Color_t color),
+    drawRoundRect(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t w, GFX_Coord_t h,
+      GFX_Coord_t radius, GFX_Color_t color),
+    fillRoundRect(GFX_Coord_t x0, GFX_Coord_t y0, GFX_Coord_t w, GFX_Coord_t h,
+      GFX_Coord_t radius, GFX_Color_t color),
+    drawBitmap(GFX_Coord_t x, GFX_Coord_t y, const uint8_t *bitmap,
+      GFX_Coord_t w, GFX_Coord_t h, GFX_Color_t color),
+    drawChar(GFX_Coord_t x, GFX_Coord_t y, unsigned char c, GFX_Color_t color,
+      GFX_Color_t bg, uint8_t size),
+    setCursor(GFX_Coord_t x, GFX_Coord_t y),
+    setTextColor(GFX_Color_t c),
+    setTextColor(GFX_Color_t c, GFX_Color_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
     setRotation(uint8_t r);
@@ -63,19 +104,19 @@ class Adafruit_GFX : public Print {
   virtual void   write(uint8_t);
 #endif
 
-  int16_t
+  GFX_Coord_t
     height(void),
     width(void);
 
   uint8_t getRotation(void);
 
  protected:
-  const int16_t
+  const GFX_Coord_t
     WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
-  int16_t
+  GFX_Coord_t
     _width, _height, // Display w/h as modified by current rotation
     cursor_x, cursor_y;
-  uint16_t
+  GFX_Color_t
     textcolor, textbgcolor;
   uint8_t
     textsize,
