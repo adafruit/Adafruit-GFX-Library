@@ -445,7 +445,7 @@ void Adafruit_GFX::setTextWrap(boolean w) {
   wrap = w;
 }
 
-uint8_t Adafruit_GFX::getRotation(void) {
+uint8_t Adafruit_GFX::getRotation(void) const {
   return rotation;
 }
 
@@ -466,11 +466,11 @@ void Adafruit_GFX::setRotation(uint8_t x) {
 }
 
 // Return the size of the display (per current rotation)
-int16_t Adafruit_GFX::width(void) {
+int16_t Adafruit_GFX::width(void) const {
   return _width;
 }
  
-int16_t Adafruit_GFX::height(void) {
+int16_t Adafruit_GFX::height(void) const {
   return _height;
 }
 

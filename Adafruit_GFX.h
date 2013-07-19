@@ -63,11 +63,10 @@ class Adafruit_GFX : public Print {
   virtual void   write(uint8_t);
 #endif
 
-  int16_t
-    height(void),
-    width(void);
+  int16_t height(void) const;
+  int16_t width(void) const;
 
-  uint8_t getRotation(void);
+  uint8_t getRotation(void) const;
 
  protected:
   const int16_t
