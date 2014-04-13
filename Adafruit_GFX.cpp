@@ -407,18 +407,57 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         if (size == 1) // default size
           drawPixel(x+i, y+j, color);
         else {  // big size
-          fillRect(x+(i*size), y+(j*size), size, size, color);
+          drawScaleChar(x, y, c, i, j, color, size);
         } 
       } else if (bg != color) {
         if (size == 1) // default size
           drawPixel(x+i, y+j, bg);
         else {  // big size
-          fillRect(x+i*size, y+j*size, size, size, bg);
+          drawScaleChar(x, y, c, i, j, bg, size);
         }
       }
       line >>= 1;
     }
   }
+}
+
+void Adafruit_GFX::drawScaleChar(int16_t x, int16_t y, unsigned char c,
+			    int8_t i, int8_t j, uint16_t color, uint8_t size) {
+	if (size == 2) { // Size 2
+	  drawPixel(x+(i*2), y+(j*2), color);
+	  drawPixel(x+(i*2)+1, y+(j*2), color);
+	  drawPixel(x+(i*2), y+(j*2)+1, color);
+	  drawPixel(x+(i*2)+1, y+(j*2)+1, color);	  
+	} else if (size == 3) { // Size 3
+	  drawPixel(x+(i*3), y+(j*3), color);
+	  drawPixel(x+(i*3)+1, y+(j*3), color);
+	  drawPixel(x+(i*3)+2, y+(j*3), color);
+	  drawPixel(x+(i*3), y+(j*3)+1, color);
+	  drawPixel(x+(i*3)+1, y+(j*3)+1, color);
+	  drawPixel(x+(i*3)+2, y+(j*3)+1, color);
+	  drawPixel(x+(i*3), y+(j*3)+2, color);
+	  drawPixel(x+(i*3)+1, y+(j*3)+2, color);
+	  drawPixel(x+(i*3)+2, y+(j*3)+2, color);	  	  
+	} else if (size == 4) { // Size 4
+	  drawPixel(x+(i*4), y+(j*4), color);
+	  drawPixel(x+(i*4)+1, y+(j*4), color);
+	  drawPixel(x+(i*4)+2, y+(j*4), color);
+	  drawPixel(x+(i*4)+3, y+(j*4), color);
+	  drawPixel(x+(i*4), y+(j*4)+1, color);
+	  drawPixel(x+(i*4)+1, y+(j*4)+1, color);
+	  drawPixel(x+(i*4)+2, y+(j*4)+1, color);
+	  drawPixel(x+(i*4)+3, y+(j*4)+1, color);
+	  drawPixel(x+(i*4), y+(j*4)+2, color);
+	  drawPixel(x+(i*4)+1, y+(j*4)+2, color);
+	  drawPixel(x+(i*4)+2, y+(j*4)+2, color);
+	  drawPixel(x+(i*4)+3, y+(j*4)+2, color);
+	  drawPixel(x+(i*4), y+(j*4)+3, color);
+	  drawPixel(x+(i*4)+1, y+(j*4)+3, color);
+	  drawPixel(x+(i*4)+2, y+(j*4)+3, color);
+	  drawPixel(x+(i*4)+3, y+(j*4)+3, color);		
+	} else { // Bigger Size then 4 with slow fillRect-function		
+	  fillRect(x+i*size, y+j*size, size, size, color);		
+	}				
 }
 
 void Adafruit_GFX::setCursor(int16_t x, int16_t y) {
