@@ -406,13 +406,77 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       if (line & 0x1) {
         if (size == 1) // default size
           drawPixel(x+i, y+j, color);
-        else {  // big size
+        else if (size == 2) { // Size 2
+		  drawPixel(x+(i*2), y+(j*2), color);
+		  drawPixel(x+(i*2)+1, y+(j*2), color);
+		  drawPixel(x+(i*2), y+(j*2)+1, color);
+		  drawPixel(x+(i*2)+1, y+(j*2)+1, color);		  
+        } else if (size == 3) { // Size 3
+		  drawPixel(x+(i*3), y+(j*3), color);
+		  drawPixel(x+(i*3)+1, y+(j*3), color);
+		  drawPixel(x+(i*3)+2, y+(j*3), color);
+		  drawPixel(x+(i*3), y+(j*3)+1, color);
+		  drawPixel(x+(i*3)+1, y+(j*3)+1, color);
+		  drawPixel(x+(i*3)+2, y+(j*3)+1, color);
+		  drawPixel(x+(i*3), y+(j*3)+2, color);
+		  drawPixel(x+(i*3)+1, y+(j*3)+2, color);
+		  drawPixel(x+(i*3)+2, y+(j*3)+2, color);		  		  
+        } else if (size == 4) { // Size 4
+		  drawPixel(x+(i*4), y+(j*4), color);
+		  drawPixel(x+(i*4)+1, y+(j*4), color);
+		  drawPixel(x+(i*4)+2, y+(j*4), color);
+		  drawPixel(x+(i*4)+3, y+(j*4), color);
+		  drawPixel(x+(i*4), y+(j*4)+1, color);
+		  drawPixel(x+(i*4)+1, y+(j*4)+1, color);
+		  drawPixel(x+(i*4)+2, y+(j*4)+1, color);
+		  drawPixel(x+(i*4)+3, y+(j*4)+1, color);
+		  drawPixel(x+(i*4), y+(j*4)+2, color);
+		  drawPixel(x+(i*4)+1, y+(j*4)+2, color);
+		  drawPixel(x+(i*4)+2, y+(j*4)+2, color);
+		  drawPixel(x+(i*4)+3, y+(j*4)+2, color);
+		  drawPixel(x+(i*4), y+(j*4)+3, color);
+		  drawPixel(x+(i*4)+1, y+(j*4)+3, color);
+		  drawPixel(x+(i*4)+2, y+(j*4)+3, color);
+		  drawPixel(x+(i*4)+3, y+(j*4)+3, color);
+        } else {  // Bigger Size then 4 with slow fillRect-function
           fillRect(x+(i*size), y+(j*size), size, size, color);
         } 
       } else if (bg != color) {
         if (size == 1) // default size
           drawPixel(x+i, y+j, bg);
-        else {  // big size
+        else if (size == 2) { // Size 2
+		  drawPixel(x+(i*2), y+(j*2), bg);
+		  drawPixel(x+(i*2)+1, y+(j*2), bg);
+		  drawPixel(x+(i*2), y+(j*2)+1, bg);
+		  drawPixel(x+(i*2)+1, y+(j*2)+1, bg);	  
+        } else if (size == 3) { // Size 3
+		  drawPixel(x+(i*3), y+(j*3), bg);
+		  drawPixel(x+(i*3)+1, y+(j*3), bg);
+		  drawPixel(x+(i*3)+2, y+(j*3), bg);
+		  drawPixel(x+(i*3), y+(j*3)+1, bg);
+		  drawPixel(x+(i*3)+1, y+(j*3)+1, bg);
+		  drawPixel(x+(i*3)+2, y+(j*3)+1, bg);
+		  drawPixel(x+(i*3), y+(j*3)+2, bg);
+		  drawPixel(x+(i*3)+1, y+(j*3)+2, bg);
+		  drawPixel(x+(i*3)+2, y+(j*3)+2, bg);	  	  
+        } else if (size == 4) { // Size 4
+		  drawPixel(x+(i*4), y+(j*4), bg);
+		  drawPixel(x+(i*4)+1, y+(j*4), bg);
+		  drawPixel(x+(i*4)+2, y+(j*4), bg);
+		  drawPixel(x+(i*4)+3, y+(j*4), bg);
+		  drawPixel(x+(i*4), y+(j*4)+1, bg);
+		  drawPixel(x+(i*4)+1, y+(j*4)+1, bg);
+		  drawPixel(x+(i*4)+2, y+(j*4)+1, bg);
+		  drawPixel(x+(i*4)+3, y+(j*4)+1, bg);
+		  drawPixel(x+(i*4), y+(j*4)+2, bg);
+		  drawPixel(x+(i*4)+1, y+(j*4)+2, bg);
+		  drawPixel(x+(i*4)+2, y+(j*4)+2, bg);
+		  drawPixel(x+(i*4)+3, y+(j*4)+2, bg);
+		  drawPixel(x+(i*4), y+(j*4)+3, bg);
+		  drawPixel(x+(i*4)+1, y+(j*4)+3, bg);
+		  drawPixel(x+(i*4)+2, y+(j*4)+3, bg);
+		  drawPixel(x+(i*4)+3, y+(j*4)+3, bg);
+        } else {  // Bigger Size then 4 with slow fillRect-function
           fillRect(x+i*size, y+j*size, size, size, bg);
         }
       }
