@@ -1,3 +1,15 @@
+Current additions:
+
+- XBitMap support (*.xbm)
+  Use directly exported xbm files from GIMP with bitmap data,
+  (fits perfectly with SSD1306 library from Adafruit)
+  Usage: Export bitmap with GIMP as *.xbm file,
+         Rename the *.xbm to *.c,
+         Open file in editor,
+         Use C array directly in your sources.
+
+----------------------------------
+
 This is the core graphics library for all our displays, providing a common set of graphics primitives (points, lines, circles, etc.).  It needs to be paired with a hardware-specific library for each display device we carry (to handle the lower-level functions).
 
 Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!
