@@ -363,6 +363,24 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
   }
 }
 
+//Draw XBitMap Files (*.xbm), exported from GIMP,
+//Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+//C Array can be directly used with this function
+void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
+                              const uint8_t *bitmap, int16_t w, int16_t h,
+                              uint16_t color) {
+  
+  int16_t i, j, byteWidth = (w + 7) / 8;
+  
+  for(j=0; j<h; j++) {
+    for(i=0; i<w; i++ ) {
+      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (1 << (i % 8))) {
+        drawPixel(x+i, y+j, color);
+      }
+    }
+  }
+}
+
 #if ARDUINO >= 100
 size_t Adafruit_GFX::write(uint8_t c) {
 #else
