@@ -1,8 +1,9 @@
 Current additions:
 
 - XBitMap support (*.xbm)
-  Use directly exported xbm files from GIMP with bitmap data,
+  Use exported xbm files from GIMP with bitmap data directly in your sources.
   (fits perfectly with SSD1306 library from Adafruit)
+  New function: Adafruit_GFX::drawXBitmap()
   Usage: Export bitmap with GIMP as *.xbm file,
          Rename the *.xbm to *.c,
          Open file in editor,
