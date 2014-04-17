@@ -32,7 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "Adafruit_GFX.h"
-#include "glcdfont.c"
 #ifdef __AVR__
  #include <avr/pgmspace.h>
 #else
@@ -49,6 +48,30 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
   textsize  = 1;
   textcolor = textbgcolor = 0xFFFF;
   wrap      = true;
+  setFont(GFXFONT_GLCD);
+}
+
+void Adafruit_GFX::setFont(uint8_t f) {
+  font = f;
+  switch(font) {
+    case GFXFONT_GLCD:
+      fontData = glcdFont;
+      fontKern = 1;
+      break;
+    case GFXFONT_GLCD_ASCII:
+      fontData = glcdFont_ascii;
+      fontKern = 1;
+      break;
+    default:
+      font = GFXFONT_GLCD;
+      fontData = glcdFont;
+      fontKern = 1;
+      break;
+  }
+  fontWidth = pgm_read_byte(fontData+FONT_WIDTH);
+  fontHeight = pgm_read_byte(fontData+FONT_HEIGHT);
+  fontStart = pgm_read_byte(fontData+FONT_START);
+  fontLength = pgm_read_byte(fontData+FONT_LENGTH);
 }
 
 // Draw a circle outline
@@ -374,16 +397,25 @@ void Adafruit_GFX::write(uint8_t c) {
   } else if (c == '\r') {
     // skip em
   } else {
-    drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
-    cursor_x += textsize*6;
-    if (wrap && (cursor_x > (_width - textsize*6))) {
-      cursor_y += textsize*8;
+    drawFastChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
+    if (fontKern > 0 && textcolor != textbgcolor) {
+      fillRect(cursor_x+fontWidth*textsize,cursor_y,fontKern*textsize,fontHeight*textsize,textbgcolor);
+    }
+    cursor_x += textsize*(fontWidth+fontKern);
+    if (wrap && (cursor_x > (_width - textsize*fontWidth))) {
+      cursor_y += textsize*fontHeight;
       cursor_x = 0;
     }
   }
 #if ARDUINO >= 100
   return 1;
 #endif
+}
+
+void Adafruit_GFX::drawFastChar(int16_t x, int16_t y, unsigned char c,
+                                    uint16_t color, uint16_t bg, uint8_t size) {
+  // Update in subclasses if desired!
+  drawChar(x,y,c,color,bg,size);
 }
 
 // Draw a character
@@ -395,28 +427,35 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
      ((x + 6 * size - 1) < 0) || // Clip left
      ((y + 8 * size - 1) < 0))   // Clip top
     return;
+  if (c < fontStart || c > fontStart+fontLength) {
+    c = 0;
+  }
+  else {
+    c -= fontStart;
+  }
 
-  for (int8_t i=0; i<6; i++ ) {
+  uint8_t bitCount=0;
+  int fontIndex = (c*(fontWidth*fontHeight)/8)+4;
+  for (int8_t i=0; i<fontHeight; i++ ) {
     uint8_t line;
-    if (i == 5) 
-      line = 0x0;
-    else 
-      line = pgm_read_byte(font+(c*5)+i);
-    for (int8_t j = 0; j<8; j++) {
-      if (line & 0x1) {
-        if (size == 1) // default size
-          drawPixel(x+i, y+j, color);
+    for (int8_t j = 0; j<fontWidth; j++) {
+      if (bitCount++%8 == 0) {
+        line = pgm_read_byte(fontData+fontIndex++);
+      }
+      if (line & 0x80) {
+        if (size == 1) // default sizeFast
+          drawPixel(x+j, y+i, color);
         else {  // big size
-          fillRect(x+(i*size), y+(j*size), size, size, color);
+          fillRect(x+(j*size), y+(i*size), size, size, color);
         } 
       } else if (bg != color) {
         if (size == 1) // default size
-          drawPixel(x+i, y+j, bg);
+          drawPixel(x+j, y+i, bg);
         else {  // big size
-          fillRect(x+i*size, y+j*size, size, size, bg);
+          fillRect(x+j*size, y+i*size, size, size, bg);
         }
       }
-      line >>= 1;
+      line <<= 1;
     }
   }
 }
