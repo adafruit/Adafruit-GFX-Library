@@ -304,7 +304,8 @@ void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
     dx02 = x2 - x0,
     dy02 = y2 - y0,
     dx12 = x2 - x1,
-    dy12 = y2 - y1,
+    dy12 = y2 - y1;
+  int32_t
     sa   = 0,
     sb   = 0;
 
