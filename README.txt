@@ -9,3 +9,11 @@ All text above must be included in any redistribution.
 To download, click the DOWNLOAD ZIP button, uncompress and rename the uncompressed folder Adafruit_GFX. Confirm that the Adafruit_GFX folder contains Adafruit_GFX.cpp and Adafruit_GFX.h
 
 Place the Adafruit_GFX library folder your <arduinosketchfolder>/Libraries/ folder. You may need to create the Libraries subfolder if its your first library. Restart the IDE.
+
+Useful Resources
+================
+
+-  Image2Code
+   This is a handy Java GUI utility to convert a BMP file into the array code necessary to display
+   the image with the drawBitmap function.  Check out the code at ehubin's GitHub repository:
+     https://github.com/ehubin/Adafruit-GFX-Library/tree/master/Img2Code
