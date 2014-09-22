@@ -14,6 +14,5 @@ Useful Resources
 ================
 
 -  Image2Code
-   This is a handy Java GUI utility to convert a BMP file into the array code necessary to display
-   the image with the drawBitmap function.  Check out the code at ehubin's GitHub repository:
+   This is a handy Java GUI utility to convert a BMP file into the array code necessary to display the image with the drawBitmap function.  Check out the code at ehubin's GitHub repository:
      https://github.com/ehubin/Adafruit-GFX-Library/tree/master/Img2Code
