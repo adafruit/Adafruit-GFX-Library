@@ -1,16 +1,3 @@
-Current additions:
-
-- XBitMap support (*.xbm)
-  Use exported xbm files from GIMP with bitmap data directly in your sources.
-  (fits perfectly with SSD1306 library from Adafruit)
-  New function: Adafruit_GFX::drawXBitmap()
-  Usage: Export bitmap with GIMP as *.xbm file,
-         Rename the *.xbm to *.c,
-         Open file in editor,
-         Use C array directly in your sources.
-
-----------------------------------
-
 This is the core graphics library for all our displays, providing a common set of graphics primitives (points, lines, circles, etc.).  It needs to be paired with a hardware-specific library for each display device we carry (to handle the lower-level functions).
 
 Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!
@@ -29,3 +16,7 @@ Useful Resources
 -  Image2Code
    This is a handy Java GUI utility to convert a BMP file into the array code necessary to display the image with the drawBitmap function.  Check out the code at ehubin's GitHub repository:
      https://github.com/ehubin/Adafruit-GFX-Library/tree/master/Img2Code
+
+-  drawXBitmap function
+   You can use the GIMP photo editor to save a .xbm file and use the array saved in the file to draw a bitmap with the drawXBitmap function. See the pull request here for more details:
+     https://github.com/adafruit/Adafruit-GFX-Library/pull/31
