@@ -358,7 +358,28 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
       if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
-	drawPixel(x+i, y+j, color);
+        drawPixel(x+i, y+j, color);
+      }
+    }
+  }
+}
+
+// Draw a 1-bit color bitmap at the specified x, y position from the
+// provided bitmap buffer (must be PROGMEM memory) using color as the
+// foreground color and bg as the background color.
+void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
+            const uint8_t *bitmap, int16_t w, int16_t h,
+            uint16_t color, uint16_t bg) {
+
+  int16_t i, j, byteWidth = (w + 7) / 8;
+  
+  for(j=0; j<h; j++) {
+    for(i=0; i<w; i++ ) {
+      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
+        drawPixel(x+i, y+j, color);
+      }
+      else {
+      	drawPixel(x+i, y+j, bg);
       }
     }
   }
