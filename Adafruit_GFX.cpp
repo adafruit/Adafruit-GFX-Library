@@ -201,10 +201,11 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
       seg=x0+1;
     }
   }
+  // x0 incremented
   if (steep) {
-    drawFastVLine(y0, seg, (x0-seg)+1, color);
+    drawFastVLine(y0, seg, (x0-seg), color);
   } else {
-    drawFastHLine(seg, y0, (x0-seg)+1, color);
+    drawFastHLine(seg, y0, (x0-seg), color);
   }
 }
 
