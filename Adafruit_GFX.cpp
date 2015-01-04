@@ -403,6 +403,20 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
   }
 }
 
+// Draw colored bitmap (each pixel is a uint16_t, with colors defined by
+// the drawpixel method of your graphical backend.
+void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
+			      const uint16_t *bitmap, int16_t w, int16_t h) {
+  int16_t i, j;
+
+  for(j=0; j<h; j++) {
+    for(i=0; i<w; i++ ) {
+	drawPixel(x+i, y+j, pgm_read_byte(bitmap + j * w + i));
+    }
+  }
+}
+
+
 #if ARDUINO >= 100
 size_t Adafruit_GFX::write(uint8_t c) {
 #else

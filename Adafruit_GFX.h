@@ -52,6 +52,8 @@ class Adafruit_GFX : public Print {
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
     drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, 
       int16_t w, int16_t h, uint16_t color),
+    drawRGBBitmap(int16_t x, int16_t y, const uint16_t *bitmap,
+      int16_t w, int16_t h),
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
     setCursor(int16_t x, int16_t y),
