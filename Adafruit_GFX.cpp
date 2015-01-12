@@ -411,7 +411,7 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-	drawPixel(x+i, y+j, pgm_read_byte(bitmap + j * w + i));
+	drawPixel(x+i, y+j, pgm_read_word(bitmap + j * w + i));
     }
   }
 }
