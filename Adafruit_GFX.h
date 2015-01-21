@@ -58,7 +58,8 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c),
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
-    setTextWrap(boolean w),
+	setTextWrap(boolean w),
+    setTextFont(const uint8_t* data, uint8_t width, uint8_t height, uint8_t firstchar = 0),
     setRotation(uint8_t r);
 
 #if ARDUINO >= 100
@@ -82,9 +83,14 @@ class Adafruit_GFX : public Print {
     textcolor, textbgcolor;
   uint8_t
     textsize,
-    rotation;
+    rotation,
+    fontwidth,
+    fontheight,
+    charoffset;
   boolean
     wrap; // If set, 'wrap' text at right edge of display
+  const uint8_t*
+    fontselected;
 };
 
 #endif // _ADAFRUIT_GFX_H
