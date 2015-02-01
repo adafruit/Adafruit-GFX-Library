@@ -419,7 +419,7 @@ void Adafruit_GFX::writePSTR( const char * c) {
 //Usage: display.writePSTRln( PSTR ( "Test" ) );
 //Notes: be sure to #include <avr/pgmspace.h>
 void Adafruit_GFX::writePSTRln( const char * c) {
-  writePSTR( * c );
+  writePSTR( c );
   write( '\n');
 }
 
