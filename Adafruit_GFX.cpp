@@ -403,6 +403,26 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
   }
 }
 
+//Write character string from program memory to the display.
+//This uses code space to store character arrays not ram space.
+//Usage: display.writePSTR( PSTR ( "Test" ) );
+//Notes: be sure to #include <avr/pgmspace.h>
+void Adafruit_GFX::writePSTR( const char * c) {
+  while ( pgm_read_byte ( c ) != '\0')
+  {
+    write( pgm_read_byte ( c ++) );
+  }
+}
+
+//Write character string from program memory to the display with a line feed.
+//This uses code space to store character arrays not ram space.
+//Usage: display.writePSTRln( PSTR ( "Test" ) );
+//Notes: be sure to #include <avr/pgmspace.h>
+void Adafruit_GFX::writePSTRln( const char * c) {
+  writePSTR( * c );
+  write( '\n');
+}
+
 #if ARDUINO >= 100
 size_t Adafruit_GFX::write(uint8_t c) {
 #else

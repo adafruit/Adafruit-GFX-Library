@@ -59,7 +59,9 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
-    setRotation(uint8_t r);
+    setRotation(uint8_t r),
+    writePSTR( const char * c),
+    writePSTRln(const char * c);
 
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
