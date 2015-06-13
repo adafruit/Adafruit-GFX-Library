@@ -72,6 +72,10 @@ class Adafruit_GFX : public Print {
 
   uint8_t getRotation(void) const;
 
+  // get current cursor position (get rotation safe maximum values, using: width() for x, height() for y)
+  int16_t getCursorX(void) const;
+  int16_t getCursorY(void) const;
+
  protected:
   const int16_t
     WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
