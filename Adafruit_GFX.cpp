@@ -42,13 +42,17 @@ POSSIBILITY OF SUCH DAMAGE.
 Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
   WIDTH(w), HEIGHT(h)
 {
-  _width    = WIDTH;
-  _height   = HEIGHT;
-  rotation  = 0;
-  cursor_y  = cursor_x    = 0;
-  textsize  = 1;
-  textcolor = textbgcolor = 0xFFFF;
-  wrap      = true;
+  _width       = WIDTH;
+  _height      = HEIGHT;
+  rotation     = 0;
+  cursor_y     = cursor_x    = 0;
+  textsize     = 1;
+  textcolor    = textbgcolor = 0xFFFF;
+  wrap         = true;
+  fontselected = font;
+  fontwidth    = 5;
+  fontheight   = 7;
+  charoffset   = 0;
 }
 
 // Draw a circle outline
@@ -409,15 +413,15 @@ size_t Adafruit_GFX::write(uint8_t c) {
 void Adafruit_GFX::write(uint8_t c) {
 #endif
   if (c == '\n') {
-    cursor_y += textsize*8;
+    cursor_y += textsize * (fontheight+1);
     cursor_x  = 0;
   } else if (c == '\r') {
     // skip em
   } else {
     drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
-    cursor_x += textsize*6;
-    if (wrap && (cursor_x > (_width - textsize*6))) {
-      cursor_y += textsize*8;
+    cursor_x += textsize * (fontwidth+1);
+    if (wrap && (cursor_x > (_width - textsize * (fontwidth+1)))) {
+      cursor_y += textsize * (fontheight+1);
       cursor_x = 0;
     }
   }
@@ -430,33 +434,41 @@ void Adafruit_GFX::write(uint8_t c) {
 void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 			    uint16_t color, uint16_t bg, uint8_t size) {
 
-  if((x >= _width)            || // Clip right
-     (y >= _height)           || // Clip bottom
-     ((x + 6 * size - 1) < 0) || // Clip left
-     ((y + 8 * size - 1) < 0))   // Clip top
+  if((x >= _width)                            || // Clip right
+     (y >= _height)                           || // Clip bottom
+     ((x + (fontwidth + 1) * size - 1) < 0)  || // Clip left
+     ((y + (fontheight + 1) * size - 1) < 0))   // Clip top
     return;
-
-  for (int8_t i=0; i<6; i++ ) {
-    uint8_t line;
-    if (i == 5) 
-      line = 0x0;
-    else 
-      line = pgm_read_byte(font+(c*5)+i);
-    for (int8_t j = 0; j<8; j++) {
-      if (line & 0x1) {
-        if (size == 1) // default size
-          drawPixel(x+i, y+j, color);
-        else {  // big size
-          fillRect(x+(i*size), y+(j*size), size, size, color);
-        } 
-      } else if (bg != color) {
-        if (size == 1) // default size
-          drawPixel(x+i, y+j, bg);
-        else {  // big size
-          fillRect(x+i*size, y+j*size, size, size, bg);
+  int8_t stride = (fontheight+7) / 8;
+  for (int8_t i=0; i<(fontwidth+1); i++) {
+	for (int8_t j=0; j<stride; j++) {
+      uint8_t line;
+      if (i == fontwidth) 
+        line = 0x0;
+      else 
+        line = pgm_read_byte(fontselected+((c-charoffset)*stride*fontwidth)+(j*fontwidth)+i);
+	  int8_t digest = 8;
+	  if (j == stride - 1)
+        digest = fontheight - (j * 8);
+        if (digest < 8)
+          digest++; // draw blank line
+      for (int8_t k = 0; k<digest; k++) {
+        int8_t h = j * 8 + k;
+        if (line & 0x1) {
+          if (size == 1) // default size
+            drawPixel(x+i, y+h, color);
+          else {  // big size
+            fillRect(x+(i*size), y+(h*size), size, size, color);
+          } 
+        } else if (bg != color) {
+          if (size == 1) // default size
+            drawPixel(x+i, y+h, bg);
+          else {  // big size
+            fillRect(x+i*size, y+h*size, size, size, bg);
+          }
         }
+        line >>= 1;
       }
-      line >>= 1;
     }
   }
 }
@@ -491,6 +503,13 @@ void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
 
 void Adafruit_GFX::setTextWrap(boolean w) {
   wrap = w;
+}
+
+void Adafruit_GFX::setTextFont(const uint8_t* data, uint8_t width, uint8_t height, uint8_t firstchar) {
+  fontselected = data;
+  fontwidth    = width;
+  fontheight   = height;
+  charoffset   = firstchar;
 }
 
 uint8_t Adafruit_GFX::getRotation(void) const {
