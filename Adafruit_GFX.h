@@ -10,11 +10,10 @@
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-class Adafruit_GFX : public Print {
-
+class Adafruit_GFX_Core {
  public:
 
-  Adafruit_GFX(int16_t w, int16_t h); // Constructor
+  Adafruit_GFX_Core(int16_t w, int16_t h); // Constructor
 
   // This MUST be defined by the subclass:
   virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
@@ -61,12 +60,6 @@ class Adafruit_GFX : public Print {
     setTextWrap(boolean w),
     setRotation(uint8_t r);
 
-#if ARDUINO >= 100
-  virtual size_t write(uint8_t);
-#else
-  virtual void   write(uint8_t);
-#endif
-
   int16_t height(void) const;
   int16_t width(void) const;
 
@@ -85,6 +78,19 @@ class Adafruit_GFX : public Print {
     rotation;
   boolean
     wrap; // If set, 'wrap' text at right edge of display
+};
+
+
+class Adafruit_GFX : public Adafruit_GFX_Core, public Print {
+public:
+  Adafruit_GFX(int16_t w, int16_t h): Adafruit_GFX_Core(w, h) {}
+
+#if ARDUINO >= 100
+  virtual size_t write(uint8_t);
+#else
+  virtual void   write(uint8_t);
+#endif
+
 };
 
 class Adafruit_GFX_Button {

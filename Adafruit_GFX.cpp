@@ -39,7 +39,7 @@ POSSIBILITY OF SUCH DAMAGE.
  #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 #endif
 
-Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
+Adafruit_GFX_Core::Adafruit_GFX_Core(int16_t w, int16_t h):
   WIDTH(w), HEIGHT(h)
 {
   _width    = WIDTH;
@@ -52,7 +52,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
 }
 
 // Draw a circle outline
-void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
+void Adafruit_GFX_Core::drawCircle(int16_t x0, int16_t y0, int16_t r,
     uint16_t color) {
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
@@ -86,7 +86,7 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
   }
 }
 
-void Adafruit_GFX::drawCircleHelper( int16_t x0, int16_t y0,
+void Adafruit_GFX_Core::drawCircleHelper( int16_t x0, int16_t y0,
                int16_t r, uint8_t cornername, uint16_t color) {
   int16_t f     = 1 - r;
   int16_t ddF_x = 1;
@@ -122,14 +122,14 @@ void Adafruit_GFX::drawCircleHelper( int16_t x0, int16_t y0,
   }
 }
 
-void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
+void Adafruit_GFX_Core::fillCircle(int16_t x0, int16_t y0, int16_t r,
 			      uint16_t color) {
   drawFastVLine(x0, y0-r, 2*r+1, color);
   fillCircleHelper(x0, y0, r, 3, 0, color);
 }
 
 // Used to do circles and roundrects
-void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
+void Adafruit_GFX_Core::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     uint8_t cornername, int16_t delta, uint16_t color) {
 
   int16_t f     = 1 - r;
@@ -160,7 +160,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 }
 
 // Bresenham's algorithm - thx wikpedia
-void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
+void Adafruit_GFX_Core::drawLine(int16_t x0, int16_t y0,
 			    int16_t x1, int16_t y1,
 			    uint16_t color) {
   int16_t steep = abs(y1 - y0) > abs(x1 - x0);
@@ -202,7 +202,7 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
 }
 
 // Draw a rectangle
-void Adafruit_GFX::drawRect(int16_t x, int16_t y,
+void Adafruit_GFX_Core::drawRect(int16_t x, int16_t y,
 			    int16_t w, int16_t h,
 			    uint16_t color) {
   drawFastHLine(x, y, w, color);
@@ -211,19 +211,19 @@ void Adafruit_GFX::drawRect(int16_t x, int16_t y,
   drawFastVLine(x+w-1, y, h, color);
 }
 
-void Adafruit_GFX::drawFastVLine(int16_t x, int16_t y,
+void Adafruit_GFX_Core::drawFastVLine(int16_t x, int16_t y,
 				 int16_t h, uint16_t color) {
   // Update in subclasses if desired!
   drawLine(x, y, x, y+h-1, color);
 }
 
-void Adafruit_GFX::drawFastHLine(int16_t x, int16_t y,
+void Adafruit_GFX_Core::drawFastHLine(int16_t x, int16_t y,
 				 int16_t w, uint16_t color) {
   // Update in subclasses if desired!
   drawLine(x, y, x+w-1, y, color);
 }
 
-void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
+void Adafruit_GFX_Core::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 			    uint16_t color) {
   // Update in subclasses if desired!
   for (int16_t i=x; i<x+w; i++) {
@@ -231,12 +231,12 @@ void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
   }
 }
 
-void Adafruit_GFX::fillScreen(uint16_t color) {
+void Adafruit_GFX_Core::fillScreen(uint16_t color) {
   fillRect(0, 0, _width, _height, color);
 }
 
 // Draw a rounded rectangle
-void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
+void Adafruit_GFX_Core::drawRoundRect(int16_t x, int16_t y, int16_t w,
   int16_t h, int16_t r, uint16_t color) {
   // smarter version
   drawFastHLine(x+r  , y    , w-2*r, color); // Top
@@ -251,7 +251,7 @@ void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
 }
 
 // Fill a rounded rectangle
-void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
+void Adafruit_GFX_Core::fillRoundRect(int16_t x, int16_t y, int16_t w,
 				 int16_t h, int16_t r, uint16_t color) {
   // smarter version
   fillRect(x+r, y, w-2*r, h, color);
@@ -262,7 +262,7 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
 }
 
 // Draw a triangle
-void Adafruit_GFX::drawTriangle(int16_t x0, int16_t y0,
+void Adafruit_GFX_Core::drawTriangle(int16_t x0, int16_t y0,
 				int16_t x1, int16_t y1,
 				int16_t x2, int16_t y2, uint16_t color) {
   drawLine(x0, y0, x1, y1, color);
@@ -271,7 +271,7 @@ void Adafruit_GFX::drawTriangle(int16_t x0, int16_t y0,
 }
 
 // Fill a triangle
-void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
+void Adafruit_GFX_Core::fillTriangle ( int16_t x0, int16_t y0,
 				  int16_t x1, int16_t y1,
 				  int16_t x2, int16_t y2, uint16_t color) {
 
@@ -349,7 +349,7 @@ void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
   }
 }
 
-void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
+void Adafruit_GFX_Core::drawBitmap(int16_t x, int16_t y,
 			      const uint8_t *bitmap, int16_t w, int16_t h,
 			      uint16_t color) {
 
@@ -367,7 +367,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 // Draw a 1-bit color bitmap at the specified x, y position from the
 // provided bitmap buffer (must be PROGMEM memory) using color as the
 // foreground color and bg as the background color.
-void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
+void Adafruit_GFX_Core::drawBitmap(int16_t x, int16_t y,
             const uint8_t *bitmap, int16_t w, int16_t h,
             uint16_t color, uint16_t bg) {
 
@@ -388,7 +388,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 //Draw XBitMap Files (*.xbm), exported from GIMP,
 //Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
 //C Array can be directly used with this function
-void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
+void Adafruit_GFX_Core::drawXBitmap(int16_t x, int16_t y,
                               const uint8_t *bitmap, int16_t w, int16_t h,
                               uint16_t color) {
   
@@ -427,7 +427,7 @@ void Adafruit_GFX::write(uint8_t c) {
 }
 
 // Draw a character
-void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
+void Adafruit_GFX_Core::drawChar(int16_t x, int16_t y, unsigned char c,
 			    uint16_t color, uint16_t bg, uint8_t size) {
 
   if((x >= _width)            || // Clip right
@@ -461,35 +461,35 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
   }
 }
 
-void Adafruit_GFX::setCursor(int16_t x, int16_t y) {
+void Adafruit_GFX_Core::setCursor(int16_t x, int16_t y) {
   cursor_x = x;
   cursor_y = y;
 }
 
-void Adafruit_GFX::setTextSize(uint8_t s) {
+void Adafruit_GFX_Core::setTextSize(uint8_t s) {
   textsize = (s > 0) ? s : 1;
 }
 
-void Adafruit_GFX::setTextColor(uint16_t c) {
+void Adafruit_GFX_Core::setTextColor(uint16_t c) {
   // For 'transparent' background, we'll set the bg 
   // to the same as fg instead of using a flag
   textcolor = textbgcolor = c;
 }
 
-void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
+void Adafruit_GFX_Core::setTextColor(uint16_t c, uint16_t b) {
   textcolor   = c;
   textbgcolor = b; 
 }
 
-void Adafruit_GFX::setTextWrap(boolean w) {
+void Adafruit_GFX_Core::setTextWrap(boolean w) {
   wrap = w;
 }
 
-uint8_t Adafruit_GFX::getRotation(void) const {
+uint8_t Adafruit_GFX_Core::getRotation(void) const {
   return rotation;
 }
 
-void Adafruit_GFX::setRotation(uint8_t x) {
+void Adafruit_GFX_Core::setRotation(uint8_t x) {
   rotation = (x & 3);
   switch(rotation) {
    case 0:
@@ -506,15 +506,15 @@ void Adafruit_GFX::setRotation(uint8_t x) {
 }
 
 // Return the size of the display (per current rotation)
-int16_t Adafruit_GFX::width(void) const {
+int16_t Adafruit_GFX_Core::width(void) const {
   return _width;
 }
  
-int16_t Adafruit_GFX::height(void) const {
+int16_t Adafruit_GFX_Core::height(void) const {
   return _height;
 }
 
-void Adafruit_GFX::invertDisplay(boolean i) {
+void Adafruit_GFX_Core::invertDisplay(boolean i) {
   // Do nothing, must be subclassed if supported
 }
 
