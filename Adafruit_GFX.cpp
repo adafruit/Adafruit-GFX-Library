@@ -35,8 +35,14 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "glcdfont.c"
 #ifdef __AVR__
  #include <avr/pgmspace.h>
+#elif defined(ESP8266)
+ #include <pgmspace.h>
 #else
  #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
+#endif
+
+#ifndef min
+ #define min(a,b) ((a < b) ? a : b)
 #endif
 
 Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
