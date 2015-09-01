@@ -600,7 +600,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx,
 
 boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
    if ((x < (_x - _w/2)) || (x > (_x + _w/2))) return false;
-   if ((y < (_y - _h)) || (y > (_y + _h/2))) return false;
+   if ((y < (_y - _h/2)) || (y > (_y + _h/2))) return false;
    return true;
  }
 
