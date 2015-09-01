@@ -112,6 +112,9 @@ void loop()
 	Pantalla_Rotacion();		// setRotation getRotation
 	delay(retardo);
 	
+	Pixels();					// Drawing pixels (points)
+	delay(retardo);
+	
 	Cursor();					// getCursorX getCursorY setCursor
 	delay(retardo);
 	
@@ -162,6 +165,17 @@ void loop()
 	
 	Caracteres();				// drawChar
 	delay(retardo);
+}
+
+void Pixels()
+{
+	// Drawing pixels (points)
+	// drawPixel(uint16_t x, uint16_t y, uint16_t color)
+	
+	tft.fillScreen(BLACK);		// fondo negro
+								// black background
+								
+	tft.drawPixel(100, 100, WHITE);
 }
 
 void Caracteres()
