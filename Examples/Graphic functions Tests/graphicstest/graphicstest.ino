@@ -7,6 +7,8 @@
 // **	Escrito en Notepad++																								**																								**
 // **	Compilado en Arduino v1.0.6																							**
 // **																														**
+// **	v0.1																												**				
+// **																														**
 // **	Hardware:																											**
 // **	https://learn.adafruit.com/adafruit-3-5-color-320x480-tft-touchscreen-breakout										**
 // **																														**
@@ -19,8 +21,8 @@
 // **	Libreria Adafruit TFTLCD:																							**
 // **	https://github.com/adafruit/TFTLCD-Library																			**
 // **																														**
-// **	Video:																												**
-// **	https://www.youtube.com/watch?v=Y8XBOiMS-KI																			**
+// **	Repositorio:																										**
+// **	https://github.com/daniel3514/Adafruit-GFX-Library-Example-Arduino-Mega-HXD8357D-and-STMPE610						**
 // **																														**
 // **	Autores:																											**
 // **	Daniel Alejandro Becerril Hernandez																					**
@@ -167,7 +169,7 @@ void Caracteres()
 	// dibujar caracteres
 	// Draw characters
 	
-	// void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
+	// drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 	
 	tft.fillScreen(BLACK);		// fondo negro
 								// black background
@@ -197,7 +199,7 @@ void Triangulo_Relleno()
 	// Dibuja un triángulo relleno
 	// Draw a filled triangle
 	
-	// void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
+	// fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 	tft.fillScreen(BLACK);			// fondo negro
 									// black background
 	tft.fillTriangle(100, 100, 200, 100, 150, 150, MAGENTA); 	// dibuja un triangulo relleno, fillTriangle(x0, y0, x1, y1, x2, y2, color)
@@ -216,7 +218,7 @@ void Triangulo()
 	// Dibuja un triángulo
 	// Draw a triangle
 	
-	// void Adafruit_GFX::drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
+	// drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 	tft.fillScreen(BLACK);			// black background
 	tft.drawTriangle(100, 100, 200, 100, 150, 150, MAGENTA); 	// dibuja un triángulo, drawTriangle(x0, y0, x1, y1, x2, y2, color)
 																// Draw a triangle, drawTriangle (x0, y0, x1, y1, x2, y2, color)
@@ -322,7 +324,7 @@ void Rectangulo_Relleno()
 	// alto y ancho expresado en pixeles
 	// Height and width expressed in pixels
 	
-	// void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
+	// fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
 	
 	tft.fillScreen(BLACK);		// fondo negro
 								// black background
@@ -343,7 +345,7 @@ void Linea_Rapida_X_Y()
 	// dibuja una línea rápida solo con x, y, sentido y color sobre X o Y
 	// Draw a quick line only with x, y, meaning and color on X or Y
 	
-	// void Adafruit_GFX::drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
+	// drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 	
 	tft.fillScreen(BLACK);			// fondo negro
 									// black background
@@ -376,7 +378,7 @@ void Rectangulo_Contorno()
 	// alto y ancho expresado en pixeles
 	// Height and width expressed in pixels
 	
-	// void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
+	// drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
 	
 	tft.fillScreen(BLACK);		// fondo negro
 								// black background
@@ -397,7 +399,7 @@ void Linea()
 	// dibuja una línea
 	// draw a line
 	
-	// void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+	// drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 	
 	tft.fillScreen(BLACK);					// fondo negro
 											// black background
@@ -418,7 +420,7 @@ void Circulo_Seccion_Relleno_Estirar()
 	// dibuja un circulo en secciones con corner name de 1 a 3, y lo estira sobre Y y lo reduce sobre X con delta de 0 a x
 	// Draw a circle in corner sections name of 1-3, and stretches on and on and reduces delta X 0 x
 	
-	// void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color) {
+	// fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color) {
 	 
 	for (int cornername = 1; cornername <= 3; cornername ++)
 	{
@@ -451,7 +453,7 @@ void Circulo_Relleno()
 	// dibuja un círculo con color de relleno
 	// Draw a circle with fill color
 	
-	// void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+	// fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
 		
 	tft.fillScreen(BLACK);		// fondo negro
 								// black background
@@ -472,7 +474,7 @@ void Circulo_Seccion()
 	// dibuja el contorno de un circulo en secciones, lo parte en 4 y cuenta como si fueran las secciones del circulo en binario
 	// Draw the outline of a circle into sections, part 4 and counts as if they were sections of the circle in binary
 	
-	// void Adafruit_GFX::drawCircleHelper( int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uint16_t color) {
+	// drawCircleHelper( int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uint16_t color) {
 	
 	for (int cornername = 1; cornername <= 15; cornername ++)
 	{
@@ -499,7 +501,7 @@ void Circulo_Contorno()
 	// dibuja un contorno de linea
 	// Draw a contour line
 	
-	// void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+	// drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
 		
 	tft.fillScreen(BLACK);			// fondo negro
 									// black background
@@ -523,7 +525,7 @@ void Pantalla_Rotacion()
 	// SetRotation sets the rotation of the screen, 0 = 0 * 1 = 90, 2 = 180 * 3 = 270*
 	// GetRotation returns the value of the current screen rotation
 	
-	// void Adafruit_GFX::setRotation(uint8_t x)
+	// setRotation(uint8_t x)
 	
 	// uint8_t Adafruit_GFX::getRotation(void)
 	
@@ -578,6 +580,7 @@ void Pantalla_ID()
 {
 	// devuelve el ID de la pantalla
 	// Returns the ID of the screen
+	// readID()
 	
 	tft.fillScreen(BLACK);			// fondo negro
 									// black background
@@ -597,7 +600,7 @@ void Texto_Ajuste()
 	// Ajusta el texto al tamaño de la pantalla
 	// Set the text to the screen size
 	
-	// void Adafruit_GFX::setTextWrap(boolean w)
+	// setTextWrap(boolean w)
 	
 	tft.fillScreen(BLACK);			// fondo negro
 									// black background
@@ -627,7 +630,7 @@ void Pantalla_Fondo()
 	// fondo de pantalla
 	// wallpaper
 	
-	// void Adafruit_GFX::fillScreen(uint16_t color)
+	// fillScreen(uint16_t color)
 	
 	tft.setTextSize(3);				// tamaño de texto, lo probamos 1 hasta 100 y funciona
 									// Size of text, we tried 1-100 and works
@@ -709,7 +712,7 @@ void Texto_Tamano()
 	// tamaño de texto
 	// text size
 	
-	// void Adafruit_GFX::setTextSize(uint8_t s)
+	// setTextSize(uint8_t s)
 
 	tft.fillScreen(BLACK);			// fondo negro
 									// black background
@@ -763,7 +766,7 @@ void Texto_Color()
 	// texto con color de fondo
 	// Background color text
 	
-	// void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b)
+	// setTextColor(uint16_t c, uint16_t b)
 	// textcolor   = c;
 	// textbgcolor = b; 
 
@@ -797,7 +800,7 @@ void Cursor()
 	// return cursor_y;
 	// }
 	
-	// void Adafruit_GFX::setCursor(int16_t x, int16_t y) {
+	// setCursor(int16_t x, int16_t y) {
 	// cursor_x = x;
 	// cursor_y = y;
 	// }
