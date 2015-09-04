@@ -170,7 +170,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
 			    int16_t x1, int16_t y1,
 			    uint16_t color) {
-  int16_t steep = abs(y1 - y0) > abs(x1 - x0);
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
     swap(x0, y0);
     swap(x1, y1);
@@ -181,25 +181,17 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
     swap(y0, y1);
   }
 
-  int16_t dx, dy;
-  dx = x1 - x0;
-  dy = abs(y1 - y0);
+  int16_t dx = x1 - x0;
+  int16_t dy = abs(y1 - y0);
 
   int16_t err = dx / 2;
-  int16_t ystep;
-
-  if (y0 < y1) {
-    ystep = 1;
-  } else {
-    ystep = -1;
-  }
+  int16_t ystep = y0 < y1 ? 1 : -1;
 
   for (; x0<=x1; x0++) {
-    if (steep) {
+    if (steep)
       drawPixel(y0, x0, color);
-    } else {
+    else
       drawPixel(x0, y0, color);
-    }
     err -= dy;
     if (err < 0) {
       y0 += ystep;
@@ -286,13 +278,16 @@ void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
 
   // Sort coordinates by Y order (y2 >= y1 >= y0)
   if (y0 > y1) {
-    swap(y0, y1); swap(x0, x1);
+    swap(y0, y1);
+    swap(x0, x1);
   }
   if (y1 > y2) {
-    swap(y2, y1); swap(x2, x1);
+    swap(y2, y1);
+    swap(x2, x1);
   }
   if (y0 > y1) {
-    swap(y0, y1); swap(x0, x1);
+    swap(y0, y1);
+    swap(x0, x1);
   }
 
   if(y0 == y2) { // Handle awkward all-on-same-line case as its own thing
@@ -360,14 +355,23 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 			      const uint8_t *bitmap, int16_t w, int16_t h,
 			      uint16_t color) {
 
-  int16_t i, j, byteWidth = (w + 7) / 8;
+  int16_t byteWidth = (w + 7) / 8, cy = y;
 
-  for(j=0; j<h; j++) {
-    for(i=0; i<w; i++ ) {
-      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
-        drawPixel(x+i, y+j, color);
+  for(int16_t j=0; j<h; j++) {
+    int cx = x;
+    uint8_t *cur_p = bitmap + j * byteWidth;
+
+    for(int16_t i=0; i<w/8; i++) {
+      uint8_t b = pgm_read_byte(cur_p++);
+      for(byte k=0; k<8; k++) {
+	if(b & 128)
+	  drawPixel(cx, cy, color);
+	cx++;
+	b <<= 1;
       }
     }
+
+    cy++;
   }
 }
 
@@ -377,18 +381,26 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
             const uint8_t *bitmap, int16_t w, int16_t h,
             uint16_t color, uint16_t bg) {
+  int16_t byteWidth = (w + 7) / 8, cy = y;
 
-  int16_t i, j, byteWidth = (w + 7) / 8;
-  
-  for(j=0; j<h; j++) {
-    for(i=0; i<w; i++ ) {
-      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
-        drawPixel(x+i, y+j, color);
-      }
-      else {
-      	drawPixel(x+i, y+j, bg);
+  for(int16_t j=0; j<h; j++) {
+    int16_t cx = x;
+    uint8_t *cur_p = bitmap + j * byteWidth;
+
+    for(int16_t i=0; i<w/8; i++) {
+      uint8_t b = pgm_read_byte(cur_p++);
+      
+      for(byte k=0; k<8; k++) {
+	if(b & 128)
+	  drawPixel(cx, cy, color);
+	else
+	  drawPixel(cx, cy, bg);
+	b <<= 1;
+	cx++;
       }
     }
+    
+    cy++;
   }
 }
 
@@ -398,16 +410,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
                               const uint8_t *bitmap, int16_t w, int16_t h,
                               uint16_t color) {
-  
-  int16_t i, j, byteWidth = (w + 7) / 8;
-  
-  for(j=0; j<h; j++) {
-    for(i=0; i<w; i++ ) {
-      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (1 << (i % 8))) {
-        drawPixel(x+i, y+j, color);
-      }
-    }
-  }
+  drawBitmap(x, y, bitmap, w, h, color);
 }
 
 #if ARDUINO >= 100
@@ -445,28 +448,24 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
   if(!_cp437 && (c >= 176)) c++; // Handle 'classic' charset behavior
 
+  uint8_t *pf = font + c * 5;
+  uint16_t cy = y;
   for (int8_t i=0; i<6; i++ ) {
-    uint8_t line;
-    if (i == 5) 
-      line = 0x0;
-    else 
-      line = pgm_read_byte(font+(c*5)+i);
-    for (int8_t j = 0; j<8; j++) {
-      if (line & 0x1) {
-        if (size == 1) // default size
-          drawPixel(x+i, y+j, color);
-        else {  // big size
-          fillRect(x+(i*size), y+(j*size), size, size, color);
-        } 
-      } else if (bg != color) {
-        if (size == 1) // default size
-          drawPixel(x+i, y+j, bg);
-        else {  // big size
-          fillRect(x+i*size, y+j*size, size, size, bg);
-        }
-      }
+    uint8_t line = i != 5 ? pgm_read_byte(pf++) : 0;
+
+    uint16_t cx = x;
+    for(int8_t j = 0; j<8; j++) {
+      uint16_t c = (line & 0x01) ? color : bg;
+      if (c == bg && color == bg)
+      	continue;
+      if (size == 1)
+          drawPixel(cx, cy, c));
+      else  // big size
+          fillRect(cx, cy, size, size, c);
+      cx += size;
       line >>= 1;
     }
+    cy += size;
   }
 }
 
