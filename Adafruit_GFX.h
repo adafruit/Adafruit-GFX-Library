@@ -22,6 +22,7 @@ class Adafruit_GFX : public Print {
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void
+    dispCopy(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t x1, int16_t y1),
     drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
     drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
     drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
@@ -59,6 +60,7 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
+    setTextScroll(boolean s),
     setRotation(uint8_t r),
     cp437(boolean x=true);
 
@@ -90,7 +92,8 @@ class Adafruit_GFX : public Print {
     rotation;
   boolean
     wrap,   // If set, 'wrap' text at right edge of display
-    _cp437; // If set, use correct CP437 charset (default is off)
+    _cp437, // If set, use correct CP437 charset (default is off)
+    scroll; // If set, scroll text at bottom edge of display
 };
 
 class Adafruit_GFX_Button {
