@@ -56,6 +56,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
   textcolor = textbgcolor = 0xFFFF;
   wrap      = true;
   _cp437    = false;
+  scroll    = false;
 }
 
 // Draw a circle outline
@@ -238,6 +239,40 @@ void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
   }
 }
 
+void Adafruit_GFX::dispCopy(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t x1, int16_t y1) {
+    /* Default copy left to right */
+    int16_t x_offset = 0;
+    int16_t x_stop   = w;
+    int16_t x_dir    = 1;
+    /* Default copy top to bottom */
+    int16_t y_offset = 0;
+    int16_t y_stop   = h;
+    int16_t y_dir    = 1;
+
+    if (x0 < x1) {
+      /* Copy right to left */
+      x_offset = w;
+      x_stop   = 0;
+      x_dir    = -1;
+    }
+
+    if (y0 < y1) {
+      /* Copy bottom to top */
+      y_offset = h;
+      y_stop   = 0;
+      y_dir    = -1;
+    }
+
+    /* Slow pixel-by-pixel copy */
+    while (y_offset != y_stop) {
+      while (x_offset != x_stop) {
+	drawPixel(x1+x_offset, y1+y_offset, getPixel(x0+x_offset, y0+y_offset));
+	x_offset += x_dir;
+      }
+      y_offset += y_dir;
+    }
+}
+
 void Adafruit_GFX::fillScreen(uint16_t color) {
   fillRect(0, 0, _width, _height, color);
 }
@@ -415,6 +450,21 @@ size_t Adafruit_GFX::write(uint8_t c) {
 #else
 void Adafruit_GFX::write(uint8_t c) {
 #endif
+  if (scroll) {
+    if (cursor_y >= _height) {
+      /* Scroll display */
+
+      /* Move cursor back to previous line */
+      cursor_y -= textsize*8;
+
+      /* Scroll display up */
+      dispCopy(0, textsize*8, _width,  _height - textsize*8, 0, 0);
+
+      /* Erase space for current line */
+      fillRect(0, cursor_y, _width, textsize*8, 0);
+    }
+  }
+  
   if (c == '\n') {
     cursor_y += textsize*8;
     cursor_x  = 0;
@@ -500,6 +550,10 @@ void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
 
 void Adafruit_GFX::setTextWrap(boolean w) {
   wrap = w;
+}
+
+void Adafruit_GFX::setTextScroll(boolean s) {
+  scroll = s;
 }
 
 uint8_t Adafruit_GFX::getRotation(void) const {
