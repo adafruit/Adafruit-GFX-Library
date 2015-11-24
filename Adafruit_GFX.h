@@ -8,7 +8,12 @@
  #include "WProgram.h"
 #endif
 
-#define swap(a, b) { int16_t t = a; a = b; b = t; }
+
+#define adagfxswap(a, b) { int16_t t = a; a = b; b = t; }
+
+#if !defined(ESP8266)
+  #define swap(a, b) adagfxswap(a, b)
+#endif
 
 class Adafruit_GFX : public Print {
 
