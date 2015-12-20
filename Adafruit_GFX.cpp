@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef min
- #define min(a,b) ((a < b) ? a : b)
+#define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
 Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
