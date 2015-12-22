@@ -8,6 +8,7 @@
  #include "WProgram.h"
 #endif
 
+#include "gfxfont.h"
 
 #define adagfxswap(a, b) { int16_t t = a; a = b; b = t; }
 
@@ -55,7 +56,7 @@ class Adafruit_GFX : public Print {
       int16_t w, int16_t h, uint16_t color),
     drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
-    drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, 
+    drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
       int16_t w, int16_t h, uint16_t color),
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
@@ -65,7 +66,12 @@ class Adafruit_GFX : public Print {
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
     setRotation(uint8_t r),
-    cp437(boolean x=true);
+    cp437(boolean x=true),
+    setFont(const GFXfont *f = NULL),
+    getTextBounds(char *string, int16_t x, int16_t y,
+      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
+      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
@@ -96,16 +102,17 @@ class Adafruit_GFX : public Print {
   boolean
     wrap,   // If set, 'wrap' text at right edge of display
     _cp437; // If set, use correct CP437 charset (default is off)
+  GFXfont
+    *gfxFont;
 };
 
 class Adafruit_GFX_Button {
 
  public:
   Adafruit_GFX_Button(void);
-  void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y, 
-		      uint8_t w, uint8_t h, 
-		      uint16_t outline, uint16_t fill, uint16_t textcolor,
-		      char *label, uint8_t textsize);
+  void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
+   uint8_t w, uint8_t h, uint16_t outline, uint16_t fill,
+   uint16_t textcolor, char *label, uint8_t textsize);
   void drawButton(boolean inverted = false);
   boolean contains(int16_t x, int16_t y);
 
