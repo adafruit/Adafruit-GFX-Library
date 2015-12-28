@@ -46,11 +46,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
-// Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
-static const uint8_t PROGMEM
-  GFXsetBit[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 },
-  GFXclrBit[] = { 0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE };
-
 Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
   WIDTH(w), HEIGHT(h)
 {
@@ -366,15 +361,13 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t bitnum, byte;
+  uint8_t byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++) {
-      bitnum = i & 7;
-      if(!bitnum) byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
-      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
-        drawPixel(x+i, y+j, color);
-      }
+      if(i & 7) byte <<= 1;
+      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      if(byte & 0x80) drawPixel(x+i, y+j, color);
     }
   }
 }
@@ -386,17 +379,14 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t bitnum, byte;
+  uint8_t byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      bitnum = i & 7;
-      if(!bitnum) byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
-      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
-        drawPixel(x+i, y+j, color);
-      } else {
-      	drawPixel(x+i, y+j, bg);
-      }
+      if(i & 7) byte <<= 1;
+      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      if(byte & 0x80) drawPixel(x+i, y+j, color);
+      else            drawPixel(x+i, y+j, bg);
     }
   }
 }
@@ -406,15 +396,13 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t bitnum, byte;
+  uint8_t byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      bitnum = i & 7;
-      if(!bitnum) byte = bitmap[j * byteWidth + i / 8];
-      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
-        drawPixel(x+i, y+j, color);
-      }
+      if(i & 7) byte <<= 1;
+      else      byte   = bitmap[j * byteWidth + i / 8];
+      if(byte & 0x80) drawPixel(x+i, y+j, color);
     }
   }
 }
@@ -424,17 +412,14 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t bitnum, byte;
+  uint8_t byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      bitnum = i & 7;
-      if(!bitnum) byte = bitmap[j * byteWidth + i / 8];
-      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
-        drawPixel(x+i, y+j, color);
-      } else {
-        drawPixel(x+i, y+j, bg);
-      }
+      if(i & 7) byte <<= 1;
+      else      byte   = bitmap[j * byteWidth + i / 8];
+      if(byte & 0x80) drawPixel(x+i, y+j, color);
+      else            drawPixel(x+i, y+j, bg);
     }
   }
 }
@@ -446,15 +431,13 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t bitnum, byte;
+  uint8_t byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      bitnum = i & 7;
-      if(!bitnum) byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
-      if(byte & pgm_read_byte(&GFXsetBit[7-bitnum])) {
-        drawPixel(x+i, y+j, color);
-      }
+      if(i & 7) byte >>= 1;
+      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      if(byte & 0x01) drawPixel(x+i, y+j, color);
     }
   }
 }
@@ -559,7 +542,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
              xa = pgm_read_byte(&glyph->xAdvance);
     int8_t   xo = pgm_read_byte(&glyph->xOffset),
              yo = pgm_read_byte(&glyph->yOffset);
-    uint8_t  xx, yy, bits, bit=0;
+    uint8_t  xx, yy, bits, bit = 0;
     int16_t  xo16, yo16;
 
     if(size > 1) {
@@ -587,18 +570,17 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
     for(yy=0; yy<h; yy++) {
       for(xx=0; xx<w; xx++) {
-        if(bit == 0) {
+        if(!(bit++ & 7)) {
           bits = pgm_read_byte(&bitmap[bo++]);
-          bit  = 0x80;
         }
-        if(bits & bit) {
+        if(bits & 0x80) {
           if(size == 1) {
             drawPixel(x+xo+xx, y+yo+yy, color);
           } else {
             fillRect(x+(xo16+xx)*size, y+(yo16+yy)*size, size, size, color);
           }
         }
-        bit >>= 1;
+        bits <<= 1;
       }
     }
 
@@ -969,6 +951,11 @@ uint8_t* GFXcanvas1::getBuffer(void) {
 }
 
 void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
+  // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
+  static const uint8_t PROGMEM
+    GFXsetBit[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 },
+    GFXclrBit[] = { 0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE };
+
   if(buffer) {
     if((x < 0) || (y < 0) || (x >= _width) || (y >= _height)) return;
 
