@@ -46,6 +46,11 @@ POSSIBILITY OF SUCH DAMAGE.
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
+// Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
+static const uint8_t PROGMEM
+  GFXsetBit[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 },
+  GFXclrBit[] = { 0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE };
+
 Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
   WIDTH(w), HEIGHT(h)
 {
@@ -354,64 +359,82 @@ void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0,
   }
 }
 
+// Draw a 1-bit image (bitmap) at the specified (x,y) position from the
+// provided bitmap buffer (must be PROGMEM memory) using the specified
+// foreground color (unset bits are transparent).
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
+  uint8_t bitnum, byte;
 
   for(j=0; j<h; j++) {
-    for(i=0; i<w; i++ ) {
-      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
+    for(i=0; i<w; i++) {
+      bitnum = i & 7;
+      if(!bitnum) byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
         drawPixel(x+i, y+j, color);
       }
     }
   }
 }
 
-// Draw a 1-bit color bitmap at the specified x, y position from the
-// provided bitmap buffer (must be PROGMEM memory) using color as the
-// foreground color and bg as the background color.
+// Draw a 1-bit image (bitmap) at the specified (x,y) position from the
+// provided bitmap buffer (must be PROGMEM memory) using the specified
+// foreground (for set bits) and background (for clear bits) colors.
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
+  uint8_t bitnum, byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
+      bitnum = i & 7;
+      if(!bitnum) byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
         drawPixel(x+i, y+j, color);
-      }
-      else {
+      } else {
       	drawPixel(x+i, y+j, bg);
       }
     }
   }
 }
 
+// drawBitmap() variant for RAM-resident (not PROGMEM) bitmaps.
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
+  uint8_t bitnum, byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      if(bitRead(bitmap[j], 7-i)) drawPixel(x+i, y+j, color);
+      bitnum = i & 7;
+      if(!bitnum) byte = bitmap[j * byteWidth + i / 8];
+      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
+        drawPixel(x+i, y+j, color);
+      }
     }
   }
 }
 
-// Draw a 1-bit color bitmap at the specified x, y position from the
-// provided bitmap buffer (NOT PROGMEM memory nor a const) using color
-// as the foreground color and bg as the background color.
+// drawBitmap() variant w/background for RAM-resident (not PROGMEM) bitmaps.
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
+  uint8_t bitnum, byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      if(bitRead(bitmap[j], 7-i)) drawPixel(x+i, y+j, color);
-      else                        drawPixel(x+i, y+j, bg);
+      bitnum = i & 7;
+      if(!bitnum) byte = bitmap[j * byteWidth + i / 8];
+      if(byte & pgm_read_byte(&GFXsetBit[bitnum])) {
+        drawPixel(x+i, y+j, color);
+      } else {
+        drawPixel(x+i, y+j, bg);
+      }
     }
   }
 }
@@ -423,10 +446,13 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
+  uint8_t bitnum, byte;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (1 << (i % 8))) {
+      bitnum = i & 7;
+      if(!bitnum) byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      if(byte & pgm_read_byte(&GFXsetBit[7-bitnum])) {
         drawPixel(x+i, y+j, color);
       }
     }
@@ -909,3 +935,124 @@ void Adafruit_GFX_Button::press(boolean p) {
 boolean Adafruit_GFX_Button::isPressed() { return currstate; }
 boolean Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
 boolean Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
+
+// -------------------------------------------------------------------------
+
+// GFXcanvas1 and GFXcanvas16 (currently a WIP, don't get too comfy with the
+// implementation) provide 1- and 16-bit offscreen canvases, the address of
+// which can be passed to drawBitmap() or pushColors() (the latter appears
+// to only be in Adafruit_TFTLCD at this time).  This is here mostly to
+// help with the recently-added proportionally-spaced fonts; adds a way to
+// refresh a section of the screen without a massive flickering clear-and-
+// redraw...but maybe you'll find other uses too.  VERY RAM-intensive, since
+// the buffer is in MCU memory and not the display driver...GXFcanvas1 might
+// be minimally useful on an Uno-class board, but this and GFXcanvas16 are
+// much more likely to require at least a Mega or various recent ARM-type
+// boards (recomment, as the text+bitmap draw can be pokey).  GFXcanvas1
+// requires 1 bit per pixel (rounded up to nearest byte per scanline),
+// GFXcanvas16 requires 2 bytes per pixel (no scanline pad).
+// NOT EXTENSIVELY TESTED YET.  MAY CONTAIN WORST BUGS KNOWN TO HUMANKIND.
+
+GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
+  uint16_t bytes = ((w + 7) / 8) * h;
+  if((buffer = (uint8_t *)malloc(bytes))) {
+    memset(buffer, 0, bytes);
+  }
+}
+
+GFXcanvas1::~GFXcanvas1(void) {
+  if(buffer) free(buffer);
+}
+
+uint8_t* GFXcanvas1::getBuffer(void) {
+  return buffer;
+}
+
+void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
+  if(buffer) {
+    if((x < 0) || (y < 0) || (x >= _width) || (y >= _height)) return;
+
+    int16_t t;
+    switch(rotation) {
+     case 1:
+      t = x;
+      x = WIDTH  - 1 - y;
+      y = t;
+      break;
+     case 2:
+      x = WIDTH  - 1 - x;
+      y = HEIGHT - 1 - y;
+      break;
+     case 3:
+      t = x;
+      x = y;
+      y = HEIGHT - 1 - t;
+      break;
+    }
+
+    uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
+    if(color) *ptr |= pgm_read_byte(&GFXsetBit[x & 7]);
+    else      *ptr &= pgm_read_byte(&GFXclrBit[x & 7]);
+  }
+}
+
+void GFXcanvas1::fillScreen(uint16_t color) {
+  if(buffer) {
+    uint16_t bytes = ((WIDTH + 7) / 8) * HEIGHT;
+    memset(buffer, color ? 0xFF : 0x00, bytes);
+  }
+}
+
+GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
+  uint16_t bytes = w * h * 2;
+  if((buffer = (uint16_t *)malloc(bytes))) {
+    memset(buffer, 0, bytes);
+  }
+}
+
+GFXcanvas16::~GFXcanvas16(void) {
+  if(buffer) free(buffer);
+}
+
+uint16_t* GFXcanvas16::getBuffer(void) {
+  return buffer;
+}
+
+void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
+  if(buffer) {
+    if((x < 0) || (y < 0) || (x >= _width) || (y >= _height)) return;
+
+    int16_t t;
+    switch(rotation) {
+     case 1:
+      t = x;
+      x = WIDTH  - 1 - y;
+      y = t;
+      break;
+     case 2:
+      x = WIDTH  - 1 - x;
+      y = HEIGHT - 1 - y;
+      break;
+     case 3:
+      t = x;
+      x = y;
+      y = HEIGHT - 1 - t;
+      break;
+    }
+
+    buffer[x + y * WIDTH] = color;
+  }
+}
+
+void GFXcanvas16::fillScreen(uint16_t color) {
+  if(buffer) {
+    uint8_t hi = color >> 8, lo = color & 0xFF;
+    if(hi == lo) {
+      memset(buffer, lo, WIDTH * HEIGHT * 2);
+    } else {
+      uint16_t i, pixels = WIDTH * HEIGHT;
+      for(i=0; i<pixels; i++) buffer[i] = color;
+    }
+  }
+}
+

@@ -136,4 +136,26 @@ class Adafruit_GFX_Button {
   boolean currstate, laststate;
 };
 
+class GFXcanvas1 : public Adafruit_GFX {
+
+ public:
+  GFXcanvas1(uint16_t w, uint16_t h);
+  ~GFXcanvas1(void);
+  void     drawPixel(int16_t x, int16_t y, uint16_t color),
+           fillScreen(uint16_t color);
+  uint8_t *getBuffer(void);
+ private:
+  uint8_t *buffer;
+};
+
+class GFXcanvas16 : public Adafruit_GFX {
+  GFXcanvas16(uint16_t w, uint16_t h);
+  ~GFXcanvas16(void);
+  void      drawPixel(int16_t x, int16_t y, uint16_t color),
+            fillScreen(uint16_t color);
+  uint16_t *getBuffer(void);
+ private:
+  uint16_t *buffer;
+};
+
 #endif // _ADAFRUIT_GFX_H
