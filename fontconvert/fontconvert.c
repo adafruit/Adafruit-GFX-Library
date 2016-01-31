@@ -19,6 +19,7 @@ See notes at end for glyph nomenclature & other tidbits.
 
 #include <stdio.h>
 #include <ctype.h>
+#include <stdint.h>
 #include <ft2build.h>
 #include FT_GLYPH_H
 #include "../gfxfont.h" // Adafruit_GFX font structures
