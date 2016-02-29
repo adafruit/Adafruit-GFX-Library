@@ -732,10 +732,7 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
             fontDesc = gh + yo;
         }
     }
-      
-      Serial.print("fontdesc=");
-      Serial.println(fontDesc);
-      
+            
     fontHeight = (int16_t) pgm_read_byte(&f->yAdvance);
   }
   else {
