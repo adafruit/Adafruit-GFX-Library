@@ -624,7 +624,7 @@ int16_t Adafruit_GFX::getCursorY(void) const {
   return cursor_y;
 }
 
-void Adafruit_GFX::setTextSize(uint8_t s) {
+void Adafruit_GFX::setTextSize(float s) {
   textsize = (s > 0) ? s : 1;
 }
 
