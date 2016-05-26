@@ -521,6 +521,13 @@ void Adafruit_GFX::write(uint8_t c) {
 #endif
 }
 
+#ifndef ARDUINO
+void Adafruit_GFX::print(const char *s) {
+  for(; *s != '\0'; s++)
+    write(*s);
+}
+#endif
+
 // Draw a character
 void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
  uint16_t color, uint16_t bg, uint8_t size) {
@@ -778,6 +785,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
   } // End classic vs custom font
 }
 
+#ifdef ARDUINO
 // Same as above, but for PROGMEM strings
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
  int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
@@ -866,6 +874,7 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
 
   } // End classic vs custom font
 }
+#endif
 
 // Return the size of the display (per current rotation)
 int16_t Adafruit_GFX::width(void) const {

@@ -4,13 +4,21 @@
 #if ARDUINO >= 100
  #include "Arduino.h"
  #include "Print.h"
-#else
+#elif defined(ARDUINO)
  #include "WProgram.h"
+#else
+ #include <cstdlib>
+ #include <string.h>
+ typedef bool boolean;
 #endif
 
 #include "gfxfont.h"
 
-class Adafruit_GFX : public Print {
+#ifdef ARDUINO
+ class Adafruit_GFX : public Print {
+#else
+ class Adafruit_GFX {
+#endif
 
  public:
 
@@ -66,15 +74,21 @@ class Adafruit_GFX : public Print {
     setRotation(uint8_t r),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
-    getTextBounds(char *string, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+#ifdef ARDUINO
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
+      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+#endif
+    getTextBounds(char *string, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
 #else
   virtual void   write(uint8_t);
+#endif
+
+#ifndef ARDUINO
+  void print(const char *s);
 #endif
 
   int16_t height(void) const;
