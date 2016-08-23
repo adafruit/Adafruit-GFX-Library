@@ -772,6 +772,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
     }
     // End of string
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
+    if(lineWidth > maxWidth) maxWidth = lineWidth; // Is the last or only line the widest?
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
 
@@ -861,6 +862,7 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
     }
     // End of string
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
+    if(lineWidth > maxWidth) maxWidth = lineWidth; // Is the last or only line the widest?
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
 
