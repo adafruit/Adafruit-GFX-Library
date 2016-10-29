@@ -688,7 +688,8 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   }
   gfxFont = (GFXfont *)f;
 }
-
+// Takes two char array, checks wich glyph has changed within
+// the current one, and clears the background of just that glyph
 void Adafruit_GFX::clearChangedGlyph(char *previous, char *current, 
   int16_t x, int16_t y, uint16_t color) {
 
