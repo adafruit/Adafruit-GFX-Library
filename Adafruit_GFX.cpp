@@ -385,7 +385,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
+  uint8_t byte = 0;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++) {
@@ -562,12 +562,12 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
     uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
     uint8_t  w  = pgm_read_byte(&glyph->width),
-             h  = pgm_read_byte(&glyph->height),
-             xa = pgm_read_byte(&glyph->xAdvance);
+             h  = pgm_read_byte(&glyph->height);//,
+             //xa = pgm_read_byte(&glyph->xAdvance);
     int8_t   xo = pgm_read_byte(&glyph->xOffset),
              yo = pgm_read_byte(&glyph->yOffset);
-    uint8_t  xx, yy, bits, bit = 0;
-    int16_t  xo16, yo16;
+    uint8_t  xx = 0, yy = 0, bits = 0, bit = 0;
+    int16_t  xo16 = 0, yo16 = 0;
 
     if(size > 1) {
       xo16 = xo;
@@ -691,7 +691,7 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
 
 // Pass string and a cursor position, returns UL corner and W,H.
 void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
- int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+ int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h, uint8_t * glyphWidths) {
   uint8_t c; // Current character
 
   *x1 = x;
@@ -716,6 +716,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
             c    -= first;
             glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
             gw    = pgm_read_byte(&glyph->width);
+            
             gh    = pgm_read_byte(&glyph->height);
             xa    = pgm_read_byte(&glyph->xAdvance);
             xo    = pgm_read_byte(&glyph->xOffset);
@@ -734,6 +735,8 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
             if(gx2 > maxx) maxx = gx2;
             if(gy2 > maxy) maxy = gy2;
             x += xa * ts;
+
+            if(glyphWidths != NULL) *glyphWidths++ = xa * ts;
           }
         } // Carriage return = do nothing
       } else { // Newline
@@ -762,6 +765,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
           } else { // No line wrap, just keep incrementing X
             lineWidth += textsize * 6; // Includes interchar x gap
           }
+          if(glyphWidths != NULL) *glyphWidths++ = textsize * 6;
         } // Carriage return = do nothing
       } else { // Newline
         x  = 0;            // Reset x to 0
@@ -772,10 +776,8 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
     }
     // End of string
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
-    if(lineWidth > maxWidth) maxWidth = lineWidth; // Is the last or only line the widest?
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
-
   } // End classic vs custom font
 }
 
@@ -862,7 +864,6 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
     }
     // End of string
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
-    if(lineWidth > maxWidth) maxWidth = lineWidth; // Is the last or only line the widest?
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
 
@@ -878,9 +879,11 @@ int16_t Adafruit_GFX::height(void) const {
   return _height;
 }
 
+/*
 void Adafruit_GFX::invertDisplay(boolean i) {
   // Do nothing, must be subclassed if supported by hardware
 }
+*/
 
 /***************************************************************************/
 // code for the GFX button UI element
@@ -929,7 +932,7 @@ void Adafruit_GFX_Button::drawButton(boolean inverted) {
   _gfx->print(_label);
 }
 
-boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
+boolean Adafruit_GFX_Button::contains(uint16_t x, uint16_t y) {
   if ((x < (_x - _w/2)) || (x > (_x + _w/2))) return false;
   if ((y < (_y - _h/2)) || (y > (_y + _h/2))) return false;
   return true;
