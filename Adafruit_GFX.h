@@ -66,8 +66,12 @@ class Adafruit_GFX : public Print {
     setRotation(uint8_t r),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
+    clearChangedGlyph(char *previous, char *current, 
+      int16_t x, int16_t y, uint16_t color),
     getTextBounds(char *str, int16_t x, int16_t y, int16_t *x1, 
-      int16_t *y1, uint16_t *w, uint16_t *h, uint8_t * glyphWidths = NULL),
+      int16_t *y1, uint16_t *w, uint16_t *h, uint8_t * glyphWidths),
+    getTextBounds(char *string, int16_t x, int16_t y,
+      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 

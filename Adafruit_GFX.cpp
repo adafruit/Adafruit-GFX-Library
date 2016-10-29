@@ -689,6 +689,25 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   gfxFont = (GFXfont *)f;
 }
 
+void Adafruit_GFX::clearChangedGlyph(char *previous, char *current, 
+  int16_t x, int16_t y, uint16_t color) {
+
+  int16_t  x1, y1;
+  uint16_t w, h;
+  uint8_t length = strlen(previous);
+  uint8_t glyphWidths[length];
+
+  getTextBounds(previous, x, y, &x1, &y1, &w, &h, glyphWidths);
+
+  uint8_t cursor_x = x1;
+  for(uint8_t i = 0; i < length; i++) {
+    if(previous[i] != current[i]) {
+      fillRect(cursor_x, y1, glyphWidths[i], h, color);
+    }
+    cursor_x += glyphWidths[i];
+  }
+}
+
 // Pass string and a cursor position, returns UL corner and W,H.
 void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
  int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h, uint8_t * glyphWidths) {
@@ -736,7 +755,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
             if(gy2 > maxy) maxy = gy2;
             x += xa * ts;
 
-            if(glyphWidths != NULL) *glyphWidths++ = xa * ts;
+            *glyphWidths++ = xa * ts;
           }
         } // Carriage return = do nothing
       } else { // Newline
@@ -765,7 +784,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
           } else { // No line wrap, just keep incrementing X
             lineWidth += textsize * 6; // Includes interchar x gap
           }
-          if(glyphWidths != NULL) *glyphWidths++ = textsize * 6;
+          *glyphWidths++ = textsize * 6;
         } // Carriage return = do nothing
       } else { // Newline
         x  = 0;            // Reset x to 0
@@ -778,6 +797,95 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
+  } // End classic vs custom font
+}
+
+// Pass string and a cursor position, returns UL corner and W,H.
+void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
+ int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+  uint8_t c; // Current character
+
+  *x1 = x;
+  *y1 = y;
+  *w  = *h = 0;
+
+  if(gfxFont) {
+
+    GFXglyph *glyph;
+    uint8_t   first = pgm_read_byte(&gfxFont->first),
+              last  = pgm_read_byte(&gfxFont->last),
+              gw, gh, xa;
+    int8_t    xo, yo;
+    int16_t   minx = _width, miny = _height, maxx = -1, maxy = -1,
+              gx1, gy1, gx2, gy2, ts = (int16_t)textsize,
+              ya = ts * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+
+    while((c = *str++)) {
+      if(c != '\n') { // Not a newline
+        if(c != '\r') { // Not a carriage return, is normal char
+          if((c >= first) && (c <= last)) { // Char present in current font
+            c    -= first;
+            glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
+            gw    = pgm_read_byte(&glyph->width);
+            gh    = pgm_read_byte(&glyph->height);
+            xa    = pgm_read_byte(&glyph->xAdvance);
+            xo    = pgm_read_byte(&glyph->xOffset);
+            yo    = pgm_read_byte(&glyph->yOffset);
+            if(wrap && ((x + (((int16_t)xo + gw) * ts)) >= _width)) {
+              // Line wrap
+              x  = 0;  // Reset x to 0
+              y += ya; // Advance y by 1 line
+            }
+            gx1 = x   + xo * ts;
+            gy1 = y   + yo * ts;
+            gx2 = gx1 + gw * ts - 1;
+            gy2 = gy1 + gh * ts - 1;
+            if(gx1 < minx) minx = gx1;
+            if(gy1 < miny) miny = gy1;
+            if(gx2 > maxx) maxx = gx2;
+            if(gy2 > maxy) maxy = gy2;
+            x += xa * ts;
+          }
+        } // Carriage return = do nothing
+      } else { // Newline
+        x  = 0;  // Reset x
+        y += ya; // Advance y by 1 line
+      }
+    }
+    // End of string
+    *x1 = minx;
+    *y1 = miny;
+    if(maxx >= minx) *w  = maxx - minx + 1;
+    if(maxy >= miny) *h  = maxy - miny + 1;
+
+  } else { // Default font
+
+    uint16_t lineWidth = 0, maxWidth = 0; // Width of current, all lines
+
+    while((c = *str++)) {
+      if(c != '\n') { // Not a newline
+        if(c != '\r') { // Not a carriage return, is normal char
+          if(wrap && ((x + textsize * 6) >= _width)) {
+            x  = 0;            // Reset x to 0
+            y += textsize * 8; // Advance y by 1 line
+            if(lineWidth > maxWidth) maxWidth = lineWidth; // Save widest line
+            lineWidth  = textsize * 6; // First char on new line
+          } else { // No line wrap, just keep incrementing X
+            lineWidth += textsize * 6; // Includes interchar x gap
+          }
+        } // Carriage return = do nothing
+      } else { // Newline
+        x  = 0;            // Reset x to 0
+        y += textsize * 8; // Advance y by 1 line
+        if(lineWidth > maxWidth) maxWidth = lineWidth; // Save widest line
+        lineWidth = 0;     // Reset lineWidth for new line
+      }
+    }
+    // End of string
+    if(lineWidth) y += textsize * 8; // Add height of last (or only) line
+    *w = maxWidth - 1;               // Don't include last interchar x gap
+    *h = y - *y1;
+
   } // End classic vs custom font
 }
 
