@@ -700,7 +700,7 @@ void Adafruit_GFX::clearChangedGlyph(char *previous, char *current,
 
   getTextBounds(previous, x, y, &x1, &y1, &w, &h, glyphWidths);
 
-  uint8_t cursor_x = x1;
+  uint8_t cursor_x = x;
   for(uint8_t i = 0; i < length; i++) {
     if(previous[i] != current[i]) {
       fillRect(cursor_x, y1, glyphWidths[i], h, color);
