@@ -45,7 +45,7 @@ make
 make install
 ```
 Once you're finished, go inside "C:\MinGW\include" and there should be a new folder named "freetype2".
-That propably means that you have installed the library correctly !!
+That, hopefully, means that you have installed the library correctly !!
 
 #### STEP 3: Build fontconvert.c
 
