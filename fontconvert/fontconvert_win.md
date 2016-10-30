@@ -82,6 +82,7 @@ So, if we suppose that you already have a .ttf file with your favorite fonts, ju
 ```
 ./fontconvert yourfonts.ttf 9 > yourfonts9pt7b.h
 ```
-You can read more details at: [learn.adafruit](https://learn.adafruit.com/adafruit-gfx-graphics-library/using-fonts)
+You can read more details at: [learn.adafruit](https://learn.adafruit.com/adafruit-gfx-graphics-library/using-fonts).
+
 Taraaaaaammm !! you've just created your new font header file. Put it inside the "Fonts" folder, grab a cup of coffee
 and start playing with your Arduino (or whatever else ....)+ display module project.
