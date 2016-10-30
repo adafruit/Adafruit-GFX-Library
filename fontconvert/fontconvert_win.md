@@ -8,6 +8,7 @@ I suggest installing with the "Graphical User Interface Installer".
 To complete your initial installation you should further install some "packages".
 For our purpose you should only install the "Basic Setup" packages.
 To do that:
+
 1. Open the MinGW Installation Manager
 2. From the left panel click "Basic Setup".
 3. On the right panel choose "mingw32-base", "mingw-gcc-g++", "mingw-gcc-objc" and "msys-base"
