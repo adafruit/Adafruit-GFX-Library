@@ -66,8 +66,10 @@ class Adafruit_GFX : public Print {
     setRotation(uint8_t r),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
-    getTextBounds(char *string, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    clearChangedGlyph(char *previous, char *current, 
+      int16_t x, int16_t y, uint16_t color),
+    getTextBounds(char *str, int16_t x, int16_t y, int16_t *x1, 
+      int16_t *y1, uint16_t *w, uint16_t *h, uint8_t * glyphWidths = NULL),
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
@@ -112,7 +114,7 @@ class Adafruit_GFX_Button {
    uint8_t w, uint8_t h, uint16_t outline, uint16_t fill,
    uint16_t textcolor, char *label, uint8_t textsize);
   void drawButton(boolean inverted = false);
-  boolean contains(int16_t x, int16_t y);
+  boolean contains(uint16_t x, uint16_t y);
 
   void press(boolean p);
   boolean isPressed();
