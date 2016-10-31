@@ -593,18 +593,27 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // implemented this yet.
 
     for(yy=0; yy<h; yy++) {
+      uint16_t xcnt = 0;
+      uint16_t stx = 0;
       for(xx=0; xx<w; xx++) {
         if(!(bit++ & 7)) {
           bits = pgm_read_byte(&bitmap[bo++]);
         }
         if(bits & 0x80) {
-          if(size == 1) {
-            drawPixel(x+xo+xx, y+yo+yy, color);
-          } else {
-            fillRect(x+(xo16+xx)*size, y+(yo16+yy)*size, size, size, color);
+          if(xcnt == 0){
+            stx = x+xo+xx;
           }
+          xcnt++;
+        } else {
+          if(xcnt > 0){
+            fillRect(stx, y+yo+yy, xcnt, 1, color);
+          }
+          xcnt = 0;
         }
         bits <<= 1;
+      }
+      if(xcnt > 0){
+        fillRect(stx, y+yo+yy, xcnt, 1, color);
       }
     }
 
