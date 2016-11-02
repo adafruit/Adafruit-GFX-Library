@@ -31,7 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #elif defined(ESP8266)
  #include <pgmspace.h>
 #endif
-#include "Adafruit_GFX.h"
+#include "GR_Adafruit_GFX.h"
 #include "glcdfont_greek.c"
 
 // Many (but maybe not all) non-AVR board installs define macros
