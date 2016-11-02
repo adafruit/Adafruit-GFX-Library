@@ -878,7 +878,7 @@ void Adafruit_GFX::invertDisplay(boolean i) {
 }
 
 // display greek letters
-void Adafruit_GFX::printgreek(String gr_sen) {
+void Adafruit_GFX::printGreek(String gr_sen) {
 uint16_t decimal;
 // scan the greek sentence letter by letter into an array
 uint8_t buf[gr_sen.length()+1];
