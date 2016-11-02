@@ -522,28 +522,39 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
   if(!gfxFont) { // 'Classic' built-in font
 
-    if((x >= _width)            || // Clip right
-       (y >= _height)           || // Clip bottom
-       ((x + 6 * size - 1) < 0) || // Clip left
-       ((y + 8 * size - 1) < 0))   // Clip top
-      return;
+  if((x >= _width)            || // Clip right
+     (y >= _height)           || // Clip bottom
+     ((x + 6 * size - 1) < 0) || // Clip left
+     ((y + 8 * size - 1) < 0))   // Clip top
+    return;
 
-    if(!_cp437 && (c >= 176)) c++; // Handle 'classic' charset behavior
-
-    for(int8_t i=0; i<6; i++ ) {
-      uint8_t line;
-      if(i < 5) line = pgm_read_byte(font+(c*5)+i);
-      else      line = 0x0;
-      for(int8_t j=0; j<8; j++, line >>= 1) {
-        if(line & 0x1) {
-          if(size == 1) drawPixel(x+i, y+j, color);
-          else          fillRect(x+(i*size), y+(j*size), size, size, color);
-        } else if(bg != color) {
-          if(size == 1) drawPixel(x+i, y+j, bg);
-          else          fillRect(x+i*size, y+j*size, size, size, bg);
+  for (int8_t i=0; i<6; i++ ) {
+    uint8_t line;
+	if (c < 223){  // characters in library "glcdfont_greek.c" are 6x8 after character 223
+		if (i == 5) 
+		line = 0x0;
+		else 
+		line = pgm_read_byte(font+(c*5)+i);  // for 5x8 charactres
+		}
+	else
+		line = pgm_read_byte(font+(223*5 +(c-223)*6)+i); // for 6x8 characters
+    for (int8_t j = 0; j<8; j++) {
+      if (line & 0x1) {
+        if (size == 1) // default size
+          drawPixel(x+i, y+j, color);
+        else {  // big size
+          fillRect(x+(i*size), y+(j*size), size, size, color);
+        } 
+      } else if (bg != color) {
+        if (size == 1) // default size
+          drawPixel(x+i, y+j, bg);
+        else {  // big size
+          fillRect(x+i*size, y+j*size, size, size, bg);
         }
       }
+      line >>= 1;
     }
+  }
 
   } else { // Custom font
 
@@ -656,17 +667,6 @@ void Adafruit_GFX::setRotation(uint8_t x) {
     _height = WIDTH;
     break;
   }
-}
-
-// Enable (or disable) Code Page 437-compatible charset.
-// There was an error in glcdfont.c for the longest time -- one character
-// (#176, the 'light shade' block) was missing -- this threw off the index
-// of every character that followed it.  But a TON of code has been written
-// with the erroneous character indices.  By default, the library uses the
-// original 'wrong' behavior and old sketches will still work.  Pass 'true'
-// to this function to use correct CP437 character values in your code.
-void Adafruit_GFX::cp437(boolean x) {
-  _cp437 = x;
 }
 
 void Adafruit_GFX::setFont(const GFXfont *f) {
@@ -876,6 +876,95 @@ int16_t Adafruit_GFX::height(void) const {
 void Adafruit_GFX::invertDisplay(boolean i) {
   // Do nothing, must be subclassed if supported by hardware
 }
+
+// display greek letters
+void Adafruit_GFX::printgreek(String gr_sen) {
+uint16_t decimal;
+// scan the greek sentence letter by letter into an array
+uint8_t buf[gr_sen.length()+1];
+gr_sen.getBytes(buf,gr_sen.length()+1);
+	for (int8_t i=0; i< gr_sen.length()+1;i++){
+	/*  if the character is greek letter
+		(the utf-8 code for "A" is decimal 206,145
+		and for "ώ" is decimal 207,142)   */
+		if ((buf[i]==206 && buf[i+1]>=145) || (buf[i]==207 && buf[i+1]<=142)){
+			//greek letters in utf8 are 2 bytes long
+			String utf8= String(buf[i],BIN) + String(buf[i+1],BIN);
+			i++;
+			// convert utf-8 to binary and then to decimal
+			char binary[14];
+			(utf8.substring(3,8) + utf8.substring(10,16)).toCharArray(binary,14);
+			decimal = (strtol(binary,NULL,2));
+			/*convert capital Greek letters that are the same
+			with capital English letters */
+			switch (decimal){
+				case 913: write(65); //eng A for greek A
+				break;
+				case 914: write(66); //eng B for greek B
+				break;
+				case 917: write(69); //eng E for greek E
+				break;
+				case 918: write(90); //eng Z for greek Z
+				break;
+				case 919: write(72); //eng H for greek H
+				break;
+				case 921: write(73); //eng I for greek I
+				break;
+				case 922: write(75); //eng K for greek K
+				break;
+				case 924: write(77); //eng M for greek M
+				break;
+				case 925: write(78); //eng N for greek N
+				break;
+				case 927: write(79); //eng O for greek O
+				break;
+				case 929: write(80); //eng P for greek P
+				break;
+				case 932: write(84); //eng T for greek T
+				break;
+				case 933: write(89); //eng Y gor greek Y
+				break;
+				case 935: write(88); //eng X for greek X
+				break;
+				default: write(decimal-785);
+				}
+			}
+		else if (buf[i]==206 && buf[i+1]==144){ write(145); }//for letter ΐ
+		else if (buf[i]==206 && buf[i+1]==134){  // for letter Ά
+			drawPixel(cursor_x-1, cursor_y, textcolor);
+			write(65);
+			}
+		else if (buf[i]==206 && buf[i+1]==136){  //for letter Έ
+			drawPixel(cursor_x-1, cursor_y, textcolor);
+			write(69);
+			}
+		else if (buf[i]==206 && buf[i+1]==137){  //for letter Ή
+			drawPixel(cursor_x-1, cursor_y, textcolor);
+			write(72);
+			}
+		else if (buf[i]==206 && buf[i+1]==138){  //for letter Ί
+			drawPixel(cursor_x-1, cursor_y, textcolor);
+			write(73);
+			}
+		else if (buf[i]==206 && buf[i+1]==140){  //for letter Ό
+			drawPixel(cursor_x -1,cursor_y,textcolor);
+			write(79);
+			}
+		else if (buf[i]==206 && buf[i+1]==142){  //for letter Ύ
+			drawPixel(cursor_x -1,cursor_y,textcolor);
+			write(89);
+			}
+		else if (buf[i]==206 && buf[i+1]==143){  //for letter Ώ
+			drawPixel(cursor_x -1,cursor_y,textcolor);
+			write(152);
+			}
+		/* else if the letter is 7-bit ascii*/
+		else if (buf[i]<128){
+			write(buf[i]);
+		}
+	}
+	cursor_x-=6;
+}  
 
 /***************************************************************************/
 // code for the GFX button UI element
