@@ -480,7 +480,7 @@ void Adafruit_GFX::write(uint8_t c) {
     } else if(c == '\r') {
       // skip em
     } else {
-      if(wrap && ((cursor_x + textsize * 6) >= _width)) { // Heading off edge?
+      if(wrap && ((cursor_x + textsize * 6) >  _width)) { // Heading off edge? //am++:Note: (cursor_x + textsize * 6) pos of _NEXT_ char
         cursor_x  = 0;            // Reset x to zero
         cursor_y += textsize * 8; // Advance y one line
       }
