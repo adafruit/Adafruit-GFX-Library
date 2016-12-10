@@ -890,7 +890,7 @@ Adafruit_GFX_Button::Adafruit_GFX_Button(void) {
 }
 
 void Adafruit_GFX_Button::initButton(
- Adafruit_GFX *gfx, int16_t x, int16_t y, uint8_t w, uint8_t h,
+ Adafruit_GFX *gfx, int16_t x, int16_t y, uint16_t w, uint16_t h,
  uint16_t outline, uint16_t fill, uint16_t textcolor,
  char *label, uint8_t textsize)
 {
