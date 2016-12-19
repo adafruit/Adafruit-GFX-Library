@@ -43,6 +43,8 @@ public:
   virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                          uint16_t color);
   virtual void endWrite(void);
+  virtual void clearDisplay(void);
+  virtual void display(void);
 
   // CONTROL API
   // These MAY be overridden by the subclass to provide device-specific
