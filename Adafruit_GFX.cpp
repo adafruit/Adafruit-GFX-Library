@@ -510,17 +510,14 @@ size_t Adafruit_GFX::write(uint8_t c) {
 #else
 void Adafruit_GFX::write(uint8_t c) {
 #endif
-
   int16_t lineHeight;
 
-  // Calculate height of one line
-  if (!gfxFont) {
+  if (gfxFont) {
     // Built-in font
     lineHeight = textsize * 8;
   } else {
     // Custom font
-    lineHeight = (int16_t)textsize *
-      (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+    lineHeight = (int16_t)textsize * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
   }
 
   if (scroll) {
@@ -537,8 +534,9 @@ void Adafruit_GFX::write(uint8_t c) {
       fillRect(0, cursor_y, _width, lineHeight, 0);
     }
   }
-  
+
   if(!gfxFont) { // 'Classic' built-in font
+
     if(c == '\n') {
       cursor_y += lineHeight;
       cursor_x  = 0;
@@ -554,6 +552,7 @@ void Adafruit_GFX::write(uint8_t c) {
     }
 
   } else { // Custom font
+
     if(c == '\n') {
       cursor_x  = 0;
       cursor_y += lineHeight;
@@ -838,6 +837,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
     }
     // End of string
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
+    if(lineWidth > maxWidth) maxWidth = lineWidth; // Is the last or only line the widest?
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
 
@@ -927,6 +927,7 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
     }
     // End of string
     if(lineWidth) y += textsize * 8; // Add height of last (or only) line
+    if(lineWidth > maxWidth) maxWidth = lineWidth; // Is the last or only line the widest?
     *w = maxWidth - 1;               // Don't include last interchar x gap
     *h = y - *y1;
 
