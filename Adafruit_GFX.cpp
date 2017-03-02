@@ -624,8 +624,19 @@ int16_t Adafruit_GFX::getCursorY(void) const {
   return cursor_y;
 }
 
+uint8_t Adafruit_GFX::getTextSize(void) const {
+  return textsize;
+}
+
 void Adafruit_GFX::setTextSize(uint8_t s) {
   textsize = (s > 0) ? s : 1;
+}
+
+int16_t Adafruit_GFX::getTextColor(uint16_t *bg) const {
+  if (bg) {
+    *bg = textbgcolor;
+  }
+  return textcolor;
 }
 
 void Adafruit_GFX::setTextColor(uint16_t c) {
@@ -637,6 +648,10 @@ void Adafruit_GFX::setTextColor(uint16_t c) {
 void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
   textcolor   = c;
   textbgcolor = b;
+}
+
+boolean Adafruit_GFX::getTextWrap(void) const {
+  return wrap;
 }
 
 void Adafruit_GFX::setTextWrap(boolean w) {

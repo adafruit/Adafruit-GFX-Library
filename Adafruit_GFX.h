@@ -81,6 +81,9 @@ class Adafruit_GFX : public Print {
   int16_t width(void) const;
 
   uint8_t getRotation(void) const;
+  int16_t getTextColor(uint16_t *bg = NULL) const;
+  uint8_t getTextSize(void) const;
+  boolean getTextWrap(void) const;
 
   // get current cursor position (get rotation safe maximum values, using: width() for x, height() for y)
   int16_t getCursorX(void) const;
