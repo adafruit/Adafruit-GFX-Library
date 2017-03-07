@@ -108,8 +108,13 @@ class Adafruit_GFX_Button {
 
  public:
   Adafruit_GFX_Button(void);
+  // "Classic" initButton() uses center & size
   void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
-   uint8_t w, uint8_t h, uint16_t outline, uint16_t fill,
+   uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
+   uint16_t textcolor, char *label, uint8_t textsize);
+  // New/alt initButton() uses upper-left corner & size
+  void initButtonUL(Adafruit_GFX *gfx, int16_t x1, int16_t y1,
+   uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
    uint16_t textcolor, char *label, uint8_t textsize);
   void drawButton(boolean inverted = false);
   boolean contains(int16_t x, int16_t y);
@@ -121,11 +126,11 @@ class Adafruit_GFX_Button {
 
  private:
   Adafruit_GFX *_gfx;
-  int16_t _x, _y;
-  uint16_t _w, _h;
-  uint8_t _textsize;
-  uint16_t _outlinecolor, _fillcolor, _textcolor;
-  char _label[10];
+  int16_t       _x1, _y1; // Coordinates of top-left corner
+  uint16_t      _w, _h;
+  uint8_t       _textsize;
+  uint16_t      _outlinecolor, _fillcolor, _textcolor;
+  char          _label[10];
 
   boolean currstate, laststate;
 };
