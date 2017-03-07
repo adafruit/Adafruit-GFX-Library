@@ -219,17 +219,25 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     ystep = -1;
   }
 
+  int16_t seg=x0;
   for (; x0<=x1; x0++) {
-    if (steep) {
-      drawPixel(y0, x0, color);
-    } else {
-      drawPixel(x0, y0, color);
-    }
     err -= dy;
     if (err < 0) {
+      if (steep) {
+        drawFastVLine(y0, seg, (x0-seg)+1, color);
+      } else {
+        drawFastHLine(seg, y0, (x0-seg)+1, color);
+      }
       y0 += ystep;
       err += dx;
+      seg=x0+1;
     }
+  }
+  // x0 incremented
+  if (steep) {
+    drawFastVLine(y0, seg, (x0-seg), color);
+  } else {
+    drawFastHLine(seg, y0, (x0-seg), color);
   }
 }
 
