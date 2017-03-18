@@ -7,7 +7,6 @@
 #else
  #include "WProgram.h"
 #endif
-
 #include "gfxfont.h"
 
 class Adafruit_GFX : public Print {
@@ -19,16 +18,35 @@ class Adafruit_GFX : public Print {
   // This MUST be defined by the subclass:
   virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
 
+  // TRANSACTION API / CORE DRAW API
+  // These MAY be overridden by the subclass to provide device-specific
+  // optimized code.  Otherwise 'generic' versions are used.
+  virtual void startWrite(void);
+  virtual void writePixel(int16_t x, int16_t y, uint16_t color);
+  virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+  virtual void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  virtual void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+  virtual void endWrite(void);
+
+  // CONTROL API
+  // These MAY be overridden by the subclass to provide device-specific
+  // optimized code.  Otherwise 'generic' versions are used.
+  virtual void setRotation(uint8_t r);
+  virtual void invertDisplay(boolean i);
+
+  // BASIC DRAW API
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void
-    drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
+    // It's good to implement those, even if using transaction API
     drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
     drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
-    drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
-    invertDisplay(boolean i);
+    // Optional and probably not necessary to change
+    drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
+    drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void
@@ -63,7 +81,6 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
-    setRotation(uint8_t r),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
     getTextBounds(char *string, int16_t x, int16_t y,
