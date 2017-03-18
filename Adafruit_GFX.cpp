@@ -970,68 +970,70 @@ void Adafruit_GFX::invertDisplay(boolean i) {
 // code for the GFX button UI element
 
 Adafruit_GFX_Button::Adafruit_GFX_Button(void) {
-    _gfx          = 0;
-    laststate     = 0;
-    _fillcolor    = 0;
-    _textsize     = 1;
-    _w            = 0;
-    _x            = 0;
-    currstate     = 0;
-    _textcolor    = 0;
-    _outlinecolor = 0;
-    _h            = 0;
-    _y            = 0;
+  _gfx = 0;
 }
 
+// Classic initButton() function: pass center & size
 void Adafruit_GFX_Button::initButton(
-        Adafruit_GFX *gfx, int16_t x, int16_t y, uint8_t w, uint8_t h,
-        uint16_t outline, uint16_t fill, uint16_t textcolor,
-        char *label, uint8_t textsize)
+ Adafruit_GFX *gfx, int16_t x, int16_t y, uint16_t w, uint16_t h,
+ uint16_t outline, uint16_t fill, uint16_t textcolor,
+ char *label, uint8_t textsize)
 {
-    _x            = x;
-    _y            = y;
-    _w            = w;
-    _h            = h;
-    _outlinecolor = outline;
-    _fillcolor    = fill;
-    _textcolor    = textcolor;
-    _textsize     = textsize;
-    _gfx          = gfx;
-    strncpy(_label, label, 9);
-    _label[9] = 0;
+  // Tweak arguments and pass to the newer initButtonUL() function...
+  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill,
+    textcolor, label, textsize);
+}
+
+// Newer function instead accepts upper-left corner & size
+void Adafruit_GFX_Button::initButtonUL(
+ Adafruit_GFX *gfx, int16_t x1, int16_t y1, uint16_t w, uint16_t h,
+ uint16_t outline, uint16_t fill, uint16_t textcolor,
+ char *label, uint8_t textsize)
+{
+  _x1           = x1;
+  _y1           = y1;
+  _w            = w;
+  _h            = h;
+  _outlinecolor = outline;
+  _fillcolor    = fill;
+  _textcolor    = textcolor;
+  _textsize     = textsize;
+  _gfx          = gfx;
+  strncpy(_label, label, 9);
 }
 
 void Adafruit_GFX_Button::drawButton(boolean inverted) {
-    uint16_t fill, outline, text;
+  uint16_t fill, outline, text;
 
-    if(!inverted) {
-        fill    = _fillcolor;
-        outline = _outlinecolor;
-        text    = _textcolor;
-    } else {
-        fill    = _textcolor;
-        outline = _outlinecolor;
-        text    = _fillcolor;
-    }
+  if(!inverted) {
+    fill    = _fillcolor;
+    outline = _outlinecolor;
+    text    = _textcolor;
+  } else {
+    fill    = _textcolor;
+    outline = _outlinecolor;
+    text    = _fillcolor;
+  }
 
-    _gfx->fillRoundRect(_x - (_w/2), _y - (_h/2), _w, _h, min(_w,_h)/4, fill);
-    _gfx->drawRoundRect(_x - (_w/2), _y - (_h/2), _w, _h, min(_w,_h)/4, outline);
+  uint8_t r = min(_w, _h) / 4; // Corner radius
+  _gfx->fillRoundRect(_x1, _y1, _w, _h, r, fill);
+  _gfx->drawRoundRect(_x1, _y1, _w, _h, r, outline);
 
-    _gfx->setCursor(_x - strlen(_label)*3*_textsize, _y-4*_textsize);
-    _gfx->setTextColor(text);
-    _gfx->setTextSize(_textsize);
-    _gfx->print(_label);
+  _gfx->setCursor(_x1 + (_w/2) - (strlen(_label) * 3 * _textsize),
+    _y1 + (_h/2) - (4 * _textsize));
+  _gfx->setTextColor(text);
+  _gfx->setTextSize(_textsize);
+  _gfx->print(_label);
 }
 
 boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
-    if ((x < (_x - _w/2)) || (x > (_x + _w/2))) return false;
-    if ((y < (_y - _h/2)) || (y > (_y + _h/2))) return false;
-    return true;
+  return ((x >= _x1) && (x < (_x1 + _w)) &&
+          (y >= _y1) && (y < (_y1 + _h)));
 }
 
 void Adafruit_GFX_Button::press(boolean p) {
-    laststate = currstate;
-    currstate = p;
+  laststate = currstate;
+  currstate = p;
 }
 
 boolean Adafruit_GFX_Button::isPressed() { return currstate; }
@@ -1050,7 +1052,7 @@ boolean Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); 
 // the buffer is in MCU memory and not the display driver...GXFcanvas1 might
 // be minimally useful on an Uno-class board, but this and GFXcanvas16 are
 // much more likely to require at least a Mega or various recent ARM-type
-// boards (recomment, as the text+bitmap draw can be pokey).  GFXcanvas1
+// boards (recommended, as the text+bitmap draw can be pokey).  GFXcanvas1
 // requires 1 bit per pixel (rounded up to nearest byte per scanline),
 // GFXcanvas16 requires 2 bytes per pixel (no scanline pad).
 // NOT EXTENSIVELY TESTED YET.  MAY CONTAIN WORST BUGS KNOWN TO HUMANKIND.
