@@ -134,6 +134,8 @@ void Adafruit_GFX::writePixel(int16_t x, int16_t y, uint16_t color){
     drawPixel(x, y, color);
 }
 
+// (x,y) is topmost point; if unsure, calling function
+// should sort endpoints or call writeLine() instead
 void Adafruit_GFX::writeFastVLine(int16_t x, int16_t y,
         int16_t h, uint16_t color) {
     // Overwrite in subclasses if startWrite is defined!
@@ -142,6 +144,8 @@ void Adafruit_GFX::writeFastVLine(int16_t x, int16_t y,
     drawFastVLine(x, y, h, color);
 }
 
+// (x,y) is leftmost point; if unsure, calling function
+// should sort endpoints or call writeLine() instead
 void Adafruit_GFX::writeFastHLine(int16_t x, int16_t y,
         int16_t w, uint16_t color) {
     // Overwrite in subclasses if startWrite is defined!
@@ -160,6 +164,8 @@ void Adafruit_GFX::endWrite(){
     // Overwrite in subclasses if startWrite is defined!
 }
 
+// (x,y) is topmost point; if unsure, calling function
+// should sort endpoints or call drawLine() instead
 void Adafruit_GFX::drawFastVLine(int16_t x, int16_t y,
         int16_t h, uint16_t color) {
     // Update in subclasses if desired!
@@ -168,6 +174,8 @@ void Adafruit_GFX::drawFastVLine(int16_t x, int16_t y,
     endWrite();
 }
 
+// (x,y) is leftmost point; if unsure, calling function
+// should sort endpoints or call drawLine() instead
 void Adafruit_GFX::drawFastHLine(int16_t x, int16_t y,
         int16_t w, uint16_t color) {
     // Update in subclasses if desired!
@@ -191,15 +199,15 @@ void Adafruit_GFX::fillScreen(uint16_t color) {
     fillRect(0, 0, _width, _height, color);
 }
 
-#define distDiff(a,b) ((max(a,b) - min(a,b))+1)
-
 void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         uint16_t color) {
     // Update in subclasses if desired!
     if(x0 == x1){
-        drawFastVLine(x0, y0, distDiff(y0,y1), color);
+        if(y0 > y1) _swap_int16_t(y0, y1);
+        drawFastVLine(x0, y0, y1 - y0 + 1, color);
     } else if(y0 == y1){
-        drawFastHLine(x0, y0, distDiff(x0,x1), color);
+        if(x0 > x1) _swap_int16_t(x0, x1);
+        drawFastHLine(x0, y0, x1 - x0 + 1, color);
     } else {
         startWrite();
         writeLine(x0, y0, x1, y1, color);
