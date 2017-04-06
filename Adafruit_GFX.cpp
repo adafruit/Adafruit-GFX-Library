@@ -404,14 +404,21 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
 }
 
 // Draw colored bitmap (each pixel is a uint16_t, with colors defined by
+// Draw colored bitmap (each pixel is a uint16_t, with colors defined by
 // the drawpixel method of your graphical backend.
+// progmem defaults to true for bitmaps defined as static const uint16_t PROGMEM
+// but you can set it to false to send a bitmap array in RAM.
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
-			      const uint16_t *bitmap, int16_t w, int16_t h) {
+		const uint16_t *bitmap, int16_t w, int16_t h, bool progmem) {
   int16_t i, j;
 
   for(j=0; j<h; j++) {
     for(i=0; i<w; i++ ) {
-	drawPixel(x+i, y+j, pgm_read_word(bitmap + j * w + i));
+	if (progmem) {
+	  drawPixel(x+i, y+j, pgm_read_word(bitmap + j * w + i));
+	} else {
+	  drawPixel(x+i, y+j, (uint16_t) *(bitmap + j * w + i));
+	}
     }
   }
 }
