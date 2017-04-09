@@ -853,6 +853,7 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
                         lineWidth  = textsize * 6; // First char on new line
                     } else { // No line wrap, just keep incrementing X
                         lineWidth += textsize * 6; // Includes interchar x gap
+                        if(lineWidth > maxWidth) maxWidth = lineWidth; // Save widest line
                     }
                 } // Carriage return = do nothing
             } else { // Newline
