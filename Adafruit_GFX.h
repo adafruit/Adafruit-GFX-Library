@@ -103,6 +103,9 @@ class Adafruit_GFX : public Print {
   int16_t getCursorX(void) const;
   int16_t getCursorY(void) const;
 
+  // get current text size for use in routines such as calculating text placement.
+  int16_t getTextSize(void) const;
+  
  protected:
   const int16_t
     WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
