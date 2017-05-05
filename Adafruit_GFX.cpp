@@ -1071,19 +1071,21 @@ boolean Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); 
 
 // -------------------------------------------------------------------------
 
-// GFXcanvas1 and GFXcanvas16 (currently a WIP, don't get too comfy with the
-// implementation) provide 1- and 16-bit offscreen canvases, the address of
-// which can be passed to drawBitmap() or pushColors() (the latter appears
-// to only be in Adafruit_TFTLCD at this time).  This is here mostly to
-// help with the recently-added proportionally-spaced fonts; adds a way to
-// refresh a section of the screen without a massive flickering clear-and-
-// redraw...but maybe you'll find other uses too.  VERY RAM-intensive, since
-// the buffer is in MCU memory and not the display driver...GXFcanvas1 might
-// be minimally useful on an Uno-class board, but this and GFXcanvas16 are
-// much more likely to require at least a Mega or various recent ARM-type
-// boards (recommended, as the text+bitmap draw can be pokey).  GFXcanvas1
-// requires 1 bit per pixel (rounded up to nearest byte per scanline),
-// GFXcanvas16 requires 2 bytes per pixel (no scanline pad).
+// GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
+// comfy with the implementation) provide 1-, 8- and 16-bit offscreen
+// canvases, the address of which can be passed to drawBitmap() or
+// pushColors() (the latter appears only in a couple of GFX-subclassed TFT
+// libraries at this time).  This is here mostly to help with the recently-
+// added proportionally-spaced fonts; adds a way to refresh a section of the
+// screen without a massive flickering clear-and-redraw...but maybe you'll
+// find other uses too.  VERY RAM-intensive, since the buffer is in MCU
+// memory and not the display driver...GXFcanvas1 might be minimally useful
+// on an Uno-class board, but this and the others are much more likely to
+// require at least a Mega or various recent ARM-type boards (recommended,
+// as the text+bitmap draw can be pokey).  GFXcanvas1 requires 1 bit per
+// pixel (rounded up to nearest byte per scanline), GFXcanvas8 is 1 byte
+// per pixel (no scanline pad), and GFXcanvas16 uses 2 bytes per pixel (no
+// scanline pad).
 // NOT EXTENSIVELY TESTED YET.  MAY CONTAIN WORST BUGS KNOWN TO HUMANKIND.
 
 GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
@@ -1101,11 +1103,13 @@ uint8_t* GFXcanvas1::getBuffer(void) {
     return buffer;
 }
 
-void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
+void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint8_t color) {
+#ifdef __AVR__
     // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
     static const uint8_t PROGMEM
-    GFXsetBit[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 },
-    GFXclrBit[] = { 0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE };
+        GFXsetBit[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 },
+        GFXclrBit[] = { 0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE };
+#endif
 
     if(buffer) {
         if((x < 0) || (y < 0) || (x >= _width) || (y >= _height)) return;
@@ -1128,21 +1132,73 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
                 break;
         }
 
-        uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
+        uint8_t   *ptr  = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
+#ifdef __AVR__
         if(color) *ptr |= pgm_read_byte(&GFXsetBit[x & 7]);
         else      *ptr &= pgm_read_byte(&GFXclrBit[x & 7]);
+#else
+        if(color) *ptr |=   0x80 >> (x & 7);
+        else      *ptr &= ~(0x80 >> (x & 7));
+#endif
     }
 }
 
-void GFXcanvas1::fillScreen(uint16_t color) {
+void GFXcanvas1::fillScreen(uint8_t color) {
     if(buffer) {
         uint16_t bytes = ((WIDTH + 7) / 8) * HEIGHT;
         memset(buffer, color ? 0xFF : 0x00, bytes);
     }
 }
 
+GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
+    uint32_t bytes = w * h;
+    if((buffer = (uint8_t *)malloc(bytes))) {
+        memset(buffer, 0, bytes);
+    }
+}
+
+GFXcanvas8::~GFXcanvas8(void) {
+    if(buffer) free(buffer);
+}
+
+uint8_t* GFXcanvas8::getBuffer(void) {
+    return buffer;
+}
+
+void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint8_t color) {
+    if(buffer) {
+        if((x < 0) || (y < 0) || (x >= _width) || (y >= _height)) return;
+
+        int16_t t;
+        switch(rotation) {
+            case 1:
+                t = x;
+                x = WIDTH  - 1 - y;
+                y = t;
+                break;
+            case 2:
+                x = WIDTH  - 1 - x;
+                y = HEIGHT - 1 - y;
+                break;
+            case 3:
+                t = x;
+                x = y;
+                y = HEIGHT - 1 - t;
+                break;
+        }
+
+        buffer[x + y * WIDTH] = color;
+    }
+}
+
+void GFXcanvas8::fillScreen(uint8_t color) {
+    if(buffer) {
+        memset(buffer, color, WIDTH * HEIGHT);
+    }
+}
+
 GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-    uint16_t bytes = w * h * 2;
+    uint32_t bytes = w * h * 2;
     if((buffer = (uint16_t *)malloc(bytes))) {
         memset(buffer, 0, bytes);
     }
@@ -1188,7 +1244,7 @@ void GFXcanvas16::fillScreen(uint16_t color) {
         if(hi == lo) {
             memset(buffer, lo, WIDTH * HEIGHT * 2);
         } else {
-            uint16_t i, pixels = WIDTH * HEIGHT;
+            uint32_t i, pixels = WIDTH * HEIGHT;
             for(i=0; i<pixels; i++) buffer[i] = color;
         }
     }
