@@ -462,7 +462,7 @@ void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0,
 // Draw a PROGMEM-resident 1-bit image at the specified (x,y) position,
 // using the specified foreground color (unset bits are transparent).
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
-  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
+  PROGMEM const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color) {
 
     int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
     uint8_t byte = 0;
@@ -482,7 +482,8 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 // using the specified foreground (for set bits) and background (unset
 // bits) colors.
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
-  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
+  PROGMEM const uint8_t bitmap[], int16_t w, int16_t h,
+  uint16_t color, uint16_t bg) {
 
     int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
     uint8_t byte = 0;
@@ -539,9 +540,11 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 
 // Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP,
 // Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
-// C Array can be directly used with this function
+// C Array can be directly used with this function.
+// There is no RAM-resident version of this function; if generating bitmaps
+// in RAM, use the format defined by drawBitmap() and call that instead.
 void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
-  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
+  PROGMEM const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color) {
 
     int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
     uint8_t byte = 0;
@@ -563,7 +566,7 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
 // pos.  Specifically for 8-bit display devices such as IS31FL3731;
 // no color reduction/expansion is performed.
 void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
-  const uint8_t *bitmap, int16_t w, int16_t h) {
+  PROGMEM const uint8_t bitmap[], int16_t w, int16_t h) {
     startWrite();
     for(int16_t j=0; j<h; j++, y++) {
         for(int16_t i=0; i<w; i++ ) {
@@ -593,7 +596,8 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 // Specifically for 8-bit display devices such as IS31FL3731;
 // no color reduction/expansion is performed.
 void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
-  const uint8_t *bitmap, const uint8_t *mask, int16_t w, int16_t h) {
+  PROGMEM const uint8_t bitmap[], PROGMEM const uint8_t mask[],
+  int16_t w, int16_t h) {
     int16_t bw   = (w + 7) / 8; // Bitmask scanline pad = whole byte
     uint8_t byte = 0;
     startWrite();
@@ -634,7 +638,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 // Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y)
 // position.  For 16-bit display devices; no color reduction performed.
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
-  const uint16_t *bitmap, int16_t w, int16_t h) {
+  PROGMEM const uint16_t bitmap[], int16_t w, int16_t h) {
     startWrite();
     for(int16_t j=0; j<h; j++, y++) {
         for(int16_t i=0; i<w; i++ ) {
@@ -662,7 +666,8 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
 // BOTH buffers (color and mask) must be PROGMEM-resident.
 // For 16-bit display devices; no color reduction performed.
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
-  const uint16_t *bitmap, const uint8_t *mask, int16_t w, int16_t h) {
+  PROGMEM const uint16_t bitmap[], PROGMEM const uint8_t mask[],
+  int16_t w, int16_t h) {
     int16_t bw   = (w + 7) / 8; // Bitmask scanline pad = whole byte
     uint8_t byte = 0;
     startWrite();
