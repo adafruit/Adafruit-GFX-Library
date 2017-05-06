@@ -74,8 +74,22 @@ class Adafruit_GFX : public Print {
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
     drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
       int16_t w, int16_t h, uint16_t color),
+    drawGrayscaleBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
+      int16_t w, int16_t h),
+    drawGrayscaleBitmap(int16_t x, int16_t y, uint8_t *bitmap,
+      int16_t w, int16_t h),
+    drawGrayscaleBitmap(int16_t x, int16_t y,
+      const uint8_t *bitmap, const uint8_t *mask, int16_t w, int16_t h),
+    drawGrayscaleBitmap(int16_t x, int16_t y,
+      uint8_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
     drawRGBBitmap(int16_t x, int16_t y, const uint16_t *bitmap,
-      int16_t w, int16_t h,bool progmem=true),
+      int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
+      int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y,
+      const uint16_t *bitmap, const uint8_t *mask, int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y,
+      uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
     setCursor(int16_t x, int16_t y),
@@ -106,6 +120,9 @@ class Adafruit_GFX : public Print {
   int16_t getCursorY(void) const;
 
  protected:
+  void
+    charBounds(char c, int16_t *x, int16_t *y,
+      int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy);
   const int16_t
     WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
   int16_t
@@ -158,8 +175,8 @@ class GFXcanvas1 : public Adafruit_GFX {
  public:
   GFXcanvas1(uint16_t w, uint16_t h);
   ~GFXcanvas1(void);
-  void     drawPixel(int16_t x, int16_t y, uint8_t color),
-           fillScreen(uint8_t color);
+  void     drawPixel(int16_t x, int16_t y, uint16_t color),
+           fillScreen(uint16_t color);
   uint8_t *getBuffer(void);
  private:
   uint8_t *buffer;
@@ -169,8 +186,10 @@ class GFXcanvas8 : public Adafruit_GFX {
  public:
   GFXcanvas8(uint16_t w, uint16_t h);
   ~GFXcanvas8(void);
-  void     drawPixel(int16_t x, int16_t y, uint8_t color),
-           fillScreen(uint8_t color);
+  void     drawPixel(int16_t x, int16_t y, uint16_t color),
+           fillScreen(uint16_t color),
+           writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+
   uint8_t *getBuffer(void);
  private:
   uint8_t *buffer;
