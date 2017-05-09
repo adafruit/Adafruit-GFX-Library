@@ -785,22 +785,62 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         // implemented this yet.
 
         startWrite();
+		uint8_t  bytesArray, bytesMap = 128;
+		if(bo) { // non-zero offset - find proper pos
+			uint16_t boPack = bo;
+			bo = 0;
+			bytesArray = pgm_read_byte(&bitmap[bo++]); // 8 bit array of following non-zero bytes (1) or nothing (0)
+			while(boPack) { // count original byte offset
+				if(bytesArray & bytesMap) // 1 means there is a non-zero byte saved
+					bo++;
+				bytesMap >>= 1;
+				if(!bytesMap) {
+					bytesMap = 128;
+					bytesArray = pgm_read_byte(&bitmap[bo++]); // we are on next bit array, so read it
+				}
+				boPack--; // long way thru all original bytes till our pos
+			}
+		} else {
+			bytesArray = pgm_read_byte(&bitmap[bo++]); // for first char pick 1st bit array only
+		}
+		uint8_t bufSize = w/8+!!(w&7); // row xor buffer (each row is XORed with)
+		uint8_t *rowBuf = new uint8_t[bufSize];
+		memset(rowBuf, 0, bufSize); // zero it for 1st (untouched) row
         for(yy=0; yy<h; yy++) {
+			uint8_t *rowBufPos = rowBuf; // positions in buffer - byte/bit
+			uint8_t rowBufMask = 128;
             for(xx=0; xx<w; xx++) {
                 if(!(bit++ & 7)) {
+					if(bytesArray & bytesMap) // do we have non-zero byte saved ?
                     bits = pgm_read_byte(&bitmap[bo++]);
+					else
+						bits = 0; // bit was 0, so byte read would be quite common 0
+					bytesMap >>= 1;
+					if(!bytesMap) {
+						bytesMap = 128;
+						bytesArray = pgm_read_byte(&bitmap[bo++]); // we are past last non-zero byte, so pick next bit array
+					}
                 }
-                if(bits & 0x80) {
+                }
+                if(!!(bits & 0x80) ^ !!(rowBufMask & *rowBufPos)) { // xor common bit with XOR buffer
+					*rowBufPos |= rowBufMask; // XOR result was 1, so set it back to buffer too
                     if(size == 1) {
                         writePixel(x+xo+xx, y+yo+yy, color);
                     } else {
                         writeFillRect(x+(xo16+xx)*size, y+(yo16+yy)*size,
                           size, size, color);
                     }
-                }
+                } else // XOR result was 0, buf needs 0 for that bit
+					*rowBufPos &= (255-rowBufMask);
                 bits <<= 1;
+				rowBufMask >>= 1; // move bit in XOR buffer
+				if(!rowBufMask) {
+					rowBufMask = 128;
+					rowBufPos++;
+				}
             }
         }
+		delete[] rowBuf; // delete row buffer
         endWrite();
 
     } // End classic vs custom font
