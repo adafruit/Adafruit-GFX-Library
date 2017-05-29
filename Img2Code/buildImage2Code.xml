@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Image2Code" default="build" basedir=".">
+	<target name="build" >	
+		<javac includeantruntime="false" srcdir=".">
+			<include name="*.java"/>
+			<exclude name="*.xml" />
+		</javac>
+		
+		<jar jarfile="Image2Code.jar">
+			<fileset dir=".">
+		    		<include name="Image2Code*.class"/>
+		    		<include name="*.png"/>
+		      </fileset>
+		      <manifest><attribute name="Main-Class" value="Image2Code"/></manifest>
+		</jar>
+	</target>
+</project>
