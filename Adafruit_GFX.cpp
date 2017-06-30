@@ -199,6 +199,15 @@ void Adafruit_GFX::fillScreen(uint16_t color) {
     fillRect(0, 0, _width, _height, color);
 }
 
+// should be extended by the actual display if implemented (like the 1306 OLED modules)
+void Adafruit_GFX::clearDisplay(){
+	fillScreen(0);
+}
+
+// does nothing on "normal" displays but is required on the 1306 OLED modules
+void Adafruit_GFX::display(){
+}
+
 void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         uint16_t color) {
     // Update in subclasses if desired!
