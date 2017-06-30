@@ -7,7 +7,6 @@
 #else
  #include "WProgram.h"
 #endif
-
 #include "gfxfont.h"
 
 class Adafruit_GFX : public Print {
@@ -19,16 +18,35 @@ class Adafruit_GFX : public Print {
   // This MUST be defined by the subclass:
   virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
 
+  // TRANSACTION API / CORE DRAW API
+  // These MAY be overridden by the subclass to provide device-specific
+  // optimized code.  Otherwise 'generic' versions are used.
+  virtual void startWrite(void);
+  virtual void writePixel(int16_t x, int16_t y, uint16_t color);
+  virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+  virtual void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  virtual void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+  virtual void endWrite(void);
+
+  // CONTROL API
+  // These MAY be overridden by the subclass to provide device-specific
+  // optimized code.  Otherwise 'generic' versions are used.
+  virtual void setRotation(uint8_t r);
+  virtual void invertDisplay(boolean i);
+
+  // BASIC DRAW API
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void
-    drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
+    // It's good to implement those, even if using transaction API
     drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
     drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
-    drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
-    invertDisplay(boolean i);
+    // Optional and probably not necessary to change
+    drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
+    drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void
@@ -46,16 +64,34 @@ class Adafruit_GFX : public Print {
       int16_t radius, uint16_t color),
     fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
       int16_t radius, uint16_t color),
-    drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
+    drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
       int16_t w, int16_t h, uint16_t color),
-    drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
+    drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
     drawBitmap(int16_t x, int16_t y, uint8_t *bitmap,
       int16_t w, int16_t h, uint16_t color),
     drawBitmap(int16_t x, int16_t y, uint8_t *bitmap,
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
-    drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
+    drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
       int16_t w, int16_t h, uint16_t color),
+    drawGrayscaleBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
+      int16_t w, int16_t h),
+    drawGrayscaleBitmap(int16_t x, int16_t y, uint8_t *bitmap,
+      int16_t w, int16_t h),
+    drawGrayscaleBitmap(int16_t x, int16_t y,
+      const uint8_t bitmap[], const uint8_t mask[],
+      int16_t w, int16_t h),
+    drawGrayscaleBitmap(int16_t x, int16_t y,
+      uint8_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y, const uint16_t bitmap[],
+      int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
+      int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y,
+      const uint16_t bitmap[], const uint8_t mask[],
+      int16_t w, int16_t h),
+    drawRGBBitmap(int16_t x, int16_t y,
+      uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
     setCursor(int16_t x, int16_t y),
@@ -63,7 +99,6 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
-    setRotation(uint8_t r),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
     getTextBounds(char *string, int16_t x, int16_t y,
@@ -87,6 +122,9 @@ class Adafruit_GFX : public Print {
   int16_t getCursorY(void) const;
 
  protected:
+  void
+    charBounds(char c, int16_t *x, int16_t *y,
+      int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy);
   const int16_t
     WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
   int16_t
@@ -108,8 +146,13 @@ class Adafruit_GFX_Button {
 
  public:
   Adafruit_GFX_Button(void);
+  // "Classic" initButton() uses center & size
   void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
-   uint8_t w, uint8_t h, uint16_t outline, uint16_t fill,
+   uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
+   uint16_t textcolor, char *label, uint8_t textsize);
+  // New/alt initButton() uses upper-left corner & size
+  void initButtonUL(Adafruit_GFX *gfx, int16_t x1, int16_t y1,
+   uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
    uint16_t textcolor, char *label, uint8_t textsize);
   void drawButton(boolean inverted = false);
   boolean contains(int16_t x, int16_t y);
@@ -121,17 +164,16 @@ class Adafruit_GFX_Button {
 
  private:
   Adafruit_GFX *_gfx;
-  int16_t _x, _y;
-  uint16_t _w, _h;
-  uint8_t _textsize;
-  uint16_t _outlinecolor, _fillcolor, _textcolor;
-  char _label[10];
+  int16_t       _x1, _y1; // Coordinates of top-left corner
+  uint16_t      _w, _h;
+  uint8_t       _textsize;
+  uint16_t      _outlinecolor, _fillcolor, _textcolor;
+  char          _label[10];
 
   boolean currstate, laststate;
 };
 
 class GFXcanvas1 : public Adafruit_GFX {
-
  public:
   GFXcanvas1(uint16_t w, uint16_t h);
   ~GFXcanvas1(void);
@@ -142,7 +184,21 @@ class GFXcanvas1 : public Adafruit_GFX {
   uint8_t *buffer;
 };
 
+class GFXcanvas8 : public Adafruit_GFX {
+ public:
+  GFXcanvas8(uint16_t w, uint16_t h);
+  ~GFXcanvas8(void);
+  void     drawPixel(int16_t x, int16_t y, uint16_t color),
+           fillScreen(uint16_t color),
+           writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+
+  uint8_t *getBuffer(void);
+ private:
+  uint8_t *buffer;
+};
+
 class GFXcanvas16 : public Adafruit_GFX {
+ public:
   GFXcanvas16(uint16_t w, uint16_t h);
   ~GFXcanvas16(void);
   void      drawPixel(int16_t x, int16_t y, uint16_t color),

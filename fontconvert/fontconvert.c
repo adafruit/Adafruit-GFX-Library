@@ -222,8 +222,14 @@ int main(int argc, char *argv[]) {
 	printf("const GFXfont %s PROGMEM = {\n", fontName);
 	printf("  (uint8_t  *)%sBitmaps,\n", fontName);
 	printf("  (GFXglyph *)%sGlyphs,\n", fontName);
-	printf("  0x%02X, 0x%02X, %ld };\n\n",
-	  first, last, face->size->metrics.height >> 6);
+	if (face->size->metrics.height == 0) {
+      // No face height info, assume fixed width and get from a glyph.
+		printf("  0x%02X, 0x%02X, %d };\n\n",
+			first, last, table[0].height);
+	} else {
+		printf("  0x%02X, 0x%02X, %ld };\n\n",
+			first, last, face->size->metrics.height >> 6);
+	}
 	printf("// Approx. %d bytes\n",
 	  bitmapOffset + (last - first + 1) * 7 + 7);
 	// Size estimate is based on AVR struct and pointer sizes;
