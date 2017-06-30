@@ -291,7 +291,6 @@ void Adafruit_GFX::clearDisplay(){
 // does nothing on "normal" displays but is required on the 1306 OLED modules
 void Adafruit_GFX::display(){
 }
-
 /**************************************************************************/
 /*!
    @brief    Draw a line
@@ -1418,7 +1417,7 @@ void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
-        int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+        int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
     uint8_t c; // Current character
 
     *x1 = x;
