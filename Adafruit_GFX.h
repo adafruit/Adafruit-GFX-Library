@@ -26,9 +26,12 @@ class Adafruit_GFX : public Print {
     drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
     drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
     drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
+    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+      uint16_t bg, uint8_t size),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
-    invertDisplay(boolean i);
+    invertDisplay(boolean i),
+    setFont(const GFXfont *f = NULL);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void
@@ -56,8 +59,6 @@ class Adafruit_GFX : public Print {
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
     drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
       int16_t w, int16_t h, uint16_t color),
-    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-      uint16_t bg, uint8_t size),
     setCursor(int16_t x, int16_t y),
     setTextColor(uint16_t c),
     setTextColor(uint16_t c, uint16_t bg),
@@ -65,7 +66,6 @@ class Adafruit_GFX : public Print {
     setTextWrap(boolean w),
     setRotation(uint8_t r),
     cp437(boolean x=true),
-    setFont(const GFXfont *f = NULL),
     getTextBounds(const char *string, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
