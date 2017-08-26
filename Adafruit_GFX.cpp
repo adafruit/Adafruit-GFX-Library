@@ -996,7 +996,7 @@ void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
 }
 
 // Pass string and a cursor position, returns UL corner and W,H.
-void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
+void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
         int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
     uint8_t c; // Current character
 
@@ -1042,6 +1042,15 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
         *h  = maxy - miny + 1;
     }
 }
+
+// Same as above, but for String strings
+void Adafruit_GFX::getTextBounds(const String &str,
+	int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+    if (str.length() != 0) {
+        getTextBounds(const_cast<char*>(str.c_str()), x, y, x1, y1, w, h);
+    }
+}
+
 
 // Return the size of the display (per current rotation)
 int16_t Adafruit_GFX::width(void) const {
