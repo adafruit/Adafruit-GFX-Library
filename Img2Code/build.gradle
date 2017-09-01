@@ -1,0 +1,11 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+mainClassName = "Image2Code"
+
+jar {
+   manifest {
+	attributes 'Main-Class': 'Image2Code'
+   }
+}
