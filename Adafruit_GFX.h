@@ -44,6 +44,10 @@ class Adafruit_GFX : public Print {
     drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
+    scrollPhysicalUp(uint8_t c, uint16_t color) = 0,
+    scrollPhysicalDown(uint8_t c, uint16_t color) = 0,
+    scrollPhysicalLeft(uint8_t c, uint16_t color) = 0,
+    scrollPhysicalRight(uint8_t c, uint16_t color) = 0,
     // Optional and probably not necessary to change
     drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
     drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
@@ -99,12 +103,18 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
+    setTextAutoScroll(boolean s),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
     getTextBounds(char *string, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    checkScrollWrap(int16_t fontWidth),
+    scrollUp(uint8_t c, uint16_t color),
+    scrollDown(uint8_t c, uint16_t color),
+    scrollLeft(uint8_t c, uint16_t color),
+    scrollRight(uint8_t c, uint16_t color);
 
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
@@ -131,12 +141,14 @@ class Adafruit_GFX : public Print {
     _width, _height, // Display w/h as modified by current rotation
     cursor_x, cursor_y;
   uint16_t
-    textcolor, textbgcolor;
+    textcolor, textbgcolor, fontHeight;
   uint8_t
     textsize,
+    fontDesc,
     rotation;
   boolean
     wrap,   // If set, 'wrap' text at right edge of display
+    autoscroll,
     _cp437; // If set, use correct CP437 charset (default is off)
   GFXfont
     *gfxFont;

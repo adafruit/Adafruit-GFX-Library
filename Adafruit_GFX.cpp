@@ -82,6 +82,8 @@ WIDTH(w), HEIGHT(h)
     wrap      = true;
     _cp437    = false;
     gfxFont   = NULL;
+    fontHeight = 8;
+    fontDesc  = 0;
 }
 
 // Bresenham's algorithm - thx wikpedia
@@ -806,21 +808,51 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     } // End classic vs custom font
 }
 
+void Adafruit_GFX::checkScrollWrap(int16_t fontWidth) {
+    if(wrap && ((cursor_x + fontWidth) >= _width)) { // Heading off edge?
+        cursor_x  = 0;            // Reset x to zero
+        cursor_y += fontHeight * textsize; // Advance y one line
+    }
+
+    if (autoscroll) {
+        int16_t fontOffset;
+
+        if(!gfxFont) { // 'Classic' built-in font
+            fontOffset = (fontHeight * textsize)-1; // cursor defines upper left corner of char
+        } else {       // Custom font
+            fontOffset = 0;                         // cursor defines lower left corner of char
+        }
+
+        // lower unified border of character
+        // these does not apply to charachters like "g" oder "j" which will be cut off
+        uint16_t cursor = cursor_y + fontOffset + fontDesc * textsize;
+
+        if (cursor >= _height) {
+            scrollUp(cursor - _height+1,
+                     textcolor != textbgcolor ? textbgcolor : 0);
+
+            cursor_x  = 0;
+            cursor_y = _height - fontOffset-1 - fontDesc * textsize;
+        }
+  }
+}
+
 #if ARDUINO >= 100
 size_t Adafruit_GFX::write(uint8_t c) {
 #else
 void Adafruit_GFX::write(uint8_t c) {
 #endif
     if(!gfxFont) { // 'Classic' built-in font
-
         if(c == '\n') {                        // Newline?
+            cursor_y += fontHeight * textsize;
             cursor_x  = 0;                     // Reset x to zero,
-            cursor_y += textsize * 8;          // advance y one line
+            //cursor_y += textsize * 8;          // advance y one line
         } else if(c != '\r') {                 // Ignore carriage returns
-            if(wrap && ((cursor_x + textsize * 6) > _width)) { // Off right?
-                cursor_x  = 0;                 // Reset x to zero,
-                cursor_y += textsize * 8;      // advance y one line
-            }
+            // if(wrap && ((cursor_x + textsize * 6) > _width)) { // Off right?
+            //     cursor_x  = 0;                 // Reset x to zero,
+            //     cursor_y += textsize * 8;      // advance y one line
+            // }
+            checkScrollWrap(textsize * 6 - textsize * 2);
             drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
             cursor_x += textsize * 6;          // Advance x one char
         }
@@ -840,11 +872,12 @@ void Adafruit_GFX::write(uint8_t c) {
                           h     = pgm_read_byte(&glyph->height);
                 if((w > 0) && (h > 0)) { // Is there an associated bitmap?
                     int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset); // sic
-                    if(wrap && ((cursor_x + textsize * (xo + w)) > _width)) {
-                        cursor_x  = 0;
-                        cursor_y += (int16_t)textsize *
-                          (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
-                    }
+                    checkScrollWrap(textsize * (xo + w));
+                    // if(wrap && ((cursor_x + textsize * (xo + w)) > _width)) {
+                    //     cursor_x  = 0;
+                    //     cursor_y += (int16_t)textsize *
+                    //       (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+                    // }
                     drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
                 }
                 cursor_x += (uint8_t)pgm_read_byte(&glyph->xAdvance) * (int16_t)textsize;
@@ -889,6 +922,10 @@ void Adafruit_GFX::setTextWrap(boolean w) {
     wrap = w;
 }
 
+void Adafruit_GFX::setTextAutoScroll(boolean s) {
+  autoscroll = s;
+}
+
 uint8_t Adafruit_GFX::getRotation(void) const {
     return rotation;
 }
@@ -930,9 +967,40 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     } else if(gfxFont) { // NULL passed.  Current font struct defined?
         // Switching from new to classic font behavior.
         // Move cursor pos up 6 pixels so it's at top-left of char.
-        cursor_y -= 6;
-    }
-    gfxFont = (GFXfont *)f;
+        //cursor_y -= 6;
+        // calculate max descender ("j" or "g")
+        fontDesc = 0;
+
+        uint8_t first  = (uint8_t) pgm_read_byte(&f->first);
+        uint8_t last  = (uint8_t) pgm_read_byte(&f->last);
+        for (uint8_t i = first; i <= last; i++) {
+            GFXglyph *glyph;
+            uint8_t gh;
+            int8_t  yo;
+
+            glyph = &(((GFXglyph *)pgm_read_pointer(&f->glyph))[i-first]);
+
+            gh = (uint8_t) pgm_read_byte(&glyph->height);
+            yo = (int8_t) pgm_read_byte(&glyph->yOffset);
+
+            if (gh + yo > fontDesc) {
+                fontDesc = gh + yo;
+            }
+        }
+
+        fontHeight = (int16_t) pgm_read_byte(&f->yAdvance);
+      }
+      else {
+        if(gfxFont) { // NULL passed.  Current font struct defined?
+          // Switching from new to classic font behavior.
+          // Move cursor pos up 6 pixels so it's at top-left of char.
+          cursor_y -= 6;
+        }
+
+        fontHeight = 8;
+        fontDesc = 0;
+        }
+        gfxFont = (GFXfont *)f;
 }
 
 // Broke this out as it's used by both the PROGMEM- and RAM-resident
@@ -1346,3 +1414,74 @@ void GFXcanvas16::fillScreen(uint16_t color) {
     }
 }
 
+void Adafruit_GFX::scrollUp(uint8_t c, uint16_t color) {
+   // map to logical orientation
+  switch(getRotation()) {
+    case 0:
+      scrollPhysicalUp(c, color);
+      break;
+    case 1:
+      scrollPhysicalRight(c, color);
+      break;
+    case 2:
+      scrollPhysicalDown(c, color);
+      break;
+    case 3:
+      scrollPhysicalLeft(c, color);
+      break;
+  }
+}
+
+void Adafruit_GFX::scrollDown(uint8_t c, uint16_t color) {
+  // map to logical orientation
+  switch(getRotation()) {
+  case 0:
+    scrollPhysicalDown(c, color);
+    break;
+  case 1:
+    scrollPhysicalLeft(c, color);
+    break;
+  case 2:
+    scrollPhysicalUp(c, color);
+    break;
+  case 3:
+    scrollPhysicalRight(c, color);
+    break;
+  }
+}
+
+void Adafruit_GFX::scrollLeft(uint8_t c, uint16_t color) {
+  // map to logical orientation
+  switch(getRotation()) {
+  case 0:
+    scrollPhysicalLeft(c, color);
+    break;
+  case 1:
+    scrollPhysicalUp(c, color);
+    break;
+  case 2:
+    scrollPhysicalRight(c, color);
+    break;
+  case 3:
+    scrollPhysicalDown(c, color);
+    break;
+  }
+}
+
+void Adafruit_GFX::scrollRight(uint8_t c, uint16_t color) {
+  // map to logical orientation
+  switch(getRotation()) {
+  case 0:
+    scrollPhysicalRight(c, color);
+    break;
+  case 1:
+    scrollPhysicalDown(c, color);
+    break;
+  case 2:
+    scrollPhysicalLeft(c, color);
+    break;
+  case 3:
+    scrollPhysicalUp(c, color);
+    break;
+  }
+ }
