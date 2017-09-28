@@ -562,6 +562,27 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
+void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
+  const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color, uint16_t bg) {
+
+    int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+    uint8_t byte = 0;
+
+    startWrite();
+    for(int16_t j=0; j<h; j++, y++) {
+        for(int16_t i=0; i<w; i++ ) {
+            if(i & 7) byte >>= 1;
+            else      byte   = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
+            // Nearly identical to drawBitmap(), only the bit order
+            // is reversed here (left-to-right = LSB to MSB):
+            if(byte & 0x01) writePixel(x+i, y, color);
+            writePixel(x+i, y, (byte & 0x01) ? color : bg);
+        }
+    }
+    endWrite();
+}
+
+
 // Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y)
 // pos.  Specifically for 8-bit display devices such as IS31FL3731;
 // no color reduction/expansion is performed.
