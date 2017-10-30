@@ -809,7 +809,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 }
 
 void Adafruit_GFX::checkScrollWrap(int16_t fontWidth) {
-    if(wrap && ((cursor_x + fontWidth) >= _width)) { // Heading off edge?
+    if(wrap && ((cursor_x + fontWidth) > _width)) { // Heading off edge?
         cursor_x  = 0;            // Reset x to zero
         cursor_y += fontHeight * textsize; // Advance y one line
     }
