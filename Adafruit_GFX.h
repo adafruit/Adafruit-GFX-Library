@@ -9,6 +9,8 @@
 #endif
 #include "gfxfont.h"
 
+#define swap(a, b) { int16_t t = a; a = b; b = t; }
+
 class Adafruit_GFX : public Print {
 
  public:
@@ -17,6 +19,7 @@ class Adafruit_GFX : public Print {
 
   // This MUST be defined by the subclass:
   virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
+  virtual void drawPixelRGB(int16_t x, int16_t y, uint8_t r, uint8_t g, uint8_t b, int16_t bright = -1);
 
   // TRANSACTION API / CORE DRAW API
   // These MAY be overridden by the subclass to provide device-specific
@@ -92,6 +95,8 @@ class Adafruit_GFX : public Print {
       int16_t w, int16_t h),
     drawRGBBitmap(int16_t x, int16_t y,
       uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
+	drawRGBBitmap(int16_t x, int16_t y, const uint8_t *cbitmap,
+      int16_t w, int16_t h),  
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
     setCursor(int16_t x, int16_t y),
@@ -178,6 +183,7 @@ class GFXcanvas1 : public Adafruit_GFX {
   GFXcanvas1(uint16_t w, uint16_t h);
   ~GFXcanvas1(void);
   void     drawPixel(int16_t x, int16_t y, uint16_t color),
+		   drawPixelRGB(int16_t x, int16_t y, uint8_t r, uint8_t g, uint8_t b, int16_t bright),
            fillScreen(uint16_t color);
   uint8_t *getBuffer(void);
  private:
@@ -189,6 +195,7 @@ class GFXcanvas8 : public Adafruit_GFX {
   GFXcanvas8(uint16_t w, uint16_t h);
   ~GFXcanvas8(void);
   void     drawPixel(int16_t x, int16_t y, uint16_t color),
+		   drawPixelRGB(int16_t x, int16_t y, uint8_t r, uint8_t g, uint8_t b, int16_t bright),
            fillScreen(uint16_t color),
            writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 

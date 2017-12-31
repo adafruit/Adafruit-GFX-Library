@@ -704,6 +704,41 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
+// Draw a 8-bit image (bitmap) at the specified (x,y) position from the
+// provided bitmap buffer (must be PROGMEM memory) using the specified
+// foreground color (unset bits are transparent).
+void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
+ const uint8_t *cbitmap, int16_t w, int16_t h) {
+// PWR 2015
+// draw an rgb bitmap from progmem
+  int16_t i, j, pos;
+  for(i=0; i<w; i++ ) 
+  {
+    for(j=0; j<h; j++) 
+	{
+		//pos = (i*h+j)*3;
+		pos = (i+j*h)*3;
+		
+		//drawPixel(x+j, y+i, drawRGB24toRGB565(pgm_read_byte(cbitmap+pos), pgm_read_byte(cbitmap+pos+1), pgm_read_byte(cbitmap+pos+2)) );  
+		
+		drawPixelRGB(x+j, y+i, pgm_read_byte(cbitmap+pos), pgm_read_byte(cbitmap+pos+1), pgm_read_byte(cbitmap+pos+2));  
+	} 
+  }
+ }
+ 
+  // PWR 2015
+// Only a stub here, so drawRGBBitmap will not work unless this is overridden in 
+// derived class i.e. NeoMatrix class but providing stub here means it does not have to be
+void Adafruit_GFX::drawPixelRGB(int16_t x, int16_t y, uint8_t r, uint8_t g, uint8_t b, int16_t bright)
+{
+}
+/*
+static uint16_t	Adafruit_GFX::drawRGB24toRGB565(uint8_t  r, uint8_t  g, uint8_t  b) 
+{
+	
+}
+*/
+
 // TEXT- AND CHARACTER-HANDLING FUNCTIONS ----------------------------------
 
 // Draw a character
