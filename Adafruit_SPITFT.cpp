@@ -13,6 +13,7 @@
   MIT license, all text above must be included in any redistribution
  ****************************************************/
 
+#ifndef __AVR_ATtiny85__ // NOT A CHANCE of this stuff working on ATtiny!
 
 #include "Adafruit_SPITFT.h"
 #ifndef ARDUINO_STM32_FEATHER
@@ -40,7 +41,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _dc   = dc;
     _rst  = rst;
     _sclk = sclk;
-    _mosi  = mosi;
+    _mosi = mosi;
     _miso = miso;
     _freq = 0;
 #ifdef USE_FAST_PINIO
@@ -68,9 +69,9 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _cs   = cs;
     _dc   = dc;
     _rst  = rst;
-    _sclk  = -1;
-    _mosi  = -1;
-    _miso  = -1;
+    _sclk = -1;
+    _mosi = -1;
+    _miso = -1;
     _freq = 0;
 #ifdef USE_FAST_PINIO
     csport    = portOutputRegister(digitalPinToPort(_cs));
@@ -334,3 +335,5 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
     }
     endWrite();
 }
+
+#endif // !__AVR_ATtiny85__
