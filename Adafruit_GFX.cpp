@@ -1117,8 +1117,8 @@ void Adafruit_GFX_Button::drawButton(boolean inverted) {
 }
 
 boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
-  return ((x >= _x1) && (x < (_x1 + _w)) &&
-          (y >= _y1) && (y < (_y1 + _h)));
+  return ((x >= _x1) && (x < static_cast<int16_t>(_x1 + _w)) &&
+          (y >= _y1) && (y < static_cast<int16_t>(_y1 + _h)));
 }
 
 void Adafruit_GFX_Button::press(boolean p) {
