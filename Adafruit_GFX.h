@@ -99,6 +99,7 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
     setTextWrap(boolean w),
+    setCustomFontToGrid(boolean f),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
     getTextBounds(char *string, int16_t x, int16_t y,
@@ -137,6 +138,7 @@ class Adafruit_GFX : public Print {
     rotation;
   boolean
     wrap,   // If set, 'wrap' text at right edge of display
+	forceCustomFontToGrid, //use this to use custom fonts with background (color)
     _cp437; // If set, use correct CP437 charset (default is off)
   GFXfont
     *gfxFont;

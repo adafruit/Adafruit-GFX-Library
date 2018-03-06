@@ -80,6 +80,7 @@ WIDTH(w), HEIGHT(h)
     textsize  = 1;
     textcolor = textbgcolor = 0xFFFF;
     wrap      = true;
+	forceCustomFontToGrid = false;
     _cp437    = false;
     gfxFont   = NULL;
 }
@@ -758,8 +759,19 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
                  h  = pgm_read_byte(&glyph->height);
         int8_t   xo = pgm_read_byte(&glyph->xOffset),
                  yo = pgm_read_byte(&glyph->yOffset);
-        uint8_t  xx, yy, bits = 0, bit = 0;
+        uint8_t  bits = 0, bit = 0;
+        int8_t   xx, yy;
         int16_t  xo16 = 0, yo16 = 0;
+        int8_t   xoAd = 0;
+        uint8_t  yAd = (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+        uint8_t  xAd = (uint8_t)pgm_read_byte(&glyph->xAdvance);
+        int16_t  middle = yAd * ((int16_t)-7)/10; //must be smallest of any yOffset, can this be calculated when loading a font? (e.g. @ setFont())
+
+		if(forceCustomFontToGrid && (xo<0) )  {
+            //skip this early column
+            xoAd = xo;
+            xo = 0;
+        }
 
         if(size > 1) {
             xo16 = xo;
@@ -768,7 +780,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
         // Todo: Add character clipping here
 
-        // NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS.
+        // NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS. 
         // THIS IS ON PURPOSE AND BY DESIGN.  The background color feature
         // has typically been used with the 'classic' font to overwrite old
         // screen contents with new data.  This ONLY works because the
@@ -777,13 +789,48 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         // may overlap).  To replace previously-drawn text when using a custom
         // font, use the getTextBounds() function to determine the smallest
         // rectangle encompassing a string, erase the area with fillRect(),
-        // then draw new text.  This WILL infortunately 'blink' the text, but
+        // then draw new text.  This WILL unfortunately 'blink' the text, but
         // is unavoidable.  Drawing 'background' pixels will NOT fix this,
         // only creates a new set of problems.  Have an idea to work around
         // this (a canvas object type for MCUs that can afford the RAM and
         // displays supporting setAddrWindow() and pushColors()), but haven't
         // implemented this yet.
-
+		
+		if(forceCustomFontToGrid) {
+        startWrite();
+        for(yy=middle; yy<(yAd+middle); yy++) { //rows
+            for(xx=0; xx<(xAd); xx++) { //columns
+              if( yy>=yo && yy<(yo+h) && xx>=xo && xx<(xo+w) ) {
+                if(!(bit++ & 7)) {
+                    bits = pgm_read_byte(&bitmap[bo++]);
+                }
+                if(bits & 0x80) {
+                      //no 'size' support yet
+                      writePixel(x+xx, y+yy, color);
+                }
+                else if(bg != color) {
+                      writePixel(x+xx, y+yy, bg);
+                }
+                bits <<= 1;
+              } else {
+                writePixel(x+xx, y+yy, bg);
+              }
+            } //each row, left to right
+            if( yy>=yo && yy<(yo+h) && (w>xAd) ) {
+              // /* finished that row w. max pixel as per xAd
+              // dump unused pixel of too long chars */
+              int8_t cnt = w-xAd;
+              for(; cnt>0; cnt--) {
+                if(!(bit++ & 7)) {
+                    bits = pgm_read_byte(&bitmap[bo++]);
+                }
+                bits <<= 1;
+              }
+            }
+        } //all lines from top to bottom
+        endWrite();
+		} else {
+		//classic handing of custom fonts
         startWrite();
         for(yy=0; yy<h; yy++) {
             for(xx=0; xx<w; xx++) {
@@ -801,7 +848,8 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
                 bits <<= 1;
             }
         }
-        endWrite();
+		endWrite();
+		}
 
     } // End classic vs custom font
 }
@@ -838,7 +886,8 @@ void Adafruit_GFX::write(uint8_t c) {
                   &gfxFont->glyph))[c - first]);
                 uint8_t   w     = pgm_read_byte(&glyph->width),
                           h     = pgm_read_byte(&glyph->height);
-                if((w > 0) && (h > 0)) { // Is there an associated bitmap?
+		if( ( forceCustomFontToGrid && (w >= 0) && (h >= 0) ) ||
+                                     ( (w >  0) && (h >  0) )  ) { // Is there an associated bitmap?
                     int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset); // sic
                     if(wrap && ((cursor_x + textsize * (xo + w)) > _width)) {
                         cursor_x  = 0;
@@ -887,6 +936,10 @@ void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
 
 void Adafruit_GFX::setTextWrap(boolean w) {
     wrap = w;
+}
+
+void Adafruit_GFX::setCustomFontToGrid(boolean f) {
+    forceCustomFontToGrid = f;
 }
 
 uint8_t Adafruit_GFX::getRotation(void) const {
