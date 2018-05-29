@@ -164,12 +164,12 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
  * Transaction API
  * */
 
-void Adafruit_SPITFT::startWrite(void){
+void inline Adafruit_SPITFT::startWrite(void){
     SPI_BEGIN_TRANSACTION();
     SPI_CS_LOW();
 }
 
-void Adafruit_SPITFT::endWrite(void){
+void inline Adafruit_SPITFT::endWrite(void){
     SPI_CS_HIGH();
     SPI_END_TRANSACTION();
 }
@@ -187,11 +187,11 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
 }
 
 
-void Adafruit_SPITFT::writePixel(uint16_t color){
+void inline Adafruit_SPITFT::writePixel(uint16_t color){
     SPI_WRITE16(color);
 }
 
-void Adafruit_SPITFT::writePixels(uint16_t * colors, uint32_t len){
+void inline Adafruit_SPITFT::writePixels(uint16_t * colors, uint32_t len){
     SPI_WRITE_PIXELS((uint8_t*)colors , len * 2);
 }
 
@@ -262,11 +262,11 @@ void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, 
     writeColor(color, len);
 }
 
-void Adafruit_SPITFT::writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color){
+void inline Adafruit_SPITFT::writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color){
     writeFillRect(x, y, 1, h, color);
 }
 
-void Adafruit_SPITFT::writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color){
+void inline Adafruit_SPITFT::writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color){
     writeFillRect(x, y, w, 1, color);
 }
 
