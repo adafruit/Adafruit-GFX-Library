@@ -1043,6 +1043,26 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
     }
 }
 
+// Return the xAdvance value for the passed character in the
+// current font or 0 if the character is not in the current font
+uint8_t Adafruit_GFX::getXAdvance(char c)
+{
+    uint8_t first = pgm_read_byte(&gfxFont->first),
+            last  = pgm_read_byte(&gfxFont->last);
+    if((c >= first) && (c <= last)) { // Char present in this font?
+        GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(
+          &gfxFont->glyph))[c - first]);
+        return pgm_read_byte(&glyph->xAdvance);
+	}
+	return 0;
+}
+
+// Return the yAdvance value for the current font
+uint8_t Adafruit_GFX::getYAdvance()
+{
+    return (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+}
+
 // Return the size of the display (per current rotation)
 int16_t Adafruit_GFX::width(void) const {
     return _width;
