@@ -48,7 +48,16 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         void      writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
         // Transaction API not used by GFX
-	void      setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+
+	/*!
+	  @brief   SPI displays set an address window rectangle for blitting pixels
+	  @param  x  Top left corner x coordinate
+	  @param  y  Top left corner x coordinate
+	  @param  w  Width of window
+	  @param  h  Height of window
+	*/
+	virtual void      setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;
+
         void      writePixel(uint16_t color);
         void      writePixels(uint16_t * colors, uint32_t len);
         void      writeColor(uint16_t color, uint32_t len);
@@ -98,9 +107,6 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 
 	uint8_t   invertOnCommand = 0,    ///<  SPI command byte to turn on invert
 	  invertOffCommand = 0;           ///<  SPI command byte to turn off invert
-	uint8_t   ySetCommand,   ///<  SPI command byte to set the Y address window
-	  xSetCommand,           ///<  SPI command byte to set the X address window
-	  RAMwriteCommand;       ///<  SPI command byte to start blitting data to framebuffer RAM
 	int16_t   _xstart = 0;   ///< Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the x offset from 0 to align
 	int16_t   _ystart = 0;   ///< Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the y offset from 0 to align
 };

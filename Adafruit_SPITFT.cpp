@@ -235,33 +235,6 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
 
 /**************************************************************************/
 /*!
-    @brief   SPI displays set an address window rectangle for blitting pixels
-    @param  x  Top left corner x coordinate
-    @param  y  Top left corner x coordinate
-    @param  w  Width of window
-    @param  h  Height of window
-*/
-/**************************************************************************/
-void Adafruit_SPITFT::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-  x += _xstart;
-  y += _ystart;
-  uint32_t xa = ((uint32_t)x << 16) | (x+w-1);
-  uint32_t ya = ((uint32_t)y << 16) | (y+h-1); 
-
-  //Serial.print("X: "); Serial.println(xa, HEX);
-  //Serial.print("Y: "); Serial.println(ya, HEX);
-
-  writeCommand(xSetCommand); // Column addr set
-  SPI_WRITE32(xa);
-
-  writeCommand(ySetCommand); // Row addr set
-  SPI_WRITE32(ya);
-
-  writeCommand(RAMwriteCommand); // write to RAM
-}
-
-/**************************************************************************/
-/*!
     @brief   Begin an SPI transaction & set CS low.
 */
 /**************************************************************************/
