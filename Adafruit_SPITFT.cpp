@@ -58,7 +58,7 @@
 */
 /**************************************************************************/
 uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
-    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3);
+    return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | ((blue & 0xF8) >> 3);
 }
 
 
