@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['setaddrwindow',['setAddrWindow',['../class_adafruit___s_p_i_t_f_t.html#a1cc36d1d8600be0391a1d0309ed95b79',1,'Adafruit_SPITFT']]],
+  ['setaddrwindow',['setAddrWindow',['../class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932',1,'Adafruit_SPITFT']]],
   ['setcursor',['setCursor',['../class_adafruit___g_f_x.html#aaf96a40cad0f34dd8ec73494b3866c33',1,'Adafruit_GFX']]],
   ['setfont',['setFont',['../class_adafruit___g_f_x.html#ab0479a2bb4e09e7c39c35e35c55d6ed1',1,'Adafruit_GFX']]],
   ['setrotation',['setRotation',['../class_adafruit___g_f_x.html#a6ac337c49876cee23ed062a928724675',1,'Adafruit_GFX']]],

@@ -119,9 +119,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a06312f906256fd7e72efb21df85d2b96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96">writeFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
 <tr class="memdesc:a06312f906256fd7e72efb21df85d2b96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line (must have a transaction in progress)  <a href="#a06312f906256fd7e72efb21df85d2b96">More...</a><br /></td></tr>
 <tr class="separator:a06312f906256fd7e72efb21df85d2b96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cc36d1d8600be0391a1d0309ed95b79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1cc36d1d8600be0391a1d0309ed95b79">setAddrWindow</a> (uint16_t x, uint16_t y, uint16_t w, uint16_t h)</td></tr>
-<tr class="memdesc:a1cc36d1d8600be0391a1d0309ed95b79"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI displays set an address window rectangle for blitting pixels.  <a href="#a1cc36d1d8600be0391a1d0309ed95b79">More...</a><br /></td></tr>
-<tr class="separator:a1cc36d1d8600be0391a1d0309ed95b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1928d1a2b27cc32422624ed54c0ea932"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932">setAddrWindow</a> (uint16_t x, uint16_t y, uint16_t w, uint16_t h)=0</td></tr>
+<tr class="memdesc:a1928d1a2b27cc32422624ed54c0ea932"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI displays set an address window rectangle for blitting pixels.  <a href="#a1928d1a2b27cc32422624ed54c0ea932">More...</a><br /></td></tr>
+<tr class="separator:a1928d1a2b27cc32422624ed54c0ea932"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a978f34e5e8155c8c26eca39b71925551"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a978f34e5e8155c8c26eca39b71925551">writePixel</a> (uint16_t color)</td></tr>
 <tr class="memdesc:a978f34e5e8155c8c26eca39b71925551"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a 2-byte color (must have a transaction in progress)  <a href="#a978f34e5e8155c8c26eca39b71925551">More...</a><br /></td></tr>
 <tr class="separator:a978f34e5e8155c8c26eca39b71925551"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -383,18 +383,6 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a7248ddde9f18b64675139cea13998141">invertOffCommand</a> = 0</td></tr>
 <tr class="memdesc:a7248ddde9f18b64675139cea13998141"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI command byte to turn off invert. <br /></td></tr>
 <tr class="separator:a7248ddde9f18b64675139cea13998141"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9fd54d96c10a97a9154f4b43bdb9fb5"><td class="memItemLeft" align="right" valign="top"><a id="af9fd54d96c10a97a9154f4b43bdb9fb5"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#af9fd54d96c10a97a9154f4b43bdb9fb5">ySetCommand</a></td></tr>
-<tr class="memdesc:af9fd54d96c10a97a9154f4b43bdb9fb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI command byte to set the Y address window. <br /></td></tr>
-<tr class="separator:af9fd54d96c10a97a9154f4b43bdb9fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa71e89a8b9fe50182b90d281108abb17"><td class="memItemLeft" align="right" valign="top"><a id="aa71e89a8b9fe50182b90d281108abb17"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aa71e89a8b9fe50182b90d281108abb17">xSetCommand</a></td></tr>
-<tr class="memdesc:aa71e89a8b9fe50182b90d281108abb17"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI command byte to set the X address window. <br /></td></tr>
-<tr class="separator:aa71e89a8b9fe50182b90d281108abb17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac911e583eea7aceb17afc4a6c5d06ed9"><td class="memItemLeft" align="right" valign="top"><a id="ac911e583eea7aceb17afc4a6c5d06ed9"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac911e583eea7aceb17afc4a6c5d06ed9">RAMwriteCommand</a></td></tr>
-<tr class="memdesc:ac911e583eea7aceb17afc4a6c5d06ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI command byte to start blitting data to framebuffer RAM. <br /></td></tr>
-<tr class="separator:ac911e583eea7aceb17afc4a6c5d06ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a479fb9af838dc94c442b27c734dab345"><td class="memItemLeft" align="right" valign="top"><a id="a479fb9af838dc94c442b27c734dab345"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a479fb9af838dc94c442b27c734dab345">_xstart</a> = 0</td></tr>
 <tr class="memdesc:a479fb9af838dc94c442b27c734dab345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the x offset from 0 to align. <br /></td></tr>
@@ -956,14 +944,17 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a1cc36d1d8600be0391a1d0309ed95b79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cc36d1d8600be0391a1d0309ed95b79">&#9670;&nbsp;</a></span>setAddrWindow()</h2>
+<a id="a1928d1a2b27cc32422624ed54c0ea932"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1928d1a2b27cc32422624ed54c0ea932">&#9670;&nbsp;</a></span>setAddrWindow()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SPITFT::setAddrWindow </td>
+          <td class="memname">virtual void Adafruit_SPITFT::setAddrWindow </td>
           <td>(</td>
           <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
@@ -992,6 +983,11 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>SPI displays set an address window rectangle for blitting pixels. </p>
