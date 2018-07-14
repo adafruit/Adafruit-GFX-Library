@@ -338,7 +338,17 @@ void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
     endWrite();
 }
 
-// Draw a rounded rectangle
+/**************************************************************************/
+/*!
+   @brief   Draw a rounded rectangle with no fill color
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+    @param    r   Radius of corner rounding
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
         int16_t h, int16_t r, uint16_t color) {
     // smarter version
@@ -355,7 +365,17 @@ void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
     endWrite();
 }
 
-// Fill a rounded rectangle
+/**************************************************************************/
+/*!
+   @brief   Draw a rounded rectangle with fill color
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+    @param    r   Radius of corner rounding
+    @param    color 16-bit 5-6-5 Color to draw/fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
         int16_t h, int16_t r, uint16_t color) {
     // smarter version
@@ -368,7 +388,18 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
     endWrite();
 }
 
-// Draw a triangle
+/**************************************************************************/
+/*!
+   @brief   Draw a triangle with no fill color
+    @param    x0  Vertex #0 x coordinate
+    @param    y0  Vertex #0 y coordinate
+    @param    x1  Vertex #1 x coordinate
+    @param    y1  Vertex #1 y coordinate
+    @param    x2  Vertex #2 x coordinate
+    @param    y2  Vertex #2 y coordinate
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawTriangle(int16_t x0, int16_t y0,
         int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
     drawLine(x0, y0, x1, y1, color);
@@ -376,7 +407,18 @@ void Adafruit_GFX::drawTriangle(int16_t x0, int16_t y0,
     drawLine(x2, y2, x0, y0, color);
 }
 
-// Fill a triangle
+/**************************************************************************/
+/*!
+   @brief     Draw a triangle with color-fill
+    @param    x0  Vertex #0 x coordinate
+    @param    y0  Vertex #0 y coordinate
+    @param    x1  Vertex #1 x coordinate
+    @param    y1  Vertex #1 y coordinate
+    @param    x2  Vertex #2 x coordinate
+    @param    y2  Vertex #2 y coordinate
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0,
         int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
 
@@ -805,12 +847,13 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
     } // End classic vs custom font
 }
-
-#if ARDUINO >= 100
+/**************************************************************************/
+/*!
+    @brief  Print one byte/character of data, used to support print()
+    @param  c  The 8-bit ascii character to write
+*/
+/**************************************************************************/
 size_t Adafruit_GFX::write(uint8_t c) {
-#else
-void Adafruit_GFX::write(uint8_t c) {
-#endif
     if(!gfxFont) { // 'Classic' built-in font
 
         if(c == '\n') {                        // Newline?
@@ -852,47 +895,101 @@ void Adafruit_GFX::write(uint8_t c) {
         }
 
     }
-#if ARDUINO >= 100
     return 1;
-#endif
 }
 
+/**************************************************************************/
+/*!
+    @brief  Set text cursor location
+    @param  x    X coordinate in pixels
+    @param  y    Y coordinate in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::setCursor(int16_t x, int16_t y) {
     cursor_x = x;
     cursor_y = y;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Get text cursor X location
+    @returns    X coordinate in pixels
+*/
+/**************************************************************************/
 int16_t Adafruit_GFX::getCursorX(void) const {
     return cursor_x;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Get text cursor Y location
+    @returns    Y coordinate in pixels
+*/
+/**************************************************************************/
 int16_t Adafruit_GFX::getCursorY(void) const {
     return cursor_y;
 }
 
+/**************************************************************************/
+/*!
+    @brief   Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger.
+    @param  s  Desired text size. 1 is default 6x8, 2 is 12x16, 3 is 18x24, etc
+*/
+/**************************************************************************/
 void Adafruit_GFX::setTextSize(uint8_t s) {
     textsize = (s > 0) ? s : 1;
 }
 
+/**************************************************************************/
+/*!
+    @brief   Set text font color with transparant background
+    @param   c   16-bit 5-6-5 Color to draw text with
+*/
+/**************************************************************************/
 void Adafruit_GFX::setTextColor(uint16_t c) {
     // For 'transparent' background, we'll set the bg
     // to the same as fg instead of using a flag
     textcolor = textbgcolor = c;
 }
 
+/**************************************************************************/
+/*!
+    @brief   Set text font color with custom background color
+    @param   c   16-bit 5-6-5 Color to draw text with
+    @param   b   16-bit 5-6-5 Color to draw background/fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
     textcolor   = c;
     textbgcolor = b;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Whether text that is too long should 'wrap' around to the next line.
+    @param  w Set true for wrapping, false for clipping
+*/
+/**************************************************************************/
 void Adafruit_GFX::setTextWrap(boolean w) {
     wrap = w;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Get rotation setting for display
+    @returns    0 thru 3 corresponding to 4 cardinal rotations
+*/
+/**************************************************************************/
 uint8_t Adafruit_GFX::getRotation(void) const {
     return rotation;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Set rotation setting for display
+    @param  x   0 thru 3 corresponding to 4 cardinal rotations
+*/
+/**************************************************************************/
 void Adafruit_GFX::setRotation(uint8_t x) {
     rotation = (x & 3);
     switch(rotation) {
@@ -909,17 +1006,28 @@ void Adafruit_GFX::setRotation(uint8_t x) {
     }
 }
 
-// Enable (or disable) Code Page 437-compatible charset.
-// There was an error in glcdfont.c for the longest time -- one character
-// (#176, the 'light shade' block) was missing -- this threw off the index
-// of every character that followed it.  But a TON of code has been written
-// with the erroneous character indices.  By default, the library uses the
-// original 'wrong' behavior and old sketches will still work.  Pass 'true'
-// to this function to use correct CP437 character values in your code.
+/**************************************************************************/
+/*!
+    @brief Enable (or disable) Code Page 437-compatible charset.
+    There was an error in glcdfont.c for the longest time -- one character
+    (#176, the 'light shade' block) was missing -- this threw off the index
+    of every character that followed it.  But a TON of code has been written
+    with the erroneous character indices.  By default, the library uses the
+    original 'wrong' behavior and old sketches will still work.  Pass 'true'
+    to this function to use correct CP437 character values in your code.
+    @param  x  Whether to enable (True) or not (False)
+*/
+/**************************************************************************/
 void Adafruit_GFX::cp437(boolean x) {
     _cp437 = x;
 }
 
+/**************************************************************************/
+/*!
+    @brief Set the font to display when print()ing, either custom or default
+    @param  f  The GFXfont object, if NULL use built in 6x8 font
+*/
+/**************************************************************************/
 void Adafruit_GFX::setFont(const GFXfont *f) {
     if(f) {            // Font struct pointer passed in?
         if(!gfxFont) { // And no current font struct?
@@ -935,8 +1043,20 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     gfxFont = (GFXfont *)f;
 }
 
-// Broke this out as it's used by both the PROGMEM- and RAM-resident
-// getTextBounds() functions.
+
+/**************************************************************************/
+/*!
+    @brief    Helper to determine size of a character with current font/size.
+       Broke this out as it's used by both the PROGMEM- and RAM-resident getTextBounds() functions.
+    @param    c     The ascii character in question
+    @param    x     Pointer to x location of character
+    @param    y     Pointer to y location of character
+    @param    minx  Minimum clipping value for X
+    @param    miny  Minimum clipping value for Y
+    @param    maxx  Maximum clipping value for X
+    @param    maxy  Maximum clipping value for Y
+*/
+/**************************************************************************/
 void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
   int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy) {
 
@@ -995,7 +1115,18 @@ void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
     }
 }
 
-// Pass string and a cursor position, returns UL corner and W,H.
+/**************************************************************************/
+/*!
+    @brief    Helper to determine size of a string with current font/size. Pass string and a cursor position, returns UL corner and W,H.
+    @param    str     The ascii string to measure
+    @param    x       The current cursor X
+    @param    y       The current cursor Y
+    @param    x1      The boundary X coordinate, set by function
+    @param    y1      The boundary Y coordinate, set by function
+    @param    w      The boundary width, set by function
+    @param    h      The boundary height, set by function
+*/
+/**************************************************************************/
 void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
         int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
     uint8_t c; // Current character
@@ -1019,7 +1150,18 @@ void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
     }
 }
 
-// Same as above, but for PROGMEM strings
+/**************************************************************************/
+/*!
+    @brief    Helper to determine size of a PROGMEM string with current font/size. Pass string and a cursor position, returns UL corner and W,H.
+    @param    str     The flash-memory ascii string to measure
+    @param    x       The current cursor X
+    @param    y       The current cursor Y
+    @param    x1      The boundary X coordinate, set by function
+    @param    y1      The boundary Y coordinate, set by function
+    @param    w      The boundary width, set by function
+    @param    h      The boundary height, set by function
+*/
+/**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
         int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
     uint8_t *s = (uint8_t *)str, c;
@@ -1043,15 +1185,32 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
     }
 }
 
-// Return the size of the display (per current rotation)
+/**************************************************************************/
+/*!
+    @brief      Get width of the display, accounting for the current rotation
+    @returns    Width in pixels
+*/
+/**************************************************************************/
 int16_t Adafruit_GFX::width(void) const {
     return _width;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Get height of the display, accounting for the current rotation
+    @returns    Height in pixels
+*/
+/**************************************************************************/
 int16_t Adafruit_GFX::height(void) const {
     return _height;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Invert the display (ideally using built-in hardware command)
+    @param   i  True if you want to invert, false to make 'normal'
+*/
+/**************************************************************************/
 void Adafruit_GFX::invertDisplay(boolean i) {
     // Do nothing, must be subclassed if supported by hardware
 }

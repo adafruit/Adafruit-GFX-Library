@@ -126,20 +126,24 @@ class Adafruit_GFX : public Print {
     charBounds(char c, int16_t *x, int16_t *y,
       int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy);
   const int16_t
-    WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
+    WIDTH,          ///< This is the 'raw' display width - never changes
+    HEIGHT;         ///< This is the 'raw' display height - never changes
   int16_t
-    _width, _height, // Display w/h as modified by current rotation
-    cursor_x, cursor_y;
+    _width,         ///< Display width as modified by current rotation
+    _height,        ///< Display height as modified by current rotation
+    cursor_x,       ///< x location to start print()ing text
+    cursor_y;       ///< y location to start print()ing text
   uint16_t
-    textcolor, textbgcolor;
+    textcolor,      ///< 16-bit background color for print()
+    textbgcolor;    ///< 16-bit text color for print()
   uint8_t
-    textsize,
-    rotation;
+    textsize,       ///< Desired magnification of text to print()
+    rotation;       ///< Display rotation (0 thru 3)
   boolean
-    wrap,   // If set, 'wrap' text at right edge of display
-    _cp437; // If set, use correct CP437 charset (default is off)
+    wrap,           ///< If set, 'wrap' text at right edge of display
+    _cp437;         ///< If set, use correct CP437 charset (default is off)
   GFXfont
-    *gfxFont;
+    *gfxFont;       ///< Pointer to special font
 };
 
 class Adafruit_GFX_Button {
