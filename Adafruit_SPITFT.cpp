@@ -65,6 +65,8 @@ uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
 /**************************************************************************/
 /*!
     @brief  Instantiate Adafruit SPI display driver with software SPI
+    @param    w     Display width in pixels
+    @param    h     Display height in pixels
     @param    cs    Chip select pin #
     @param    dc    Data/Command pin #
     @param    mosi  SPI MOSI pin #
@@ -103,6 +105,16 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 #endif
 }
 
+/**************************************************************************/
+/*!
+    @brief  Instantiate Adafruit SPI display driver with hardware SPI
+    @param    w     Display width in pixels
+    @param    h     Display height in pixels
+    @param    cs    Chip select pin #
+    @param    dc    Data/Command pin #
+    @param    rst   Reset pin # (optional, pass -1 if unused)
+*/
+/**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 				 int8_t cs, int8_t dc, int8_t rst) 
   : Adafruit_GFX(w, h) {
@@ -127,7 +139,12 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 #endif
 }
 
-
+/**************************************************************************/
+/*!
+    @brief   Initialiaze the SPI interface (hardware or software)
+    @param    freq  The desired maximum SPI hardware clock frequency
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::initSPI(uint32_t freq)
 {
     _freq = freq;
@@ -164,6 +181,12 @@ void Adafruit_SPITFT::initSPI(uint32_t freq)
     }
 }
 
+/**************************************************************************/
+/*!
+    @brief   Read one byte from SPI interface (hardware or software
+    @returns One byte, MSB order
+*/
+/**************************************************************************/
 uint8_t Adafruit_SPITFT::spiRead() {
     if(_sclk < 0){
         return HSPI_READ();
@@ -183,6 +206,12 @@ uint8_t Adafruit_SPITFT::spiRead() {
     return r;
 }
 
+/**************************************************************************/
+/*!
+    @brief   Write one byte to SPI interface (hardware or software
+    @param  b  One byte to send, MSB order
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::spiWrite(uint8_t b) {
     if(_sclk < 0){
         HSPI_WRITE(b);
@@ -204,6 +233,15 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
  * Transaction API
  * */
 
+/**************************************************************************/
+/*!
+    @brief   SPI displays set an address window rectangle for blitting pixels
+    @param  x  Top left corner x coordinate
+    @param  y  Top left corner x coordinate
+    @param  w  Width of window
+    @param  h  Height of window
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
   x += _xstart;
   y += _ystart;
@@ -222,37 +260,78 @@ void Adafruit_SPITFT::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t
   writeCommand(RAMwriteCommand); // write to RAM
 }
 
+/**************************************************************************/
+/*!
+    @brief   Begin an SPI transaction & set CS low.
+*/
+/**************************************************************************/
 void inline Adafruit_SPITFT::startWrite(void){
     SPI_BEGIN_TRANSACTION();
     SPI_CS_LOW();
 }
 
+/**************************************************************************/
+/*!
+    @brief   Begin an SPI transaction & set CS high.
+*/
+/**************************************************************************/
 void inline Adafruit_SPITFT::endWrite(void){
     SPI_CS_HIGH();
     SPI_END_TRANSACTION();
 }
 
+/**************************************************************************/
+/*!
+    @brief   Write a command byte (must have a transaction in progress)
+    @param   cmd  The 8-bit command to send
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::writeCommand(uint8_t cmd){
     SPI_DC_LOW();
     spiWrite(cmd);
     SPI_DC_HIGH();
 }
 
+/**************************************************************************/
+/*!
+    @brief   Push a 2-byte color to the framebuffer RAM, will start transaction
+    @param    color 16-bit 5-6-5 Color to draw
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::pushColor(uint16_t color) {
   startWrite();
   SPI_WRITE16(color);
   endWrite();
 }
 
-
+/**************************************************************************/
+/*!
+    @brief   Write a 2-byte color  (must have a transaction in progress)
+    @param    color 16-bit 5-6-5 Color to draw
+*/
+/**************************************************************************/
 void inline Adafruit_SPITFT::writePixel(uint16_t color){
     SPI_WRITE16(color);
 }
 
+/**************************************************************************/
+/*!
+    @brief   Blit multiple 2-byte colors  (must have a transaction in progress)
+    @param    colors Array of 16-bit 5-6-5 Colors to draw
+    @param    len  How many pixels to draw - 2 bytes per pixel!
+*/
+/**************************************************************************/
 void inline Adafruit_SPITFT::writePixels(uint16_t * colors, uint32_t len){
     SPI_WRITE_PIXELS((uint8_t*)colors , len * 2);
 }
 
+/**************************************************************************/
+/*!
+    @brief   Blit a 2-byte color many times  (must have a transaction in progress)
+    @param    color  The 16-bit 5-6-5 Color to draw
+    @param    len    How many pixels to draw
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len){
 #ifdef SPI_HAS_WRITE_PIXELS
     if(_sclk >= 0){
@@ -290,12 +369,30 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len){
 #endif
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a pixel (must have a transaction in progress)
+    @param   x   x coordinate
+    @param   y   y coordinate
+   @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
     if((x < 0) ||(x >= _width) || (y < 0) || (y >= _height)) return;
     setAddrWindow(x,y,1,1);
     writePixel(color);
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a filled rectangle (must have a transaction in progress)
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color){
     if((x >= _width) || (y >= _height)) return;
     int16_t x2 = x + w - 1, y2 = y + h - 1;
@@ -320,20 +417,55 @@ void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, 
     writeColor(color, len);
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a perfectly vertical line (must have a transaction in progress)
+    @param    x   Top-most x coordinate
+    @param    y   Top-most y coordinate
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void inline Adafruit_SPITFT::writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color){
     writeFillRect(x, y, 1, h, color);
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a perfectly horizontal line (must have a transaction in progress)
+    @param    x   Left-most x coordinate
+    @param    y   Left-most y coordinate
+    @param    w   Width in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void inline Adafruit_SPITFT::writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color){
     writeFillRect(x, y, w, 1, color);
 }
 
+/**************************************************************************/
+/*!
+   @brief    Draw a pixel - sets up transaction
+    @param   x   x coordinate
+    @param   y   y coordinate
+   @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::drawPixel(int16_t x, int16_t y, uint16_t color){
     startWrite();
     writePixel(x, y, color);
     endWrite();
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a perfectly vertical line - sets up transaction
+    @param    x   Top-most x coordinate
+    @param    y   Top-most y coordinate
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::drawFastVLine(int16_t x, int16_t y,
         int16_t h, uint16_t color) {
     startWrite();
@@ -341,6 +473,15 @@ void Adafruit_SPITFT::drawFastVLine(int16_t x, int16_t y,
     endWrite();
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a perfectly horizontal line - sets up transaction
+    @param    x   Left-most x coordinate
+    @param    y   Left-most y coordinate
+    @param    w   Width in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::drawFastHLine(int16_t x, int16_t y,
         int16_t w, uint16_t color) {
     startWrite();
@@ -348,6 +489,16 @@ void Adafruit_SPITFT::drawFastHLine(int16_t x, int16_t y,
     endWrite();
 }
 
+/**************************************************************************/
+/*!
+   @brief    Fill a rectangle completely with one color.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
         uint16_t color) {
     startWrite();
@@ -356,17 +507,36 @@ void Adafruit_SPITFT::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 }
 
 
+/**************************************************************************/
+/*!
+    @brief      Invert the display using built-in hardware command
+    @param   i  True if you want to invert, false to make 'normal'
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::invertDisplay(boolean i) {
   startWrite();
   writeCommand(i ? invertOnCommand : invertOffCommand);
   endWrite();
 }
 
-// Adapted from https://github.com/PaulStoffregen/ILI9341_t3
-// by Marc MERLIN. See examples/pictureEmbed to use this.
-// 5/6/2017: function name and arguments have changed for compatibility
-// with current GFX library and to avoid naming problems in prior
-// implementation.  Formerly drawBitmap() with arguments in different order.
+
+/**************************************************************************/
+/*!
+   @brief   Draw a 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   For 16-bit display devices; no color reduction performed.
+   Adapted from https://github.com/PaulStoffregen/ILI9341_t3 
+   by Marc MERLIN. See examples/pictureEmbed to use this.
+   5/6/2017: function name and arguments have changed for compatibility
+   with current GFX library and to avoid naming problems in prior
+   implementation.  Formerly drawBitmap() with arguments in different order.
+
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    pcolors  16-bit array with 16-bit color bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
   uint16_t *pcolors, int16_t w, int16_t h) {
 

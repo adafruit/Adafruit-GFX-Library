@@ -9,6 +9,7 @@
 #endif
 #include "gfxfont.h"
 
+/// A generic graphics superclass that can handle all sorts of drawing. At a minimum you can subclass and provide drawPixel(). At a maximum you can do a ton of overriding to optimize. Used for any/all Adafruit displays!
 class Adafruit_GFX : public Print {
 
  public:
@@ -16,7 +17,7 @@ class Adafruit_GFX : public Print {
   Adafruit_GFX(int16_t w, int16_t h); // Constructor
 
   // This MUST be defined by the subclass:
-  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
+  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;    ///< Virtual drawPixel() function to draw to the screen/framebuffer/etc, must be overridden in subclass. @param x X coordinate.  @param y Y coordinate. @param color 16-bit pixel color. 
 
   // TRANSACTION API / CORE DRAW API
   // These MAY be overridden by the subclass to provide device-specific
@@ -146,6 +147,8 @@ class Adafruit_GFX : public Print {
     *gfxFont;       ///< Pointer to special font
 };
 
+
+/// A simple drawn button UI element
 class Adafruit_GFX_Button {
 
  public:
@@ -177,6 +180,8 @@ class Adafruit_GFX_Button {
   boolean currstate, laststate;
 };
 
+
+/// A GFX 1-bit canvas context for graphics
 class GFXcanvas1 : public Adafruit_GFX {
  public:
   GFXcanvas1(uint16_t w, uint16_t h);
@@ -188,6 +193,8 @@ class GFXcanvas1 : public Adafruit_GFX {
   uint8_t *buffer;
 };
 
+
+/// A GFX 8-bit canvas context for graphics
 class GFXcanvas8 : public Adafruit_GFX {
  public:
   GFXcanvas8(uint16_t w, uint16_t h);
@@ -201,6 +208,8 @@ class GFXcanvas8 : public Adafruit_GFX {
   uint8_t *buffer;
 };
 
+
+///  A GFX 16-bit canvas context for graphics
 class GFXcanvas16 : public Adafruit_GFX {
  public:
   GFXcanvas16(uint16_t w, uint16_t h);

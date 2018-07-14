@@ -20,6 +20,7 @@ typedef volatile uint32_t RwReg;
 
 #define USE_FAST_PINIO
 
+/// A heavily optimized SPI display subclass of GFX. Manages SPI bitbanging, transactions, DMA, etc! Despite being called SPITFT, the classic SPI data/command interface is also used by OLEDs.
 class Adafruit_SPITFT : public Adafruit_GFX {
     protected:
 
@@ -27,7 +28,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _RST = -1);
 
-        virtual void begin(uint32_t freq) = 0;
+        virtual void begin(uint32_t freq) = 0;   ///< Virtual begin() function to set SPI frequency, must be overridden in subclass. @param freq Maximum SPI hardware clock speed
         void      initSPI(uint32_t freq);
 
         // Required Non-Transaction
@@ -61,25 +62,42 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         uint16_t  color565(uint8_t r, uint8_t g, uint8_t b);
 
     protected:
-        uint32_t _freq;
+        uint32_t _freq;         ///< SPI clock frequency (for hardware SPI)
 #if defined (__AVR__) || defined(TEENSYDUINO) || defined (ESP8266) || defined (ESP32)
         int8_t  _cs, _dc, _rst, _sclk, _mosi, _miso;
 #else 
-        int32_t  _cs, _dc, _rst, _sclk, _mosi, _miso;
+        int32_t  _cs,            ///< Arduino pin # for chip-select pin 
+	  _dc,                   ///< Arduino pin # for data-command pin 
+	  _rst,                  ///< Arduino pin # for reset pin 
+	  _sclk,                 ///< Arduino pin # for SPI clock pin 
+	  _mosi,                 ///< Arduino pin # for SPI MOSI pin 
+	  _miso;                 ///< Arduino pin # for SPI MISO pin 
 #endif
 
 #ifdef USE_FAST_PINIO
-        volatile RwReg *mosiport, *misoport, *clkport, *dcport, *csport;
-        RwReg  mosipinmask, misopinmask, clkpinmask, cspinmask, dcpinmask;
+        volatile RwReg *mosiport,   ///< Direct chip register for toggling MOSI with fast bitbang IO
+	  *misoport,            ///< Direct chip register for toggling MISO with fast bitbang IO
+	  *clkport,             ///< Direct chip register for toggling CLK with fast bitbang IO
+	  *dcport,              ///< Direct chip register for toggling DC with fast bitbang IO
+	  *csport;              ///< Direct chip register for toggling CS with fast bitbang IO
+        RwReg  mosipinmask,     ///< bitmask for turning on/off MOSI with fast register bitbang IO 
+	  misopinmask,          ///< bitmask for turning on/off MISO with fast register bitbang IO 
+	  clkpinmask,           ///< bitmask for turning on/off CLK with fast register bitbang IO 
+	  cspinmask,            ///< bitmask for turning on/off CS with fast register bitbang IO 
+	  dcpinmask;            ///< bitmask for turning on/off DC with fast register bitbang IO 
 #endif
 
         void        writeCommand(uint8_t cmd);
         void        spiWrite(uint8_t v);
         uint8_t     spiRead(void);
 
-	uint8_t   invertOnCommand = 0, invertOffCommand = 0;
-	uint8_t   ySetCommand, xSetCommand, RAMwriteCommand;
-	int16_t   _xstart = 0, _ystart = 0;
+	uint8_t   invertOnCommand = 0,    ///<  SPI command byte to turn on invert
+	  invertOffCommand = 0;           ///<  SPI command byte to turn off invert
+	uint8_t   ySetCommand,   ///<  SPI command byte to set the Y address window
+	  xSetCommand,           ///<  SPI command byte to set the X address window
+	  RAMwriteCommand;       ///<  SPI command byte to start blitting data to framebuffer RAM
+	int16_t   _xstart = 0;   ///< Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the x offset from 0 to align
+	int16_t   _ystart = 0;   ///< Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the y offset from 0 to align
 };
 
 #endif
