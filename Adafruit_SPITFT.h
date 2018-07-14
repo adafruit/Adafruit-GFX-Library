@@ -1,7 +1,5 @@
-
 #ifndef _ADAFRUIT_SPITFT_
 #define _ADAFRUIT_SPITFT_
-
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -12,13 +10,15 @@
 #include <SPI.h>
 #include "Adafruit_GFX.h"
 
-
-#if defined(ARDUINO_STM32_FEATHER)
+#if defined(__AVR__)
+typedef volatile uint8_t RwReg;
+#elif defined(ARDUINO_STM32_FEATHER)
 typedef volatile uint32 RwReg;
-#endif
-#if defined(ARDUINO_FEATHER52)
+#elif defined(ARDUINO_FEATHER52) || defined(__arm__)
 typedef volatile uint32_t RwReg;
 #endif
+
+#define USE_FAST_PINIO
 
 class Adafruit_SPITFT : public Adafruit_GFX {
     protected:
