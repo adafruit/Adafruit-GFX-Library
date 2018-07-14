@@ -84,7 +84,16 @@ WIDTH(w), HEIGHT(h)
     gfxFont   = NULL;
 }
 
-// Bresenham's algorithm - thx wikpedia
+/**************************************************************************/
+/*!
+   @brief    Write a line.  Bresenham's algorithm - thx wikpedia
+    @param    x0  Start point x coordinate
+    @param    y0  Start point y coordinate
+    @param    x1  End point x coordinate
+    @param    y1  End point y coordinate
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         uint16_t color) {
     int16_t steep = abs(y1 - y0) > abs(x1 - x0);
@@ -125,17 +134,35 @@ void Adafruit_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Start a display-writing routine, overwrite in subclasses.
+*/
+/**************************************************************************/
 void Adafruit_GFX::startWrite(){
-    // Overwrite in subclasses if desired!
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a pixel, overwrite in subclasses if startWrite is defined!
+    @param   x   x coordinate
+    @param   y   y coordinate
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::writePixel(int16_t x, int16_t y, uint16_t color){
-    // Overwrite in subclasses if startWrite is defined!
     drawPixel(x, y, color);
 }
 
-// (x,y) is topmost point; if unsure, calling function
-// should sort endpoints or call writeLine() instead
+/**************************************************************************/
+/*!
+   @brief    Write a perfectly vertical line, overwrite in subclasses if startWrite is defined!
+    @param    x   Top-most x coordinate
+    @param    y   Top-most y coordinate
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::writeFastVLine(int16_t x, int16_t y,
         int16_t h, uint16_t color) {
     // Overwrite in subclasses if startWrite is defined!
@@ -144,8 +171,15 @@ void Adafruit_GFX::writeFastVLine(int16_t x, int16_t y,
     drawFastVLine(x, y, h, color);
 }
 
-// (x,y) is leftmost point; if unsure, calling function
-// should sort endpoints or call writeLine() instead
+/**************************************************************************/
+/*!
+   @brief    Write a perfectly horizontal line, overwrite in subclasses if startWrite is defined!
+    @param    x   Left-most x coordinate
+    @param    y   Left-most y coordinate
+    @param    w   Width in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::writeFastHLine(int16_t x, int16_t y,
         int16_t w, uint16_t color) {
     // Overwrite in subclasses if startWrite is defined!
@@ -154,39 +188,74 @@ void Adafruit_GFX::writeFastHLine(int16_t x, int16_t y,
     drawFastHLine(x, y, w, color);
 }
 
+/**************************************************************************/
+/*!
+   @brief    Write a rectangle completely with one color, overwrite in subclasses if startWrite is defined!
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
         uint16_t color) {
     // Overwrite in subclasses if desired!
     fillRect(x,y,w,h,color);
 }
 
+/**************************************************************************/
+/*!
+   @brief    End a display-writing routine, overwrite in subclasses if startWrite is defined!
+*/
+/**************************************************************************/
 void Adafruit_GFX::endWrite(){
-    // Overwrite in subclasses if startWrite is defined!
 }
 
-// (x,y) is topmost point; if unsure, calling function
-// should sort endpoints or call drawLine() instead
+/**************************************************************************/
+/*!
+   @brief    Draw a perfectly vertical line (this is often optimized in a subclass!)
+    @param    x   Top-most x coordinate
+    @param    y   Top-most y coordinate
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawFastVLine(int16_t x, int16_t y,
         int16_t h, uint16_t color) {
-    // Update in subclasses if desired!
     startWrite();
     writeLine(x, y, x, y+h-1, color);
     endWrite();
 }
 
-// (x,y) is leftmost point; if unsure, calling function
-// should sort endpoints or call drawLine() instead
+/**************************************************************************/
+/*!
+   @brief    Draw a perfectly horizontal line (this is often optimized in a subclass!)
+    @param    x   Left-most x coordinate
+    @param    y   Left-most y coordinate
+    @param    w   Width in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawFastHLine(int16_t x, int16_t y,
         int16_t w, uint16_t color) {
-    // Update in subclasses if desired!
     startWrite();
     writeLine(x, y, x+w-1, y, color);
     endWrite();
 }
 
+/**************************************************************************/
+/*!
+   @brief    Fill a rectangle completely with one color. Update in subclasses if desired!
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+   @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
         uint16_t color) {
-    // Update in subclasses if desired!
     startWrite();
     for (int16_t i=x; i<x+w; i++) {
         writeFastVLine(i, y, h, color);
@@ -194,11 +263,26 @@ void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
     endWrite();
 }
 
+/**************************************************************************/
+/*!
+   @brief    Fill the screen completely with one color. Update in subclasses if desired!
+    @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::fillScreen(uint16_t color) {
-    // Update in subclasses if desired!
     fillRect(0, 0, _width, _height, color);
 }
 
+/**************************************************************************/
+/*!
+   @brief    Draw a line
+    @param    x0  Start point x coordinate
+    @param    y0  Start point y coordinate
+    @param    x1  End point x coordinate
+    @param    y1  End point y coordinate
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         uint16_t color) {
     // Update in subclasses if desired!
@@ -215,7 +299,15 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     }
 }
 
-// Draw a circle outline
+/**************************************************************************/
+/*!
+   @brief    Draw a circle outline
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    r   Radius of circle
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
         uint16_t color) {
     int16_t f = 1 - r;
@@ -252,6 +344,17 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
     endWrite();
 }
 
+/**************************************************************************/
+/*!
+   @brief    Quarter-circle drawer, used to do circles and roundrects
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    r   Radius of circle
+    @param    cornername  Mask bit #1 or bit #2 to indicate which quarters of the circle we're doing
+    @param    delta  Offset from center-point, used for round-rects
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawCircleHelper( int16_t x0, int16_t y0,
         int16_t r, uint8_t cornername, uint16_t color) {
     int16_t f     = 1 - r;
@@ -288,6 +391,15 @@ void Adafruit_GFX::drawCircleHelper( int16_t x0, int16_t y0,
     }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Draw a circle with filled color
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    r   Radius of circle
+    @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
         uint16_t color) {
     startWrite();
@@ -296,7 +408,18 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
     endWrite();
 }
 
-// Used to do circles and roundrects
+
+/**************************************************************************/
+/*!
+   @brief    Quarter-circle drawer with fill, used to do circles and roundrects
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    r   Radius of circle
+    @param    cornername  Mask bit #1 or bit #2 to indicate which quarters of the circle we're doing
+    @param    delta  Offset from center-point, used for round-rects
+    @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
 void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
         uint8_t cornername, int16_t delta, uint16_t color) {
 
@@ -327,7 +450,16 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     }
 }
 
-// Draw a rectangle
+/**************************************************************************/
+/*!
+   @brief   Draw a rectangle with no fill color
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
         uint16_t color) {
     startWrite();
@@ -501,8 +633,17 @@ void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0,
 
 // BITMAP / XBITMAP / GRAYSCALE / RGB BITMAP FUNCTIONS ---------------------
 
-// Draw a PROGMEM-resident 1-bit image at the specified (x,y) position,
-// using the specified foreground color (unset bits are transparent).
+/**************************************************************************/
+/*!
+   @brief      Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground color (unset bits are transparent).
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
   const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color) {
 
@@ -520,9 +661,18 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a PROGMEM-resident 1-bit image at the specified (x,y) position,
-// using the specified foreground (for set bits) and background (unset
-// bits) colors.
+/**************************************************************************/
+/*!
+   @brief      Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground (for set bits) and background (unset bits) colors.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw pixels with
+    @param    bg 16-bit 5-6-5 Color to draw background with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
   const uint8_t bitmap[], int16_t w, int16_t h,
   uint16_t color, uint16_t bg) {
@@ -541,8 +691,17 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a RAM-resident 1-bit image at the specified (x,y) position,
-// using the specified foreground color (unset bits are transparent).
+/**************************************************************************/
+/*!
+   @brief      Draw a RAM-resident 1-bit image at the specified (x,y) position, using the specified foreground color (unset bits are transparent).
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
   uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
@@ -560,9 +719,18 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a RAM-resident 1-bit image at the specified (x,y) position,
-// using the specified foreground (for set bits) and background (unset
-// bits) colors.
+/**************************************************************************/
+/*!
+   @brief      Draw a RAM-resident 1-bit image at the specified (x,y) position, using the specified foreground (for set bits) and background (unset bits) colors.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw pixels with
+    @param    bg 16-bit 5-6-5 Color to draw background with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
   uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
 
@@ -580,11 +748,21 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP,
-// Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
-// C Array can be directly used with this function.
-// There is no RAM-resident version of this function; if generating bitmaps
-// in RAM, use the format defined by drawBitmap() and call that instead.
+/**************************************************************************/
+/*!
+   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP. 
+   Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+   C Array can be directly used with this function.
+   There is no RAM-resident version of this function; if generating bitmaps
+   in RAM, use the format defined by drawBitmap() and call that instead.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw pixels with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
   const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color) {
 
@@ -604,9 +782,18 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y)
-// pos.  Specifically for 8-bit display devices such as IS31FL3731;
-// no color reduction/expansion is performed.
+
+/**************************************************************************/
+/*!
+   @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y) pos.  
+   Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with grayscale bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
   const uint8_t bitmap[], int16_t w, int16_t h) {
     startWrite();
@@ -618,9 +805,17 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a RAM-resident 8-bit image (grayscale) at the specified (x,y)
-// pos.  Specifically for 8-bit display devices such as IS31FL3731;
-// no color reduction/expansion is performed.
+/**************************************************************************/
+/*!
+   @brief   Draw a RAM-resident 8-bit image (grayscale) at the specified (x,y) pos.  
+   Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with grayscale bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Hieght of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
   uint8_t *bitmap, int16_t w, int16_t h) {
     startWrite();
@@ -632,11 +827,21 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a PROGMEM-resident 8-bit image (grayscale) with a 1-bit mask
-// (set bits = opaque, unset bits = clear) at the specified (x,y) position.
-// BOTH buffers (grayscale and mask) must be PROGMEM-resident.
-// Specifically for 8-bit display devices such as IS31FL3731;
-// no color reduction/expansion is performed.
+
+/**************************************************************************/
+/*!
+   @brief   Draw a PROGMEM-resident 8-bit image (grayscale) with a 1-bit mask
+   (set bits = opaque, unset bits = clear) at the specified (x,y) position.
+   BOTH buffers (grayscale and mask) must be PROGMEM-resident.
+   Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with grayscale bitmap
+    @param    mast  byte array with mask bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
   const uint8_t bitmap[], const uint8_t mask[],
   int16_t w, int16_t h) {
@@ -655,11 +860,20 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask
-// (set bits = opaque, unset bits = clear) at the specified (x,y) pos.
-// BOTH buffers (grayscale and mask) must be RAM-resident, no mix-and-
-// match.  Specifically for 8-bit display devices such as IS31FL3731;
-// no color reduction/expansion is performed.
+/**************************************************************************/
+/*!
+   @brief   Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask
+   (set bits = opaque, unset bits = clear) at the specified (x,y) position.
+   BOTH buffers (grayscale and mask) must be RAM-residentt, no mix-and-match
+   Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with grayscale bitmap
+    @param    mast  byte array with mask bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
   uint8_t *bitmap, uint8_t *mask, int16_t w, int16_t h) {
     int16_t bw   = (w + 7) / 8; // Bitmask scanline pad = whole byte
@@ -677,8 +891,18 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y)
-// position.  For 16-bit display devices; no color reduction performed.
+
+/**************************************************************************/
+/*!
+   @brief   Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   For 16-bit display devices; no color reduction performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with 16-bit color bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
   const uint16_t bitmap[], int16_t w, int16_t h) {
     startWrite();
@@ -690,8 +914,17 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y)
-// position.  For 16-bit display devices; no color reduction performed.
+/**************************************************************************/
+/*!
+   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   For 16-bit display devices; no color reduction performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with 16-bit color bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
   uint16_t *bitmap, int16_t w, int16_t h) {
     startWrite();
@@ -703,10 +936,18 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) with a 1-bit mask
-// (set bits = opaque, unset bits = clear) at the specified (x,y) position.
-// BOTH buffers (color and mask) must be PROGMEM-resident.
-// For 16-bit display devices; no color reduction performed.
+
+/**************************************************************************/
+/*!
+   @brief   Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (color and mask) must be PROGMEM-resident. For 16-bit display devices; no color reduction performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with 16-bit color bitmap
+    @param    mask  byte array with monochrome mask bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
   const uint16_t bitmap[], const uint8_t mask[],
   int16_t w, int16_t h) {
@@ -725,10 +966,17 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-// Draw a RAM-resident 16-bit image (RGB 5/6/5) with a 1-bit mask
-// (set bits = opaque, unset bits = clear) at the specified (x,y) pos.
-// BOTH buffers (color and mask) must be RAM-resident, no mix-and-match.
-// For 16-bit display devices; no color reduction performed.
+/**************************************************************************/
+/*!
+   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (color and mask) must be RAM-resident. For 16-bit display devices; no color reduction performed.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with 16-bit color bitmap
+    @param    mask  byte array with monochrome mask bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
   uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h) {
     int16_t bw   = (w + 7) / 8; // Bitmask scanline pad = whole byte
@@ -749,6 +997,17 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
 // TEXT- AND CHARACTER-HANDLING FUNCTIONS ----------------------------------
 
 // Draw a character
+/**************************************************************************/
+/*!
+   @brief   Draw a single character
+    @param    x   Bottom left corner x coordinate
+    @param    y   Bottom left corner y coordinate
+    @param    c   The 8-bit font-indexed character (likely ascii)
+    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    bg 16-bit 5-6-5 Color to fill background with (if same as color, no background)
+    @param    size  Font magnification level, 1 is 'original' size
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
   uint16_t color, uint16_t bg, uint8_t size) {
 
