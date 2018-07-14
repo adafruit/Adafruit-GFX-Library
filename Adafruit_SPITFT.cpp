@@ -164,6 +164,24 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
  * Transaction API
  * */
 
+void Adafruit_SPITFT::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+  x += _xstart;
+  y += _ystart;
+  uint32_t xa = ((uint32_t)x << 16) | (x+w-1);
+  uint32_t ya = ((uint32_t)y << 16) | (y+h-1); 
+
+  //Serial.print("X: "); Serial.println(xa, HEX);
+  //Serial.print("Y: "); Serial.println(ya, HEX);
+
+  writeCommand(xSetCommand); // Column addr set
+  SPI_WRITE32(xa);
+
+  writeCommand(ySetCommand); // Row addr set
+  SPI_WRITE32(ya);
+
+  writeCommand(RAMwriteCommand); // write to RAM
+}
+
 void inline Adafruit_SPITFT::startWrite(void){
     SPI_BEGIN_TRANSACTION();
     SPI_CS_LOW();
@@ -295,6 +313,13 @@ void Adafruit_SPITFT::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
     startWrite();
     writeFillRect(x,y,w,h,color);
     endWrite();
+}
+
+
+void Adafruit_SPITFT::invertDisplay(boolean i) {
+  startWrite();
+  writeCommand(i ? invertOnCommand : invertOffCommand);
+  endWrite();
 }
 
 // Adapted from https://github.com/PaulStoffregen/ILI9341_t3

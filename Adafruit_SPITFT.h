@@ -42,7 +42,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         void      writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
         // Transaction API not used by GFX
-	virtual   void setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;
+	void      setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void      writePixel(uint16_t color);
         void      writePixels(uint16_t * colors, uint32_t len);
         void      writeColor(uint16_t color, uint32_t len);
@@ -56,6 +56,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         using     Adafruit_GFX::drawRGBBitmap; // Check base class first
         void      drawRGBBitmap(int16_t x, int16_t y,
                     uint16_t *pcolors, int16_t w, int16_t h);
+	void      invertDisplay(boolean i);
 
         uint16_t  color565(uint8_t r, uint8_t g, uint8_t b);
 
@@ -75,6 +76,10 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         void        writeCommand(uint8_t cmd);
         void        spiWrite(uint8_t v);
         uint8_t     spiRead(void);
+
+	uint8_t   invertOnCommand = 0, invertOffCommand = 0;
+	uint8_t   ySetCommand, xSetCommand, RAMwriteCommand;
+	int16_t   _xstart = 0, _ystart = 0;
 };
 
 #endif
