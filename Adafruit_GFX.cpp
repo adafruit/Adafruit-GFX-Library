@@ -996,7 +996,7 @@ void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
 }
 
 // Pass string and a cursor position, returns UL corner and W,H.
-void Adafruit_GFX::getTextBounds(char *str, int16_t x, int16_t y,
+void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
         int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
     uint8_t c; // Current character
 
