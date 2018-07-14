@@ -1,4 +1,9 @@
-/***************************************************
+/*!
+* @file Adafruit_SPITFT.cpp
+*
+* @mainpage Adafruit SPI TFT Displays
+*
+* @section intro_sec Introduction
   This is our library for generic SPI TFT Displays with
   address windows and 16 bit color (e.g. ILI9341, HX8357D, ST7735...)
 
@@ -11,7 +16,21 @@
 
   Written by Limor Fried/Ladyada for Adafruit Industries.
   MIT license, all text above must be included in any redistribution
- ****************************************************/
+* @section dependencies Dependencies
+*
+* This library depends on <a href="https://github.com/adafruit/Adafruit_GFX">
+* Adafruit_GFX</a> being present on your system. Please make sure you have
+* installed the latest version before using this library.
+*
+* @section author Author
+*
+* Written by Limor "ladyada" Fried for Adafruit Industries.
+*
+* @section license License
+*
+* BSD license, all text here must be included in any redistribution.
+*
+*/
 
 #ifndef __AVR_ATtiny85__ // NOT A CHANCE of this stuff working on ATtiny!
 
@@ -28,11 +47,32 @@
 
 
 
-// Pass 8-bit (each) R,G,B, get back 16-bit packed color
-uint16_t Adafruit_SPITFT::color565(uint8_t r, uint8_t g, uint8_t b) {
+/**************************************************************************/
+/*!
+    @brief  Pass 8-bit (each) R,G,B, get back 16-bit packed color
+            This function converts 8-8-8 RGB data to 16-bit 5-6-5
+    @param    red   Red 8 bit color
+    @param    green Green 8 bit color
+    @param    blue  Blue 8 bit color
+    @return   Unsigned 16-bit down-sampled color in 5-6-5 format
+*/
+/**************************************************************************/
+uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
     return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3);
 }
 
+
+/**************************************************************************/
+/*!
+    @brief  Instantiate Adafruit SPI display driver with software SPI
+    @param    cs    Chip select pin #
+    @param    dc    Data/Command pin #
+    @param    mosi  SPI MOSI pin #
+    @param    sclk  SPI Clock pin #
+    @param    rst   Reset pin # (optional, pass -1 if unused)
+    @param    miso  SPI MISO pin # (optional, pass -1 if unused)
+*/
+/**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 				 int8_t cs, int8_t dc, int8_t mosi,
 				 int8_t sclk, int8_t rst, int8_t miso) 
