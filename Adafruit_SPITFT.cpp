@@ -277,15 +277,7 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
   endWrite();
 }
 
-/**************************************************************************/
-/*!
-    @brief   Write a 2-byte color  (must have a transaction in progress)
-    @param    color 16-bit 5-6-5 Color to draw
-*/
-/**************************************************************************/
-void inline Adafruit_SPITFT::writePixel(uint16_t color){
-    SPI_WRITE16(color);
-}
+
 
 /**************************************************************************/
 /*!
