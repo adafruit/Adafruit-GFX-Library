@@ -9,7 +9,6 @@
 #endif
 #include <SPI.h>
 #include "Adafruit_GFX.h"
-#include "Adafruit_SPITFT_Macros.h"
 
 #define USE_FAST_PINIO
 
@@ -25,6 +24,7 @@ typedef volatile uint32_t RwReg;
 #undefine USE_FAST_PINIO
 #endif
 
+#include "Adafruit_SPITFT_Macros.h"
 
 /// A heavily optimized SPI display subclass of GFX. Manages SPI bitbanging, transactions, DMA, etc! Despite being called SPITFT, the classic SPI data/command interface is also used by OLEDs.
 class Adafruit_SPITFT : public Adafruit_GFX {
