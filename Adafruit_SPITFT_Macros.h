@@ -1,3 +1,5 @@
+#ifndef _ADAFRUIT_SPITFT_MACROS
+#define _ADAFRUIT_SPITFT_MACROS
 
 /*
  * Control Pins
@@ -112,3 +114,6 @@ static inline uint8_t _avr_spi_read(void) {
 #define SPI_WRITE16(s)          if(_sclk < 0){HSPI_WRITE16(s);}else{SSPI_WRITE16(s);}
 #define SPI_WRITE32(l)          if(_sclk < 0){HSPI_WRITE32(l);}else{SSPI_WRITE32(l);}
 #define SPI_WRITE_PIXELS(c,l)   if(_sclk < 0){HSPI_WRITE_PIXELS(c,l);}else{SSPI_WRITE_PIXELS(c,l);}
+
+
+#endif
