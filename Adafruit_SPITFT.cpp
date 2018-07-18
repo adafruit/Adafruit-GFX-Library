@@ -87,20 +87,29 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _miso = miso;
     _freq = 0;
 #ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_dc));
-    dcpinmask = digitalPinToBitMask(_dc);
-    clkport     = portOutputRegister(digitalPinToPort(_sclk));
-    clkpinmask  = digitalPinToBitMask(_sclk);
-    mosiport    = portOutputRegister(digitalPinToPort(_mosi));
-    mosipinmask = digitalPinToBitMask(_mosi);
+    dcport      = (RwReg *)portOutputRegister(digitalPinToPort(dc));
+    dcpinmask   = digitalPinToBitMask(dc);
+    clkport     = (RwReg *)portOutputRegister(digitalPinToPort(sclk));
+    clkpinmask  = digitalPinToBitMask(sclk);
+    mosiport    = (RwReg *)portOutputRegister(digitalPinToPort(mosi));
+    mosipinmask = digitalPinToBitMask(mosi);
     if(miso >= 0){
-        misoport    = portInputRegister(digitalPinToPort(_miso));
-        misopinmask = digitalPinToBitMask(_miso);
+        misoport    = (RwReg *)portInputRegister(digitalPinToPort(miso));
+        misopinmask = digitalPinToBitMask(miso);
     } else {
         misoport    = 0;
         misopinmask = 0;
+    }
+    if(cs >= 0) {
+        csport    = (RwReg *)portOutputRegister(digitalPinToPort(cs));
+        cspinmask = digitalPinToBitMask(cs);
+    } else {
+        // No chip-select line defined; might be permanently tied to GND.
+        // Assign a valid GPIO register (though not used for CS), and an
+        // empty pin bitmask...the nonsense bit-twiddling might be faster
+        // than checking _cs and possibly branching.
+        csport    = dcport;
+        cspinmask = 0;
     }
 #endif
 }
@@ -126,16 +135,22 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _miso = -1;
     _freq = 0;
 #ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_dc));
-    dcpinmask = digitalPinToBitMask(_dc);
     clkport     = 0;
     clkpinmask  = 0;
     mosiport    = 0;
     mosipinmask = 0;
     misoport    = 0;
     misopinmask = 0;
+    dcport      = (RwReg *)portOutputRegister(digitalPinToPort(dc));
+    dcpinmask   = digitalPinToBitMask(dc);
+    if(cs >= 0) {
+        csport    = (RwReg *)portOutputRegister(digitalPinToPort(cs));
+        cspinmask = digitalPinToBitMask(cs);
+    } else {
+        // See notes in prior constructor.
+        csport    = dcport;
+        cspinmask = 0;
+    }
 #endif
 }
 
@@ -150,10 +165,12 @@ void Adafruit_SPITFT::initSPI(uint32_t freq)
     _freq = freq;
 
     // Control Pins
+    if(_cs >= 0) {
+        pinMode(_cs, OUTPUT);
+        digitalWrite(_cs, HIGH); // Deselect
+    }
     pinMode(_dc, OUTPUT);
     digitalWrite(_dc, LOW);
-    pinMode(_cs, OUTPUT);
-    digitalWrite(_cs, HIGH);
 
     // Software SPI
     if(_sclk >= 0){

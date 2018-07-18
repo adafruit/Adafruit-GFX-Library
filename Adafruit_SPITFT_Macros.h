@@ -8,13 +8,13 @@
 #ifdef USE_FAST_PINIO
 #define SPI_DC_HIGH()           *dcport |=  dcpinmask
 #define SPI_DC_LOW()            *dcport &= ~dcpinmask
-#define SPI_CS_HIGH()           *csport |= cspinmask
+#define SPI_CS_HIGH()           *csport |=  cspinmask
 #define SPI_CS_LOW()            *csport &= ~cspinmask
 #else
 #define SPI_DC_HIGH()           digitalWrite(_dc, HIGH)
 #define SPI_DC_LOW()            digitalWrite(_dc, LOW)
-#define SPI_CS_HIGH()           digitalWrite(_cs, HIGH)
-#define SPI_CS_LOW()            digitalWrite(_cs, LOW)
+#define SPI_CS_HIGH()           { if(_cs >= 0) digitalWrite(_cs, HIGH) }
+#define SPI_CS_LOW()            { if(_cs >= 0) digitalWrite(_cs, LOW)  }
 #endif
 
 /*
@@ -24,8 +24,8 @@
 #ifdef USE_FAST_PINIO
 #define SSPI_MOSI_HIGH()        *mosiport |=  mosipinmask
 #define SSPI_MOSI_LOW()         *mosiport &= ~mosipinmask
-#define SSPI_SCK_HIGH()         *clkport |=  clkpinmask
-#define SSPI_SCK_LOW()          *clkport &= ~clkpinmask
+#define SSPI_SCK_HIGH()         *clkport  |=  clkpinmask
+#define SSPI_SCK_LOW()          *clkport  &= ~clkpinmask
 #define SSPI_MISO_READ()        ((*misoport & misopinmask) != 0)
 #else
 #define SSPI_MOSI_HIGH()        digitalWrite(_mosi, HIGH)
