@@ -87,16 +87,16 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _miso = miso;
     _freq = 0;
 #ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_dc));
-    dcpinmask = digitalPinToBitMask(_dc);
-    clkport     = portOutputRegister(digitalPinToPort(_sclk));
+    csport      = (RwReg *)portOutputRegister(digitalPinToPort(_cs));
+    cspinmask   = digitalPinToBitMask(_cs);
+    dcport      = (RwReg *)portOutputRegister(digitalPinToPort(_dc));
+    dcpinmask   = digitalPinToBitMask(_dc);
+    clkport     = (RwReg *)portOutputRegister(digitalPinToPort(_sclk));
     clkpinmask  = digitalPinToBitMask(_sclk);
-    mosiport    = portOutputRegister(digitalPinToPort(_mosi));
+    mosiport    = (RwReg *)portOutputRegister(digitalPinToPort(_mosi));
     mosipinmask = digitalPinToBitMask(_mosi);
     if(miso >= 0){
-        misoport    = portInputRegister(digitalPinToPort(_miso));
+        misoport    = (RwReg *)portInputRegister(digitalPinToPort(_miso));
         misopinmask = digitalPinToBitMask(_miso);
     } else {
         misoport    = 0;
@@ -126,10 +126,10 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _miso = -1;
     _freq = 0;
 #ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_dc));
-    dcpinmask = digitalPinToBitMask(_dc);
+    csport      = (RwReg *)portOutputRegister(digitalPinToPort(_cs));
+    cspinmask   = digitalPinToBitMask(_cs);
+    dcport      = (RwReg *)portOutputRegister(digitalPinToPort(_dc));
+    dcpinmask   = digitalPinToBitMask(_dc);
     clkport     = 0;
     clkpinmask  = 0;
     mosiport    = 0;
