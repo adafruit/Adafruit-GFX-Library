@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['textbgcolor',['textbgcolor',['../class_adafruit___g_f_x.html#a23e7a4efcab0b1588dc0cafa14b1fac1',1,'Adafruit_GFX']]],
-  ['textcolor',['textcolor',['../class_adafruit___g_f_x.html#a8c6d23a386651136fd9530a5b7046591',1,'Adafruit_GFX']]],
-  ['textsize',['textsize',['../class_adafruit___g_f_x.html#ac293848b8fe8c46107d1a491f6a5168d',1,'Adafruit_GFX']]]
+  ['xadvance',['xAdvance',['../struct_g_f_xglyph.html#a9b191040252aa9b5362087d65366bbf2',1,'GFXglyph']]],
+  ['xoffset',['xOffset',['../struct_g_f_xglyph.html#ab030bd9aeb37509ccc94ae3dcec4de98',1,'GFXglyph']]]
 ];

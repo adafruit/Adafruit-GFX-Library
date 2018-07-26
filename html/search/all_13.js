@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['yadvance',['yAdvance',['../struct_g_f_xfont.html#ac2c2f0184b810a562be808fbb98822fa',1,'GFXfont']]],
-  ['yoffset',['yOffset',['../struct_g_f_xglyph.html#a96b2c0dbe314bf053cdc0d5c622e76a7',1,'GFXglyph']]]
+  ['_7egfxcanvas1',['~GFXcanvas1',['../class_g_f_xcanvas1.html#a5c6dad65db4c9a99544f3b5bad4c86e8',1,'GFXcanvas1']]],
+  ['_7egfxcanvas16',['~GFXcanvas16',['../class_g_f_xcanvas16.html#a15a79ebb2f3d86cb6a6bdc4ab1f3e9b7',1,'GFXcanvas16']]],
+  ['_7egfxcanvas8',['~GFXcanvas8',['../class_g_f_xcanvas8.html#a340fa7ddf55936e16748bd37255d2f19',1,'GFXcanvas8']]]
 ];

@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['misopinmask',['misopinmask',['../class_adafruit___s_p_i_t_f_t.html#acd472bc90334f355c9572540b32a3c59',1,'Adafruit_SPITFT']]],
-  ['misoport',['misoport',['../class_adafruit___s_p_i_t_f_t.html#ac76d01ee725d1150ad645a879edc45bf',1,'Adafruit_SPITFT']]],
-  ['mosipinmask',['mosipinmask',['../class_adafruit___s_p_i_t_f_t.html#a59da0a11ece11e96ca59d5f541c98776',1,'Adafruit_SPITFT']]],
-  ['mosiport',['mosiport',['../class_adafruit___s_p_i_t_f_t.html#a4a3b88c90f8a57bb77b406ce3c4832d7',1,'Adafruit_SPITFT']]]
+  ['textbgcolor',['textbgcolor',['../class_adafruit___g_f_x.html#a23e7a4efcab0b1588dc0cafa14b1fac1',1,'Adafruit_GFX']]],
+  ['textcolor',['textcolor',['../class_adafruit___g_f_x.html#a8c6d23a386651136fd9530a5b7046591',1,'Adafruit_GFX']]],
+  ['textsize',['textsize',['../class_adafruit___g_f_x.html#ac293848b8fe8c46107d1a491f6a5168d',1,'Adafruit_GFX']]]
 ];
