@@ -22,6 +22,7 @@ typedef volatile uint32 RwReg;
 typedef volatile uint32_t RwReg;
 #elif defined(ESP32) || defined(ESP8266)
 typedef volatile uint32_t RwReg;
+#undef USE_FAST_PINIO
 #else
 #undef USE_FAST_PINIO
 #endif
