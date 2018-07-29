@@ -13,8 +13,8 @@
 #else
 #define SPI_DC_HIGH()           digitalWrite(_dc, HIGH)
 #define SPI_DC_LOW()            digitalWrite(_dc, LOW)
-#define SPI_CS_HIGH()           { if(_cs >= 0) digitalWrite(_cs, HIGH) }
-#define SPI_CS_LOW()            { if(_cs >= 0) digitalWrite(_cs, LOW)  }
+#define SPI_CS_HIGH()           { if(_cs >= 0) digitalWrite(_cs, HIGH); }
+#define SPI_CS_LOW()            { if(_cs >= 0) digitalWrite(_cs, LOW);  }
 #endif
 
 /*
