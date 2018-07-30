@@ -16,12 +16,15 @@
 typedef volatile uint8_t RwReg;
 #elif defined(ARDUINO_STM32_FEATHER)
 typedef volatile uint32 RwReg;
+#elif defined(__OPENCR__) || defined (__OPENCM904__)
+#undef USE_FAST_PINIO
 #elif defined(ARDUINO_FEATHER52) || defined(__arm__)
 typedef volatile uint32_t RwReg;
 #elif defined(ESP32) || defined(ESP8266)
 typedef volatile uint32_t RwReg;
+#undef USE_FAST_PINIO
 #else
-#undefine USE_FAST_PINIO
+#undef USE_FAST_PINIO
 #endif
 
 #include "Adafruit_SPITFT_Macros.h"
