@@ -13,18 +13,19 @@
 #define USE_FAST_PINIO
 
 #if defined(__AVR__)
-typedef volatile uint8_t RwReg;
+  typedef volatile uint8_t RwReg;
 #elif defined(ARDUINO_STM32_FEATHER)
-typedef volatile uint32 RwReg;
+  typedef volatile uint32 RwReg;
+  #undef USE_FAST_PINIO
 #elif defined(__OPENCR__) || defined (__OPENCM904__)
-#undef USE_FAST_PINIO
+  #undef USE_FAST_PINIO
 #elif defined(ARDUINO_FEATHER52) || defined(__arm__)
-typedef volatile uint32_t RwReg;
+  typedef volatile uint32_t RwReg;
 #elif defined(ESP32) || defined(ESP8266)
-typedef volatile uint32_t RwReg;
-#undef USE_FAST_PINIO
+  typedef volatile uint32_t RwReg;
+  #undef USE_FAST_PINIO
 #else
-#undef USE_FAST_PINIO
+  #undef USE_FAST_PINIO
 #endif
 
 #include "Adafruit_SPITFT_Macros.h"
@@ -37,7 +38,8 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _RST = -1);
 
-        virtual void begin(uint32_t freq) = 0;   ///< Virtual begin() function to set SPI frequency, must be overridden in subclass. @param freq Maximum SPI hardware clock speed
+        virtual void begin(uint32_t freq) = 0;  ///< Virtual begin() function to set SPI frequency, must be overridden in subclass. @param freq Maximum SPI hardware clock speed
+
         void      initSPI(uint32_t freq);
 
         // Required Non-Transaction

@@ -160,8 +160,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     @param    freq  The desired maximum SPI hardware clock frequency
 */
 /**************************************************************************/
-void Adafruit_SPITFT::initSPI(uint32_t freq)
-{
+void Adafruit_SPITFT::initSPI(uint32_t freq) {
     _freq = freq;
 
     // Control Pins
