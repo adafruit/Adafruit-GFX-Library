@@ -46,7 +46,7 @@
  * Hardware SPI Macros
  * */
 
-#define SPI_OBJECT  SPI
+#define SPI_OBJECT SPI
 
 #if defined (__AVR__) ||  defined(TEENSYDUINO) ||  defined(ARDUINO_ARCH_STM32F1)
     #define HSPI_SET_CLOCK() SPI_OBJECT.setClockDivider(SPI_CLOCK_DIV2);
@@ -115,5 +115,4 @@ static inline uint8_t _avr_spi_read(void) {
 #define SPI_WRITE32(l)          if(_sclk < 0){HSPI_WRITE32(l);}else{SSPI_WRITE32(l);}
 #define SPI_WRITE_PIXELS(c,l)   if(_sclk < 0){HSPI_WRITE_PIXELS(c,l);}else{SSPI_WRITE_PIXELS(c,l);}
 
-
-#endif
+#endif // _ADAFRUIT_SPITFT_MACROS

@@ -160,8 +160,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     @param    freq  The desired maximum SPI hardware clock frequency
 */
 /**************************************************************************/
-void Adafruit_SPITFT::initSPI(uint32_t freq)
-{
+void Adafruit_SPITFT::initSPI(uint32_t freq) {
     _freq = freq;
 
     // Control Pins
@@ -303,7 +302,7 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
     @param    len  How many pixels to draw - 2 bytes per pixel!
 */
 /**************************************************************************/
-void inline Adafruit_SPITFT::writePixels(uint16_t * colors, uint32_t len){
+void Adafruit_SPITFT::writePixels(uint16_t * colors, uint32_t len){
     SPI_WRITE_PIXELS((uint8_t*)colors , len * 2);
 }
 
