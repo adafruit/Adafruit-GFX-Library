@@ -37,6 +37,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     public:
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _RST = -1);
+        Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, SPIClass *spiClass, int8_t _RST = -1);
 
         virtual void begin(uint32_t freq) = 0;  ///< Virtual begin() function to set SPI frequency, must be overridden in subclass. @param freq Maximum SPI hardware clock speed
 
@@ -98,6 +99,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 	  _mosi,                 ///< Arduino pin # for SPI MOSI pin 
 	  _miso;                 ///< Arduino pin # for SPI MISO pin 
 #endif
+        SPIClass *_spiClass;     ///< The SPIClass to use for Hardware SPI
 
 #ifdef USE_FAST_PINIO
         volatile RwReg *mosiport,   ///< Direct chip register for toggling MOSI with fast bitbang IO

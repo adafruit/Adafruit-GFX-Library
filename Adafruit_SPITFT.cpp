@@ -86,6 +86,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _mosi = mosi;
     _miso = miso;
     _freq = 0;
+    _spiClass = &SPI;
 #ifdef USE_FAST_PINIO
     dcport      = (RwReg *)portOutputRegister(digitalPinToPort(dc));
     dcpinmask   = digitalPinToBitMask(dc);
@@ -116,16 +117,17 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 
 /**************************************************************************/
 /*!
-    @brief  Instantiate Adafruit SPI display driver with hardware SPI
+    @brief  Instantiate Adafruit SPI display driver with user selected hardware SPI
     @param    w     Display width in pixels
     @param    h     Display height in pixels
     @param    cs    Chip select pin #
     @param    dc    Data/Command pin #
+    @param    spiClass   A pointer to the SPIClass to use for HW SPI
     @param    rst   Reset pin # (optional, pass -1 if unused)
 */
 /**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
-				 int8_t cs, int8_t dc, int8_t rst) 
+				 int8_t cs, int8_t dc, SPIClass *spiClass, int8_t rst)
   : Adafruit_GFX(w, h) {
     _cs   = cs;
     _dc   = dc;
@@ -134,6 +136,48 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     _mosi = -1;
     _miso = -1;
     _freq = 0;
+    _spiClass = spiClass;
+#ifdef USE_FAST_PINIO
+    clkport     = 0;
+    clkpinmask  = 0;
+    mosiport    = 0;
+    mosipinmask = 0;
+    misoport    = 0;
+    misopinmask = 0;
+    dcport      = (RwReg *)portOutputRegister(digitalPinToPort(dc));
+    dcpinmask   = digitalPinToBitMask(dc);
+    if(cs >= 0) {
+        csport    = (RwReg *)portOutputRegister(digitalPinToPort(cs));
+        cspinmask = digitalPinToBitMask(cs);
+    } else {
+        // See notes in prior constructor.
+        csport    = dcport;
+        cspinmask = 0;
+    }
+#endif
+}
+
+/**************************************************************************/
+/*!
+    @brief  Instantiate Adafruit SPI display driver with default hardware SPI
+    @param    w     Display width in pixels
+    @param    h     Display height in pixels
+    @param    cs    Chip select pin #
+    @param    dc    Data/Command pin #
+    @param    rst   Reset pin # (optional, pass -1 if unused)
+*/
+/**************************************************************************/
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
+				 int8_t cs, int8_t dc, int8_t rst)
+  : Adafruit_GFX(w, h) {
+    _cs   = cs;
+    _dc   = dc;
+    _rst  = rst;
+    _sclk = -1;
+    _mosi = -1;
+    _miso = -1;
+    _freq = 0;
+    _spiClass = &SPI;
 #ifdef USE_FAST_PINIO
     clkport     = 0;
     clkpinmask  = 0;
@@ -183,7 +227,11 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
     }
 
     // Hardware SPI
-    SPI_BEGIN();
+    // Assume SPI needs initialization only if it is the SPI defined
+    // in the variants.cpp file.
+    if (_spiClass == &SPI) {
+        SPI_BEGIN();
+	}
 
     // toggle RST low to reset
     if (_rst >= 0) {
