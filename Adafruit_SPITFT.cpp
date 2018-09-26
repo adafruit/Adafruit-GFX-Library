@@ -37,7 +37,7 @@
 #include "Adafruit_SPITFT.h"
 #ifndef ARDUINO_STM32_FEATHER
   #include "pins_arduino.h"
-#ifndef RASPI
+#if !defined(RASPI) && !defined(STM32F4)
     #include "wiring_private.h"
 #endif
 #endif

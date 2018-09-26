@@ -12,6 +12,10 @@
 
 #define USE_FAST_PINIO
 
+#ifdef STM32GENERIC
+#undef RwReg
+#endif
+
 #if defined(__AVR__)
   typedef volatile uint8_t RwReg;
 #elif defined(ARDUINO_STM32_FEATHER)
