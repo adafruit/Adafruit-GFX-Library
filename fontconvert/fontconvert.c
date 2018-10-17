@@ -16,6 +16,7 @@ Keep 7-bit fonts around as an option in that case, more compact.
 
 See notes at end for glyph nomenclature & other tidbits.
 */
+#ifndef ARDUINO
 
 #include <stdio.h>
 #include <ctype.h>
@@ -282,3 +283,5 @@ the cursor on the X axis after drawing the corresponding symbol.
 There's also some changes with regard to 'background' color and new GFX
 fonts (classic fonts unchanged).  See Adafruit_GFX.cpp for explanation.
 */
+
+#endif /* !ARDUINO */
