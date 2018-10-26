@@ -23,23 +23,42 @@ See notes at end for glyph nomenclature & other tidbits.
 #include <ft2build.h>
 #include FT_GLYPH_H
 #include "../gfxfont.h" // Adafruit_GFX font structures
+#include "cArrayPtr.h"
+#include <string>
+
+using namespace std;
 
 #define DPI 141 // Approximate res. of Adafruit 2.8" TFT
 
 // Accumulate bits for output, with periodic hexadecimal byte write
+cArrHolder bitCollection(9); // Buffer for max 8 non-zero bits.
+void printEncoded(int occupied) {
+	const unsigned char *contPos = (*bitCollection).getPos() - occupied;
+	char bitComment[9] = "12345678";
+	memset(&bitComment[0], '0', 8);
+	uint8_t byte = *contPos, pos = 0;
+	while(pos < 8) {
+		if(byte&(128>>pos)) bitComment[pos] = '1';
+		pos++;
+	}
+	printf("\n0x%02X, /*%s*/ ", *contPos++, &bitComment[0]);
+	while(--occupied) {
+		printf("0x%02X, ", *contPos++);
+	}
+}
+
 void enbit(uint8_t value) {
 	static uint8_t row = 0, sum = 0, bit = 0x80, firstCall = 1;
 	if(value) sum |= bit;    // Set bit if needed
 	if(!(bit >>= 1)) {       // Advance to next bit, end of byte reached?
-		if(!firstCall) { // Format output table nicely
-			if(++row >= 12) {        // Last entry on line?
-				printf(",\n  "); //   Newline format output
-				row = 0;         //   Reset row counter
-			} else {                 // Not end of line
-				printf(", ");    //   Simple comma delim
-			}
+//		printf("0x%02X", sum); // Write byte value
+		(*bitCollection).addBitMappedByte(sum);
+		int occupied = (*bitCollection).getRelPos();
+		if(occupied) { // >8 bytes encoded
+			printEncoded(occupied);
+			(*bitCollection).setPos(0l);
+			(*bitCollection).set2(0);
 		}
-		printf("0x%02X", sum); // Write byte value
 		sum       = 0;         // Clear for next byte
 		bit       = 0x80;      // Reset bit counter
 		firstCall = 0;         // Formatting flag
@@ -47,7 +66,7 @@ void enbit(uint8_t value) {
 }
 
 int main(int argc, char *argv[]) {
-	int                i, j, err, size, first=' ', last='~',
+	unsigned int                i, j, err, size, first=' ', last='~',
 	                   bitmapOffset = 0, x, y, byte;
 	char              *fontName, c, *ptr;
 	FT_Library         library;
@@ -57,7 +76,8 @@ int main(int argc, char *argv[]) {
 	FT_BitmapGlyphRec *g;
 	GFXglyph          *table;
 	uint8_t            bit;
-
+	(*bitCollection).set2(0); // reset encoding buffer
+	
 	// Parse command line.  Valid syntaxes are:
 	//   fontconvert [filename] [size]
 	//   fontconvert [filename] [size] [last char]
@@ -91,7 +111,7 @@ int main(int argc, char *argv[]) {
 	else    ptr = argv[1]; // No path; font in local dir.
 
 	// Allocate space for font name and glyph table
-	if((!(fontName = malloc(strlen(ptr) + 20))) ||
+	if((!(fontName = (char*)malloc(strlen(ptr) + 20))) ||
 	   (!(table = (GFXglyph *)malloc((last - first + 1) *
 	    sizeof(GFXglyph))))) {
 		fprintf(stderr, "Malloc error\n");
@@ -131,9 +151,10 @@ int main(int argc, char *argv[]) {
 	// the right symbols, and that's not done yet.
 	// fprintf(stderr, "%ld glyphs\n", face->num_glyphs);
 
-	printf("const uint8_t %sBitmaps[] PROGMEM = {\n  ", fontName);
+	printf("const uint8_t %sBitmaps[] PROGMEM = {", fontName);
 
 	// Process glyphs and output huge bitmap data array
+	string txt; // ASCII output
 	for(i=first, j=0; i<=last; i++, j++) {
 		// MONO renderer provides clean image with perfect crop
 		// (no wasted pixels) via bitmap struct.
@@ -170,9 +191,36 @@ int main(int argc, char *argv[]) {
 		table[j].bitmapOffset = bitmapOffset;
 		table[j].width        = bitmap->width;
 		table[j].height       = bitmap->rows;
-		table[j].xAdvance     = face->glyph->advance.x >> 6;
+		table[j].xAdvance     = (uint8_t)face->glyph->advance.x >> 6;
 		table[j].xOffset      = g->left;
 		table[j].yOffset      = 1 - g->top;
+
+		txt += (bitmap->width/10+'0'); // ASCII output
+		txt += (bitmap->width%10+'0');
+		txt += ' ';
+		txt += (bitmap->rows/10+'0');
+		txt += (bitmap->rows%10+'0');
+		txt += ' ';
+		txt += i;
+		txt += '\n';
+		for(y=0; y < bitmap->rows; y++) {
+			for(x=0;x < bitmap->width; x++) {
+				byte = x / 8;
+				bit  = 0x80 >> (x & 7);
+				if(bitmap->buffer[
+				  y * bitmap->pitch + byte] & bit)
+					  txt += '*';
+				else txt += ' ';
+			}
+			txt += '\n';
+		}
+		txt += '\n';
+
+		for(y=bitmap->rows-1; y; y--) { // XOR character before processing last row with previous, etc.
+			for(x=0;x < bitmap->pitch; x++) {
+				bitmap->buffer[y * bitmap->pitch + x] ^= bitmap->buffer[(y-1) * bitmap->pitch + x];
+			}
+		}
 
 		for(y=0; y < bitmap->rows; y++) {
 			for(x=0;x < bitmap->width; x++) {
@@ -194,7 +242,16 @@ int main(int argc, char *argv[]) {
 		FT_Done_Glyph(glyph);
 	}
 
-	printf(" };\n\n"); // End bitmap array
+	int occupied = (*bitCollection).getBytesUsed(); // Any non-printed data remain ?
+
+	if(occupied) {
+		if(!(*bitCollection).getRelPos()) { // move pos (less than 8 bytes encoded)
+			(*bitCollection).setPos(occupied);
+		}
+		printEncoded(occupied);
+	}
+
+	printf("\n};\n\n"); // End bitmap array
 
 	// Output glyph attributes table (one per character)
 	printf("const GFXglyph %sGlyphs[] PROGMEM = {\n", fontName);
@@ -211,7 +268,7 @@ int main(int argc, char *argv[]) {
 			if((i >= ' ') && (i <= '~')) {
 				printf(" '%c'", i);
 			}
-			putchar('\n');
+			printf("\n");
 		}
 	}
 	printf(" }; // 0x%02X", last);
@@ -228,6 +285,7 @@ int main(int argc, char *argv[]) {
 	  bitmapOffset + (last - first + 1) * 7 + 7);
 	// Size estimate is based on AVR struct and pointer sizes;
 	// actual size may vary.
+	printf("Txt font data:\n%s", txt.c_str()); // ASCII raw font info
 
 	FT_Done_FreeType(library);
 
