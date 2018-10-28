@@ -821,7 +821,6 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 						bytesArray = pgm_read_byte(&bitmap[bo++]); // we are past last non-zero byte, so pick next bit array
 					}
                 }
-                }
                 if(!!(bits & 0x80) ^ !!(rowBufMask & *rowBufPos)) { // xor common bit with XOR buffer
 					*rowBufPos |= rowBufMask; // XOR result was 1, so set it back to buffer too
                     if(size == 1) {

@@ -193,6 +193,8 @@ int main(int argc, char *argv[]) {
 		table[j].height       = bitmap->rows;
 		table[j].xAdvance     = (uint8_t)face->glyph->advance.x >> 6;
 		table[j].xOffset      = g->left;
+		if(table[j].xAdvance <= table[j].width + table[j].xOffset)
+			table[j].xAdvance = 1 + table[j].width + table[j].xOffset;
 		table[j].yOffset      = 1 - g->top;
 
 		txt += (bitmap->width/10+'0'); // ASCII output
@@ -285,7 +287,7 @@ int main(int argc, char *argv[]) {
 	  bitmapOffset + (last - first + 1) * 7 + 7);
 	// Size estimate is based on AVR struct and pointer sizes;
 	// actual size may vary.
-	printf("Txt font data:\n%s", txt.c_str()); // ASCII raw font info
+	printf("/* Txt font data:\n%s */", txt.c_str()); // ASCII raw font info
 
 	FT_Done_FreeType(library);
 
