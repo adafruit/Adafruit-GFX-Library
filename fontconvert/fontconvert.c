@@ -32,7 +32,7 @@ using namespace std;
 
 // Accumulate bits for output, with periodic hexadecimal byte write
 cArrHolder bitCollection(9); // Buffer for max 8 non-zero bits.
-void printEncoded(int occupied) {
+void printEncoded(int occupied, unsigned int& origSize, unsigned int& packedSize, unsigned int currentChar) {
 	const unsigned char *contPos = (*bitCollection).getPos() - occupied;
 	char bitComment[9] = "12345678";
 	memset(&bitComment[0], '0', 8);
@@ -41,27 +41,39 @@ void printEncoded(int occupied) {
 		if(byte&(128>>pos)) bitComment[pos] = '1';
 		pos++;
 	}
-	printf("\n0x%02X, /*%s*/ ", *contPos++, &bitComment[0]);
-	while(--occupied) {
-		printf("0x%02X, ", *contPos++);
+	uint8_t nonZerosMap = *contPos++, origRemain = (*bitCollection).getBitPos();
+	if(origRemain != 7)
+		origRemain = 7 - origRemain;
+	printf("\n0x%02X,/*%05i(%05i)%c %s*/", nonZerosMap,
+		origSize - origRemain, packedSize,
+		currentChar, &bitComment[0]);
+	occupied = 8;
+	while(occupied--) {
+		if(nonZerosMap & 128) {
+			printf("0x%02X, ", *contPos++);
+		} else {
+			printf("/*-*/ ");
+		}
+		nonZerosMap <<= 1;
 	}
 }
 
-void enbit(uint8_t value) {
+void enbit(uint8_t value, unsigned int& origSize, unsigned int& packedSize, unsigned int currentChar) {
 	static uint8_t row = 0, sum = 0, bit = 0x80, firstCall = 1;
 	if(value) sum |= bit;    // Set bit if needed
 	if(!(bit >>= 1)) {       // Advance to next bit, end of byte reached?
-//		printf("0x%02X", sum); // Write byte value
 		(*bitCollection).addBitMappedByte(sum);
-		int occupied = (*bitCollection).getRelPos();
-		if(occupied) { // >8 bytes encoded
-			printEncoded(occupied);
-			(*bitCollection).setPos(0l);
-			(*bitCollection).set2(0);
-		}
 		sum       = 0;         // Clear for next byte
 		bit       = 0x80;      // Reset bit counter
 		firstCall = 0;         // Formatting flag
+		int occupied = (*bitCollection).getRelPos();
+		if(occupied) { // >8 bytes encoded
+			printEncoded(occupied, origSize, packedSize, currentChar);
+			(*bitCollection).setPos(0l);
+			(*bitCollection).set2(0);
+			packedSize += occupied;
+		}
+		origSize++;
 	}
 }
 
@@ -155,6 +167,8 @@ int main(int argc, char *argv[]) {
 
 	// Process glyphs and output huge bitmap data array
 	string txt; // ASCII output
+	unsigned int packedSize = 0, origSize = 0, lostBits = 0;
+	unsigned long bitsCount = 0;
 	for(i=first, j=0; i<=last; i++, j++) {
 		// MONO renderer provides clean image with perfect crop
 		// (no wasted pixels) via bitmap struct.
@@ -219,7 +233,7 @@ int main(int argc, char *argv[]) {
 		txt += '\n';
 
 		for(y=bitmap->rows-1; y; y--) { // XOR character before processing last row with previous, etc.
-			for(x=0;x < bitmap->pitch; x++) {
+			for(x=0;x < (unsigned)bitmap->pitch; x++) {
 				bitmap->buffer[y * bitmap->pitch + x] ^= bitmap->buffer[(y-1) * bitmap->pitch + x];
 			}
 		}
@@ -229,15 +243,19 @@ int main(int argc, char *argv[]) {
 				byte = x / 8;
 				bit  = 0x80 >> (x & 7);
 				enbit(bitmap->buffer[
-				  y * bitmap->pitch + byte] & bit);
+				   y * bitmap->pitch + byte] & bit, origSize, packedSize, i);
 			}
 		}
+		bitsCount += bitmap->rows * bitmap->width;
 
 		// Pad end of char bitmap to next byte boundary if needed
 		int n = (bitmap->width * bitmap->rows) & 7;
 		if(n) { // Pixel count not an even multiple of 8?
 			n = 8 - n; // # bits to next multiple
-			while(n--) enbit(0);
+			lostBits += n;
+			while(n--) {
+				enbit(0, origSize, packedSize, i);
+			}
 		}
 		bitmapOffset += (bitmap->width * bitmap->rows + 7) / 8;
 
@@ -245,15 +263,19 @@ int main(int argc, char *argv[]) {
 	}
 
 	int occupied = (*bitCollection).getBytesUsed(); // Any non-printed data remain ?
+	bitsCount += lostBits;
 
 	if(occupied) {
 		if(!(*bitCollection).getRelPos()) { // move pos (less than 8 bytes encoded)
+			uint8_t bitPos = (*bitCollection).getBitPos();
 			(*bitCollection).setPos(occupied);
+			(*bitCollection).setBitPos(bitPos);
 		}
-		printEncoded(occupied);
+		printEncoded(occupied, origSize, packedSize, last);
+		packedSize += occupied;
 	}
-
-	printf("\n};\n\n"); // End bitmap array
+	printf("\n};\n/* Lost rounded bits: %ub of %u => %f%%\n   Compression result %uB of %u => %f%% */\n\n", lostBits, bitsCount, 100.0*lostBits/bitsCount,
+		packedSize, origSize, -100.0*(origSize-packedSize)/origSize); // End bitmap array
 
 	// Output glyph attributes table (one per character)
 	printf("const GFXglyph %sGlyphs[] PROGMEM = {\n", fontName);
@@ -290,6 +312,7 @@ int main(int argc, char *argv[]) {
 	printf("/* Txt font data:\n%s */", txt.c_str()); // ASCII raw font info
 
 	FT_Done_FreeType(library);
+	free(fontName);
 
 	return 0;
 }
