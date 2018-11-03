@@ -90,6 +90,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3e5dc42e8464e12ce03a7df65e330977"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a3e5dc42e8464e12ce03a7df65e330977">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _RST=-1)</td></tr>
 <tr class="memdesc:a3e5dc42e8464e12ce03a7df65e330977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantiate Adafruit SPI display driver with hardware SPI.  <a href="#a3e5dc42e8464e12ce03a7df65e330977">More...</a><br /></td></tr>
 <tr class="separator:a3e5dc42e8464e12ce03a7df65e330977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3648fb6689905d3df1febf940781103"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#af3648fb6689905d3df1febf940781103">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, SPIClass *spiClass, int8_t _CS, int8_t _DC, int8_t _RST=-1)</td></tr>
+<tr class="memdesc:af3648fb6689905d3df1febf940781103"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantiate Adafruit SPI display driver with hardware SPI.  <a href="#af3648fb6689905d3df1febf940781103">More...</a><br /></td></tr>
+<tr class="separator:af3648fb6689905d3df1febf940781103"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81fb1a7842c52fa1992569880f4ea494"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494">begin</a> (uint32_t freq)=0</td></tr>
 <tr class="memdesc:a81fb1a7842c52fa1992569880f4ea494"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Virtual begin() function to set SPI frequency, must be overridden in subclass. ">begin()</a> function to set SPI frequency, must be overridden in subclass.  <a href="#a81fb1a7842c52fa1992569880f4ea494">More...</a><br /></td></tr>
 <tr class="separator:a81fb1a7842c52fa1992569880f4ea494"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -310,6 +313,10 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a2003f65628bfcd075b300f022dce0ffc"><td class="memItemLeft" align="right" valign="top"><a id="a2003f65628bfcd075b300f022dce0ffc"></a>
+SPIClass *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2003f65628bfcd075b300f022dce0ffc">_spi</a></td></tr>
+<tr class="memdesc:a2003f65628bfcd075b300f022dce0ffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SPI device we want to use (set in constructor) <br /></td></tr>
+<tr class="separator:a2003f65628bfcd075b300f022dce0ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65e9eb00f665cadb411babf9c506a01d"><td class="memItemLeft" align="right" valign="top"><a id="a65e9eb00f665cadb411babf9c506a01d"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a65e9eb00f665cadb411babf9c506a01d">_freq</a></td></tr>
 <tr class="memdesc:a65e9eb00f665cadb411babf9c506a01d"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI clock frequency (for hardware SPI) <br /></td></tr>
@@ -412,7 +419,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <div class="textblock"><p>A heavily optimized SPI display subclass of GFX. Manages SPI bitbanging, transactions, DMA, etc! Despite being called SPITFT, the classic SPI data/command interface is also used by OLEDs. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a35e1b6bfb368d825141c7929e4b51c80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35e1b6bfb368d825141c7929e4b51c80">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a35e1b6bfb368d825141c7929e4b51c80">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -491,7 +498,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div>
 </div>
 <a id="a3e5dc42e8464e12ce03a7df65e330977"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e5dc42e8464e12ce03a7df65e330977">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e5dc42e8464e12ce03a7df65e330977">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -539,6 +546,71 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   <table class="params">
     <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
     <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
+    <tr><td class="paramname">cs</td><td>Chip select pin # </td></tr>
+    <tr><td class="paramname">dc</td><td>Data/Command pin # </td></tr>
+    <tr><td class="paramname">rst</td><td>Reset pin # (optional, pass -1 if unused) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af3648fb6689905d3df1febf940781103"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3648fb6689905d3df1febf940781103">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Adafruit_SPITFT::Adafruit_SPITFT </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SPIClass *&#160;</td>
+          <td class="paramname"><em>spiClass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>cs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>dc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>rst</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Instantiate Adafruit SPI display driver with hardware SPI. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
+    <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
+    <tr><td class="paramname">spiClass</td><td>A pointer to an SPI hardware interface, e.g. &amp;SPI1 </td></tr>
     <tr><td class="paramname">cs</td><td>Chip select pin # </td></tr>
     <tr><td class="paramname">dc</td><td>Data/Command pin # </td></tr>
     <tr><td class="paramname">rst</td><td>Reset pin # (optional, pass -1 if unused) </td></tr>

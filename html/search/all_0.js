@@ -9,6 +9,7 @@ var searchData=
   ['_5fmosi',['_mosi',['../class_adafruit___s_p_i_t_f_t.html#a4036d7b93604c3d2a5486a88ad6d9a20',1,'Adafruit_SPITFT']]],
   ['_5frst',['_rst',['../class_adafruit___s_p_i_t_f_t.html#a1f690e51ea3d4e4dd3ed3f6b8c1b79c2',1,'Adafruit_SPITFT']]],
   ['_5fsclk',['_sclk',['../class_adafruit___s_p_i_t_f_t.html#a9e297387c5f2b9b7adf6d7d8252570fc',1,'Adafruit_SPITFT']]],
+  ['_5fspi',['_spi',['../class_adafruit___s_p_i_t_f_t.html#a2003f65628bfcd075b300f022dce0ffc',1,'Adafruit_SPITFT']]],
   ['_5fwidth',['_width',['../class_adafruit___g_f_x.html#ab237f850a033492f5e745d79405a097a',1,'Adafruit_GFX']]],
   ['_5fxstart',['_xstart',['../class_adafruit___s_p_i_t_f_t.html#a479fb9af838dc94c442b27c734dab345',1,'Adafruit_SPITFT']]],
   ['_5fystart',['_ystart',['../class_adafruit___s_p_i_t_f_t.html#a1b1d3250b346656552dfdf939b1e428d',1,'Adafruit_SPITFT']]]
