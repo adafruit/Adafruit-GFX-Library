@@ -37,6 +37,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     public:
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _RST = -1);
+        Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t _CS, int8_t _DC, int8_t _RST = -1);
 
         virtual void begin(uint32_t freq) = 0;  ///< Virtual begin() function to set SPI frequency, must be overridden in subclass. @param freq Maximum SPI hardware clock speed
 
@@ -87,6 +88,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         uint16_t  color565(uint8_t r, uint8_t g, uint8_t b);
 
     protected:
+	SPIClass *_spi;         ///< The SPI device we want to use (set in constructor)
         uint32_t _freq;         ///< SPI clock frequency (for hardware SPI)
 #if defined (__AVR__) || defined(TEENSYDUINO) || defined (ESP8266) || defined (ESP32)
         int8_t  _cs, _dc, _rst, _sclk, _mosi, _miso;

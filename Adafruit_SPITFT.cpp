@@ -126,10 +126,29 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 /**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 				 int8_t cs, int8_t dc, int8_t rst) 
+  : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) 
+{
+  // We just call the hardware SPI instantiator with the default SPI device (&SPI)
+}
+
+/**************************************************************************/
+/*!
+    @brief  Instantiate Adafruit SPI display driver with hardware SPI
+    @param    w     Display width in pixels
+    @param    h     Display height in pixels
+    @param    spiClass A pointer to an SPI hardware interface, e.g. &SPI1
+    @param    cs    Chip select pin #
+    @param    dc    Data/Command pin #
+    @param    rst   Reset pin # (optional, pass -1 if unused)
+*/
+/**************************************************************************/
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
+				 int8_t cs, int8_t dc, int8_t rst) 
   : Adafruit_GFX(w, h) {
     _cs   = cs;
     _dc   = dc;
     _rst  = rst;
+    _spi = spiClass;
     _sclk = -1;
     _mosi = -1;
     _miso = -1;
