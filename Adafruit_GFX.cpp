@@ -353,7 +353,7 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
 
 /**************************************************************************/
 /*!
-   @brief    Quarter-circle drawer, used to do circles and roundrects
+    @brief    Quarter-circle drawer, used to do circles and roundrects
     @param    x0   Center-point x coordinate
     @param    y0   Center-point y coordinate
     @param    r   Radius of circle
@@ -417,25 +417,29 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
 
 /**************************************************************************/
 /*!
-   @brief    Quarter-circle drawer with fill, used to do circles and roundrects
-    @param    x0   Center-point x coordinate
-    @param    y0   Center-point y coordinate
-    @param    r   Radius of circle
-    @param    cornername  Mask bit #1 or bit #2 to indicate which quarters of the circle we're doing
-    @param    delta  Offset from center-point, used for round-rects
-    @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Quarter-circle drawer with fill, used for circles and roundrects
+    @param  x0       Center-point x coordinate
+    @param  y0       Center-point y coordinate
+    @param  r        Radius of circle
+    @param  corners  Mask bits indicating which quarters we're doing
+    @param  delta    Offset from center-point, used for round-rects
+    @param  color    16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
-        uint8_t cornername, int16_t delta, uint16_t color) {
+  uint8_t corners, int16_t delta, uint16_t color) {
 
     int16_t f     = 1 - r;
     int16_t ddF_x = 1;
     int16_t ddF_y = -2 * r;
     int16_t x     = 0;
     int16_t y     = r;
+    int16_t px    = x;
+    int16_t py    = y;
 
-    while (x<y) {
+    delta++; // Avoid some +1's in the loop
+
+    while(x < y) {
         if (f >= 0) {
             y--;
             ddF_y += 2;
@@ -444,15 +448,18 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
         x++;
         ddF_x += 2;
         f     += ddF_x;
-
-        if (cornername & 0x1) {
-            writeFastVLine(x0+x, y0-y, 2*y+1+delta, color);
-            writeFastVLine(x0+y, y0-x, 2*x+1+delta, color);
+        // These checks avoid double-drawing certain lines, important
+        // for the SSD1306 library which has an INVERT drawing mode.
+        if(x < (y + 1)) {
+            if(corners & 1) writeFastVLine(x0+x, y0-y, 2*y+delta, color);
+            if(corners & 2) writeFastVLine(x0-x, y0-y, 2*y+delta, color);
         }
-        if (cornername & 0x2) {
-            writeFastVLine(x0-x, y0-y, 2*y+1+delta, color);
-            writeFastVLine(x0-y, y0-x, 2*x+1+delta, color);
+        if(y != py) {
+            if(corners & 1) writeFastVLine(x0+py, y0-px, 2*px+delta, color);
+            if(corners & 2) writeFastVLine(x0-py, y0-px, 2*px+delta, color);
+            py = y;
         }
+        px = x;
     }
 }
 
