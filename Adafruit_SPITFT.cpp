@@ -32,19 +32,17 @@
 *
 */
 
-#ifndef __AVR_ATtiny85__ // NOT A CHANCE of this stuff working on ATtiny!
+// NOT A CHANCE of this stuff working on ATtiny, No SPIClass on WICED (yet?)
+#if (!defined(__AVR_ATtiny85__) && !defined(ARDUINO_STM32_FEATHER))
 
 #include "Adafruit_SPITFT.h"
-#ifndef ARDUINO_STM32_FEATHER
-  #include "pins_arduino.h"
+#include "pins_arduino.h"
 #ifndef RASPI
-    #include "wiring_private.h"
-#endif
+  #include "wiring_private.h"
 #endif
 #include <limits.h>
 
 #include "Adafruit_SPITFT_Macros.h"
-
 
 
 /**************************************************************************/
@@ -571,4 +569,4 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-#endif // !__AVR_ATtiny85__
+#endif // !__AVR_ATtiny85__ && !ARDUINO_STM32_FEATHER
