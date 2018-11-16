@@ -150,7 +150,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a623e031e58492fb41e9fde6a05d97c12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a circle with filled color.  <a href="#a623e031e58492fb41e9fde6a05d97c12">More...</a><br /></td></tr>
 <tr class="separator:a623e031e58492fb41e9fde6a05d97c12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2242d3560b08c6480084152b6660052a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a2242d3560b08c6480084152b6660052a">fillCircleHelper</a> (int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color)</td></tr>
-<tr class="memdesc:a2242d3560b08c6480084152b6660052a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quarter-circle drawer with fill, used to do circles and roundrects.  <a href="#a2242d3560b08c6480084152b6660052a">More...</a><br /></td></tr>
+<tr class="memdesc:a2242d3560b08c6480084152b6660052a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quarter-circle drawer with fill, used for circles and roundrects.  <a href="#a2242d3560b08c6480084152b6660052a">More...</a><br /></td></tr>
 <tr class="separator:a2242d3560b08c6480084152b6660052a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49284b9cea16ecf8c15dfd0b51a841e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a49284b9cea16ecf8c15dfd0b51a841e6">drawTriangle</a> (int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)</td></tr>
 <tr class="memdesc:a49284b9cea16ecf8c15dfd0b51a841e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a triangle with no fill color.  <a href="#a49284b9cea16ecf8c15dfd0b51a841e6">More...</a><br /></td></tr>
@@ -1291,7 +1291,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>cornername</em>, </td>
+          <td class="paramname"><em>corners</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1313,13 +1313,13 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
       </table>
 </div><div class="memdoc">
 
-<p>Quarter-circle drawer with fill, used to do circles and roundrects. </p>
+<p>Quarter-circle drawer with fill, used for circles and roundrects. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x0</td><td>Center-point x coordinate </td></tr>
     <tr><td class="paramname">y0</td><td>Center-point y coordinate </td></tr>
     <tr><td class="paramname">r</td><td>Radius of circle </td></tr>
-    <tr><td class="paramname">cornername</td><td>Mask bit #1 or bit #2 to indicate which quarters of the circle we're doing </td></tr>
+    <tr><td class="paramname">corners</td><td>Mask bits indicating which quarters we're doing </td></tr>
     <tr><td class="paramname">delta</td><td>Offset from center-point, used for round-rects </td></tr>
     <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
   </table>
