@@ -32,12 +32,13 @@
 *
 */
 
-// NOT A CHANCE of this stuff working on ATtiny, No SPIClass on WICED (yet?)
-#if (!defined(__AVR_ATtiny85__) && !defined(ARDUINO_STM32_FEATHER))
+#if !defined(__AVR_ATtiny85__) // NOT A CHANCE of this stuff working on ATtiny
 
 #include "Adafruit_SPITFT.h"
-#include "pins_arduino.h"
-#ifndef RASPI
+#if !defined(ARDUINO_STM32_FEATHER)
+  #include "pins_arduino.h"
+#endif
+#if !defined(ARDUINO_STM32_FEATHER) && !defined(RASPI)
   #include "wiring_private.h"
 #endif
 #include <limits.h>
@@ -112,6 +113,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 #endif
 }
 
+#if !defined(ARDUINO_STM32_FEATHER) // No SPIClass on WICED (yet?) 
 /**************************************************************************/
 /*!
     @brief  Instantiate Adafruit SPI display driver with hardware SPI
@@ -170,6 +172,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     }
 #endif
 }
+#endif // !ARDUINO_STM32_FEATHER
 
 /**************************************************************************/
 /*!
@@ -216,13 +219,17 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
 
 /**************************************************************************/
 /*!
-    @brief   Read one byte from SPI interface (hardware or software
+    @brief   Read one byte from SPI interface (hardware or software)
     @returns One byte, MSB order
 */
 /**************************************************************************/
 uint8_t Adafruit_SPITFT::spiRead() {
     if(_sclk < 0){
+#if defined(ARDUINO_STM32_FEATHER)
+        return 0; // TODO
+#else
         return HSPI_READ();
+#endif
     }
     if(_miso < 0){
         return 0;
@@ -241,7 +248,7 @@ uint8_t Adafruit_SPITFT::spiRead() {
 
 /**************************************************************************/
 /*!
-    @brief   Write one byte to SPI interface (hardware or software
+    @brief   Write one byte to SPI interface (hardware or software)
     @param  b  One byte to send, MSB order
 */
 /**************************************************************************/
@@ -569,4 +576,4 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
-#endif // !__AVR_ATtiny85__ && !ARDUINO_STM32_FEATHER
+#endif // !__AVR_ATtiny85__
