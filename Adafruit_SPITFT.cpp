@@ -113,7 +113,6 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 #endif
 }
 
-#if !defined(ARDUINO_STM32_FEATHER) // No SPIClass on WICED (yet?) 
 /**************************************************************************/
 /*!
     @brief  Instantiate Adafruit SPI display driver with hardware SPI
@@ -172,7 +171,6 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     }
 #endif
 }
-#endif // !ARDUINO_STM32_FEATHER
 
 /**************************************************************************/
 /*!
@@ -225,11 +223,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
 /**************************************************************************/
 uint8_t Adafruit_SPITFT::spiRead() {
     if(_sclk < 0){
-#if defined(ARDUINO_STM32_FEATHER)
-        return 0; // TODO
-#else
         return HSPI_READ();
-#endif
     }
     if(_miso < 0){
         return 0;

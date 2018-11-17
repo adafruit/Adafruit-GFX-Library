@@ -97,9 +97,6 @@ static inline uint8_t _avr_spi_read(void) {
 }
         #define HSPI_WRITE(b)            {SPDR = (b); while(!(SPSR & _BV(SPIF)));}
         #define HSPI_READ()              _avr_spi_read()
-    #elif defined(ARDUINO_STM32_FEATHER) // No SPIClass on WICED (yet?)
-        #define HSPI_WRITE(b)            SSPI_WRITE(b)
-        #define HSPI_READ()              HSPI_WRITE(0)
     #else
         #define HSPI_WRITE(b)            _spi->transfer((uint8_t)(b))
         #define HSPI_READ()              HSPI_WRITE(0)
@@ -109,20 +106,11 @@ static inline uint8_t _avr_spi_read(void) {
     #define HSPI_WRITE_PIXELS(c,l)   for(uint32_t i=0; i<(l); i+=2){ HSPI_WRITE(((uint8_t*)(c))[i+1]); HSPI_WRITE(((uint8_t*)(c))[i]); }
 #endif
 
-#if defined(ARDUINO_STM32_FEATHER) // No SPIClass on WICED (yet?)
-  #define SPI_BEGIN()
-  #define SPI_BEGIN_TRANSACTION()
-  #define SPI_END_TRANSACTION()
-  #define SPI_WRITE16(s)          SSPI_WRITE16(s);
-  #define SPI_WRITE32(l)          SSPI_WRITE32(l);
-  #define SPI_WRITE_PIXELS(c,l)   SSPI_WRITE_PIXELS(c,l);
-#else
   #define SPI_BEGIN()             if(_sclk < 0){_spi->begin();}
   #define SPI_BEGIN_TRANSACTION() if(_sclk < 0){HSPI_BEGIN_TRANSACTION();}
   #define SPI_END_TRANSACTION()   if(_sclk < 0){HSPI_END_TRANSACTION();}
   #define SPI_WRITE16(s)          if(_sclk < 0){HSPI_WRITE16(s);}else{SSPI_WRITE16(s);}
   #define SPI_WRITE32(l)          if(_sclk < 0){HSPI_WRITE32(l);}else{SSPI_WRITE32(l);}
   #define SPI_WRITE_PIXELS(c,l)   if(_sclk < 0){HSPI_WRITE_PIXELS(c,l);}else{SSPI_WRITE_PIXELS(c,l);}
-#endif
 
 #endif // _ADAFRUIT_SPITFT_MACROS
