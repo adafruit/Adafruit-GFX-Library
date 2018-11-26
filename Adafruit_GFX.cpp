@@ -495,7 +495,9 @@ void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
 */
 /**************************************************************************/
 void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
-        int16_t h, int16_t r, uint16_t color) {
+  int16_t h, int16_t r, uint16_t color) {
+    int16_t max_radius = ((w < h) ? w : h) / 2; // 1/2 minor axis
+    if(r > max_radius) r = max_radius;
     // smarter version
     startWrite();
     writeFastHLine(x+r  , y    , w-2*r, color); // Top
@@ -522,11 +524,12 @@ void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
 */
 /**************************************************************************/
 void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
-        int16_t h, int16_t r, uint16_t color) {
+  int16_t h, int16_t r, uint16_t color) {
+    int16_t max_radius = ((w < h) ? w : h) / 2; // 1/2 minor axis
+    if(r > max_radius) r = max_radius;
     // smarter version
     startWrite();
     writeFillRect(x+r, y, w-2*r, h, color);
-
     // draw four corners
     fillCircleHelper(x+w-r-1, y+r, r, 1, h-2*r-1, color);
     fillCircleHelper(x+r    , y+r, r, 2, h-2*r-1, color);
