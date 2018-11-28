@@ -70,7 +70,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
 #endif
 
-//#include <string>
 class PackedStreamReader {
 public:
 	PackedStreamReader(unsigned char *arr, unsigned int maxSize) {
@@ -97,7 +96,7 @@ public:
 			}
 			return 0;
 		}
-		throw "??";
+		//throw "??";
 	}
 private:
 	void markBitInit() {
@@ -1129,7 +1128,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
                  h  = pgm_read_byte(&glyph->height);
         int8_t   xo = pgm_read_byte(&glyph->xOffset),
                  yo = pgm_read_byte(&glyph->yOffset);
-        uint8_t  xx, yy, bits = 0, bit = 0;
+        uint8_t  xx, yy;
         int16_t  xo16 = 0, yo16 = 0;
 
         if(size > 1) {
@@ -1156,13 +1155,11 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         // implemented this yet.
 
         startWrite();
-		uint8_t  bytesMap = 128;
 		uint8_t blockSize = pgm_read_byte(&bitmap[bo++]); // for first char pick 1st bit array only
 		PackedStreamReader bitStream(&bitmap[bo++], blockSize);
 		uint8_t bufSize = w/8+!!(w&7); // row xor buffer (each row is XORed with)
 		uint8_t *rowBuf = new uint8_t[bufSize];
 		memset(rowBuf, 0, bufSize); // zero it for 1st (untouched) row
-		uint8_t zeroNo = 0, blockRemain = 0;
 		bool chk;
         for(yy=0; yy<h; yy++) {
 			uint8_t *rowBufPos = rowBuf; // positions in buffer - byte/bit
@@ -1575,7 +1572,7 @@ int16_t Adafruit_GFX::height(void) const {
     @param   i  True if you want to invert, false to make 'normal'
 */
 /**************************************************************************/
-void Adafruit_GFX::invertDisplay(boolean i) {
+void Adafruit_GFX::invertDisplay(boolean) {
     // Do nothing, must be subclassed if supported by hardware
 }
 
@@ -1645,7 +1642,7 @@ void Adafruit_GFX_Button::initButtonUL(
   _textcolor    = textcolor;
   _textsize     = textsize;
   _gfx          = gfx;
-  strncpy_s(_label, label, 9);
+  strncpy(_label, label, 9);
 }
 
 /**************************************************************************/
