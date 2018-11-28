@@ -24,59 +24,218 @@ See notes at end for glyph nomenclature & other tidbits.
 #include <ft2build.h>
 #include FT_GLYPH_H
 #include "../gfxfont.h" // Adafruit_GFX font structures
-#include "cArrayPtr.h"
-#include <string>
-
-using namespace std;
 
 #define DPI 141 // Approximate res. of Adafruit 2.8" TFT
 
-// Accumulate bits for output, with periodic hexadecimal byte write
-cArrHolder bitCollection(9); // Buffer for max 8 non-zero bits.
-void printEncoded(int occupied, unsigned int& origSize, unsigned int& packedSize, unsigned int currentChar) {
-	const unsigned char *contPos = (*bitCollection).getPos() - occupied;
-	char bitComment[9] = "12345678";
-	memset(&bitComment[0], '0', 8);
-	uint8_t byte = *contPos, pos = 0;
-	while(pos < 8) {
-		if(byte&(128>>pos)) bitComment[pos] = '1';
-		pos++;
-	}
-	uint8_t nonZerosMap = *contPos++, origRemain = (*bitCollection).getBitPos();
-	if(origRemain != 7)
-		origRemain = 7 - origRemain;
-	printf("\n0x%02X,/*%05i(%05i)%c %s*/", nonZerosMap,
-		origSize - origRemain, packedSize,
-		currentChar, &bitComment[0]);
-	occupied = 8;
-	while(occupied--) {
-		if(nonZerosMap & 128) {
-			printf("0x%02X, ", *contPos++);
-		} else {
-			printf("/*-*/ ");
-		}
-		nonZerosMap <<= 1;
-	}
-}
+/* XOR pack support objects begin */
+#include <string>
 
-void enbit(uint8_t value, unsigned int& origSize, unsigned int& packedSize, unsigned int currentChar) {
-	static uint8_t row = 0, sum = 0, bit = 0x80, firstCall = 1;
-	if(value) sum |= bit;    // Set bit if needed
-	if(!(bit >>= 1)) {       // Advance to next bit, end of byte reached?
-		(*bitCollection).addBitMappedByte(sum);
-		sum       = 0;         // Clear for next byte
-		bit       = 0x80;      // Reset bit counter
-		firstCall = 0;         // Formatting flag
-		int occupied = (*bitCollection).getRelPos();
-		if(occupied) { // >8 bytes encoded
-			printEncoded(occupied, origSize, packedSize, currentChar);
-			(*bitCollection).setPos(0l);
-			(*bitCollection).set2(0);
-			packedSize += occupied;
-		}
-		origSize++;
+using namespace std;
+class BitOperations {
+public:
+	BitOperations(unsigned int maxSize) {
+		m_bits = maxSize;
+		m_bitPos = 0;
+		m_mask = 0x80;
 	}
-}
+	operator bool() const {
+		return !!(*m_bitsBytePtr & m_mask);
+	}
+	const BitOperations operator ++() {
+		if(m_bitPos >= m_bits) {
+			throw "++ out of bit array !";
+		}
+		if(m_mask == 0x01) {
+			m_mask = 0x80;
+			m_bitsBytePtr++;
+		} else {
+			m_mask >>= 1;
+		}
+		m_bitPos++;
+		return *this;
+	};
+	void resetPos() {
+		m_bitsBytePtr = m_blockBits;
+		m_bitPos = 0;
+		m_mask = 0x80;
+	}
+	const unsigned int BitPos() const {
+		return m_bitPos;
+	}
+protected:
+	unsigned char *m_blockBits, *m_bitsBytePtr, m_mask;
+	unsigned int m_bits, m_bitPos;
+};
+class BitReader : public BitOperations {
+public:
+	BitReader(unsigned char *arr, unsigned int maxSize)
+	: BitOperations(maxSize) {
+		m_blockBits = arr;
+		m_bitsBytePtr = m_blockBits;
+	}
+};
+class BitWriter : public BitOperations {
+public:
+	BitWriter(unsigned char *blockBits, unsigned int bits)
+	: BitOperations(bits) {
+		m_zerosOnly = true;
+		unsigned int blockSize = !!(bits & 7) + (bits / 8);
+		if(m_parents = !!blockBits) {
+			m_blockBits = blockBits;
+			m_bitsBytePtr = m_blockBits;
+		} else {
+			m_blockBits = new unsigned char[blockSize];
+			m_bitsBytePtr = m_blockBits;
+			memset(m_bitsBytePtr,0 , blockSize);
+		}
+	}
+	void operator +=(bool bit) {
+		if(m_bitPos >= m_bits) {
+			throw "Assign past bit array boundary !";
+		}
+		if(bit) {
+			*m_bitsBytePtr |= m_mask;
+			m_zerosOnly = false;
+		} else ; // not implemented !!!
+		if(m_mask == 0x01) {
+			m_mask = 0x80;
+			m_bitsBytePtr++;
+		} else {
+			m_mask >>= 1;
+		}
+		m_bitPos++;
+	}
+	~BitWriter () {
+		if(!m_parents) {
+			delete[] m_blockBits;
+		}
+	}
+	bool zeroData() {
+		return m_zerosOnly;
+	}
+	void resetData() {
+		m_zerosOnly = true;
+		int bits = m_bits;
+		for(unsigned char *pos = m_blockBits;bits > 0;bits-=8) {
+			*pos++ = 0;
+		}
+	}
+private:
+	bool m_parents, m_zerosOnly;
+};
+class CharBox {
+public:
+	CharBox(FT_Bitmap *bitmap) {
+		memcpy(&m_bitmap, bitmap, sizeof(FT_Bitmap));
+		int bufSize = m_bitmap.pitch * m_bitmap.rows;
+		m_bitmap.buffer = new unsigned char[bufSize];
+		memcpy(m_bitmap.buffer, bitmap->buffer, bufSize);
+		int destSize = m_bitmap.width * m_bitmap.rows;
+		destSize = (destSize / 8) + !!(destSize & 7);
+		m_tinyBuf = new unsigned char[destSize];
+		memset(m_tinyBuf, 0, destSize);
+		m_destBuf = new unsigned char[2 * destSize];
+	}
+	void xor() {
+		for(unsigned int y=m_bitmap.rows-1; y; y--) { // XOR character before processing last row with previous, etc.
+			for(unsigned int x=0;x < (unsigned)m_bitmap.pitch; x++) {
+				m_bitmap.buffer[y * m_bitmap.pitch + x] ^= m_bitmap.buffer[(y-1) * m_bitmap.pitch + x];
+			}
+		}
+	}
+	unsigned int pack(int bitFrom, int bitTo = -1) {
+		copy2tiny();
+		if(bitTo < 0) bitTo = m_bitmap.rows * m_bitmap.width + 1;
+		if(bitTo > 255) bitTo = 255;
+		unsigned int minSize = 0;
+		unsigned int minBits = 0;
+		BitWriter *out = new BitWriter(m_destBuf, m_bitmap.rows * m_bitmap.width * 2);
+		for(unsigned int bits = bitFrom; bits < bitTo; bits++) {
+			out->resetData();
+			unsigned int len = encode(out, bits);
+			if(!minSize || (minSize > len)) {
+				minSize = len;
+				minBits = bits;
+			}
+			out->resetData();
+			out->resetPos();
+		}
+		delete out;
+		return minBits;
+	}
+	unsigned char *packedData(unsigned int& bits) {
+		BitWriter out(m_destBuf, 8 + (2 * m_bitmap.rows * m_bitmap.width));
+		for(unsigned char mask = 128;mask;mask >>= 1) {
+			out += bits & mask;
+		}
+		bits = encode(&out, bits);
+		return m_destBuf;
+	}
+	unsigned int encode(BitWriter *out, unsigned int bits) {
+		unsigned int bitSize = m_bitmap.rows * m_bitmap.width;
+		BitReader src(m_tinyBuf, bitSize);
+		BitWriter block(NULL, bits);
+		for(unsigned int b = 0; b < bitSize; b += bits) {
+			for(unsigned int bl = 0; (bl < bits)
+				&& ((b + bl) < bitSize); bl++) {
+				block += src;
+				++src;
+			}
+			if(block.zeroData()) {
+				*out += false;
+			} else {
+				try {
+					*out += true;
+				} catch (...) {
+					out->resetPos();
+					return -1;
+				}
+				block.resetPos();
+				for(unsigned int bl = 0; bl < bits; bl++) {
+					try {
+						*out += block;
+					} catch (...) {
+						out->resetPos();
+						return -1;
+					}
+					++block ;
+				}
+			}
+			block.resetPos();
+			block.resetData();
+		}
+		int x=src.BitPos();
+		int y=out->BitPos();
+		return out->BitPos();
+	}
+	~CharBox() {
+		delete[] m_bitmap.buffer;
+		delete[] m_tinyBuf;
+		delete[] m_destBuf;
+	}
+protected:
+	void copy2tiny() {
+		unsigned char *destPos = m_tinyBuf, destMask = 0x80;
+		for(unsigned int y=0; y < m_bitmap.rows; y++) {
+			for(unsigned int x=0;x < m_bitmap.width; x++) {
+				if(m_bitmap.buffer[y * m_bitmap.pitch + (x/8)]
+				& (0x80 >> (x & 7))) {
+					*destPos |= destMask;
+				} else ; // dest zeros untouched !
+				destMask >>= 1;
+				if(!destMask) {
+					destMask = 0x80;
+					destPos++;
+				}
+			}
+		}
+	}
+private:
+	FT_Bitmap m_bitmap;
+	unsigned char *m_tinyBuf;
+	unsigned char *m_destBuf;
+};
+/* XOR pack support objects end */
 
 int main(int argc, char *argv[]) {
 	unsigned int                i, j, err, size, first=' ', last='~',
@@ -89,8 +248,7 @@ int main(int argc, char *argv[]) {
 	FT_BitmapGlyphRec *g;
 	GFXglyph          *table;
 	uint8_t            bit;
-	(*bitCollection).set2(0); // reset encoding buffer
-	
+
 	// Parse command line.  Valid syntaxes are:
 	//   fontconvert [filename] [size]
 	//   fontconvert [filename] [size] [last char]
@@ -164,7 +322,7 @@ int main(int argc, char *argv[]) {
 	// the right symbols, and that's not done yet.
 	// fprintf(stderr, "%ld glyphs\n", face->num_glyphs);
 
-	printf("const uint8_t %sBitmaps[] PROGMEM = {", fontName);
+	printf("const uint8_t %sBitmaps[] PROGMEM = {\n  ", fontName);
 
 	// Process glyphs and output huge bitmap data array
 	string txt; // ASCII output
@@ -233,48 +391,35 @@ int main(int argc, char *argv[]) {
 		}
 		txt += '\n';
 
-		for(y=bitmap->rows-1; y; y--) { // XOR character before processing last row with previous, etc.
-			for(x=0;x < (unsigned)bitmap->pitch; x++) {
-				bitmap->buffer[y * bitmap->pitch + x] ^= bitmap->buffer[(y-1) * bitmap->pitch + x];
-			}
-		}
+		CharBox b(bitmap);
+		b.xor();
+		unsigned int size = b.pack(2); // find best block size
+		unsigned char *packed = b.packedData(size); // return buffer and data size in bits
+		unsigned int byteSize = !!(size & 7) + (size / 8);
+		lostBits += (byteSize * 8) - size;
 
-		for(y=0; y < bitmap->rows; y++) {
-			for(x=0;x < bitmap->width; x++) {
-				byte = x / 8;
-				bit  = 0x80 >> (x & 7);
-				enbit(bitmap->buffer[
-				   y * bitmap->pitch + byte] & bit, origSize, packedSize, i);
-			}
-		}
-		bitsCount += bitmap->rows * bitmap->width;
+		bitsCount += size;
 
-		// Pad end of char bitmap to next byte boundary if needed
-		int n = (bitmap->width * bitmap->rows) & 7;
-		if(n) { // Pixel count not an even multiple of 8?
-			n = 8 - n; // # bits to next multiple
-			lostBits += n;
-			while(n--) {
-				enbit(0, origSize, packedSize, i);
-			}
+		int originalSize = bitmap->width * bitmap->rows;
+		originalSize = !!(originalSize & 7) + (originalSize / 8);
+		origSize += originalSize;
+
+		if(i > first) {
+			printf(",\n");
 		}
-		bitmapOffset += (bitmap->width * bitmap->rows + 7) / 8;
+		printf("/* %c %05i (%ib=>%i/%iB) */ %i", i, bitmapOffset, size, byteSize, originalSize,
+			*packed);
+		for(int i=1;i<byteSize;i++) {
+			printf(",0x%02X", *(packed+i));
+		}
+		//if(*(packed+byteSize)) printf(",0x%02X", *(packed+byteSize));
+//		printf("\n");
+		bitmapOffset += byteSize;
 
 		FT_Done_Glyph(glyph);
 	}
+	packedSize = bitmapOffset;
 
-	int occupied = (*bitCollection).getBytesUsed(); // Any non-printed data remain ?
-	bitsCount += lostBits;
-
-	if(occupied) {
-		if(!(*bitCollection).getRelPos()) { // move pos (less than 8 bytes encoded)
-			uint8_t bitPos = (*bitCollection).getBitPos();
-			(*bitCollection).setPos(occupied);
-			(*bitCollection).setBitPos(bitPos);
-		}
-		printEncoded(occupied, origSize, packedSize, last);
-		packedSize += occupied;
-	}
 	printf("\n};\n/* Lost rounded bits: %ub of %u => %f%%\n   Compression result %uB of %u => %f%% */\n\n", lostBits, bitsCount, 100.0*lostBits/bitsCount,
 		packedSize, origSize, -100.0*(origSize-packedSize)/origSize); // End bitmap array
 
