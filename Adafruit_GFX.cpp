@@ -96,7 +96,7 @@ public:
 			}
 			return 0;
 		}
-		//throw "??";
+		return 0; //throw "??";
 	}
 private:
 	void markBitInit() {
