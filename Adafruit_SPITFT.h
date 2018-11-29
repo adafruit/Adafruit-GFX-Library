@@ -35,7 +35,6 @@
 
 /// A heavily optimized SPI display subclass of GFX. Manages SPI bitbanging, transactions, DMA, etc! Despite being called SPITFT, the classic SPI data/command interface is also used by OLEDs.
 class Adafruit_SPITFT : public Adafruit_GFX {
-    protected:
 
     public:
         Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
@@ -88,6 +87,9 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 	void      invertDisplay(boolean i);
 
         uint16_t  color565(uint8_t r, uint8_t g, uint8_t b);
+        void      writeCommand(uint8_t cmd);
+        void      spiWrite(uint8_t v);
+        uint8_t   spiRead(void);
 
     protected:
 	SPIClass *_spi;         ///< The SPI device we want to use (set in constructor)
@@ -115,10 +117,6 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 	  cspinmask,            ///< bitmask for turning on/off CS with fast register bitbang IO 
 	  dcpinmask;            ///< bitmask for turning on/off DC with fast register bitbang IO 
 #endif
-
-        void        writeCommand(uint8_t cmd);
-        void        spiWrite(uint8_t v);
-        uint8_t     spiRead(void);
 
 	uint8_t   invertOnCommand = 0,    ///<  SPI command byte to turn on invert
 	  invertOffCommand = 0;           ///<  SPI command byte to turn off invert
