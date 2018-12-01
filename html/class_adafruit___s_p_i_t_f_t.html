@@ -60,7 +60,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_adafruit___s_p_i_t_f_t-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -155,6 +154,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a656f04e5a60f1ff7cddc2934fa676b8b">color565</a> (uint8_t r, uint8_t g, uint8_t b)</td></tr>
 <tr class="memdesc:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass 8-bit (each) R,G,B, get back 16-bit packed color This function converts 8-8-8 RGB data to 16-bit 5-6-5.  <a href="#a656f04e5a60f1ff7cddc2934fa676b8b">More...</a><br /></td></tr>
 <tr class="separator:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0169fcf8898413bba568a93c1617e8bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0169fcf8898413bba568a93c1617e8bb">writeCommand</a> (uint8_t cmd)</td></tr>
+<tr class="memdesc:a0169fcf8898413bba568a93c1617e8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a command byte (must have a transaction in progress)  <a href="#a0169fcf8898413bba568a93c1617e8bb">More...</a><br /></td></tr>
+<tr class="separator:a0169fcf8898413bba568a93c1617e8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11af568cbec82fc9bab40e52b2afd05e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a11af568cbec82fc9bab40e52b2afd05e">spiWrite</a> (uint8_t v)</td></tr>
+<tr class="memdesc:a11af568cbec82fc9bab40e52b2afd05e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write one byte to SPI interface (hardware or software)  <a href="#a11af568cbec82fc9bab40e52b2afd05e">More...</a><br /></td></tr>
+<tr class="separator:a11af568cbec82fc9bab40e52b2afd05e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6904156a9bb832fc510ae6df33e936e5"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6904156a9bb832fc510ae6df33e936e5">spiRead</a> (void)</td></tr>
+<tr class="memdesc:a6904156a9bb832fc510ae6df33e936e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one byte from SPI interface (hardware or software)  <a href="#a6904156a9bb832fc510ae6df33e936e5">More...</a><br /></td></tr>
+<tr class="separator:a6904156a9bb832fc510ae6df33e936e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a6f6f1abccf677eac244fa17d105133ea inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">Adafruit_GFX</a> (int16_t w, int16_t h)</td></tr>
 <tr class="memdesc:a6f6f1abccf677eac244fa17d105133ea inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instatiate a GFX context for graphics! Can only be done by a superclass.  <a href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">More...</a><br /></td></tr>
@@ -295,22 +303,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get text cursor Y location.  <a href="class_adafruit___g_f_x.html#a81c8558cfcb717c4cfbd5475998daed1">More...</a><br /></td></tr>
 <tr class="separator:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a0169fcf8898413bba568a93c1617e8bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0169fcf8898413bba568a93c1617e8bb">writeCommand</a> (uint8_t cmd)</td></tr>
-<tr class="memdesc:a0169fcf8898413bba568a93c1617e8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a command byte (must have a transaction in progress)  <a href="#a0169fcf8898413bba568a93c1617e8bb">More...</a><br /></td></tr>
-<tr class="separator:a0169fcf8898413bba568a93c1617e8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11af568cbec82fc9bab40e52b2afd05e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a11af568cbec82fc9bab40e52b2afd05e">spiWrite</a> (uint8_t v)</td></tr>
-<tr class="memdesc:a11af568cbec82fc9bab40e52b2afd05e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write one byte to SPI interface (hardware or software)  <a href="#a11af568cbec82fc9bab40e52b2afd05e">More...</a><br /></td></tr>
-<tr class="separator:a11af568cbec82fc9bab40e52b2afd05e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6904156a9bb832fc510ae6df33e936e5"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6904156a9bb832fc510ae6df33e936e5">spiRead</a> (void)</td></tr>
-<tr class="memdesc:a6904156a9bb832fc510ae6df33e936e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one byte from SPI interface (hardware or software)  <a href="#a6904156a9bb832fc510ae6df33e936e5">More...</a><br /></td></tr>
-<tr class="separator:a6904156a9bb832fc510ae6df33e936e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
-<tr class="memitem:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">charBounds</a> (char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
-<tr class="memdesc:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">More...</a><br /></td></tr>
-<tr class="separator:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a2003f65628bfcd075b300f022dce0ffc"><td class="memItemLeft" align="right" valign="top"><a id="a2003f65628bfcd075b300f022dce0ffc"></a>
@@ -414,6 +406,13 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#afeb94c3253f43dada05e1270e322fa06">gfxFont</a></td></tr>
 <tr class="memdesc:afeb94c3253f43dada05e1270e322fa06 inherit pro_attribs_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to special font. <br /></td></tr>
 <tr class="separator:afeb94c3253f43dada05e1270e322fa06 inherit pro_attribs_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
+<tr class="memitem:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">charBounds</a> (char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
+<tr class="memdesc:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">More...</a><br /></td></tr>
+<tr class="separator:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A heavily optimized SPI display subclass of GFX. Manages SPI bitbanging, transactions, DMA, etc! Despite being called SPITFT, the classic SPI data/command interface is also used by OLEDs. </p>
@@ -1486,9 +1485,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Adafruit_SPITFT::writeCommand </td>
@@ -1498,11 +1494,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Write a command byte (must have a transaction in progress) </p>
@@ -1520,9 +1511,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Adafruit_SPITFT::spiWrite </td>
@@ -1532,11 +1520,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Write one byte to SPI interface (hardware or software) </p>
@@ -1554,9 +1537,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">uint8_t Adafruit_SPITFT::spiRead </td>
@@ -1566,11 +1546,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Read one byte from SPI interface (hardware or software) </p>
