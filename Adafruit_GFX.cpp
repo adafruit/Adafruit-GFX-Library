@@ -83,7 +83,11 @@ public:
 		markBitInit();
 	}
 	operator bool() {
-		if(m_readRemain) {
+		if(!m_bits) { // unpacked stream
+			bool retVal = !!(pgm_read_byte(m_bitsBytePtr) & m_mask);
+			next();
+			return retVal;
+		} else if(m_readRemain) {
 			bool retVal = !!(pgm_read_byte(m_bitsBytePtr) & m_mask);
 			next();
 			if(!--m_readRemain) {
@@ -100,13 +104,15 @@ public:
 	}
 private:
 	void markBitInit() {
-		if(pgm_read_byte(m_bitsBytePtr) & m_mask) {
-			m_readRemain = m_bits;
-		} else {
-			m_zeros = m_bits;
+		if(m_bits) {
+			if(pgm_read_byte(m_bitsBytePtr) & m_mask) {
+				m_readRemain = m_bits;
+			} else {
+				m_zeros = m_bits;
+			}
+			m_markBit = false;
+			next();
 		}
-		m_markBit = false;
-		next();
 	}
 	void next () {
 		if(m_mask == 0x01) {
@@ -1120,10 +1126,21 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         // drawChar() directly with 'bad' characters of font may cause mayhem!
 
         c -= (uint8_t)pgm_read_byte(&gfxFont->first);
-        GFXglyph *glyph  = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
+        GFXglyph *glyphs = (GFXglyph *)pgm_read_pointer(&gfxFont->glyph);
+        GFXglyph *glyph  = &glyphs[0];
+        uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
+		bool packed = (bo != glyph->height * glyph->width);
+		bo = 0;
+		for(uint8_t i=0;i<c;i++) {
+			uint16_t unpackedSize = glyph->height * glyph->width;
+			if(packed) unpackedSize = glyph->bitmapOffset; // if packed less bits to skip
+			unpackedSize = !!(unpackedSize & 7) + (unpackedSize >> 3);
+			bo += unpackedSize;
+			glyph++; // move to current glyph
+			packed = (glyph->bitmapOffset != glyph->height * glyph->width);
+		}
         uint8_t  *bitmap = (uint8_t *)pgm_read_pointer(&gfxFont->bitmap);
 
-        uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
         uint8_t  w  = pgm_read_byte(&glyph->width),
                  h  = pgm_read_byte(&glyph->height);
         int8_t   xo = pgm_read_byte(&glyph->xOffset),
@@ -1155,8 +1172,9 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         // implemented this yet.
 
         startWrite();
-		uint8_t blockSize = pgm_read_byte(&bitmap[bo++]); // for first char pick 1st bit array only
-		PackedStreamReader bitStream(&bitmap[bo++], blockSize);
+		uint8_t blockSize = 0;
+		if(packed) blockSize = pgm_read_byte(&bitmap[bo++]); // for first char pick 1st bit array only
+		PackedStreamReader bitStream(&bitmap[bo++], packed?blockSize:0);
 		uint8_t bufSize = w/8+!!(w&7); // row xor buffer (each row is XORed with)
 		uint8_t *rowBuf = new uint8_t[bufSize];
 		memset(rowBuf, 0, bufSize); // zero it for 1st (untouched) row
@@ -1166,7 +1184,8 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 			uint8_t rowBufMask = 128;
             for(xx=0; xx<w; xx++) {
 				chk = bitStream;
-                if(chk ^ !!(rowBufMask & *rowBufPos)) { // xor common bit with XOR buffer
+				if(packed) chk = chk ^ !!(rowBufMask & *rowBufPos); // xor common bit with XOR buffer
+				if(chk) {
 					*rowBufPos |= rowBufMask; // XOR result was 1, so set it back to buffer too
                     if(size == 1) {
                         writePixel(x+xo+xx, y+yo+yy, color);

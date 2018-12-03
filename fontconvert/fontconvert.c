@@ -133,15 +133,30 @@ public:
 		int destSize = m_bitmap.width * m_bitmap.rows;
 		destSize = (destSize / 8) + !!(destSize & 7);
 		m_tinyBuf = new unsigned char[destSize];
-		memset(m_tinyBuf, 0, destSize);
+		clearTiny();
 		m_destBuf = new unsigned char[2 * destSize];
 	}
+	const unsigned char *getTiny() { return m_tinyBuf; }
 	void xor() {
 		for(unsigned int y=m_bitmap.rows-1; y; y--) { // XOR character before processing last row with previous, etc.
 			for(unsigned int x=0;x < (unsigned)m_bitmap.pitch; x++) {
 				m_bitmap.buffer[y * m_bitmap.pitch + x] ^= m_bitmap.buffer[(y-1) * m_bitmap.pitch + x];
 			}
 		}
+	}
+	void clearTiny() {
+		int destSize = m_bitmap.width * m_bitmap.rows;
+		destSize = (destSize / 8) + !!(destSize & 7);
+		memset(m_tinyBuf, 0, destSize);
+	}
+	void unXor() {
+		for(unsigned int y=1; y < m_bitmap.rows; y++) {
+			for(unsigned int x=0;x < (unsigned)m_bitmap.pitch; x++) {
+				m_bitmap.buffer[y * m_bitmap.pitch + x] ^= m_bitmap.buffer[(y-1) * m_bitmap.pitch + x];
+			}
+		}
+		clearTiny();
+		copy2tiny();
 	}
 	unsigned int pack(int bitFrom, int bitTo = -1) {
 		copy2tiny();
@@ -361,7 +376,6 @@ int main(int argc, char *argv[]) {
 		// code currently doesn't check for overflow.  (Doesn't
 		// check that size & offsets are within bounds either for
 		// that matter...please convert fonts responsibly.)
-		table[j].bitmapOffset = bitmapOffset;
 		table[j].width        = bitmap->width;
 		table[j].height       = bitmap->rows;
 		table[j].xAdvance     = (uint8_t)face->glyph->advance.x >> 6;
@@ -394,28 +408,42 @@ int main(int argc, char *argv[]) {
 		CharBox b(bitmap);
 		b.xor();
 		unsigned int size = b.pack(2); // find best block size
-		unsigned char *packed = b.packedData(size); // return buffer and data size in bits
+		const unsigned char *packed = b.packedData(size); // return buffer and data size in bits
 		unsigned int byteSize = !!(size & 7) + (size / 8);
-		lostBits += (byteSize * 8) - size;
-
-		bitsCount += size;
 
 		int originalSize = bitmap->width * bitmap->rows;
 		originalSize = !!(originalSize & 7) + (originalSize / 8);
 		origSize += originalSize;
 
+		bool orig = originalSize <= byteSize;
+		if(orig) { // revert pack when size is same or bigger
+			b.unXor();
+			packed = b.getTiny();
+			size = bitsCount = bitmap->width * bitmap->rows;
+			byteSize = originalSize;
+		}
+
+		lostBits += (byteSize * 8) - size;
+
+		bitsCount += size;
+
 		if(i > first) {
 			printf(",\n");
 		}
-		printf("/* %c %05i (%ib=>%i/%iB) */ %i", i, bitmapOffset, size, byteSize, originalSize,
-			*packed);
+		if(!orig) {
+			printf("/* %c %05i (%ib=>%i/%iB) */ %i", i, bitmapOffset, size, byteSize, originalSize,
+				*packed);
+		} else {
+			printf("/* %c %05i (%ib=>%i/%iB) */ 0x%02X", i, bitmapOffset, size, byteSize, originalSize,
+				*packed);
+		}
 		for(int i=1;i<byteSize;i++) {
 			printf(",0x%02X", *(packed+i));
 		}
 		//if(*(packed+byteSize)) printf(",0x%02X", *(packed+byteSize));
 //		printf("\n");
 		bitmapOffset += byteSize;
-
+		table[j].bitmapOffset = size; // bit size
 		FT_Done_Glyph(glyph);
 	}
 	packedSize = bitmapOffset;
