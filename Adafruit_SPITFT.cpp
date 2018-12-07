@@ -57,35 +57,11 @@
 #include <malloc.h> // memalign() function
 
 // DMA transfer-in-progress indicator and callback
-static volatile boolean          dma_busy = false;
-static volatile Adafruit_SPITFT *spitft   = NULL;
+static volatile boolean dma_busy = false;
 static void dma_callback(Adafruit_ZeroDMA *dma) {
-    // If spitft pointer is set, deselect TFT and end the SPI transaction
-    // here in the callback rather than at end of drawing function. Avoids
-    // a (possibly unnecessary) function call at the start of every graphics
-    // operation. Can't do this in SPI_BEGIN_TRANSACTION because other code
-    // outside the library (e.g. SD card reading) may be waiting on the
-    // GFX SPI transaction to end first.
-    if(spitft) {
-        ((Adafruit_SPITFT *)spitft)->endWrite();
-        spitft = NULL;
-    }
     dma_busy = false;
 }
 
-/**************************************************************************/
-/*!
-    @brief   Poll whether a previous DMA operation is still in-progress.
-    @return  true if SPITFT DMA operation in progress, false if available.
-*/
-/**************************************************************************/
-boolean Adafruit_SPITFT::DMA_busy(void) {
-    return dma_busy;
-}
-
- #define DMA_WAIT while(dma_busy); ///< Wait for dma busy flag to clear
-#else
- #define DMA_WAIT                  ///< Do nothing; DMA not used
 #endif // USE_SPI_DMA
 
 /**************************************************************************/
@@ -431,7 +407,6 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
 */
 /**************************************************************************/
 void inline Adafruit_SPITFT::startWrite(void){
-    DMA_WAIT; // Wait for any prior SPI DMA to complete
     SPI_BEGIN_TRANSACTION();
     SPI_CS_LOW();
 }
@@ -442,19 +417,8 @@ void inline Adafruit_SPITFT::startWrite(void){
 */
 /**************************************************************************/
 void inline Adafruit_SPITFT::endWrite(void){
-#ifdef USE_SPI_DMA
-    // SPI DMA enabled: wait for DMA completion and end transaction ONLY if
-    // spitft is NULL. Otherwise, calling function can proceed and
-    // equivalent code in DMA callback is used.
-    if(!spitft) {
-        DMA_WAIT; // Wait for DMA operation to complete
-        SPI_CS_HIGH();
-        SPI_END_TRANSACTION();
-    }
-#else
     SPI_CS_HIGH();
     SPI_END_TRANSACTION();
-#endif
 }
 
 /**************************************************************************/
@@ -511,7 +475,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
         descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
         descriptor[pixelBufIdx].DESCADDR.reg      = 0;
 
-        DMA_WAIT; // NOW wait for prior DMA to complete
+        while(dma_busy); // wait for prior line to complete
 
         // Move new descriptor into place...
         memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
@@ -523,11 +487,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
     }
     lastFillColor = 0x0000; // pixelBuf has been sullied
     lastFillLen   = 0;
-    // Return immediately -- other code runs with last DMA transfer in
-    // background. startWrite() will wait for the transfer to complete
-    // before issuing any more commands. User code MUST poll
-    // display.DMA_busy() before attempting anything else on the same
-    // SPI bus (e.g. SD card access).
+    while(dma_busy);        // Wait for last line to complete
 #else
     SPI_WRITE_PIXELS((uint8_t*)colors , len * 2);
 #endif
@@ -599,14 +559,14 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         }
     }
     memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
-    dma_busy = true; // ANY function using SPI must poll busy flag!
-    spitft   = this; // Save pointer to Adafruit_SPITFT type for callback
+    dma_busy = true;
     dma.startJob();  // Trigger SPI DMA transfer
-    // Return immediately -- other code runs with DMA transfer in
-    // background. startWrite() will wait for the transfer to complete
-    // before issuing any more commands. User code MUST poll
-    // display.DMA_busy() before attempting anything else on the same
-    // SPI bus (e.g. SD card access).
+    while(dma_busy); // Wait for completion
+    // Unfortunately the wait is necessary. An earlier version returned
+    // immediately and checked dma_busy on startWrite() instead, but it
+    // turns out to be MUCH slower on many graphics operations (as when
+    // drawing lines, pixel-by-pixel), perhaps because it's a volatile
+    // type.
 
 #else // Non-DMA
 
@@ -658,7 +618,6 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 /**************************************************************************/
 void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
     if((x < 0) ||(x >= _width) || (y < 0) || (y >= _height)) return;
-    DMA_WAIT;
     setAddrWindow(x,y,1,1);
     writePixel(color);
 }
@@ -693,7 +652,6 @@ void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, 
     if(y2 >= _height) h = _height - y;
 
     int32_t len = (int32_t)w * h;
-    DMA_WAIT;
     setAddrWindow(x, y, w, h);
     writeColor(color, len);
 }
@@ -848,7 +806,7 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
     if(y2 >= _height) h = _height - y; // Clip bottom
 
     pcolors += by1 * saveW + bx1; // Offset bitmap ptr to clipped top-left
-    startWrite(); // Includes a DMA_WAIT
+    startWrite();
     setAddrWindow(x, y, w, h); // Clipped area
     while(h--) { // For each (clipped) scanline...
       writePixels(pcolors, w); // Push one (clipped) row
