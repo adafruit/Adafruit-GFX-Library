@@ -534,17 +534,18 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
             // If length is longer than prior instance, fill only the
             // additional pixels in the buffer and update lastFillLen.
             if(len > lastFillLen) {
-                int fillStart = lastFillLen / 2 + 1,
-                    fillEnd   = (((maxFillLen < len) ?
-                                   maxFillLen : len) + 1) / 2;
+                int fillStart = lastFillLen / 2,
+                    fillEnd   = (((len < maxFillLen) ?
+                                   len : maxFillLen) + 1) / 2;
                 for(int i=fillStart; i<fillEnd; i++) pixelPtr[i] = twoPixels;
                 lastFillLen = fillEnd * 2;
             } // else do nothing, don't set pixels, don't change lastFillLen
         } else {
-            int fillEnd = (((maxFillLen < len) ?
-                             maxFillLen : len) + 1) / 2;
+            int fillEnd = (((len < maxFillLen) ?
+                             len : maxFillLen) + 1) / 2;
             for(int i=0; i<fillEnd; i++) pixelPtr[i] = twoPixels;
-            lastFillLen = fillEnd * 2;
+            lastFillLen   = fillEnd * 2;
+            lastFillColor = color;
         }
 
         int numDescriptors = (len + maxFillLen - 1) / maxFillLen;
@@ -566,7 +567,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     // immediately and checked dma_busy on startWrite() instead, but it
     // turns out to be MUCH slower on many graphics operations (as when
     // drawing lines, pixel-by-pixel), perhaps because it's a volatile
-    // type.
+    // type and doesn't cache.
 
 #else // Non-DMA
 
