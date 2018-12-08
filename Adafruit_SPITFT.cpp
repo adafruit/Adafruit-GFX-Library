@@ -313,6 +313,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
 #endif
                     }
 
+                    dma.setPriority(DMA_PRIORITY_3);
                     dma.setTrigger(dmac_id);
                     dma.setAction(DMA_TRIGGER_ACTON_BEAT);
 
@@ -504,22 +505,23 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
 #ifdef USE_SPI_DMA
 
+    int i, d, numDescriptors;
     if((color >> 8) == (color & 0xFF)) { // If high & low bytes are same...
         onePixelBuf = color;
         // Can do this with a relatively short descriptor list,
         // each transferring a max of 32,767 (not 32,768) pixels.
         // This won't run off the end of the allocated descriptor list,
         // since we're using much larger chunks per descriptor here.
-        int numDescriptors = (len + 32766) / 32767;
-        for(int d=0; d<numDescriptors; d++) {
-            int count = (len > 32767) ? 32767 : len;
+        numDescriptors = (len + 32766) / 32767;
+        for(d=0; d<numDescriptors; d++) {
+            int count = (len < 32767) ? len : 32767;
             descriptor[d].SRCADDR.reg       = (uint32_t)&onePixelBuf;
             descriptor[d].BTCTRL.bit.SRCINC = 0;
             descriptor[d].BTCNT.reg         = count * 2;
-            descriptor[d].DESCADDR.reg      =
-              (d < (numDescriptors - 1)) ? (uint32_t)&descriptor[d + 1] : 0;
+            descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
             len -= count;
         }
+        descriptor[d-1].DESCADDR.reg        = 0;
     } else {
         // If high and low bytes are distinct, it's necessary to fill
         // a buffer with pixel data (swapping high and low bytes because
@@ -537,32 +539,35 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
                 int fillStart = lastFillLen / 2,
                     fillEnd   = (((len < maxFillLen) ?
                                    len : maxFillLen) + 1) / 2;
-                for(int i=fillStart; i<fillEnd; i++) pixelPtr[i] = twoPixels;
+                for(i=fillStart; i<fillEnd; i++) pixelPtr[i] = twoPixels;
                 lastFillLen = fillEnd * 2;
             } // else do nothing, don't set pixels, don't change lastFillLen
         } else {
             int fillEnd = (((len < maxFillLen) ?
                              len : maxFillLen) + 1) / 2;
-            for(int i=0; i<fillEnd; i++) pixelPtr[i] = twoPixels;
+            for(i=0; i<fillEnd; i++) pixelPtr[i] = twoPixels;
             lastFillLen   = fillEnd * 2;
             lastFillColor = color;
         }
 
-        int numDescriptors = (len + maxFillLen - 1) / maxFillLen;
-        for(int d=0; d<numDescriptors; d++) {
-            int count = lastFillLen * 2; // Transfer size in bytes
-            descriptor[d].SRCADDR.reg       = (uint32_t)pixelPtr + count;
+        numDescriptors = (len + maxFillLen - 1) / maxFillLen;
+        for(d=0; d<numDescriptors; d++) {
+            int pixels = (len < maxFillLen) ? len : maxFillLen,
+                bytes  = pixels * 2;
+            descriptor[d].SRCADDR.reg       = (uint32_t)pixelPtr + bytes;
             descriptor[d].BTCTRL.bit.SRCINC = 1;
-            descriptor[d].BTCNT.reg         = count;
-            descriptor[d].DESCADDR.reg      =
-              (d < (numDescriptors - 1)) ? (uint32_t)&descriptor[d + 1] : 0;
-            len -= count;
+            descriptor[d].BTCNT.reg         = bytes;
+            descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
+            len -= pixels;
         }
+        descriptor[d-1].DESCADDR.reg        = 0;
     }
     memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
+
     dma_busy = true;
     dma.startJob();  // Trigger SPI DMA transfer
     while(dma_busy); // Wait for completion
+
     // Unfortunately the wait is necessary. An earlier version returned
     // immediately and checked dma_busy on startWrite() instead, but it
     // turns out to be MUCH slower on many graphics operations (as when
@@ -652,9 +657,8 @@ void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, 
     if(x2 >= _width)  w = _width  - x;
     if(y2 >= _height) h = _height - y;
 
-    int32_t len = (int32_t)w * h;
     setAddrWindow(x, y, w, h);
-    writeColor(color, len);
+    writeColor(color, (int32_t)w * h);
 }
 
 /**************************************************************************/
