@@ -455,40 +455,43 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
 /**************************************************************************/
 void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
 #ifdef USE_SPI_DMA
-    int     maxSpan     = maxFillLen / 2; // One scanline max
-    uint8_t pixelBufIdx = 0;              // Active pixel buffer number
-    while(len) {
-        int count = (len < maxSpan) ? len : maxSpan;
+    if(_sclk < 0) { // using hardware SPI?
+        int     maxSpan     = maxFillLen / 2; // One scanline max
+        uint8_t pixelBufIdx = 0;              // Active pixel buffer number
+        while(len) {
+            int count = (len < maxSpan) ? len : maxSpan;
 
-        // Because TFT and SAMD endianisms are different, must swap bytes
-        // from the 'colors' array passed into a DMA working buffer. This
-        // can take place while the prior DMA transfer is in progress,
-        // hence the need for two pixelBufs.
-        for(int i=0; i<count; i++) {
-            pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
+            // Because TFT and SAMD endianisms are different, must swap bytes
+            // from the 'colors' array passed into a DMA working buffer. This
+            // can take place while the prior DMA transfer is in progress,
+            // hence the need for two pixelBufs.
+            for(int i=0; i<count; i++) {
+                pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
+            }
+            // The transfers themselves are relatively small, so we don't
+            // need a long descriptor list. We just alternate between the
+            // first two, sharing pixelBufIdx for that purpose.
+            descriptor[pixelBufIdx].SRCADDR.reg       =
+              (uint32_t)pixelBuf[pixelBufIdx] + count * 2;
+            descriptor[pixelBufIdx].BTCTRL.bit.SRCINC = 1;
+            descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
+            descriptor[pixelBufIdx].DESCADDR.reg      = 0;
+
+            while(dma_busy); // wait for prior line to complete
+
+            // Move new descriptor into place...
+            memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
+            dma_busy = true;
+            dma.startJob();                // Trigger SPI DMA transfer
+            pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
+
+            len -= count;
         }
-        // The transfers themselves are relatively small, so we don't
-        // need a long descriptor list. We just alternate between the
-        // first two, sharing pixelBufIdx for that purpose.
-        descriptor[pixelBufIdx].SRCADDR.reg       =
-          (uint32_t)pixelBuf[pixelBufIdx] + count * 2;
-        descriptor[pixelBufIdx].BTCTRL.bit.SRCINC = 1;
-        descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
-        descriptor[pixelBufIdx].DESCADDR.reg      = 0;
-
-        while(dma_busy); // wait for prior line to complete
-
-        // Move new descriptor into place...
-        memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
-        dma_busy = true;
-        dma.startJob();                // Trigger SPI DMA transfer
-        pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
-
-        len -= count;
+        lastFillColor = 0x0000; // pixelBuf has been sullied
+        lastFillLen   = 0;
+        while(dma_busy);        // Wait for last line to complete
+        return;
     }
-    lastFillColor = 0x0000; // pixelBuf has been sullied
-    lastFillLen   = 0;
-    while(dma_busy);        // Wait for last line to complete
 #else
     SPI_WRITE_PIXELS((uint8_t*)colors , len * 2);
 #endif
@@ -503,115 +506,118 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
 /**************************************************************************/
 void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
+    uint8_t hi = color >> 8, lo = color;
+
+    if(_sclk < 0) { // Using hardware SPI
+
 #ifdef USE_SPI_DMA
 
-    int i, d, numDescriptors;
-    if((color >> 8) == (color & 0xFF)) { // If high & low bytes are same...
-        onePixelBuf = color;
-        // Can do this with a relatively short descriptor list,
-        // each transferring a max of 32,767 (not 32,768) pixels.
-        // This won't run off the end of the allocated descriptor list,
-        // since we're using much larger chunks per descriptor here.
-        numDescriptors = (len + 32766) / 32767;
-        for(d=0; d<numDescriptors; d++) {
-            int count = (len < 32767) ? len : 32767;
-            descriptor[d].SRCADDR.reg       = (uint32_t)&onePixelBuf;
-            descriptor[d].BTCTRL.bit.SRCINC = 0;
-            descriptor[d].BTCNT.reg         = count * 2;
-            descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
-            len -= count;
-        }
-        descriptor[d-1].DESCADDR.reg        = 0;
-    } else {
-        // If high and low bytes are distinct, it's necessary to fill
-        // a buffer with pixel data (swapping high and low bytes because
-        // TFT and SAMD are different endianisms) and create a longer
-        // descriptor list pointing repeatedly to this data. We can do
-        // this slightly faster working 2 pixels (32 bits) at a time.
-        uint32_t *pixelPtr  = (uint32_t *)pixelBuf[0],
-                  twoPixels = __builtin_bswap16(color) * 0x00010001;
-        // We can avoid some or all of the buffer-filling if the color
-        // is the same as last time...
-        if(color == lastFillColor) {
-            // If length is longer than prior instance, fill only the
-            // additional pixels in the buffer and update lastFillLen.
-            if(len > lastFillLen) {
-                int fillStart = lastFillLen / 2,
-                    fillEnd   = (((len < maxFillLen) ?
-                                   len : maxFillLen) + 1) / 2;
-                for(i=fillStart; i<fillEnd; i++) pixelPtr[i] = twoPixels;
-                lastFillLen = fillEnd * 2;
-            } // else do nothing, don't set pixels, don't change lastFillLen
+        int i, d, numDescriptors;
+        if(hi == lo) { // If high & low bytes are same...
+            onePixelBuf = color;
+            // Can do this with a relatively short descriptor list,
+            // each transferring a max of 32,767 (not 32,768) pixels.
+            // This won't run off the end of the allocated descriptor list,
+            // since we're using much larger chunks per descriptor here.
+            numDescriptors = (len + 32766) / 32767;
+            for(d=0; d<numDescriptors; d++) {
+                int count = (len < 32767) ? len : 32767;
+                descriptor[d].SRCADDR.reg       = (uint32_t)&onePixelBuf;
+                descriptor[d].BTCTRL.bit.SRCINC = 0;
+                descriptor[d].BTCNT.reg         = count * 2;
+                descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
+                len -= count;
+            }
+            descriptor[d-1].DESCADDR.reg        = 0;
         } else {
-            int fillEnd = (((len < maxFillLen) ?
-                             len : maxFillLen) + 1) / 2;
-            for(i=0; i<fillEnd; i++) pixelPtr[i] = twoPixels;
-            lastFillLen   = fillEnd * 2;
-            lastFillColor = color;
+            // If high and low bytes are distinct, it's necessary to fill
+            // a buffer with pixel data (swapping high and low bytes because
+            // TFT and SAMD are different endianisms) and create a longer
+            // descriptor list pointing repeatedly to this data. We can do
+            // this slightly faster working 2 pixels (32 bits) at a time.
+            uint32_t *pixelPtr  = (uint32_t *)pixelBuf[0],
+                      twoPixels = __builtin_bswap16(color) * 0x00010001;
+            // We can avoid some or all of the buffer-filling if the color
+            // is the same as last time...
+            if(color == lastFillColor) {
+                // If length is longer than prior instance, fill only the
+                // additional pixels in the buffer and update lastFillLen.
+                if(len > lastFillLen) {
+                    int fillStart = lastFillLen / 2,
+                        fillEnd   = (((len < maxFillLen) ?
+                                       len : maxFillLen) + 1) / 2;
+                    for(i=fillStart; i<fillEnd; i++) pixelPtr[i] = twoPixels;
+                    lastFillLen = fillEnd * 2;
+                } // else do nothing, don't set pixels or change lastFillLen
+            } else {
+                int fillEnd = (((len < maxFillLen) ?
+                                 len : maxFillLen) + 1) / 2;
+                for(i=0; i<fillEnd; i++) pixelPtr[i] = twoPixels;
+                lastFillLen   = fillEnd * 2;
+                lastFillColor = color;
+            }
+
+            numDescriptors = (len + maxFillLen - 1) / maxFillLen;
+            for(d=0; d<numDescriptors; d++) {
+                int pixels = (len < maxFillLen) ? len : maxFillLen,
+                    bytes  = pixels * 2;
+                descriptor[d].SRCADDR.reg       = (uint32_t)pixelPtr + bytes;
+                descriptor[d].BTCTRL.bit.SRCINC = 1;
+                descriptor[d].BTCNT.reg         = bytes;
+                descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
+                len -= pixels;
+            }
+            descriptor[d-1].DESCADDR.reg        = 0;
         }
+        memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
 
-        numDescriptors = (len + maxFillLen - 1) / maxFillLen;
-        for(d=0; d<numDescriptors; d++) {
-            int pixels = (len < maxFillLen) ? len : maxFillLen,
-                bytes  = pixels * 2;
-            descriptor[d].SRCADDR.reg       = (uint32_t)pixelPtr + bytes;
-            descriptor[d].BTCTRL.bit.SRCINC = 1;
-            descriptor[d].BTCNT.reg         = bytes;
-            descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
-            len -= pixels;
-        }
-        descriptor[d-1].DESCADDR.reg        = 0;
-    }
-    memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
+        dma_busy = true;
+        dma.startJob();
+        while(dma_busy); // Wait for completion
 
-    dma_busy = true;
-    dma.startJob();  // Trigger SPI DMA transfer
-    while(dma_busy); // Wait for completion
-
-    // Unfortunately the wait is necessary. An earlier version returned
-    // immediately and checked dma_busy on startWrite() instead, but it
-    // turns out to be MUCH slower on many graphics operations (as when
-    // drawing lines, pixel-by-pixel), perhaps because it's a volatile
-    // type and doesn't cache.
+        // Unfortunately the wait is necessary. An earlier version returned
+        // immediately and checked dma_busy on startWrite() instead, but it
+        // turns out to be MUCH slower on many graphics operations (as when
+        // drawing lines, pixel-by-pixel), perhaps because it's a volatile
+        // type and doesn't cache. Working on this.
 
 #else // Non-DMA
 
- #ifdef SPI_HAS_WRITE_PIXELS
-    if(_sclk >= 0){
-        for (uint32_t t=0; t<len; t++){
-            writePixel(color);
+  #ifdef SPI_HAS_WRITE_PIXELS
+        #define TMPBUF_LONGWORDS (SPI_MAX_PIXELS_AT_ONCE + 1) / 2
+        #define TMPBUF_PIXELS    (TMPBUF_LONGWORDS * 2)
+        static uint32_t temp[TMPBUF_LONGWORDS];
+        uint32_t        c32    = color * 0x00010001;
+        uint16_t        bufLen = (len < TMPBUF_PIXELS) ? len : TMPBUF_PIXELS,
+                        xferLen, fillLen;
+
+        // Fill temp buffer 32 bits at a time
+        fillLen = (bufLen + 1) / 2; // Round up to next 32-bit boundary
+        for(uint32_t t=0; t<fillLen; t++) {
+            temp[t] = c2;
         }
-        return;
-    }
-    static uint16_t temp[SPI_MAX_PIXELS_AT_ONCE];
-    size_t blen = (len > SPI_MAX_PIXELS_AT_ONCE)?SPI_MAX_PIXELS_AT_ONCE:len;
-    uint16_t tlen = 0;
 
-    for (uint32_t t=0; t<blen; t++){
-        temp[t] = color;
-    }
-
-    while(len){
-        tlen = (len>blen)?blen:len;
-        writePixels(temp, tlen);
-        len -= tlen;
-    }
- #else
-    uint8_t hi = color >> 8, lo = color;
-    if(_sclk < 0){ //AVR Optimization
-        for (uint32_t t=len; t; t--){
+        // Issue pixels in blocks from temp buffer
+        while(len) {                                 // While pixels remain
+            xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
+            writePixels(temp, xferLen);
+            len -= xferLen;
+        }
+  #else
+        while(len--) {
             HSPI_WRITE(hi);
             HSPI_WRITE(lo);
         }
-        return;
-    }
-    for (uint32_t t=len; t; t--){
-        spiWrite(hi);
-        spiWrite(lo);
-    }
- #endif
+  #endif
 
 #endif // end non-DMA
+
+    } else { // Bitbang SPI
+        while(len--) {
+            spiWrite(hi);
+            spiWrite(lo);
+        }
+    }
 }
 
 /**************************************************************************/
