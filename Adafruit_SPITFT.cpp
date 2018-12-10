@@ -600,13 +600,13 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         // Fill temp buffer 32 bits at a time
         fillLen = (bufLen + 1) / 2; // Round up to next 32-bit boundary
         for(uint32_t t=0; t<fillLen; t++) {
-            temp[t] = c2;
+            temp[t] = c32;
         }
 
         // Issue pixels in blocks from temp buffer
         while(len) {                                 // While pixels remain
             xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
-            writePixels(temp, xferLen);
+            writePixels((uint16_t *)temp, xferLen);
             len -= xferLen;
         }
   #else
