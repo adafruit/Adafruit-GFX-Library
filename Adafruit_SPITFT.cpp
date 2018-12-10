@@ -509,12 +509,13 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
 /**************************************************************************/
 void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
+    if(!len) return; // Avoid 0-byte transfers
+
     uint8_t hi = color >> 8, lo = color;
 
     if(_sclk < 0) { // Using hardware SPI
 
 #ifdef USE_SPI_DMA
-        if(!len) return; // DO NOT ANGER DMA WITH 0-BYTE TRANSFERS!
 
         int i, d, numDescriptors;
         if(hi == lo) { // If high & low bytes are same...
