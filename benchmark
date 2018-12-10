@@ -1,0 +1,28 @@
+BENCHMARK             TIME (MICROSECONDS)
+                         NO DMA    W/DMA    SPEEDUP
+Screen fill              1423496   513050    2.7X
+Text                       95811    97996     1X
+Lines                     844297   845960     1X
+Horiz/Vert Lines          118764    47679    2.5X
+Rectangles (outline)       75930    33124    2.3X
+Rectangles (filled)      2955105  1087729    2.7X
+Circles (filled)          374061   301426    1.2X
+Circles (outline)         368583   367738     1X
+Triangles (outline)       190206   183978     1X
+Triangles (filled)       1004699   477874    2.1X
+Rounded rects (outline)   164752   543676    0.3X WTF?
+Rounded rects (filled)   2950025  1895088    1.6X
+
+M4:
+Screen fill               771834   512267    1.5X
+Text                       44791    43447     1X
+Lines                     410014   409999     1X
+Horiz/Vert Lines           63649    43144    1.5X
+Rectangles (outline)       40636    27330    1.5X
+Rectangles (filled)      1601076  1064273    1.5X
+Circles (filled)          192210   157732    1.2X
+Circles (outline)         179822   179750     1X
+Triangles (outline)        93047    91328     1X
+Triangles (filled)        528396   373338    1.4X
+Rounded rects (outline)    82508    73489    1.1X
+Rounded rects (filled)   1595105  1060465    1.5X

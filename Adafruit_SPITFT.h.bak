@@ -13,14 +13,11 @@
 #include "Adafruit_GFX.h"
 
 #define USE_FAST_PINIO ///< If set, use PORT access instead of digitalWrite()
-#define USE_SPI_DMA    ///< If set, use SPI DMA if available
-// If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
-// Estimated RAM usage:
-// 4 bytes/pixel on display major axis + 8 bytes/pixel on minor axis,
-// e.g. 320x240 pixels = 320 * 4 + 240 * 8 = 3,200 bytes.
+#define USE_SPI_DMA    ///< If set, use SPI DMA if supported
+#define DMA_PIXELS 256
 
 #if !defined(ARDUINO_ARCH_SAMD)
- #undef USE_SPI_DMA ///< Only for SAMD chips
+ #undef USE_SPI_DMA    ///< Only for SAMD chips
 #endif
 
 #ifdef USE_SPI_DMA
@@ -103,6 +100,9 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         void      writeCommand(uint8_t cmd);
         void      spiWrite(uint8_t v);
         uint8_t   spiRead(void);
+#ifdef USE_SPI_DMA
+        boolean   DMA_busy(void);
+#endif
 
     protected:
 	SPIClass *_spi;         ///< The SPI device we want to use (set in constructor)
@@ -140,11 +140,11 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         Adafruit_ZeroDMA dma;                  ///< DMA instance
         DmacDescriptor  *dptr          = NULL; ///< 1st descriptor
         DmacDescriptor  *descriptor    = NULL; ///< Allocated descriptor list
-        uint16_t        *pixelBuf[2];          ///< Working buffers
-        uint16_t         maxFillLen;           ///< Max pixels per DMA xfer
-        uint16_t         lastFillColor = 0;    ///< Last color used w/fill
-        uint32_t         lastFillLen   = 0;    ///< # of pixels w/last fill
-        uint8_t          onePixelBuf;          ///< For hi==lo fill
+//        uint16_t        *pixelBuf[2];          ///< Working buffers
+        uint16_t         pixelBuf[2][DMA_PIXELS];          ///< Working buffers
+        uint8_t          pixelBufIdx   = 0;    ///< Active buffer #
+        uint16_t         lastFillColor = 0;    ///< Last color used in fill func
+        uint32_t         lastFillLen   = 0;    ///< # of pixels w/lastFillColor
 #endif
 };
 
