@@ -15,7 +15,7 @@ before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
-   - arduino --install-library "Adafruit ILI9341"
+   - arduino --install-library "Adafruit ILI9341" "Adafruit Zero DMA Library"
 
 script:
    - build_main_platforms
