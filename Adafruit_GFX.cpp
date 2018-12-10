@@ -766,7 +766,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP. 
+   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP.
    Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
    C Array can be directly used with this function.
    There is no RAM-resident version of this function; if generating bitmaps
@@ -801,7 +801,7 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y) pos.  
+   @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y) pos.
    Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -823,7 +823,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a RAM-resident 8-bit image (grayscale) at the specified (x,y) pos.  
+   @brief   Draw a RAM-resident 8-bit image (grayscale) at the specified (x,y) pos.
    Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -910,7 +910,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   @brief   Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.
    For 16-bit display devices; no color reduction performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -932,7 +932,7 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.
    For 16-bit display devices; no color reduction performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -1245,7 +1245,7 @@ void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
     @param  w Set true for wrapping, false for clipping
 */
 /**************************************************************************/
-void Adafruit_GFX::setTextWrap(boolean w) {
+void Adafruit_GFX::setTextWrap(bool w) {
     wrap = w;
 }
 
@@ -1293,7 +1293,7 @@ void Adafruit_GFX::setRotation(uint8_t x) {
     @param  x  Whether to enable (True) or not (False)
 */
 /**************************************************************************/
-void Adafruit_GFX::cp437(boolean x) {
+void Adafruit_GFX::cp437(bool x) {
     _cp437 = x;
 }
 
@@ -1506,7 +1506,7 @@ int16_t Adafruit_GFX::height(void) const {
     @param   i  True if you want to invert, false to make 'normal'
 */
 /**************************************************************************/
-void Adafruit_GFX::invertDisplay(boolean i) {
+void Adafruit_GFX::invertDisplay(bool i) {
     // Do nothing, must be subclassed if supported by hardware
 }
 
@@ -1585,7 +1585,7 @@ void Adafruit_GFX_Button::initButtonUL(
    @param    inverted Whether to draw with fill/text swapped to indicate 'pressed'
 */
 /**************************************************************************/
-void Adafruit_GFX_Button::drawButton(boolean inverted) {
+void Adafruit_GFX_Button::drawButton(bool inverted) {
   uint16_t fill, outline, text;
 
   if(!inverted) {
@@ -1617,7 +1617,7 @@ void Adafruit_GFX_Button::drawButton(boolean inverted) {
    @returns   True if within button graphics outline
 */
 /**************************************************************************/
-boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
+bool Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
   return ((x >= _x1) && (x < (int16_t) (_x1 + _w)) &&
           (y >= _y1) && (y < (int16_t) (_y1 + _h)));
 }
@@ -1628,7 +1628,7 @@ boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
    @param    p  True for pressed, false for not.
 */
 /**************************************************************************/
-void Adafruit_GFX_Button::press(boolean p) {
+void Adafruit_GFX_Button::press(bool p) {
   laststate = currstate;
   currstate = p;
 }
@@ -1639,7 +1639,7 @@ void Adafruit_GFX_Button::press(boolean p) {
    @returns  True if pressed
 */
 /**************************************************************************/
-boolean Adafruit_GFX_Button::isPressed() { return currstate; }
+bool Adafruit_GFX_Button::isPressed() { return currstate; }
 
 /**************************************************************************/
 /*!
@@ -1647,7 +1647,7 @@ boolean Adafruit_GFX_Button::isPressed() { return currstate; }
    @returns  True if was not-pressed before, now is.
 */
 /**************************************************************************/
-boolean Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
+bool Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
 
 /**************************************************************************/
 /*!
@@ -1655,7 +1655,7 @@ boolean Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
    @returns  True if was pressed before, now is not.
 */
 /**************************************************************************/
-boolean Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
+bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 
 // -------------------------------------------------------------------------
 

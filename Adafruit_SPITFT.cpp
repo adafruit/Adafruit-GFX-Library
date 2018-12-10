@@ -57,7 +57,7 @@
 #include <malloc.h> // memalign() function
 
 // DMA transfer-in-progress indicator and callback
-static volatile boolean dma_busy = false;
+static volatile bool dma_busy = false;
 static void dma_callback(Adafruit_ZeroDMA *dma) {
     dma_busy = false;
 }
@@ -94,7 +94,7 @@ uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
 /**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 				 int8_t cs, int8_t dc, int8_t mosi,
-				 int8_t sclk, int8_t rst, int8_t miso) 
+				 int8_t sclk, int8_t rst, int8_t miso)
   : Adafruit_GFX(w, h) {
     _cs   = cs;
     _dc   = dc;
@@ -142,8 +142,8 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 */
 /**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
-				 int8_t cs, int8_t dc, int8_t rst) 
-  : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) 
+				 int8_t cs, int8_t dc, int8_t rst)
+  : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst)
 {
   // We just call the hardware SPI instantiator with the default SPI device (&SPI)
 }
@@ -160,7 +160,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 */
 /**************************************************************************/
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
-				 int8_t cs, int8_t dc, int8_t rst) 
+				 int8_t cs, int8_t dc, int8_t rst)
   : Adafruit_GFX(w, h) {
     _cs   = cs;
     _dc   = dc;
@@ -768,7 +768,7 @@ void Adafruit_SPITFT::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
     @param   i  True if you want to invert, false to make 'normal'
 */
 /**************************************************************************/
-void Adafruit_SPITFT::invertDisplay(boolean i) {
+void Adafruit_SPITFT::invertDisplay(bool i) {
   startWrite();
   writeCommand(i ? invertOnCommand : invertOffCommand);
   endWrite();
@@ -777,9 +777,9 @@ void Adafruit_SPITFT::invertDisplay(boolean i) {
 
 /**************************************************************************/
 /*!
-   @brief   Draw a 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   @brief   Draw a 16-bit image (RGB 5/6/5) at the specified (x,y) position.
    For 16-bit display devices; no color reduction performed.
-   Adapted from https://github.com/PaulStoffregen/ILI9341_t3 
+   Adapted from https://github.com/PaulStoffregen/ILI9341_t3
    by Marc MERLIN. See examples/pictureEmbed to use this.
    5/6/2017: function name and arguments have changed for compatibility
    with current GFX library and to avoid naming problems in prior
