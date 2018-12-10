@@ -13,7 +13,7 @@
 #include "Adafruit_GFX.h"
 
 #define USE_FAST_PINIO ///< If set, use PORT access instead of digitalWrite()
-#define USE_SPI_DMA    ///< If set, use SPI DMA if available
+//#define USE_SPI_DMA    ///< If set, use SPI DMA if available
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
 // Estimated RAM usage:
 // 4 bytes/pixel on display major axis + 8 bytes/pixel on minor axis,
