@@ -574,8 +574,13 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         dma_busy = true;
         dma.startJob();
         while(dma_busy); // Wait for completion
+#ifdef __SAMD51__
+        // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
+        // state on completion. Workaround is to explicitly set it back...
+        _spi->setDataMode(SPI_MODE0);
+#endif
 
-        // Unfortunately the wait is necessary. An earlier version returned
+        // Unfortunately blocking is necessary. An earlier version returned
         // immediately and checked dma_busy on startWrite() instead, but it
         // turns out to be MUCH slower on many graphics operations (as when
         // drawing lines, pixel-by-pixel), perhaps because it's a volatile
