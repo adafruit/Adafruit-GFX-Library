@@ -24,6 +24,7 @@
 #endif
 
 #ifdef USE_SPI_DMA
+ #pragma message ("SPI DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
  #include <Adafruit_ZeroDMA.h>
 #endif
 
