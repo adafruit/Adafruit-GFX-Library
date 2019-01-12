@@ -1134,12 +1134,14 @@ size_t Adafruit_GFX::write(uint8_t c) {
         if(c == '\n') {                        // Newline?
             cursor_x  = 0;                     // Reset x to zero,
             cursor_y += textsize * 8;          // advance y one line
+						display(); 												 // display after a line feed
         } else if(c != '\r') {                 // Ignore carriage returns
             if(wrap && ((cursor_x + textsize * 6) > _width)) { // Off right?
                 cursor_x  = 0;                 // Reset x to zero,
                 cursor_y += textsize * 8;      // advance y one line
             }
-            drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
+	        if (cursor_y > HEIGHT) scrollUp();   // scroll up one line automatically BEFORE printing the new line
+					drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
             cursor_x += textsize * 6;          // Advance x one char
         }
 
@@ -1150,6 +1152,7 @@ size_t Adafruit_GFX::write(uint8_t c) {
             cursor_y += (int16_t)textsize *
                         (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
         } else if(c != '\r') {
+	        //if (cursor_y > HEIGHT) scrollUp();  // scroll up one line automatically -- NOT YET SUPPORTED with custom font
             uint8_t first = pgm_read_byte(&gfxFont->first);
             if((c >= first) && (c <= (uint8_t)pgm_read_byte(&gfxFont->last))) {
                 GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(
