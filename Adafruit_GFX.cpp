@@ -216,7 +216,15 @@ void Adafruit_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
    @brief    End a display-writing routine, overwrite in subclasses if startWrite is defined!
 */
 /**************************************************************************/
-void Adafruit_GFX::endWrite(){
+void Adafruit_GFX::endWrite() {
+}
+
+/**************************************************************************/
+/*!
+   @brief    Scroll the display up one textsize line
+*/
+/**************************************************************************/
+void Adafruit_GFX::scrollUp() {
 }
 
 /**************************************************************************/

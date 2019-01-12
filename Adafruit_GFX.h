@@ -18,10 +18,6 @@ class Adafruit_GFX : public Print {
 
   // This MUST be defined by the subclass:
   virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;    ///< Virtual drawPixel() function to draw to the screen/framebuffer/etc, must be overridden in subclass. @param x X coordinate.  @param y Y coordinate. @param color 16-bit pixel color. 
-  // adding function to scroll display up a line for use with println must be overriden at device driver level as is drawPixel
-	// also add virtual function to display buffer on device as I want to do display println automatically after a scrollUp which needs to be called inside the library
-  virtual void scrollUp(void) = 0; 		// scroll display up one line of text
-	virtual void display(void) = 0; 		// display device buffer
 
 
   // TRANSACTION API / CORE DRAW API
@@ -34,6 +30,11 @@ class Adafruit_GFX : public Print {
   virtual void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
   virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
   virtual void endWrite(void);
+
+	// adding function to scroll display up a line for use with println must be overriden at device driver level as is drawPixel
+	// also add virtual function to display buffer on device as I want to do display println automatically after a scrollUp which needs to be called inside the library
+  virtual void scrollUp(void); 				// scroll display up one line of text
+	virtual void display(void) = 0;  		// display device buffer
 
   // CONTROL API
   // These MAY be overridden by the subclass to provide device-specific
