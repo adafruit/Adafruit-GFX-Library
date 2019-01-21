@@ -34,7 +34,7 @@ class Adafruit_GFX : public Print {
 	// adding function to scroll display up a line for use with println must be overriden at device driver level as is drawPixel
 	// also add virtual function to display buffer on device as I want to do display println automatically after a scrollUp which needs to be called inside the library
   virtual void scrollUp(void); 				// scroll display up one line of text
-	virtual void display(void) = 0;  		// display device buffer
+  virtual void display(void);  				// display device buffer
 
   // CONTROL API
   // These MAY be overridden by the subclass to provide device-specific

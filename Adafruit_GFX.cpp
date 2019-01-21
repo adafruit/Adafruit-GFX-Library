@@ -221,10 +221,18 @@ void Adafruit_GFX::endWrite() {
 
 /**************************************************************************/
 /*!
-   @brief    Scroll the display up one textsize line
+   @brief    Scroll the display up one textsize line; virtual to be implemented in driver
 */
 /**************************************************************************/
 void Adafruit_GFX::scrollUp() {
+}
+
+/**************************************************************************/
+/*!
+   @brief    update display; virtual to be implemented in driver
+*/
+/**************************************************************************/
+void Adafruit_GFX::display() {
 }
 
 /**************************************************************************/
