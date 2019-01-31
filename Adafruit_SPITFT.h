@@ -31,7 +31,7 @@
 #if defined(__AVR__)
   typedef volatile uint8_t RwReg;
 #elif defined(ARDUINO_STM32_FEATHER)
-  typedef volatile uint32 RwReg;
+  typedef volatile uint32_t RwReg;
   #undef USE_FAST_PINIO
   typedef class HardwareSPI SPIClass;
 #elif defined(__OPENCR__) || defined (__OPENCM904__)

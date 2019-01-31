@@ -4,18 +4,17 @@
 * @mainpage Adafruit SPI TFT Displays
 *
 * @section intro_sec Introduction
-  This is our library for generic SPI TFT Displays with
-  address windows and 16 bit color (e.g. ILI9341, HX8357D, ST7735...)
+* This is our library for SPI TFT Displays with address windows and 16-bit
+* color (e.g. ILI9341, HX8357D, ST7735...)
+*
+* These displays use SPI to communicate, 4 or 5 pins are required to
+* interface (RST is optional)
+* Adafruit invests time and resources providing this open source code,
+* please support Adafruit and open-source hardware by purchasing
+* products from Adafruit!
 
-  Check out the links above for our tutorials and wiring diagrams
-  These displays use SPI to communicate, 4 or 5 pins are required to
-  interface (RST is optional)
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit and open-source hardware by purchasing
-  products from Adafruit!
-
-  Written by Limor Fried/Ladyada for Adafruit Industries.
-  MIT license, all text above must be included in any redistribution
+* Written by Limor Fried/Ladyada for Adafruit Industries.
+* MIT license, all text above must be included in any redistribution
 * @section dependencies Dependencies
 *
 * This library depends on <a href="https://github.com/adafruit/Adafruit_GFX">
