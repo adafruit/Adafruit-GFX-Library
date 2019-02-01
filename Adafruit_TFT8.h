@@ -1,13 +1,3 @@
-// Wait - could do non-contiguous (or not byte-bound) data pins by using
-// a 8- to 32-bit lookup table. Still requires PORT access; no digitalWrite()
-// This would complexify a LOT of code though, there'd be A/B cases ALL OVER
-// THE PLACE. No. Just no. Don't do it.
-// What about AVR though? How does TFTLCD lib work?
-// Whatever TFTLCD does, we want to maintain that here.
-// UGH...TFTLCD can work ACROSS PORTS on AVR. Fuck.
-// This lib will be SINGLE PORT and must be 8 CONTIGUOUS BYTE-ALIGNED bits
-// Verify with Limor, but I'd really prefer those requirements.
-
 #ifndef _ADAFRUIT_TFT8_H_
 #define _ADAFRUIT_TFT8_H_
 
