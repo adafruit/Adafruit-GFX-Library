@@ -109,6 +109,8 @@ class Adafruit_GFX : public Print {
     getTextBounds(const String &str, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
+  // Serial UTF-8 decoder
+  uint16_t decodeUTF8(uint8_t c);
 
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
@@ -148,6 +150,9 @@ class Adafruit_GFX : public Print {
     _cp437;         ///< If set, use correct CP437 charset (default is off)
   GFXfont
     *gfxFont;       ///< Pointer to special font
+
+  uint8_t  decoderState = 0;   // UTF-8 decoder state
+  uint16_t decoderBuffer;      // Unicode code-point buffer
 };
 
 

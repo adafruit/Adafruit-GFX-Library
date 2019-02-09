@@ -1124,11 +1124,76 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 }
 /**************************************************************************/
 /*!
+    @brief  Serial UTF-8 decoder
+    @param  c  8 bit value from encoded stream
+    @returns   0 if decoding is not complete yet, 16 bit code point
+               otherwise. Can cast to 8 bits for ASCII range (0-255)
+*/
+/**************************************************************************/
+
+uint16_t Adafruit_GFX::decodeUTF8(uint8_t c)
+{
+    // 7 bit Unicode Code Point
+    if ((c & 0x80) == 0x00) {
+        decoderState = 0;
+        return (uint16_t)c;
+    }
+
+    if (decoderState == 0)
+    {
+        // 11 bit Unicode Code Point
+        if ((c & 0xE0) == 0xC0)
+        {
+            decoderBuffer = ((c & 0x1F)<<6); // Save first 5 bits
+            decoderState = 1;
+            return 0;
+        }
+
+        // 16 bit Unicode Code Point
+        if ((c & 0xF0) == 0xE0)
+        {
+            decoderBuffer = ((c & 0x0F)<<12);  // Save first 4 bits
+            decoderState = 2;
+            return 0;
+        }
+
+        // 21 bit Unicode  Code Point not supported so fall-back to extended ASCII
+        if ((c & 0xF8) == 0xF0) return (uint16_t)c;
+    }
+    else
+    {
+        if (decoderState == 2)
+        {
+            decoderBuffer |= ((c & 0x3F)<<6); // Add next 6 bits of 16 bit code point
+            decoderState--;
+            return 0;
+        }
+        else // decoderState must be == 1
+        {
+            decoderBuffer |= (c & 0x3F); // Add last 6 bits of code point
+            decoderState = 0;
+            return decoderBuffer;
+        }
+    }
+
+    decoderState = 0;
+
+    return (uint16_t)c; // fall-back to extended ASCII
+}
+
+
+/**************************************************************************/
+/*!
     @brief  Print one byte/character of data, used to support print()
     @param  c  The 8-bit ascii character to write
 */
 /**************************************************************************/
 size_t Adafruit_GFX::write(uint8_t c) {
+  
+    c = (uint8_t)decodeUTF8(c);
+    
+    if ( c==0 ) return 1;
+
     if(!gfxFont) { // 'Classic' built-in font
 
         if(c == '\n') {                        // Newline?
