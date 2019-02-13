@@ -88,6 +88,7 @@ WIDTH(w), HEIGHT(h)
     textcolor = textbgcolor = 0xFFFF;
     wrap      = true;
     _cp437    = false;
+    _utf8     = false;
     gfxFont   = NULL;
 }
 
@@ -1188,14 +1189,15 @@ uint16_t Adafruit_GFX::decodeUTF8(uint8_t c)
     @param  utf8  The 8-bit UTF-8 or ASCII code
 */
 /**************************************************************************/
-size_t Adafruit_GFX::write(uint8_t utf8) {
+size_t Adafruit_GFX::write(uint8_t data) {
   
-    uint16_t c = decodeUTF8(utf8);
-    
-    if ( c==0 ) return 1;
+    uint16_t c = (uint16_t)data;
+    if (_utf8) c = decodeUTF8(data);
+
+    if (c == 0) return 1;
 
     if(!gfxFont) { // 'Classic' built-in font
-
+        if (c > 255) return 1;                 // Stop 16 bit characters
         if(c == '\n') {                        // Newline?
             cursor_x  = 0;                     // Reset x to zero,
             cursor_y += textsize * 8;          // advance y one line
@@ -1360,6 +1362,54 @@ void Adafruit_GFX::setRotation(uint8_t x) {
 /**************************************************************************/
 void Adafruit_GFX::cp437(boolean x) {
     _cp437 = x;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Control the state of an arbitrary library attribute or feature:
+    @param  id  ID number of an attribute or feature to control
+                0 = general purpose semaphore for user sketch aplications
+                1 = CP437 compatibility
+                2 = UTF-8 decoding on print stream
+    @param  a   Attribute control parameter
+*/
+/**************************************************************************/
+void Adafruit_GFX::setAttribute(uint8_t attr_id, uint8_t param) {
+    switch (attr_id) {
+            break;
+        case 1:
+            _cp437 = param;
+            break;
+        case 2:
+            _utf8  = param;
+            break;
+    }
+}
+
+/**************************************************************************/
+/*!
+    @brief  Get attribute value for a library feature:
+    @param  id  ID number of feature to read enable/diable state
+                0 = not used, returns false
+                1 = CP437 compatibility
+                2 = UTF-8 decoding on print stream
+    @returns  Attribute value
+*/
+/**************************************************************************/
+uint8_t Adafruit_GFX::getAttribute(uint8_t attr_id) {
+    switch (attr_id) {
+        case 1: // ON/OFF control of full CP437 character set
+            return _cp437;
+            break;
+        case 2: // ON/OFF control of UTF-8 decoding
+            return _utf8;
+            break;
+        //case 3: // TBD future feature control
+        //    return _tbd;
+        //    break;
+    }
+
+    return false;
 }
 
 /**************************************************************************/

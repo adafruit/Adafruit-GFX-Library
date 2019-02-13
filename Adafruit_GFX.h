@@ -9,6 +9,9 @@
 #endif
 #include "gfxfont.h"
 
+#define CP437_ENABLE 1
+#define UTF8_ENABLE  2
+
 /// A generic graphics superclass that can handle all sorts of drawing. At a minimum you can subclass and provide drawPixel(). At a maximum you can do a ton of overriding to optimize. Used for any/all Adafruit displays!
 class Adafruit_GFX : public Print {
 
@@ -127,7 +130,11 @@ class Adafruit_GFX : public Print {
   int16_t getCursorX(void) const;
   int16_t getCursorY(void) const;
 
- protected:
+  // Set or get an arbitrary library attribute or configuration option
+  void    setAttribute(uint8_t id = 0, uint8_t a = 0);
+  uint8_t getAttribute(uint8_t id = 0);
+
+  protected:
   void
     charBounds(char c, int16_t *x, int16_t *y,
       int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy);
@@ -147,7 +154,9 @@ class Adafruit_GFX : public Print {
     rotation;       ///< Display rotation (0 thru 3)
   boolean
     wrap,           ///< If set, 'wrap' text at right edge of display
-    _cp437;         ///< If set, use correct CP437 charset (default is off)
+    _busyFlag,      ///< Busy flag (TBD purpose, read only by user)
+    _cp437,         ///< If set, use correct CP437 charset (default is off)
+    _utf8;          ///< If set, use UTF-8 decoder in print stream 'write()' function
   GFXfont
     *gfxFont;       ///< Pointer to special font
 
