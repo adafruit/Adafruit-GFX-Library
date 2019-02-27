@@ -195,9 +195,6 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // CALLING THIS WITH UNCLIPPED OR NEGATIVE VALUES COULD BE DISASTROUS.
     inline void  writeFillRectPreclipped(int16_t x, int16_t y,
                    int16_t w, int16_t h, uint16_t color);
-    // This variant of writePixel() just calls SPI_WRITE16()...new code
-    // should probably just do the latter, consider this deprecated:
-    inline void  writePixel(uint16_t color);
 
     // These functions are similar to the 'write' functions above, but with
     // a chip-select and/or SPI transaction built-in. They're typically used

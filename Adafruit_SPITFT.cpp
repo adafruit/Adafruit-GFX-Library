@@ -194,7 +194,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
             SPI peripheral.
     @param  w         Display width in pixels at default rotation (0).
     @param  h         Display height in pixels at default rotation (0).
-    @param  spiClass  Pointer to SPIClass type (e.g. &SPI1).
+    @param  spiClass  Pointer to SPIClass type (e.g. &SPI or &SPI1).
     @param  cs        Arduino pin # for chip-select (-1 if unused, tie CS low).
     @param  dc        Arduino pin # for data/command select (required).
     @param  rst       Arduino pin # for display reset (optional, display reset
@@ -211,25 +211,25 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
-    dcPortSet        =portSetRegister(dc);
-    dcPortClr        =portClearRegister(dc);
+    dcPortSet     = portSetRegister(dc);
+    dcPortClr     = portClearRegister(dc);
     if(cs >= 0) {
-        csPinMask=digitalPinToBitMask(cs);
-        csPortSet=portSetRegister(cs);
-        csPortClr=portClearRegister(dc);
+        csPinMask = digitalPinToBitMask(cs);
+        csPortSet = portSetRegister(cs);
+        csPortClr = portClearRegister(dc);
     } else { // see comments below
         csPortSet = dcPortSet;
         csPortClr = dcPortClr;
         csPinMask = 0;
     }
   #else  // !CORE_TEENSY
-    dcPinMask        =digitalPinToBitMask(dc);
-    dcPortSet        =&(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
-    dcPortClr        =&(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
+    dcPinMask     = digitalPinToBitMask(dc);
+    dcPortSet     = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
+    dcPortClr     = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
     if(cs >= 0) {
-        csPinMask=digitalPinToBitMask(cs);
-        csPortSet=&(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
-        csPortClr=&(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
+        csPinMask = digitalPinToBitMask(cs);
+        csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
+        csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
     } else {
         // No chip-select line defined; might be permanently tied to GND.
         // Assign a valid GPIO register (though not used for CS), and an
@@ -438,17 +438,16 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
         digitalWrite(_cs, HIGH); // Deselect
     }
     pinMode(_dc, OUTPUT);
-    digitalWrite(_dc, LOW);
+    digitalWrite(_dc, HIGH); // Data mode
 
     switch(connection) {
       case TFT_HARD_SPI:
 #if defined(SPI_HAS_TRANSACTION)
-        hwspi._spi->begin();
         hwspi.settings = SPISettings(freq, MSBFIRST, SPI_MODE0);
 #else
-        hwspi._freq = freq; // Save freq value for later
-        hwspi._spi->begin();
+        hwspi._freq    = freq; // Save freq value for later
 #endif
+        hwspi._spi->begin();
         break;
       case TFT_SOFT_SPI:
         pinMode(swspi._mosi, OUTPUT);
@@ -673,7 +672,25 @@ void Adafruit_SPITFT::endWrite(void) {
 */
 void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
     if((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+#if defined(__AVR__)
+        // TO DO: figure out WHY this bug manifests ONLY on AVR and ONLY
+        // with ILI9341 displays. Setting up a single-pixel (1x1) address
+        // window is the reasonable thing to do here (we're only issuing
+        // one pixel of data), but for some reason it's necessary to set
+        // the address window from the starting point to the lower-right
+        // corner of the screen. This did NOT affect the older library
+        // (before addition of parallel interface) where some things were
+        // macros, and also it doesn't affect non-AVR devices...so I'm
+        // not sure if issue is in setAddrWindow(), SPI_WRITE16() or
+        // something else. Additionally, problem is intermittent and only
+        // affects certain drawLine() calls.
+        // Confirmed: it also happens with certain rectangle fills, and
+        // with software SPI as well...and affects other architectures
+        // in SWSPI case (M0, M4)...but, different manifestations there.
+        setAddrWindow(x, y, _width - x, _height - y);
+#else
         setAddrWindow(x, y, 1, 1);
+#endif
         SPI_WRITE16(color);
     }
 }
@@ -858,11 +875,69 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
  #endif // end USE_SPI_DMA
 #endif // end !ESP32
 
-    // All other cases (non-DMA hard SPI, bitbang SPI, parallel),
-    // use a loop with the normal write function:
-    while(len--) {
-        spiWrite(hi);
-        spiWrite(lo);
+    // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
+
+    switch(connection) {
+      case TFT_HARD_SPI:
+        while(len--) {
+#if defined(__AVR__)
+            for(SPDR = hi; !(SPSR & _BV(SPIF)); );
+            for(SPDR = lo; !(SPSR & _BV(SPIF)); );
+#elif defined(ESP8266) || defined(ESP32)
+            hwspi._spi->write(hi);
+            hwspi._spi->write(lo);
+#else
+            hwspi._spi->transfer(hi);
+            hwspi._spi->transfer(lo);
+#endif
+        }
+        break;
+      case TFT_SOFT_SPI:
+        while(len--) {
+#if defined(__AVR__)
+            for(uint8_t bit=0, x=hi; bit<8; bit++) {
+                if(x & 0x80) SPI_MOSI_HIGH();
+                else         SPI_MOSI_LOW();
+                SPI_SCK_HIGH();
+                SPI_SCK_LOW();
+                x <<= 1;
+            }
+            for(uint8_t bit=0, x=lo; bit<8; bit++) {
+                if(x & 0x80) SPI_MOSI_HIGH();
+                else         SPI_MOSI_LOW();
+                SPI_SCK_HIGH();
+                SPI_SCK_LOW();
+                x <<= 1;
+            }
+#else
+            for(uint16_t bit=0, x=color; bit<16; bit++) {
+                if(x & 0x8000) SPI_MOSI_HIGH();
+                else           SPI_MOSI_LOW();
+                SPI_SCK_HIGH();
+                SPI_SCK_LOW();
+                x <<= 1;
+            }
+#endif
+        }
+        break;
+      case TFT_PARALLEL:
+        while(len--) {
+#if defined(__AVR__)
+            *tft8.writePort = hi;
+            TFT_WR_STROBE();
+            *tft8.writePort = lo;
+#elif defined(USE_FAST_PINIO)
+            if(!tft8.wide) {
+                *tft8.writePort = hi;
+                TFT_WR_STROBE();
+                *tft8.writePort = lo;
+            } else {
+                *(volatile uint16_t *)tft8.writePort = color;
+            }
+#endif
+            TFT_WR_STROBE();
+        }
+        break;
     }
 }
 
@@ -1000,17 +1075,6 @@ inline void Adafruit_SPITFT::writeFillRectPreclipped(int16_t x, int16_t y,
   int16_t w, int16_t h, uint16_t color) {
     setAddrWindow(x, y, w, h);
     writeColor(color, (uint32_t)w * h);
-}
-
-/*!
-    @brief  Writes a single color value to the display. Not self-contained;
-            should follow startWrite() and setAddrWindow() calls.
-            Since this just calls SPI_WRITE16(), one could just call that
-            directly to get the same effect.
-    @param  color  16-bit pixel color in '565' RGB format.
-*/
-inline void Adafruit_SPITFT::writePixel(uint16_t color) {
-    SPI_WRITE16(color);
 }
 
 
@@ -1536,8 +1600,8 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     switch(connection) {
       case TFT_HARD_SPI:
 #if defined(__AVR__)
-        for(SPDR = (w >> 8); !(SPSR & _BV(SPIF)); );
-        for(SPDR =  w      ; !(SPSR & _BV(SPIF)); );
+        for(SPDR = (w >> 8); (!(SPSR & _BV(SPIF))); );
+        for(SPDR =  w      ; (!(SPSR & _BV(SPIF))); );
 #elif defined(ESP8266) || defined(ESP32)
         hwspi._spi->write16(w);
 #else
