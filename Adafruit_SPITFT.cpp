@@ -861,22 +861,52 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
     switch(connection) {
       case TFT_HARD_SPI:
+#if defined(ESP8266)
+        do {
+            uint32_t pixelsThisPass = len;
+            if(pixelsThisPass > 50000) pixelsThisPass = 50000;
+            len -= pixelsThisPass;
+            yield(); // Periodic yield() on long fills
+            while(pixelsThisPass--) {
+                hwspi._spi->write(hi);
+                hwspi._spi->write(lo);
+            }
+        } while(len);
+#else  // !ESP8266
         while(len--) {
-#if defined(__AVR__)
+ #if defined(__AVR__)
             for(SPDR = hi; !(SPSR & _BV(SPIF)); );
             for(SPDR = lo; !(SPSR & _BV(SPIF)); );
-#elif defined(ESP8266) || defined(ESP32)
+ #elif defined(ESP32)
             hwspi._spi->write(hi);
             hwspi._spi->write(lo);
-#else
+ #else
             hwspi._spi->transfer(hi);
             hwspi._spi->transfer(lo);
-#endif
+ #endif
         }
+#endif // end !ESP8266
         break;
       case TFT_SOFT_SPI:
+#if defined(ESP8266)
+        do {
+            uint32_t pixelsThisPass = len;
+            if(pixelsThisPass > 20000) pixelsThisPass = 20000;
+            len -= pixelsThisPass;
+            yield(); // Periodic yield() on long fills
+            while(pixelsThisPass--) {
+                for(uint16_t bit=0, x=color; bit<16; bit++) {
+                    if(x & 0x8000) SPI_MOSI_HIGH();
+                    else           SPI_MOSI_LOW();
+                    SPI_SCK_HIGH();
+                    SPI_SCK_LOW();
+                    x <<= 1;
+                }
+            }
+        } while(len);
+#else  // !ESP8266
         while(len--) {
-#if defined(__AVR__)
+ #if defined(__AVR__)
             for(uint8_t bit=0, x=hi; bit<8; bit++) {
                 if(x & 0x80) SPI_MOSI_HIGH();
                 else         SPI_MOSI_LOW();
@@ -891,7 +921,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
                 SPI_SCK_LOW();
                 x <<= 1;
             }
-#else
+ #else  // !__AVR__
             for(uint16_t bit=0, x=color; bit<16; bit++) {
                 if(x & 0x8000) SPI_MOSI_HIGH();
                 else           SPI_MOSI_LOW();
@@ -899,8 +929,9 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
                 SPI_SCK_LOW();
                 x <<= 1;
             }
-#endif
+ #endif // end !__AVR__
         }
+#endif // end !ESP8266
         break;
       case TFT_PARALLEL:
         if(hi == lo) {
