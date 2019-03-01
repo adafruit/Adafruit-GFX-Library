@@ -83,6 +83,16 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
  #include <Adafruit_ZeroDMA.h>
 #endif
 
+// This is kind of a kludge. Needed a way to disambiguate the software SPI
+// and parallel constructors via their argument lists. Originally tried a
+// bool as the first argument to the parallel constructor (specifying 8-bit
+// vs 16-bit interface) but the compiler regards this as equivalent to an
+// integer and thus still ambiguous. SO...the parallel constructor requires
+// an enumerated type as the first argument: tft8 (for 8-bit parallel) or
+// tft16 (for 16-bit)...even though 16-bit isn't fully implemented or tested
+// and might never be, still needed that disambiguation from soft SPI.
+enum tftBusWidth { tft8, tft16 }; ///< For first arg to parallel constructor
+
 // CLASS DEFINITION --------------------------------------------------------
 
 /*!
@@ -132,7 +142,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // pins (d0, wr, dc), 3 optional pins (cs, rst, rd). 16-bit parallel
     // isn't even fully implemented but the 'wide' flag was added as a
     // required argument to avoid ambiguity with other constructors.
-    Adafruit_SPITFT(uint16_t w, uint16_t h, bool wide,
+    Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
       int8_t d0, int8_t wr, int8_t dc,
       int8_t cs = -1, int8_t rst = -1, int8_t rd = -1);
 

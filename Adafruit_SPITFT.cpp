@@ -291,13 +291,13 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
              only SPI displays, parallel being a recent addition (but not
              wanting to break existing code).
 */
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, bool wide,
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   int8_t d0, int8_t wr, int8_t dc, int8_t cs, int8_t rst, int8_t rd) :
   Adafruit_GFX(w, h), connection(TFT_PARALLEL), _rst(rst), _cs(cs), _dc(dc) {
     tft8._d0  = d0;
     tft8._wr  = wr;
     tft8._rd  = rd;
-    tft8.wide = wide;
+    tft8.wide = (busWidth == tft16);
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
@@ -363,32 +363,32 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, bool wide,
         tft8.rdPortClr = dcPortClr;
     }
     // Get pointers to PORT write/read/dir bytes within 32-bit PORT
-    uint8_t    dBit    = g_APinDescription[d0].ulPin; // d0 bit # in PORT
-    PortGroup *p       = (&(PORT->Group[g_APinDescription[d0].ulPort]));
-    uint8_t    offset  = dBit / 8; // d[7:0] byte # within PORT
-    if(wide)   offset &= ~1; // d[15:8] byte # within PORT
+    uint8_t       dBit    = g_APinDescription[d0].ulPin; // d0 bit # in PORT
+    PortGroup    *p       = (&(PORT->Group[g_APinDescription[d0].ulPort]));
+    uint8_t       offset  = dBit / 8; // d[7:0] byte # within PORT
+    if(tft8.wide) offset &= ~1; // d[15:8] byte # within PORT
     // These are all uint8_t* pointers -- elsewhere they're recast
     // as necessary if a 'wide' 16-bit interface is in use.
-    tft8.writePort = (volatile uint8_t *)&(p->OUT.reg)    + offset;
-    tft8.readPort  = (volatile uint8_t *)&(p->IN.reg)     + offset;
-    tft8.dirSet    = (volatile uint8_t *)&(p->DIRSET.reg) + offset;
-    tft8.dirClr    = (volatile uint8_t *)&(p->DIRCLR.reg) + offset;
+    tft8.writePort    = (volatile uint8_t *)&(p->OUT.reg)    + offset;
+    tft8.readPort     = (volatile uint8_t *)&(p->IN.reg)     + offset;
+    tft8.dirSet       = (volatile uint8_t *)&(p->DIRSET.reg) + offset;
+    tft8.dirClr       = (volatile uint8_t *)&(p->DIRCLR.reg) + offset;
   #endif // end !CORE_TEENSY
  #else  // !HAS_PORT_SET_CLR
-    tft8.wrPort         =(PORTreg_t)portOutputRegister(digitalPinToPort(wr));
-    tft8.wrPinMaskSet   =digitalPinToBitMask(wr);
-    dcPort              =(PORTreg_t)portOutputRegister(digitalPinToPort(dc));
-    dcPinMaskSet        =digitalPinToBitMask(dc);
+    tft8.wrPort       = (PORTreg_t)portOutputRegister(digitalPinToPort(wr));
+    tft8.wrPinMaskSet = digitalPinToBitMask(wr);
+    dcPort            = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
+    dcPinMaskSet      = digitalPinToBitMask(dc);
     if(cs >= 0) {
-        csPort       = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
-        csPinMaskSet = digitalPinToBitMask(cs);
+        csPort        = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
+        csPinMaskSet  = digitalPinToBitMask(cs);
     } else {
         // No chip-select line defined; might be permanently tied to GND.
         // Assign a valid GPIO register (though not used for CS), and an
         // empty pin bitmask...the nonsense bit-twiddling might be faster
         // than checking _cs and possibly branching.
-        csPort       = dcPort;
-        csPinMaskSet = 0;
+        csPort        = dcPort;
+        csPinMaskSet  = 0;
     }
     if(rd >= 0) { // if read-strobe pin specified...
         tft8.rdPort       =(PORTreg_t)portOutputRegister(digitalPinToPort(rd));
@@ -1458,7 +1458,6 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
       // case TFT_PARALLEL:
       default: // Avoids compiler warning about no return value
         if(tft8._rd >= 0) {
-            // TO DO: figure out why not working
 #if defined(USE_FAST_PINIO)
             TFT_RD_LOW();                       // Read line LOW
  #if defined(__AVR__)
