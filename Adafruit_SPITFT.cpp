@@ -62,21 +62,21 @@ static void dma_callback(Adafruit_ZeroDMA *dma) {
 // CONSTRUCTORS ------------------------------------------------------------
 
 /*!
-    @brief  Adafruit_SPITFT constructor for software (bitbang) SPI.
-    @param  w     Display width in pixels at default rotation setting (0).
-    @param  h     Display height in pixels at default rotation setting (0).
-    @param  cs    Arduino pin # for chip-select (-1 if unused, tie CS low).
-    @param  dc    Arduino pin # for data/command select (required).
-    @param  mosi  Arduino pin # for bitbang SPI MOSI signal (required).
-    @param  sck   Arduino pin # for bitbang SPI SCK signal (required).
-    @param  rst   Arduino pin # for display reset (optional, display reset
-                  can be tied to MCU reset, default of -1 means unused).
-    @param  miso  Arduino pin # for bitbang SPI MISO signal (optional,
-                  -1 default, many displays don't support SPI read).
-    @return Adafruit_SPITFT object.
-    @note   Output pins are not initialized; application typically will need
-            to call subclass' begin() function, which in turn calls this
-            library's initSPI() function to initialize pins.
+    @brief   Adafruit_SPITFT constructor for software (bitbang) SPI.
+    @param   w     Display width in pixels at default rotation setting (0).
+    @param   h     Display height in pixels at default rotation setting (0).
+    @param   cs    Arduino pin # for chip-select (-1 if unused, tie CS low).
+    @param   dc    Arduino pin # for data/command select (required).
+    @param   mosi  Arduino pin # for bitbang SPI MOSI signal (required).
+    @param   sck   Arduino pin # for bitbang SPI SCK signal (required).
+    @param   rst   Arduino pin # for display reset (optional, display reset
+                   can be tied to MCU reset, default of -1 means unused).
+    @param   miso  Arduino pin # for bitbang SPI MISO signal (optional,
+                   -1 default, many displays don't support SPI read).
+    @return  Adafruit_SPITFT object.
+    @note    Output pins are not initialized; application typically will
+             need to call subclass' begin() function, which in turn calls
+             this library's initSPI() function to initialize pins.
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
   int8_t cs, int8_t dc, int8_t mosi, int8_t sck, int8_t rst, int8_t miso) :
@@ -170,18 +170,18 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 }
 
 /*!
-    @brief  Adafruit_SPITFT constructor for hardware SPI using the board's
-            default SPI peripheral.
-    @param  w     Display width in pixels at default rotation setting (0).
-    @param  h     Display height in pixels at default rotation setting (0).
-    @param  cs    Arduino pin # for chip-select (-1 if unused, tie CS low).
-    @param  dc    Arduino pin # for data/command select (required).
-    @param  rst   Arduino pin # for display reset (optional, display reset
-                  can be tied to MCU reset, default of -1 means unused).
-    @return Adafruit_SPITFT object.
-    @note   Output pins are not initialized; application typically will need
-            to call subclass' begin() function, which in turn calls this
-            library's initSPI() function to initialize pins.
+    @brief   Adafruit_SPITFT constructor for hardware SPI using the board's
+             default SPI peripheral.
+    @param   w     Display width in pixels at default rotation setting (0).
+    @param   h     Display height in pixels at default rotation setting (0).
+    @param   cs    Arduino pin # for chip-select (-1 if unused, tie CS low).
+    @param   dc    Arduino pin # for data/command select (required).
+    @param   rst   Arduino pin # for display reset (optional, display reset
+                   can be tied to MCU reset, default of -1 means unused).
+    @return  Adafruit_SPITFT object.
+    @note    Output pins are not initialized; application typically will
+             need to call subclass' begin() function, which in turn calls
+             this library's initSPI() function to initialize pins.
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
   int8_t dc, int8_t rst) : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) {
@@ -190,19 +190,19 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
 }
 
 /*!
-    @brief  Adafruit_SPITFT constructor for hardware SPI using a specific
-            SPI peripheral.
-    @param  w         Display width in pixels at default rotation (0).
-    @param  h         Display height in pixels at default rotation (0).
-    @param  spiClass  Pointer to SPIClass type (e.g. &SPI or &SPI1).
-    @param  cs        Arduino pin # for chip-select (-1 if unused, tie CS low).
-    @param  dc        Arduino pin # for data/command select (required).
-    @param  rst       Arduino pin # for display reset (optional, display reset
-                      can be tied to MCU reset, default of -1 means unused).
-    @return Adafruit_SPITFT object.
-    @note   Output pins are not initialized; application typically will need
-            to call subclass' begin() function, which in turn calls this
-            library's initSPI() function to initialize pins.
+    @brief   Adafruit_SPITFT constructor for hardware SPI using a specific
+             SPI peripheral.
+    @param   w         Display width in pixels at default rotation (0).
+    @param   h         Display height in pixels at default rotation (0).
+    @param   spiClass  Pointer to SPIClass type (e.g. &SPI or &SPI1).
+    @param   cs        Arduino pin # for chip-select (-1 if unused, tie CS low).
+    @param   dc        Arduino pin # for data/command select (required).
+    @param   rst       Arduino pin # for display reset (optional, display reset
+                       can be tied to MCU reset, default of -1 means unused).
+    @return  Adafruit_SPITFT object.
+    @note    Output pins are not initialized; application typically will
+             need to call subclass' begin() function, which in turn calls
+             this library's initSPI() function to initialize pins.
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
   int8_t cs, int8_t dc, int8_t rst) : Adafruit_GFX(w, h),
@@ -261,36 +261,35 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 }
 
 /*!
-    @brief  Adafruit_SPITFT constructor for parallel display connection.
-    @param  w     Display width in pixels at default rotation (0).
-    @param  h     Display height in pixels at default rotation (0).
-
-    @param  wide  If true, is a 16-bit parallel connection, else 8-bit.
-                  16-bit isn't fully implemented or tested yet so
-                  applications should pass "false" for now...needed to
-                  stick a required boolean argument in there to
-                  disambiguate this constructor from the soft-SPI case.
-                  Argument is ignored on 8-bit architectures (no 'wide'
-                  support there since PORTs are 8 bits anyway).
-    @param  d0    Arduino pin # for data bit 0 (1+ are extrapolated).
-                  The 8 (or 16) data bits MUST be contiguous and byte-
-                  aligned (or word-aligned for wide interface) within the
-                  same PORT register (might not correspond to Arduino pin
-                  sequence).
-    @param  wr    Arduino pin # for write strobe (required).
-    @param  dc    Arduino pin # for data/command select (required).
-    @param  cs    Arduino pin # for chip-select (optional, -1 if unused,
-                  tie CS low).
-    @param  rst   Arduino pin # for display reset (optional, display reset
-                  can be tied to MCU reset, default of -1 means unused).
-    @param  wr    Arduino pin # for read strobe (optional, -1 if unused).
-    @return Adafruit_SPITFT object.
-    @note   Output pins are not initialized; application typically will need
-            to call subclass' begin() function, which in turn calls this
-            library's initSPI() function to initialize pins.
-            Yes, the name is a misnomer...this library originally handled
-            only SPI displays, parallel being a recent addition (but not
-            wanting to break existing code).
+    @brief   Adafruit_SPITFT constructor for parallel display connection.
+    @param   w     Display width in pixels at default rotation (0).
+    @param   h     Display height in pixels at default rotation (0).
+    @param   wide  If true, is a 16-bit parallel connection, else 8-bit.
+                   16-bit isn't fully implemented or tested yet so
+                   applications should pass "false" for now...needed to
+                   stick a required boolean argument in there to
+                   disambiguate this constructor from the soft-SPI case.
+                   Argument is ignored on 8-bit architectures (no 'wide'
+                   support there since PORTs are 8 bits anyway).
+    @param   d0    Arduino pin # for data bit 0 (1+ are extrapolated).
+                   The 8 (or 16) data bits MUST be contiguous and byte-
+                   aligned (or word-aligned for wide interface) within the
+                   same PORT register (might not correspond to Arduino pin
+                   sequence).
+    @param   wr    Arduino pin # for write strobe (required).
+    @param   dc    Arduino pin # for data/command select (required).
+    @param   cs    Arduino pin # for chip-select (optional, -1 if unused,
+                   tie CS low).
+    @param   rst   Arduino pin # for display reset (optional, display reset
+                   can be tied to MCU reset, default of -1 means unused).
+    @param   wr    Arduino pin # for read strobe (optional, -1 if unused).
+    @return  Adafruit_SPITFT object.
+    @note    Output pins are not initialized; application typically will need
+             to call subclass' begin() function, which in turn calls this
+             library's initSPI() function to initialize pins.
+             Yes, the name is a misnomer...this library originally handled
+             only SPI displays, parallel being a recent addition (but not
+             wanting to break existing code).
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, bool wide,
   int8_t d0, int8_t wr, int8_t dc, int8_t cs, int8_t rst, int8_t rd) :
