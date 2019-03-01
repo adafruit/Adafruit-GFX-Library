@@ -35,22 +35,22 @@
  typedef uint8_t  PORT_t;            ///< PORT values are 8-bit
  #define USE_FAST_PINIO              ///< Use direct PORT register access
 #elif defined(__arm__)
- #if defined(SAM)
-  // Arduino Due
+ #if defined(ARDUINO_ARCH_SAMD)
+  // Adafruit M0, M4
   typedef uint32_t PORT_t;           ///< PORT values are 32-bit
-  // USE_FAST_PINIO not available here (yet)...Due has a totally different
-  // GPIO register set and will require some changes elsewhere (e.g. in
-  // constructors especially).
+  #define USE_FAST_PINIO             ///< Use direct PORT register access
+  #define HAS_PORT_SET_CLR           ///< PORTs have set & clear registers
  #elif defined(CORE_TEENSY)
   // PJRC Teensy 3.x
   typedef uint8_t PORT_t;            ///< PORT values are 8-bit
   #define USE_FAST_PINIO             ///< Use direct PORT register access
   #define HAS_PORT_SET_CLR           ///< PORTs have set & clear registers
  #else
-  // Adafruit M0, M4
+  // Arduino Due?
   typedef uint32_t PORT_t;           ///< PORT values are 32-bit
-  #define USE_FAST_PINIO             ///< Use direct PORT register access
-  #define HAS_PORT_SET_CLR           ///< PORTs have set & clear registers
+  // USE_FAST_PINIO not available here (yet)...Due has a totally different
+  // GPIO register set and will require some changes elsewhere (e.g. in
+  // constructors especially).
  #endif
 #else // !ARM
  // Probably ESP8266 or ESP32. USE_FAST_PINIO is not available here (yet)

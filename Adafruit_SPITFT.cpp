@@ -672,25 +672,7 @@ void Adafruit_SPITFT::endWrite(void) {
 */
 void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
     if((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-#if defined(__AVR__)
-        // TO DO: figure out WHY this bug manifests ONLY on AVR and ONLY
-        // with ILI9341 displays. Setting up a single-pixel (1x1) address
-        // window is the reasonable thing to do here (we're only issuing
-        // one pixel of data), but for some reason it's necessary to set
-        // the address window from the starting point to the lower-right
-        // corner of the screen. This did NOT affect the older library
-        // (before addition of parallel interface) where some things were
-        // macros, and also it doesn't affect non-AVR devices...so I'm
-        // not sure if issue is in setAddrWindow(), SPI_WRITE16() or
-        // something else. Additionally, problem is intermittent and only
-        // affects certain drawLine() calls.
-        // Confirmed: it also happens with certain rectangle fills, and
-        // with software SPI as well...and affects other architectures
-        // in SWSPI case (M0, M4)...but, different manifestations there.
-        setAddrWindow(x, y, _width - x, _height - y);
-#else
         setAddrWindow(x, y, 1, 1);
-#endif
         SPI_WRITE16(color);
     }
 }
@@ -1445,19 +1427,21 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         return hwspi._spi->transfer((uint8_t)0);
       case TFT_SOFT_SPI:
         if(swspi._miso >= 0) {
+            // TO DO: figure out why not working
             for(uint8_t i=0; i<8; i++) {
                 SPI_SCK_HIGH();
-                SPI_SCK_LOW();
                 b <<= 1;
-                if(SPI_MISO_READ()) b |= 1;
+                if(SPI_MISO_READ()) b++;
+                SPI_SCK_LOW();
             }
         }
         return b;
       // case TFT_PARALLEL:
       default: // Avoids compiler warning about no return value
         if(tft8._rd >= 0) {
+            // TO DO: figure out why not working
 #if defined(USE_FAST_PINIO)
-            TFT_RD_LOW();                       // Read strobe LOW
+            TFT_RD_LOW();                       // Read line LOW
  #if defined(__AVR__)
             *tft8.portDir = 0x00;               // Set port to input state
             w             = *tft8.readPort;     // Read value from port
@@ -1484,8 +1468,8 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
                 *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
   #endif // end !HAS_PORT_SET_CLR
             }
+            TFT_RD_HIGH();                      // Read line HIGH
  #endif // end !__AVR__
-            TFT_RD_HIGH();                      // Read strobe HIGH
 #else  // !USE_FAST_PINIO
             w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
 #endif // end !USE_FAST_PINIO
