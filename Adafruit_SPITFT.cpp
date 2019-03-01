@@ -156,7 +156,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     }
     if(miso >= 0) {
         swspi.misoPort   =(PORTreg_t)portInputRegister(digitalPinToPort(miso));
-        swspi.misoPinMask=digitalPinToBitMask(cs);
+        swspi.misoPinMask=digitalPinToBitMask(miso);
     } else {
         swspi.misoPort   =(PORTreg_t)portInputRegister(digitalPinToPort(dc));
         swspi.misoPinMask=0;
@@ -262,27 +262,28 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 
 /*!
     @brief   Adafruit_SPITFT constructor for parallel display connection.
-    @param   w     Display width in pixels at default rotation (0).
-    @param   h     Display height in pixels at default rotation (0).
-    @param   wide  If true, is a 16-bit parallel connection, else 8-bit.
-                   16-bit isn't fully implemented or tested yet so
-                   applications should pass "false" for now...needed to
-                   stick a required boolean argument in there to
-                   disambiguate this constructor from the soft-SPI case.
-                   Argument is ignored on 8-bit architectures (no 'wide'
-                   support there since PORTs are 8 bits anyway).
-    @param   d0    Arduino pin # for data bit 0 (1+ are extrapolated).
-                   The 8 (or 16) data bits MUST be contiguous and byte-
-                   aligned (or word-aligned for wide interface) within the
-                   same PORT register (might not correspond to Arduino pin
-                   sequence).
-    @param   wr    Arduino pin # for write strobe (required).
-    @param   dc    Arduino pin # for data/command select (required).
-    @param   cs    Arduino pin # for chip-select (optional, -1 if unused,
-                   tie CS low).
-    @param   rst   Arduino pin # for display reset (optional, display reset
-                   can be tied to MCU reset, default of -1 means unused).
-    @param   wr    Arduino pin # for read strobe (optional, -1 if unused).
+    @param   w         Display width in pixels at default rotation (0).
+    @param   h         Display height in pixels at default rotation (0).
+    @param   busWidth  If tft16 (enumeration in header file), is a 16-bit
+                       parallel connection, else 8-bit.
+                       16-bit isn't fully implemented or tested yet so
+                       applications should pass "tft8" for now...needed to
+                       stick a required enum argument in there to
+                       disambiguate this constructor from the soft-SPI case.
+                       Argument is ignored on 8-bit architectures (no 'wide'
+                       support there since PORTs are 8 bits anyway).
+    @param   d0        Arduino pin # for data bit 0 (1+ are extrapolated).
+                       The 8 (or 16) data bits MUST be contiguous and byte-
+                       aligned (or word-aligned for wide interface) within
+                       the same PORT register (might not correspond to
+                       Arduino pin sequence).
+    @param   wr        Arduino pin # for write strobe (required).
+    @param   dc        Arduino pin # for data/command select (required).
+    @param   cs        Arduino pin # for chip-select (optional, -1 if unused,
+                       tie CS low).
+    @param   rst       Arduino pin # for display reset (optional, display reset
+                       can be tied to MCU reset, default of -1 means unused).
+    @param   wr        Arduino pin # for read strobe (optional, -1 if unused).
     @return  Adafruit_SPITFT object.
     @note    Output pins are not initialized; application typically will need
              to call subclass' begin() function, which in turn calls this
@@ -1446,7 +1447,6 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         return hwspi._spi->transfer((uint8_t)0);
       case TFT_SOFT_SPI:
         if(swspi._miso >= 0) {
-            // TO DO: figure out why not working
             for(uint8_t i=0; i<8; i++) {
                 SPI_SCK_HIGH();
                 b <<= 1;
