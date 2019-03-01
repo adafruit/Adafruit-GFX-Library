@@ -87,6 +87,9 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
+   #if !defined(KINETISK)
+    dcPinMask          = digitalPinToBitMask(dc);
+   #endif
     dcPortSet          = portSetRegister(dc);
     dcPortClr          = portClearRegister(dc);
     swspi.sckPortSet   = portSetRegister(sck);
@@ -94,9 +97,15 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     swspi.mosiPortSet  = portSetRegister(mosi);
     swspi.mosiPortClr  = portClearRegister(mosi);
     if(cs >= 0) {
+   #if !defined(KINETISK)
+        csPinMask      = digitalPinToBitMask(cs);
+   #endif
         csPortSet      = portSetRegister(cs);
         csPortClr      = portClearRegister(cs);
     } else {
+   #if !defined(KINETISK)
+        csPinMask      = 0;
+   #endif
         csPortSet      = dcPortSet;
         csPortClr      = dcPortClr;
     }
@@ -211,16 +220,23 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
+   #if !defined(KINETISK)
+    dcPinMask     = digitalPinToBitMask(dc);
+   #endif
     dcPortSet     = portSetRegister(dc);
     dcPortClr     = portClearRegister(dc);
     if(cs >= 0) {
+   #if !defined(KINETISK)
         csPinMask = digitalPinToBitMask(cs);
+   #endif
         csPortSet = portSetRegister(cs);
-        csPortClr = portClearRegister(dc);
+        csPortClr = portClearRegister(cs);
     } else { // see comments below
+   #if !defined(KINETISK)
+        csPinMask = 0;
+   #endif
         csPortSet = dcPortSet;
         csPortClr = dcPortClr;
-        csPinMask = 0;
     }
   #else  // !CORE_TEENSY
     dcPinMask     = digitalPinToBitMask(dc);
@@ -302,18 +318,25 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
-    tft8.wrPortSet   =portSetRegister(wr);
-    tft8.wrPortClr   =portClearRegister(wr);
-    dcPortSet        =portSetRegister(dc);
-    dcPortClr        =portClearRegister(dc);
+    tft8.wrPortSet = portSetRegister(wr);
+    tft8.wrPortClr = portClearRegister(wr);
+   #if !defined(KINETISK)
+    dcPinMask      = digitalPinToBitMask(dc);
+   #endif
+    dcPortSet      = portSetRegister(dc);
+    dcPortClr      = portClearRegister(dc);
     if(cs >= 0) {
-        csPinMask=digitalPinToBitMask(cs);
-        csPortSet=portSetRegister(cs);
-        csPortClr=portClearRegister(cs);
+   #if !defined(KINETISK)
+        csPinMask = digitalPinToBitMask(cs);
+   #endif
+        csPortSet = portSetRegister(cs);
+        csPortClr = portClearRegister(cs);
     } else { // see comments below
+   #if !defined(KINETISK)
+        csPinMask = 0;
+   #endif
         csPortSet = dcPortSet;
         csPortClr = dcPortClr;
-        csPinMask = 0;
     }
     if(rd >= 0) { // if read-strobe pin specified...
    #if defined(KINETISK)
@@ -335,16 +358,16 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
     tft8.dirSet    = portModeRegister(d0);
     tft8.dirClr    = portModeRegister(d0);
   #else  // !CORE_TEENSY
-    tft8.wrPinMask   =digitalPinToBitMask(wr);
-    tft8.wrPortSet   =&(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
-    tft8.wrPortClr   =&(PORT->Group[g_APinDescription[wr].ulPort].OUTCLR.reg);
-    dcPinMask        =digitalPinToBitMask(dc);
-    dcPortSet        =&(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
-    dcPortClr        =&(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
+    tft8.wrPinMask = digitalPinToBitMask(wr);
+    tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
+    tft8.wrPortClr = &(PORT->Group[g_APinDescription[wr].ulPort].OUTCLR.reg);
+    dcPinMask      = digitalPinToBitMask(dc);
+    dcPortSet      = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
+    dcPortClr      = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
     if(cs >= 0) {
-        csPinMask=digitalPinToBitMask(cs);
-        csPortSet=&(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
-        csPortClr=&(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
+        csPinMask = digitalPinToBitMask(cs);
+        csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
+        csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
     } else {
         // No chip-select line defined; might be permanently tied to GND.
         // Assign a valid GPIO register (though not used for CS), and an
@@ -926,8 +949,8 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
                 if(x & 0x8000) SPI_MOSI_HIGH();
                 else           SPI_MOSI_LOW();
                 SPI_SCK_HIGH();
-                SPI_SCK_LOW();
                 x <<= 1;
+                SPI_SCK_LOW();
             }
  #endif // end !__AVR__
         }

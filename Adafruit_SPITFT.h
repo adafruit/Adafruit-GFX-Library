@@ -34,6 +34,9 @@
 #if defined(__AVR__)
  typedef uint8_t  PORT_t;            ///< PORT values are 8-bit
  #define USE_FAST_PINIO              ///< Use direct PORT register access
+#elif defined(ARDUINO_STM32_FEATHER) // WICED
+ typedef class HardwareSPI SPIClass; ///< SPI is a bit odd on WICED
+ typedef uint32_t PORT_t;            ///< PORT values are 32-bit
 #elif defined(__arm__)
  #if defined(ARDUINO_ARCH_SAMD)
   // Adafruit M0, M4
@@ -261,7 +264,11 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     void SPI_CS_HIGH(void) {
     #if defined(USE_FAST_PINIO)
      #if defined(HAS_PORT_SET_CLR)
+      #if defined(KINETISK)
+        *csPortSet = 1;
+      #else  // !KINETISK
         *csPortSet = csPinMask;
+      #endif // end !KINETISK
      #else  // !HAS_PORT_SET_CLR
         *csPort   |= csPinMaskSet;
      #endif // end !HAS_PORT_SET_CLR
@@ -279,7 +286,11 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     void SPI_CS_LOW(void) {
     #if defined(USE_FAST_PINIO)
      #if defined(HAS_PORT_SET_CLR)
+      #if defined(KINETISK)
+        *csPortClr = 1;
+      #else  // !KINETISK
         *csPortClr = csPinMask;
+      #endif // end !KINETISK
      #else  // !HAS_PORT_SET_CLR
         *csPort   &= csPinMaskClr;
      #endif // end !HAS_PORT_SET_CLR
@@ -363,7 +374,9 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     PORTreg_t     dcPort;          ///< PORT register for data/command
 #endif // end HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
+#if !defined(ARDUINO_STM32_FEATHER)
     union {
+#endif
       struct {                     //   Values specific to HARDWARE SPI:
         SPIClass   *_spi;          ///< SPI class pointer
         uint32_t    _freq;
@@ -431,7 +444,9 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         int8_t    _rd;             ///< Read strobe pin # (or -1)
         bool      wide = 0;        ///< If true, is 16-bit interface
       } tft8;
+#if !defined(ARDUINO_STM32_FEATHER)
     };
+#endif
 #if defined(USE_SPI_DMA) // Used by hardware SPI and tft8
     Adafruit_ZeroDMA dma;                  ///< DMA instance
     DmacDescriptor  *dptr          = NULL; ///< 1st descriptor
@@ -444,8 +459,8 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 #endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
-    PORT_t        csPinMask;       ///< Bitmask for chip select
  #if !defined(KINETISK)
+    PORT_t        csPinMask;       ///< Bitmask for chip select
     PORT_t        dcPinMask;       ///< Bitmask for data/command
  #endif // end !KINETISK
 #else  // !HAS_PORT_SET_CLR
