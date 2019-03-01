@@ -903,21 +903,41 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         }
         break;
       case TFT_PARALLEL:
-        while(len--) {
+        if(hi == lo) {
 #if defined(__AVR__)
+            len            *= 2;
             *tft8.writePort = hi;
-            TFT_WR_STROBE();
-            *tft8.writePort = lo;
+            while(len--) {
+                TFT_WR_STROBE();
+            }
 #elif defined(USE_FAST_PINIO)
             if(!tft8.wide) {
+                len            *= 2;
                 *tft8.writePort = hi;
-                TFT_WR_STROBE();
-                *tft8.writePort = lo;
             } else {
                 *(volatile uint16_t *)tft8.writePort = color;
             }
+            while(len--) {
+                TFT_WR_STROBE();
+            }
 #endif
-            TFT_WR_STROBE();
+        } else {
+            while(len--) {
+#if defined(__AVR__)
+                *tft8.writePort = hi;
+                TFT_WR_STROBE();
+                *tft8.writePort = lo;
+#elif defined(USE_FAST_PINIO)
+                if(!tft8.wide) {
+                    *tft8.writePort = hi;
+                    TFT_WR_STROBE();
+                    *tft8.writePort = lo;
+                } else {
+                    *(volatile uint16_t *)tft8.writePort = color;
+                }
+#endif
+                TFT_WR_STROBE();
+            }
         }
         break;
     }
@@ -1379,8 +1399,8 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
             if(b & 0x80) SPI_MOSI_HIGH();
             else         SPI_MOSI_LOW();
             SPI_SCK_HIGH();
-            SPI_SCK_LOW();
             b <<= 1;
+            SPI_SCK_LOW();
         }
         break;
       case TFT_PARALLEL:
