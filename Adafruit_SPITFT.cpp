@@ -1256,7 +1256,7 @@ void Adafruit_SPITFT::drawFastHLine(int16_t x, int16_t y, int16_t w,
             level variant). Edge clipping and rejection is performed here.
     @param  x      Horizontal position of first point.
     @param  y      Vertical position of first point.
-    @param  w      Line height in pixels (positive = below first point,
+    @param  h      Line height in pixels (positive = below first point,
                    negative = above first point).
     @param  color  16-bit line color in '565' RGB format.
     @note   This repeats the writeFastVLine() function almost in its

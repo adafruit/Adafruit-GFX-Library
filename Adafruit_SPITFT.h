@@ -443,7 +443,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         bool      wide = 0;        ///< If true, is 16-bit interface
       } tft8;                      ///< Parallel interface settings
 #if !defined(ARDUINO_STM32_FEATHER)
-    };
+    };                             ///< Only one interface is active
 #endif
 #if defined(USE_SPI_DMA) // Used by hardware SPI and tft8
     Adafruit_ZeroDMA dma;                  ///< DMA instance
