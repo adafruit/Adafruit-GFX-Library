@@ -60,6 +60,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_adafruit___s_p_i_t_f_t-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -67,7 +68,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>&lt; Only for SAMD chips  
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> is an intermediary class between <a class="el" href="class_adafruit___g_f_x.html" title="A generic graphics superclass that can handle all sorts of drawing. At a minimum you can subclass and...">Adafruit_GFX</a> and various hardware-specific subclasses for different displays. It handles certain operations that are common to a range of displays (address window, area fills, etc.). Originally these were all color TFT displays interfaced via SPI, but it's since expanded to include color OLEDs and parallel-interfaced TFTs. THE NAME HAS BEEN KEPT TO AVOID BREAKING A LOT OF SUBCLASSES AND EXAMPLE CODE. Many of the class member functions similarly live on with names that don't necessarily accurately describe what they're doing, again to avoid breaking a lot of other code. If in doubt, read the comments.  
  <a href="class_adafruit___s_p_i_t_f_t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_adafruit___s_p_i_t_f_t_8h_source.html">Adafruit_SPITFT.h</a>&gt;</code></p>
@@ -83,86 +84,111 @@ Inheritance diagram for Adafruit_SPITFT:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a35e1b6bfb368d825141c7929e4b51c80"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a35e1b6bfb368d825141c7929e4b51c80">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST=-1, int8_t _MISO=-1)</td></tr>
-<tr class="memdesc:a35e1b6bfb368d825141c7929e4b51c80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantiate Adafruit SPI display driver with software SPI.  <a href="#a35e1b6bfb368d825141c7929e4b51c80">More...</a><br /></td></tr>
-<tr class="separator:a35e1b6bfb368d825141c7929e4b51c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e5dc42e8464e12ce03a7df65e330977"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a3e5dc42e8464e12ce03a7df65e330977">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, int8_t _CS, int8_t _DC, int8_t _RST=-1)</td></tr>
-<tr class="memdesc:a3e5dc42e8464e12ce03a7df65e330977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantiate Adafruit SPI display driver with hardware SPI.  <a href="#a3e5dc42e8464e12ce03a7df65e330977">More...</a><br /></td></tr>
-<tr class="separator:a3e5dc42e8464e12ce03a7df65e330977"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3648fb6689905d3df1febf940781103"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#af3648fb6689905d3df1febf940781103">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, SPIClass *spiClass, int8_t _CS, int8_t _DC, int8_t _RST=-1)</td></tr>
-<tr class="memdesc:af3648fb6689905d3df1febf940781103"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantiate Adafruit SPI display driver with hardware SPI.  <a href="#af3648fb6689905d3df1febf940781103">More...</a><br /></td></tr>
-<tr class="separator:af3648fb6689905d3df1febf940781103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae082216e8270f83132827a70cceeaf3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aae082216e8270f83132827a70cceeaf3">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, int8_t cs, int8_t dc, int8_t mosi, int8_t sck, int8_t rst=-1, int8_t miso=-1)</td></tr>
+<tr class="memdesc:aae082216e8270f83132827a70cceeaf3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for software (bitbang) SPI.  <a href="#aae082216e8270f83132827a70cceeaf3">More...</a><br /></td></tr>
+<tr class="separator:aae082216e8270f83132827a70cceeaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c3433ca3e3f9c5209765c46751bb674"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2c3433ca3e3f9c5209765c46751bb674">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, int8_t cs, int8_t dc, int8_t rst=-1)</td></tr>
+<tr class="memdesc:a2c3433ca3e3f9c5209765c46751bb674"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for hardware SPI using the board's default SPI peripheral.  <a href="#a2c3433ca3e3f9c5209765c46751bb674">More...</a><br /></td></tr>
+<tr class="separator:a2c3433ca3e3f9c5209765c46751bb674"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd847be5c9f71e5741d41805118f05c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#abd847be5c9f71e5741d41805118f05c8">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs, int8_t dc, int8_t rst=-1)</td></tr>
+<tr class="memdesc:abd847be5c9f71e5741d41805118f05c8"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for hardware SPI using a specific SPI peripheral.  <a href="#abd847be5c9f71e5741d41805118f05c8">More...</a><br /></td></tr>
+<tr class="separator:abd847be5c9f71e5741d41805118f05c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a4a822c07b817cea78dfb35dbaa4525"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1a4a822c07b817cea78dfb35dbaa4525">Adafruit_SPITFT</a> (uint16_t w, uint16_t h, <a class="el" href="_adafruit___s_p_i_t_f_t_8h.html#a4a7dffd73fe8924b90709aa7e6e366e8">tftBusWidth</a> busWidth, int8_t d0, int8_t wr, int8_t dc, int8_t cs=-1, int8_t rst=-1, int8_t rd=-1)</td></tr>
+<tr class="memdesc:a1a4a822c07b817cea78dfb35dbaa4525"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for parallel display connection.  <a href="#a1a4a822c07b817cea78dfb35dbaa4525">More...</a><br /></td></tr>
+<tr class="separator:a1a4a822c07b817cea78dfb35dbaa4525"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81fb1a7842c52fa1992569880f4ea494"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494">begin</a> (uint32_t freq)=0</td></tr>
-<tr class="memdesc:a81fb1a7842c52fa1992569880f4ea494"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Virtual begin() function to set SPI frequency, must be overridden in subclass. ">begin()</a> function to set SPI frequency, must be overridden in subclass.  <a href="#a81fb1a7842c52fa1992569880f4ea494">More...</a><br /></td></tr>
+<tr class="memdesc:a81fb1a7842c52fa1992569880f4ea494"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display-specific initialization function.  <a href="#a81fb1a7842c52fa1992569880f4ea494">More...</a><br /></td></tr>
 <tr class="separator:a81fb1a7842c52fa1992569880f4ea494"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7b6ae2d5e9dd2cf5cd26dff04872598"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#af7b6ae2d5e9dd2cf5cd26dff04872598">initSPI</a> (uint32_t freq)</td></tr>
-<tr class="memdesc:af7b6ae2d5e9dd2cf5cd26dff04872598"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialiaze the SPI interface (hardware or software)  <a href="#af7b6ae2d5e9dd2cf5cd26dff04872598">More...</a><br /></td></tr>
-<tr class="separator:af7b6ae2d5e9dd2cf5cd26dff04872598"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5e118fc9c0fb141c8ee9f14e49f20704">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
-<tr class="memdesc:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a pixel - sets up transaction.  <a href="#a5e118fc9c0fb141c8ee9f14e49f20704">More...</a><br /></td></tr>
-<tr class="separator:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1928d1a2b27cc32422624ed54c0ea932"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932">setAddrWindow</a> (uint16_t x, uint16_t y, uint16_t w, uint16_t h)=0</td></tr>
+<tr class="memdesc:a1928d1a2b27cc32422624ed54c0ea932"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set up the specific display hardware's "address window" for subsequent pixel-pushing operations.  <a href="#a1928d1a2b27cc32422624ed54c0ea932">More...</a><br /></td></tr>
+<tr class="separator:a1928d1a2b27cc32422624ed54c0ea932"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5137e06a5f527d594aefabe38f524d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac5137e06a5f527d594aefabe38f524d8">initSPI</a> (uint32_t freq=0)</td></tr>
+<tr class="memdesc:ac5137e06a5f527d594aefabe38f524d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure microcontroller pins for TFT interfacing. Typically called by a subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function.  <a href="#ac5137e06a5f527d594aefabe38f524d8">More...</a><br /></td></tr>
+<tr class="separator:ac5137e06a5f527d594aefabe38f524d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad15008e1d7d71ccc707f6efab2a86e6b"><td class="memItemLeft" align="right" valign="top"><a id="ad15008e1d7d71ccc707f6efab2a86e6b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b">startWrite</a> (void)</td></tr>
-<tr class="memdesc:ad15008e1d7d71ccc707f6efab2a86e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin an SPI transaction &amp; set CS low. <br /></td></tr>
+<tr class="memdesc:ad15008e1d7d71ccc707f6efab2a86e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an SPI transaction (if using hardware SPI and transactions are supported). Required for all display types; not an SPI-specific function. <br /></td></tr>
 <tr class="separator:ad15008e1d7d71ccc707f6efab2a86e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65f00bcb36ed34e9f8fb72d45c6d0cad"><td class="memItemLeft" align="right" valign="top"><a id="a65f00bcb36ed34e9f8fb72d45c6d0cad"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a65f00bcb36ed34e9f8fb72d45c6d0cad">endWrite</a> (void)</td></tr>
-<tr class="memdesc:a65f00bcb36ed34e9f8fb72d45c6d0cad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin an SPI transaction &amp; set CS high. <br /></td></tr>
+<tr class="memdesc:a65f00bcb36ed34e9f8fb72d45c6d0cad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call after issuing command(s) or data to display. Performs chip-deselect (if required) and ends an SPI transaction (if using hardware SPI and transactions are supported). Required for all display types; not an SPI-specific function. <br /></td></tr>
 <tr class="separator:a65f00bcb36ed34e9f8fb72d45c6d0cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a795dcd9f5f850c057b0a896204fc7d55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55">writePixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
-<tr class="memdesc:a795dcd9f5f850c057b0a896204fc7d55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a pixel (must have a transaction in progress)  <a href="#a795dcd9f5f850c057b0a896204fc7d55">More...</a><br /></td></tr>
+<tr class="memdesc:a795dcd9f5f850c057b0a896204fc7d55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> call.  <a href="#a795dcd9f5f850c057b0a896204fc7d55">More...</a><br /></td></tr>
 <tr class="separator:a795dcd9f5f850c057b0a896204fc7d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8df7d60b7c8500b31d0a8f59999c3df1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1">writeFillRect</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
-<tr class="memdesc:a8df7d60b7c8500b31d0a8f59999c3df1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a filled rectangle (must have a transaction in progress)  <a href="#a8df7d60b7c8500b31d0a8f59999c3df1">More...</a><br /></td></tr>
-<tr class="separator:a8df7d60b7c8500b31d0a8f59999c3df1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b5f5765414c6b0c94c9a060427803ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a9b5f5765414c6b0c94c9a060427803ec">writeFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
-<tr class="memdesc:a9b5f5765414c6b0c94c9a060427803ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly vertical line (must have a transaction in progress)  <a href="#a9b5f5765414c6b0c94c9a060427803ec">More...</a><br /></td></tr>
-<tr class="separator:a9b5f5765414c6b0c94c9a060427803ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06312f906256fd7e72efb21df85d2b96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96">writeFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
-<tr class="memdesc:a06312f906256fd7e72efb21df85d2b96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line (must have a transaction in progress)  <a href="#a06312f906256fd7e72efb21df85d2b96">More...</a><br /></td></tr>
-<tr class="separator:a06312f906256fd7e72efb21df85d2b96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1928d1a2b27cc32422624ed54c0ea932"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932">setAddrWindow</a> (uint16_t x, uint16_t y, uint16_t w, uint16_t h)=0</td></tr>
-<tr class="memdesc:a1928d1a2b27cc32422624ed54c0ea932"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI displays set an address window rectangle for blitting pixels.  <a href="#a1928d1a2b27cc32422624ed54c0ea932">More...</a><br /></td></tr>
-<tr class="separator:a1928d1a2b27cc32422624ed54c0ea932"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a978f34e5e8155c8c26eca39b71925551"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a978f34e5e8155c8c26eca39b71925551">writePixel</a> (uint16_t color)</td></tr>
-<tr class="memdesc:a978f34e5e8155c8c26eca39b71925551"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a 2-byte color (must have a transaction in progress)  <a href="#a978f34e5e8155c8c26eca39b71925551">More...</a><br /></td></tr>
-<tr class="separator:a978f34e5e8155c8c26eca39b71925551"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98cf76f440c47e99ed5824b664349655"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a98cf76f440c47e99ed5824b664349655">writePixels</a> (uint16_t *colors, uint32_t len)</td></tr>
-<tr class="memdesc:a98cf76f440c47e99ed5824b664349655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blit multiple 2-byte colors (must have a transaction in progress)  <a href="#a98cf76f440c47e99ed5824b664349655">More...</a><br /></td></tr>
+<tr class="memdesc:a98cf76f440c47e99ed5824b664349655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a series of pixels from memory to the display. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls.  <a href="#a98cf76f440c47e99ed5824b664349655">More...</a><br /></td></tr>
 <tr class="separator:a98cf76f440c47e99ed5824b664349655"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42824e0f1475f2b3df335d31651dc75a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a42824e0f1475f2b3df335d31651dc75a">writeColor</a> (uint16_t color, uint32_t len)</td></tr>
-<tr class="memdesc:a42824e0f1475f2b3df335d31651dc75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blit a 2-byte color many times (must have a transaction in progress)  <a href="#a42824e0f1475f2b3df335d31651dc75a">More...</a><br /></td></tr>
+<tr class="memdesc:a42824e0f1475f2b3df335d31651dc75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a series of pixels, all the same color. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls.  <a href="#a42824e0f1475f2b3df335d31651dc75a">More...</a><br /></td></tr>
 <tr class="separator:a42824e0f1475f2b3df335d31651dc75a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53b00726d150600cd8f0feb9a897fb64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a53b00726d150600cd8f0feb9a897fb64">pushColor</a> (uint16_t color)</td></tr>
-<tr class="memdesc:a53b00726d150600cd8f0feb9a897fb64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a 2-byte color to the framebuffer RAM, will start transaction.  <a href="#a53b00726d150600cd8f0feb9a897fb64">More...</a><br /></td></tr>
-<tr class="separator:a53b00726d150600cd8f0feb9a897fb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9bf597887f7098e55e7280d548bc127"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab9bf597887f7098e55e7280d548bc127">drawFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
-<tr class="memdesc:ab9bf597887f7098e55e7280d548bc127"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly vertical line - sets up transaction.  <a href="#ab9bf597887f7098e55e7280d548bc127">More...</a><br /></td></tr>
-<tr class="separator:ab9bf597887f7098e55e7280d548bc127"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef1099605952f87fbdf59bc480a7a894"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aef1099605952f87fbdf59bc480a7a894">drawFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
-<tr class="memdesc:aef1099605952f87fbdf59bc480a7a894"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line - sets up transaction.  <a href="#aef1099605952f87fbdf59bc480a7a894">More...</a><br /></td></tr>
-<tr class="separator:aef1099605952f87fbdf59bc480a7a894"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8df7d60b7c8500b31d0a8f59999c3df1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1">writeFillRect</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
+<tr class="memdesc:a8df7d60b7c8500b31d0a8f59999c3df1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a filled rectangle to the display. Not self-contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a>. Typically used by higher-level graphics primitives; user code shouldn't need to call this and is likely to use the self-contained <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5964fdb249fb43869c649198e13b727b" title="Draw a filled rectangle to the display. Self-contained and provides its own transaction as needed (se...">fillRect()</a> instead. <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> performs its own edge clipping and rejection; see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275" title="A lower-level version of writeFillRect(). This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions. ">writeFillRectPreclipped()</a> for a more 'raw' implementation.  <a href="#a8df7d60b7c8500b31d0a8f59999c3df1">More...</a><br /></td></tr>
+<tr class="separator:a8df7d60b7c8500b31d0a8f59999c3df1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06312f906256fd7e72efb21df85d2b96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96">writeFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
+<tr class="memdesc:a06312f906256fd7e72efb21df85d2b96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a>. Typically used by higher-level graphics primitives; user code shouldn't need to call this and is likely to use the self- contained <a class="el" href="class_adafruit___s_p_i_t_f_t.html#aef1099605952f87fbdf59bc480a7a894" title="Draw a horizontal line on the display. Self-contained and provides its own transaction as needed (see...">drawFastHLine()</a> instead.  <a href="#a06312f906256fd7e72efb21df85d2b96">More...</a><br /></td></tr>
+<tr class="separator:a06312f906256fd7e72efb21df85d2b96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b5f5765414c6b0c94c9a060427803ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a9b5f5765414c6b0c94c9a060427803ec">writeFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
+<tr class="memdesc:a9b5f5765414c6b0c94c9a060427803ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a vertical line on the display. Performs edge clipping and rejection. Not self-contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a>. Typically used by higher-level graphics primitives; user code shouldn't need to call this and is likely to use the self- contained <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab9bf597887f7098e55e7280d548bc127" title="Draw a vertical line on the display. Self-contained and provides its own transaction as needed (see w...">drawFastVLine()</a> instead.  <a href="#a9b5f5765414c6b0c94c9a060427803ec">More...</a><br /></td></tr>
+<tr class="separator:a9b5f5765414c6b0c94c9a060427803ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ef20b186a133d416f9ba71fb884d275"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275">writeFillRectPreclipped</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
+<tr class="memdesc:a6ef20b186a133d416f9ba71fb884d275"><td class="mdescLeft">&#160;</td><td class="mdescRight">A lower-level version of <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a>. This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions.  <a href="#a6ef20b186a133d416f9ba71fb884d275">More...</a><br /></td></tr>
+<tr class="separator:a6ef20b186a133d416f9ba71fb884d275"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5e118fc9c0fb141c8ee9f14e49f20704">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
+<tr class="memdesc:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single pixel to the display at requested coordinates. Self-contained and provides its own transaction as needed (see writePixel(x,y,color) for a lower-level variant). Edge clipping is performed here.  <a href="#a5e118fc9c0fb141c8ee9f14e49f20704">More...</a><br /></td></tr>
+<tr class="separator:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5964fdb249fb43869c649198e13b727b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5964fdb249fb43869c649198e13b727b">fillRect</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
-<tr class="memdesc:a5964fdb249fb43869c649198e13b727b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill a rectangle completely with one color.  <a href="#a5964fdb249fb43869c649198e13b727b">More...</a><br /></td></tr>
+<tr class="memdesc:a5964fdb249fb43869c649198e13b727b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a filled rectangle to the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> or <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275" title="A lower-level version of writeFillRect(). This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions. ">writeFillRectPreclipped()</a> for lower-level variants). Edge clipping and rejection is performed here.  <a href="#a5964fdb249fb43869c649198e13b727b">More...</a><br /></td></tr>
 <tr class="separator:a5964fdb249fb43869c649198e13b727b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef1099605952f87fbdf59bc480a7a894"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aef1099605952f87fbdf59bc480a7a894">drawFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
+<tr class="memdesc:aef1099605952f87fbdf59bc480a7a894"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a horizontal line on the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> for a lower-level variant). Edge clipping and rejection is performed here.  <a href="#aef1099605952f87fbdf59bc480a7a894">More...</a><br /></td></tr>
+<tr class="separator:aef1099605952f87fbdf59bc480a7a894"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9bf597887f7098e55e7280d548bc127"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab9bf597887f7098e55e7280d548bc127">drawFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
+<tr class="memdesc:ab9bf597887f7098e55e7280d548bc127"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a vertical line on the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> for a lower- level variant). Edge clipping and rejection is performed here.  <a href="#ab9bf597887f7098e55e7280d548bc127">More...</a><br /></td></tr>
+<tr class="separator:ab9bf597887f7098e55e7280d548bc127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53b00726d150600cd8f0feb9a897fb64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a53b00726d150600cd8f0feb9a897fb64">pushColor</a> (uint16_t color)</td></tr>
+<tr class="memdesc:a53b00726d150600cd8f0feb9a897fb64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Essentially <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55" title="Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a star...">writePixel()</a> with a transaction around it. I don't think this is in use by any of our code anymore (believe it was for some older BMP-reading examples), but is kept here in case any user code relies on it. Consider it DEPRECATED.  <a href="#a53b00726d150600cd8f0feb9a897fb64">More...</a><br /></td></tr>
+<tr class="separator:a53b00726d150600cd8f0feb9a897fb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2984b1d3854ed521259cd8208071b55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aa2984b1d3854ed521259cd8208071b55">drawRGBBitmap</a> (int16_t x, int16_t y, uint16_t *pcolors, int16_t w, int16_t h)</td></tr>
-<tr class="memdesc:aa2984b1d3854ed521259cd8208071b55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a 16-bit image (RGB 5/6/5) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56" title="Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground c...">drawBitmap()</a> with arguments in different order.  <a href="#aa2984b1d3854ed521259cd8208071b55">More...</a><br /></td></tr>
+<tr class="memdesc:aa2984b1d3854ed521259cd8208071b55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a 16-bit image (565 RGB) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56" title="Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground c...">drawBitmap()</a> with arguments in different order. Handles its own transaction and edge clipping/rejection.  <a href="#aa2984b1d3854ed521259cd8208071b55">More...</a><br /></td></tr>
 <tr class="separator:aa2984b1d3854ed521259cd8208071b55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6acba5d14538d60f54a50672d31e5f33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6acba5d14538d60f54a50672d31e5f33">invertDisplay</a> (boolean i)</td></tr>
-<tr class="memdesc:a6acba5d14538d60f54a50672d31e5f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the display using built-in hardware command.  <a href="#a6acba5d14538d60f54a50672d31e5f33">More...</a><br /></td></tr>
-<tr class="separator:a6acba5d14538d60f54a50672d31e5f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21a13b3b0e6e0bb1328b5050559dd919"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a21a13b3b0e6e0bb1328b5050559dd919">invertDisplay</a> (bool i)</td></tr>
+<tr class="memdesc:a21a13b3b0e6e0bb1328b5050559dd919"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the colors of the display (if supported by hardware). Self-contained, no transaction setup required.  <a href="#a21a13b3b0e6e0bb1328b5050559dd919">More...</a><br /></td></tr>
+<tr class="separator:a21a13b3b0e6e0bb1328b5050559dd919"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a656f04e5a60f1ff7cddc2934fa676b8b">color565</a> (uint8_t r, uint8_t g, uint8_t b)</td></tr>
-<tr class="memdesc:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass 8-bit (each) R,G,B, get back 16-bit packed color This function converts 8-8-8 RGB data to 16-bit 5-6-5.  <a href="#a656f04e5a60f1ff7cddc2934fa676b8b">More...</a><br /></td></tr>
+<tr class="memdesc:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given 8-bit red, green and blue values, return a 'packed' 16-bit color value in '565' RGB format (5 bits red, 6 bits green, 5 bits blue). This is just a mathematical operation, no hardware is touched.  <a href="#a656f04e5a60f1ff7cddc2934fa676b8b">More...</a><br /></td></tr>
 <tr class="separator:a656f04e5a60f1ff7cddc2934fa676b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76dfbee0ce62682988badc0dbbdc5790"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790">spiWrite</a> (uint8_t b)</td></tr>
+<tr class="memdesc:a76dfbee0ce62682988badc0dbbdc5790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must have been previously set &ndash; this ONLY issues the byte. This is another of those functions in the library with a now-not-accurate name that's being maintained for compatibility with outside code. This function is used even if display connection is parallel.  <a href="#a76dfbee0ce62682988badc0dbbdc5790">More...</a><br /></td></tr>
+<tr class="separator:a76dfbee0ce62682988badc0dbbdc5790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0169fcf8898413bba568a93c1617e8bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0169fcf8898413bba568a93c1617e8bb">writeCommand</a> (uint8_t cmd)</td></tr>
-<tr class="memdesc:a0169fcf8898413bba568a93c1617e8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a command byte (must have a transaction in progress)  <a href="#a0169fcf8898413bba568a93c1617e8bb">More...</a><br /></td></tr>
+<tr class="memdesc:a0169fcf8898413bba568a93c1617e8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a single command byte to the display. Chip-select and transaction must have been previously set &ndash; this ONLY sets the device to COMMAND mode, issues the byte and then restores DATA mode. There is no corresponding explicit writeData() function &ndash; just use <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790" title="Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must h...">spiWrite()</a>.  <a href="#a0169fcf8898413bba568a93c1617e8bb">More...</a><br /></td></tr>
 <tr class="separator:a0169fcf8898413bba568a93c1617e8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11af568cbec82fc9bab40e52b2afd05e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a11af568cbec82fc9bab40e52b2afd05e">spiWrite</a> (uint8_t v)</td></tr>
-<tr class="memdesc:a11af568cbec82fc9bab40e52b2afd05e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write one byte to SPI interface (hardware or software)  <a href="#a11af568cbec82fc9bab40e52b2afd05e">More...</a><br /></td></tr>
-<tr class="separator:a11af568cbec82fc9bab40e52b2afd05e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6904156a9bb832fc510ae6df33e936e5"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6904156a9bb832fc510ae6df33e936e5">spiRead</a> (void)</td></tr>
-<tr class="memdesc:a6904156a9bb832fc510ae6df33e936e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one byte from SPI interface (hardware or software)  <a href="#a6904156a9bb832fc510ae6df33e936e5">More...</a><br /></td></tr>
+<tr class="memdesc:a6904156a9bb832fc510ae6df33e936e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a single 8-bit value from the display. Chip-select and transaction must have been previously set &ndash; this ONLY reads the byte. This is another of those functions in the library with a now-not-accurate name that's being maintained for compatibility with outside code. This function is used even if display connection is parallel.  <a href="#a6904156a9bb832fc510ae6df33e936e5">More...</a><br /></td></tr>
 <tr class="separator:a6904156a9bb832fc510ae6df33e936e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8d3977fd1a982a376cc4d98949d7269"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#af8d3977fd1a982a376cc4d98949d7269">SPI_WRITE16</a> (uint16_t w)</td></tr>
+<tr class="memdesc:af8d3977fd1a982a376cc4d98949d7269"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a single 16-bit value to the display. Chip-select, transaction and data/command selection must have been previously set &ndash; this ONLY issues the word. Despite the name, this function is used even if display connection is parallel; name was maintaned for backward compatibility. Naming is also not consistent with the 8-bit version, <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790" title="Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must h...">spiWrite()</a>. Sorry about that. Again, staying compatible with outside code.  <a href="#af8d3977fd1a982a376cc4d98949d7269">More...</a><br /></td></tr>
+<tr class="separator:af8d3977fd1a982a376cc4d98949d7269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97e8acadecd766abcb735e0e89c81149"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a97e8acadecd766abcb735e0e89c81149">SPI_WRITE32</a> (uint32_t l)</td></tr>
+<tr class="memdesc:a97e8acadecd766abcb735e0e89c81149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a single 32-bit value to the display. Chip-select, transaction and data/command selection must have been previously set &ndash; this ONLY issues the longword. Despite the name, this function is used even if display connection is parallel; name was maintaned for backward compatibility. Naming is also not consistent with the 8-bit version, <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790" title="Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must h...">spiWrite()</a>. Sorry about that. Again, staying compatible with outside code.  <a href="#a97e8acadecd766abcb735e0e89c81149">More...</a><br /></td></tr>
+<tr class="separator:a97e8acadecd766abcb735e0e89c81149"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab395bc0dca991a4b5151f459adf5ad38"><td class="memItemLeft" align="right" valign="top"><a id="ab395bc0dca991a4b5151f459adf5ad38"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab395bc0dca991a4b5151f459adf5ad38">SPI_CS_HIGH</a> (void)</td></tr>
+<tr class="memdesc:ab395bc0dca991a4b5151f459adf5ad38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the chip-select line HIGH. Does NOT check whether CS pin is set (&gt;=0), that should be handled in calling function. Despite function name, this is used even if the display connection is parallel. <br /></td></tr>
+<tr class="separator:ab395bc0dca991a4b5151f459adf5ad38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbb8eeea97e940e29cc124e155383f76"><td class="memItemLeft" align="right" valign="top"><a id="afbb8eeea97e940e29cc124e155383f76"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#afbb8eeea97e940e29cc124e155383f76">SPI_CS_LOW</a> (void)</td></tr>
+<tr class="memdesc:afbb8eeea97e940e29cc124e155383f76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the chip-select line LOW. Does NOT check whether CS pin is set (&gt;=0), that should be handled in calling function. Despite function name, this is used even if the display connection is parallel. <br /></td></tr>
+<tr class="separator:afbb8eeea97e940e29cc124e155383f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94f7565d2b334770c75d8461dc675a7e"><td class="memItemLeft" align="right" valign="top"><a id="a94f7565d2b334770c75d8461dc675a7e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a94f7565d2b334770c75d8461dc675a7e">SPI_DC_HIGH</a> (void)</td></tr>
+<tr class="memdesc:a94f7565d2b334770c75d8461dc675a7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the data/command line HIGH (data mode). <br /></td></tr>
+<tr class="separator:a94f7565d2b334770c75d8461dc675a7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9765347ed3a7f645eefe521c2ed52a9"><td class="memItemLeft" align="right" valign="top"><a id="ac9765347ed3a7f645eefe521c2ed52a9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac9765347ed3a7f645eefe521c2ed52a9">SPI_DC_LOW</a> (void)</td></tr>
+<tr class="memdesc:ac9765347ed3a7f645eefe521c2ed52a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the data/command line LOW (command mode). <br /></td></tr>
+<tr class="separator:ac9765347ed3a7f645eefe521c2ed52a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a6f6f1abccf677eac244fa17d105133ea inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">Adafruit_GFX</a> (int16_t w, int16_t h)</td></tr>
 <tr class="memdesc:a6f6f1abccf677eac244fa17d105133ea inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instatiate a GFX context for graphics! Can only be done by a superclass.  <a href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">More...</a><br /></td></tr>
@@ -173,6 +199,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a6ac337c49876cee23ed062a928724675 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6ac337c49876cee23ed062a928724675">setRotation</a> (uint8_t r)</td></tr>
 <tr class="memdesc:a6ac337c49876cee23ed062a928724675 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set rotation setting for display.  <a href="class_adafruit___g_f_x.html#a6ac337c49876cee23ed062a928724675">More...</a><br /></td></tr>
 <tr class="separator:a6ac337c49876cee23ed062a928724675 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fa315803f39a5e73b1841874daf0483 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a2fa315803f39a5e73b1841874daf0483">invertDisplay</a> (boolean i)</td></tr>
+<tr class="memdesc:a2fa315803f39a5e73b1841874daf0483 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the display (ideally using built-in hardware command)  <a href="class_adafruit___g_f_x.html#a2fa315803f39a5e73b1841874daf0483">More...</a><br /></td></tr>
+<tr class="separator:a2fa315803f39a5e73b1841874daf0483 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">drawFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
 <tr class="memdesc:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a perfectly horizontal line (this is often optimized in a subclass!)  <a href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">More...</a><br /></td></tr>
 <tr class="separator:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -303,56 +332,142 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get text cursor Y location.  <a href="class_adafruit___g_f_x.html#a81c8558cfcb717c4cfbd5475998daed1">More...</a><br /></td></tr>
 <tr class="separator:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a88f3c607cb9a5bd1d7f55881a1f3dc95"><td class="memItemLeft" align="right" valign="top"><a id="a88f3c607cb9a5bd1d7f55881a1f3dc95"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a88f3c607cb9a5bd1d7f55881a1f3dc95">SPI_MOSI_HIGH</a> (void)</td></tr>
+<tr class="memdesc:a88f3c607cb9a5bd1d7f55881a1f3dc95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the software (bitbang) SPI MOSI line HIGH. <br /></td></tr>
+<tr class="separator:a88f3c607cb9a5bd1d7f55881a1f3dc95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0093ed5cdb3302761df4633cc065b06a"><td class="memItemLeft" align="right" valign="top"><a id="a0093ed5cdb3302761df4633cc065b06a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0093ed5cdb3302761df4633cc065b06a">SPI_MOSI_LOW</a> (void)</td></tr>
+<tr class="memdesc:a0093ed5cdb3302761df4633cc065b06a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the software (bitbang) SPI MOSI line LOW. <br /></td></tr>
+<tr class="separator:a0093ed5cdb3302761df4633cc065b06a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d68df2a27c46a4ed1737d471d05af3f"><td class="memItemLeft" align="right" valign="top"><a id="a0d68df2a27c46a4ed1737d471d05af3f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0d68df2a27c46a4ed1737d471d05af3f">SPI_SCK_HIGH</a> (void)</td></tr>
+<tr class="memdesc:a0d68df2a27c46a4ed1737d471d05af3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the software (bitbang) SPI SCK line HIGH. <br /></td></tr>
+<tr class="separator:a0d68df2a27c46a4ed1737d471d05af3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e6a3043e2f5813d21db7ffb168955a8"><td class="memItemLeft" align="right" valign="top"><a id="a0e6a3043e2f5813d21db7ffb168955a8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0e6a3043e2f5813d21db7ffb168955a8">SPI_SCK_LOW</a> (void)</td></tr>
+<tr class="memdesc:a0e6a3043e2f5813d21db7ffb168955a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the software (bitbang) SPI SCK line LOW. <br /></td></tr>
+<tr class="separator:a0e6a3043e2f5813d21db7ffb168955a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d4982ab4b15c7b3bc30c553e1abf279"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a9d4982ab4b15c7b3bc30c553e1abf279">SPI_MISO_READ</a> (void)</td></tr>
+<tr class="memdesc:a9d4982ab4b15c7b3bc30c553e1abf279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the state of the software (bitbang) SPI MISO line.  <a href="#a9d4982ab4b15c7b3bc30c553e1abf279">More...</a><br /></td></tr>
+<tr class="separator:a9d4982ab4b15c7b3bc30c553e1abf279"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb38cd7e43e128cf47b1f456423bea33"><td class="memItemLeft" align="right" valign="top"><a id="adb38cd7e43e128cf47b1f456423bea33"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#adb38cd7e43e128cf47b1f456423bea33">SPI_BEGIN_TRANSACTION</a> (void)</td></tr>
+<tr class="memdesc:adb38cd7e43e128cf47b1f456423bea33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start an SPI transaction if using the hardware SPI interface to the display. If using an earlier version of the Arduino platform (before the addition of SPI transactions), this instead attempts to set up the SPI clock and mode. No action is taken if the connection is not hardware SPI-based. This does NOT include a chip-select operation &ndash; see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> for a function that encapsulated both actions. <br /></td></tr>
+<tr class="separator:adb38cd7e43e128cf47b1f456423bea33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52e8221c57511c40c9f53b7b455252ab"><td class="memItemLeft" align="right" valign="top"><a id="a52e8221c57511c40c9f53b7b455252ab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a52e8221c57511c40c9f53b7b455252ab">SPI_END_TRANSACTION</a> (void)</td></tr>
+<tr class="memdesc:a52e8221c57511c40c9f53b7b455252ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">End an SPI transaction if using the hardware SPI interface to the display. No action is taken if the connection is not hardware SPI-based or if using an earlier version of the Arduino platform (before the addition of SPI transactions). This does NOT include a chip-deselect operation &ndash; see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a65f00bcb36ed34e9f8fb72d45c6d0cad" title="Call after issuing command(s) or data to display. Performs chip-deselect (if required) and ends an SP...">endWrite()</a> for a function that encapsulated both actions. <br /></td></tr>
+<tr class="separator:a52e8221c57511c40c9f53b7b455252ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab59285824eb5a042a2169edc127b2551"><td class="memItemLeft" align="right" valign="top"><a id="ab59285824eb5a042a2169edc127b2551"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab59285824eb5a042a2169edc127b2551">TFT_WR_STROBE</a> (void)</td></tr>
+<tr class="memdesc:ab59285824eb5a042a2169edc127b2551"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the RD line LOW, then HIGH. Used for parallel-connected interfaces when writing data. <br /></td></tr>
+<tr class="separator:ab59285824eb5a042a2169edc127b2551"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7bfd459e24a52d990c238435a5f9b3e"><td class="memItemLeft" align="right" valign="top"><a id="ad7bfd459e24a52d990c238435a5f9b3e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad7bfd459e24a52d990c238435a5f9b3e">TFT_RD_HIGH</a> (void)</td></tr>
+<tr class="memdesc:ad7bfd459e24a52d990c238435a5f9b3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the RD line HIGH. Used for parallel-connected interfaces when reading data. <br /></td></tr>
+<tr class="separator:ad7bfd459e24a52d990c238435a5f9b3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12271a88164e8050ad349fda34dce02d"><td class="memItemLeft" align="right" valign="top"><a id="a12271a88164e8050ad349fda34dce02d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a12271a88164e8050ad349fda34dce02d">TFT_RD_LOW</a> (void)</td></tr>
+<tr class="memdesc:a12271a88164e8050ad349fda34dce02d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the RD line LOW. Used for parallel-connected interfaces when reading data. <br /></td></tr>
+<tr class="separator:a12271a88164e8050ad349fda34dce02d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
+<tr class="memitem:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">charBounds</a> (char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
+<tr class="memdesc:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">More...</a><br /></td></tr>
+<tr class="separator:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a2003f65628bfcd075b300f022dce0ffc"><td class="memItemLeft" align="right" valign="top"><a id="a2003f65628bfcd075b300f022dce0ffc"></a>
-SPIClass *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2003f65628bfcd075b300f022dce0ffc">_spi</a></td></tr>
-<tr class="memdesc:a2003f65628bfcd075b300f022dce0ffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SPI device we want to use (set in constructor) <br /></td></tr>
-<tr class="separator:a2003f65628bfcd075b300f022dce0ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65e9eb00f665cadb411babf9c506a01d"><td class="memItemLeft" align="right" valign="top"><a id="a65e9eb00f665cadb411babf9c506a01d"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a65e9eb00f665cadb411babf9c506a01d">_freq</a></td></tr>
-<tr class="memdesc:a65e9eb00f665cadb411babf9c506a01d"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI clock frequency (for hardware SPI) <br /></td></tr>
-<tr class="separator:a65e9eb00f665cadb411babf9c506a01d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24caab1923436f13badc906368e0db78"><td class="memItemLeft" align="right" valign="top"><a id="a24caab1923436f13badc906368e0db78"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a24caab1923436f13badc906368e0db78">_cs</a></td></tr>
-<tr class="memdesc:a24caab1923436f13badc906368e0db78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino pin # for chip-select pin. <br /></td></tr>
-<tr class="separator:a24caab1923436f13badc906368e0db78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c74e64add040d81c947161fa609addc"><td class="memItemLeft" align="right" valign="top"><a id="a0c74e64add040d81c947161fa609addc"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0c74e64add040d81c947161fa609addc">_dc</a></td></tr>
-<tr class="memdesc:a0c74e64add040d81c947161fa609addc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino pin # for data-command pin. <br /></td></tr>
-<tr class="separator:a0c74e64add040d81c947161fa609addc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f690e51ea3d4e4dd3ed3f6b8c1b79c2"><td class="memItemLeft" align="right" valign="top"><a id="a1f690e51ea3d4e4dd3ed3f6b8c1b79c2"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1f690e51ea3d4e4dd3ed3f6b8c1b79c2">_rst</a></td></tr>
-<tr class="memdesc:a1f690e51ea3d4e4dd3ed3f6b8c1b79c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino pin # for reset pin. <br /></td></tr>
-<tr class="separator:a1f690e51ea3d4e4dd3ed3f6b8c1b79c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e297387c5f2b9b7adf6d7d8252570fc"><td class="memItemLeft" align="right" valign="top"><a id="a9e297387c5f2b9b7adf6d7d8252570fc"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a9e297387c5f2b9b7adf6d7d8252570fc">_sclk</a></td></tr>
-<tr class="memdesc:a9e297387c5f2b9b7adf6d7d8252570fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino pin # for SPI clock pin. <br /></td></tr>
-<tr class="separator:a9e297387c5f2b9b7adf6d7d8252570fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4036d7b93604c3d2a5486a88ad6d9a20"><td class="memItemLeft" align="right" valign="top"><a id="a4036d7b93604c3d2a5486a88ad6d9a20"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a4036d7b93604c3d2a5486a88ad6d9a20">_mosi</a></td></tr>
-<tr class="memdesc:a4036d7b93604c3d2a5486a88ad6d9a20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino pin # for SPI MOSI pin. <br /></td></tr>
-<tr class="separator:a4036d7b93604c3d2a5486a88ad6d9a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94e2aae5c7b187891e348d58aa16af7d"><td class="memItemLeft" align="right" valign="top"><a id="a94e2aae5c7b187891e348d58aa16af7d"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a94e2aae5c7b187891e348d58aa16af7d">_miso</a></td></tr>
-<tr class="memdesc:a94e2aae5c7b187891e348d58aa16af7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino pin # for SPI MISO pin. <br /></td></tr>
-<tr class="separator:a94e2aae5c7b187891e348d58aa16af7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6d068ec372f9ffa2a6a451542634bc1"><td class="memItemLeft" align="right" valign="top"><a id="ad6d068ec372f9ffa2a6a451542634bc1"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad6d068ec372f9ffa2a6a451542634bc1">invertOnCommand</a> = 0</td></tr>
-<tr class="memdesc:ad6d068ec372f9ffa2a6a451542634bc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI command byte to turn on invert. <br /></td></tr>
-<tr class="separator:ad6d068ec372f9ffa2a6a451542634bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7248ddde9f18b64675139cea13998141"><td class="memItemLeft" align="right" valign="top"><a id="a7248ddde9f18b64675139cea13998141"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a7248ddde9f18b64675139cea13998141">invertOffCommand</a> = 0</td></tr>
-<tr class="memdesc:a7248ddde9f18b64675139cea13998141"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI command byte to turn off invert. <br /></td></tr>
-<tr class="separator:a7248ddde9f18b64675139cea13998141"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab07886230f805a63972dda85fe4c4d2e"><td class="memItemLeft" ><a id="ab07886230f805a63972dda85fe4c4d2e"></a>
+union {</td></tr>
+<tr class="memitem:a01abe5a0c92469d941317ddaca18df64"><td class="memItemLeft" >
+&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:aea86e6db41fcaa716563128b8995a73d"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;SPIClass *&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2003f65628bfcd075b300f022dce0ffc">_spi</a></td></tr>
+<tr class="memdesc:aea86e6db41fcaa716563128b8995a73d"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI class pointer. <br /></td></tr>
+<tr class="separator:aea86e6db41fcaa716563128b8995a73d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e359061edf68c286248ad07dd3c203d"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a65e9eb00f665cadb411babf9c506a01d">_freq</a></td></tr>
+<tr class="memdesc:a9e359061edf68c286248ad07dd3c203d"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI bitrate (if no SPI transactions) <br /></td></tr>
+<tr class="separator:a9e359061edf68c286248ad07dd3c203d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01abe5a0c92469d941317ddaca18df64"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#ae2521eb54c29e09f83263a59d85d5504">hwspi</a></td></tr>
+<tr class="memdesc:a01abe5a0c92469d941317ddaca18df64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hardware SPI values. <br /></td></tr>
+<tr class="separator:a01abe5a0c92469d941317ddaca18df64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9b5197113a4c44a77b88e2a681834b1"><td class="memItemLeft" >
+&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:acc827866d36ea6759ee4c8ad9000ada9"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;int8_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a02d06f8d1fbe420c6dca776f636a41e5">_mosi</a></td></tr>
+<tr class="memdesc:acc827866d36ea6759ee4c8ad9000ada9"><td class="mdescLeft">&#160;</td><td class="mdescRight">MOSI pin #. <br /></td></tr>
+<tr class="separator:acc827866d36ea6759ee4c8ad9000ada9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4477cc242471ec47c109000a6fee1e04"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;int8_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a19f9a2a73ad817b16cd8c73556138363">_miso</a></td></tr>
+<tr class="memdesc:a4477cc242471ec47c109000a6fee1e04"><td class="mdescLeft">&#160;</td><td class="mdescRight">MISO pin #. <br /></td></tr>
+<tr class="separator:a4477cc242471ec47c109000a6fee1e04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a705e795d5a1b91c2541687a25bfd302a"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;int8_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#afd793c2ed96f6ac9e653a1bf67fda921">_sck</a></td></tr>
+<tr class="memdesc:a705e795d5a1b91c2541687a25bfd302a"><td class="mdescLeft">&#160;</td><td class="mdescRight">SCK pin #. <br /></td></tr>
+<tr class="separator:a705e795d5a1b91c2541687a25bfd302a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9b5197113a4c44a77b88e2a681834b1"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad09b5c71a630d54ff77aac517f6e584c">swspi</a></td></tr>
+<tr class="memdesc:aa9b5197113a4c44a77b88e2a681834b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Software SPI values. <br /></td></tr>
+<tr class="separator:aa9b5197113a4c44a77b88e2a681834b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b890dd01067b0834e87899749d145fc"><td class="memItemLeft" >
+&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:afc2cdb7eb366469e00374b3098bf34d4"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;int8_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5b26872a4e2b08017b475e9a542261cb">_d0</a></td></tr>
+<tr class="memdesc:afc2cdb7eb366469e00374b3098bf34d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data pin 0 #. <br /></td></tr>
+<tr class="separator:afc2cdb7eb366469e00374b3098bf34d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2675fbeef7a8518738a8fbc064f6bddc"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;int8_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a87971f3f0f04e8099d54be48995cb578">_wr</a></td></tr>
+<tr class="memdesc:a2675fbeef7a8518738a8fbc064f6bddc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write strobe pin #. <br /></td></tr>
+<tr class="separator:a2675fbeef7a8518738a8fbc064f6bddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a278bc925c88bbc8f89d7bc784b5568e7"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;int8_t&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#a46b1c645935c1163dbad553adbdabff7">_rd</a></td></tr>
+<tr class="memdesc:a278bc925c88bbc8f89d7bc784b5568e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read strobe pin # (or -1) <br /></td></tr>
+<tr class="separator:a278bc925c88bbc8f89d7bc784b5568e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fd32f768a97749a73bdb3670086ecef"><td class="memItemLeft" >
+&#160;&#160;&#160;&#160;&#160;&#160;bool&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab49cda19025e4f18f65f1a00ce65693d">wide</a> = 0</td></tr>
+<tr class="memdesc:a0fd32f768a97749a73bdb3670086ecef"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, is 16-bit interface. <br /></td></tr>
+<tr class="separator:a0fd32f768a97749a73bdb3670086ecef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b890dd01067b0834e87899749d145fc"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="class_adafruit___s_p_i_t_f_t.html#abb842b58ffdaa2a36b81439e267a9afe">tft8</a></td></tr>
+<tr class="memdesc:a0b890dd01067b0834e87899749d145fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parallel interface settings. <br /></td></tr>
+<tr class="separator:a0b890dd01067b0834e87899749d145fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab07886230f805a63972dda85fe4c4d2e"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:ab07886230f805a63972dda85fe4c4d2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Only one interface is active. <br /></td></tr>
+<tr class="separator:ab07886230f805a63972dda85fe4c4d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17cc84566e35b026f8b6f38903be80b"><td class="memItemLeft" align="right" valign="top"><a id="ae17cc84566e35b026f8b6f38903be80b"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ae17cc84566e35b026f8b6f38903be80b">connection</a></td></tr>
+<tr class="memdesc:ae17cc84566e35b026f8b6f38903be80b"><td class="mdescLeft">&#160;</td><td class="mdescRight">TFT_HARD_SPI, TFT_SOFT_SPI, etc. <br /></td></tr>
+<tr class="separator:ae17cc84566e35b026f8b6f38903be80b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a534eb433f9084d1e5b8088964a617a8a"><td class="memItemLeft" align="right" valign="top"><a id="a534eb433f9084d1e5b8088964a617a8a"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a534eb433f9084d1e5b8088964a617a8a">_rst</a></td></tr>
+<tr class="memdesc:a534eb433f9084d1e5b8088964a617a8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset pin # (or -1) <br /></td></tr>
+<tr class="separator:a534eb433f9084d1e5b8088964a617a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0ed6886fcef09bd3d98a02238ae7300"><td class="memItemLeft" align="right" valign="top"><a id="ac0ed6886fcef09bd3d98a02238ae7300"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac0ed6886fcef09bd3d98a02238ae7300">_cs</a></td></tr>
+<tr class="memdesc:ac0ed6886fcef09bd3d98a02238ae7300"><td class="mdescLeft">&#160;</td><td class="mdescRight">Chip select pin # (or -1) <br /></td></tr>
+<tr class="separator:ac0ed6886fcef09bd3d98a02238ae7300"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a154f060e2830dc7096af9d0b6022d12a"><td class="memItemLeft" align="right" valign="top"><a id="a154f060e2830dc7096af9d0b6022d12a"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a154f060e2830dc7096af9d0b6022d12a">_dc</a></td></tr>
+<tr class="memdesc:a154f060e2830dc7096af9d0b6022d12a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data/command pin #. <br /></td></tr>
+<tr class="separator:a154f060e2830dc7096af9d0b6022d12a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a479fb9af838dc94c442b27c734dab345"><td class="memItemLeft" align="right" valign="top"><a id="a479fb9af838dc94c442b27c734dab345"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a479fb9af838dc94c442b27c734dab345">_xstart</a> = 0</td></tr>
-<tr class="memdesc:a479fb9af838dc94c442b27c734dab345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the x offset from 0 to align. <br /></td></tr>
+<tr class="memdesc:a479fb9af838dc94c442b27c734dab345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal framebuffer X offset. <br /></td></tr>
 <tr class="separator:a479fb9af838dc94c442b27c734dab345"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b1d3250b346656552dfdf939b1e428d"><td class="memItemLeft" align="right" valign="top"><a id="a1b1d3250b346656552dfdf939b1e428d"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1b1d3250b346656552dfdf939b1e428d">_ystart</a> = 0</td></tr>
-<tr class="memdesc:a1b1d3250b346656552dfdf939b1e428d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Many displays don't have pixels starting at (0,0) of the internal framebuffer, this is the y offset from 0 to align. <br /></td></tr>
+<tr class="memdesc:a1b1d3250b346656552dfdf939b1e428d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal framebuffer Y offset. <br /></td></tr>
 <tr class="separator:a1b1d3250b346656552dfdf939b1e428d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6d068ec372f9ffa2a6a451542634bc1"><td class="memItemLeft" align="right" valign="top"><a id="ad6d068ec372f9ffa2a6a451542634bc1"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad6d068ec372f9ffa2a6a451542634bc1">invertOnCommand</a> = 0</td></tr>
+<tr class="memdesc:ad6d068ec372f9ffa2a6a451542634bc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command to enable invert mode. <br /></td></tr>
+<tr class="separator:ad6d068ec372f9ffa2a6a451542634bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7248ddde9f18b64675139cea13998141"><td class="memItemLeft" align="right" valign="top"><a id="a7248ddde9f18b64675139cea13998141"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a7248ddde9f18b64675139cea13998141">invertOffCommand</a> = 0</td></tr>
+<tr class="memdesc:a7248ddde9f18b64675139cea13998141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command to disable invert mode. <br /></td></tr>
+<tr class="separator:a7248ddde9f18b64675139cea13998141"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:ab693a8ac5d94c50c2558b5a3795ddde4 inherit pro_attribs_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top"><a id="ab693a8ac5d94c50c2558b5a3795ddde4"></a>
 const int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab693a8ac5d94c50c2558b5a3795ddde4">WIDTH</a></td></tr>
@@ -406,20 +521,12 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#afeb94c3253f43dada05e1270e322fa06">gfxFont</a></td></tr>
 <tr class="memdesc:afeb94c3253f43dada05e1270e322fa06 inherit pro_attribs_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to special font. <br /></td></tr>
 <tr class="separator:afeb94c3253f43dada05e1270e322fa06 inherit pro_attribs_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
-<tr class="memitem:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">charBounds</a> (char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
-<tr class="memdesc:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a21c19ed786f8291613d082e81ad4e3c4">More...</a><br /></td></tr>
-<tr class="separator:a21c19ed786f8291613d082e81ad4e3c4 inherit pro_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>&lt; Only for SAMD chips </p>
-<p>A heavily optimized SPI display subclass of GFX. Manages SPI bitbanging, transactions, DMA, etc! Despite being called SPITFT, the classic SPI data/command interface is also used by OLEDs. </p>
+<div class="textblock"><p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> is an intermediary class between <a class="el" href="class_adafruit___g_f_x.html" title="A generic graphics superclass that can handle all sorts of drawing. At a minimum you can subclass and...">Adafruit_GFX</a> and various hardware-specific subclasses for different displays. It handles certain operations that are common to a range of displays (address window, area fills, etc.). Originally these were all color TFT displays interfaced via SPI, but it's since expanded to include color OLEDs and parallel-interfaced TFTs. THE NAME HAS BEEN KEPT TO AVOID BREAKING A LOT OF SUBCLASSES AND EXAMPLE CODE. Many of the class member functions similarly live on with names that don't necessarily accurately describe what they're doing, again to avoid breaking a lot of other code. If in doubt, read the comments. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a35e1b6bfb368d825141c7929e4b51c80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35e1b6bfb368d825141c7929e4b51c80">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[1/3]</span></h2>
+<a id="aae082216e8270f83132827a70cceeaf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae082216e8270f83132827a70cceeaf3">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -458,7 +565,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int8_t&#160;</td>
-          <td class="paramname"><em>sclk</em>, </td>
+          <td class="paramname"><em>sck</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -480,25 +587,27 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Instantiate Adafruit SPI display driver with software SPI. </p>
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for software (bitbang) SPI. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
-    <tr><td class="paramname">cs</td><td>Chip select pin # </td></tr>
-    <tr><td class="paramname">dc</td><td>Data/Command pin # </td></tr>
-    <tr><td class="paramname">mosi</td><td>SPI MOSI pin # </td></tr>
-    <tr><td class="paramname">sclk</td><td>SPI Clock pin # </td></tr>
-    <tr><td class="paramname">rst</td><td>Reset pin # (optional, pass -1 if unused) </td></tr>
-    <tr><td class="paramname">miso</td><td>SPI MISO pin # (optional, pass -1 if unused) </td></tr>
+    <tr><td class="paramname">w</td><td>Display width in pixels at default rotation setting (0). </td></tr>
+    <tr><td class="paramname">h</td><td>Display height in pixels at default rotation setting (0). </td></tr>
+    <tr><td class="paramname">cs</td><td>Arduino pin # for chip-select (-1 if unused, tie CS low). </td></tr>
+    <tr><td class="paramname">dc</td><td>Arduino pin # for data/command select (required). </td></tr>
+    <tr><td class="paramname">mosi</td><td>Arduino pin # for bitbang SPI MOSI signal (required). </td></tr>
+    <tr><td class="paramname">sck</td><td>Arduino pin # for bitbang SPI SCK signal (required). </td></tr>
+    <tr><td class="paramname">rst</td><td>Arduino pin # for display reset (optional, display reset can be tied to MCU reset, default of -1 means unused). </td></tr>
+    <tr><td class="paramname">miso</td><td>Arduino pin # for bitbang SPI MISO signal (optional, -1 default, many displays don't support SPI read). </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac5137e06a5f527d594aefabe38f524d8" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. </dd></dl>
 
 </div>
 </div>
-<a id="a3e5dc42e8464e12ce03a7df65e330977"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e5dc42e8464e12ce03a7df65e330977">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[2/3]</span></h2>
+<a id="a2c3433ca3e3f9c5209765c46751bb674"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c3433ca3e3f9c5209765c46751bb674">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -541,22 +650,24 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Instantiate Adafruit SPI display driver with hardware SPI. </p>
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for hardware SPI using the board's default SPI peripheral. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
-    <tr><td class="paramname">cs</td><td>Chip select pin # </td></tr>
-    <tr><td class="paramname">dc</td><td>Data/Command pin # </td></tr>
-    <tr><td class="paramname">rst</td><td>Reset pin # (optional, pass -1 if unused) </td></tr>
+    <tr><td class="paramname">w</td><td>Display width in pixels at default rotation setting (0). </td></tr>
+    <tr><td class="paramname">h</td><td>Display height in pixels at default rotation setting (0). </td></tr>
+    <tr><td class="paramname">cs</td><td>Arduino pin # for chip-select (-1 if unused, tie CS low). </td></tr>
+    <tr><td class="paramname">dc</td><td>Arduino pin # for data/command select (required). </td></tr>
+    <tr><td class="paramname">rst</td><td>Arduino pin # for display reset (optional, display reset can be tied to MCU reset, default of -1 means unused). </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac5137e06a5f527d594aefabe38f524d8" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. </dd></dl>
 
 </div>
 </div>
-<a id="af3648fb6689905d3df1febf940781103"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3648fb6689905d3df1febf940781103">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[3/3]</span></h2>
+<a id="abd847be5c9f71e5741d41805118f05c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd847be5c9f71e5741d41805118f05c8">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -605,18 +716,108 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Instantiate Adafruit SPI display driver with hardware SPI. </p>
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for hardware SPI using a specific SPI peripheral. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
-    <tr><td class="paramname">spiClass</td><td>A pointer to an SPI hardware interface, e.g. &amp;SPI1 </td></tr>
-    <tr><td class="paramname">cs</td><td>Chip select pin # </td></tr>
-    <tr><td class="paramname">dc</td><td>Data/Command pin # </td></tr>
-    <tr><td class="paramname">rst</td><td>Reset pin # (optional, pass -1 if unused) </td></tr>
+    <tr><td class="paramname">w</td><td>Display width in pixels at default rotation (0). </td></tr>
+    <tr><td class="paramname">h</td><td>Display height in pixels at default rotation (0). </td></tr>
+    <tr><td class="paramname">spiClass</td><td>Pointer to SPIClass type (e.g. &amp;SPI or &amp;SPI1). </td></tr>
+    <tr><td class="paramname">cs</td><td>Arduino pin # for chip-select (-1 if unused, tie CS low). </td></tr>
+    <tr><td class="paramname">dc</td><td>Arduino pin # for data/command select (required). </td></tr>
+    <tr><td class="paramname">rst</td><td>Arduino pin # for display reset (optional, display reset can be tied to MCU reset, default of -1 means unused). </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac5137e06a5f527d594aefabe38f524d8" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. </dd></dl>
+
+</div>
+</div>
+<a id="a1a4a822c07b817cea78dfb35dbaa4525"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a4a822c07b817cea78dfb35dbaa4525">&#9670;&nbsp;</a></span>Adafruit_SPITFT() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Adafruit_SPITFT::Adafruit_SPITFT </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_adafruit___s_p_i_t_f_t_8h.html#a4a7dffd73fe8924b90709aa7e6e366e8">tftBusWidth</a>&#160;</td>
+          <td class="paramname"><em>busWidth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>d0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>wr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>dc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>cs</em> = <code>-1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>rst</em> = <code>-1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>rd</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> constructor for parallel display connection. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">w</td><td>Display width in pixels at default rotation (0). </td></tr>
+    <tr><td class="paramname">h</td><td>Display height in pixels at default rotation (0). </td></tr>
+    <tr><td class="paramname">busWidth</td><td>If tft16 (enumeration in header file), is a 16-bit parallel connection, else 8-bit. 16-bit isn't fully implemented or tested yet so applications should pass "tft8" for now...needed to stick a required enum argument in there to disambiguate this constructor from the soft-SPI case. Argument is ignored on 8-bit architectures (no 'wide' support there since PORTs are 8 bits anyway). </td></tr>
+    <tr><td class="paramname">d0</td><td>Arduino pin # for data bit 0 (1+ are extrapolated). The 8 (or 16) data bits MUST be contiguous and byte- aligned (or word-aligned for wide interface) within the same PORT register (might not correspond to Arduino pin sequence). </td></tr>
+    <tr><td class="paramname">wr</td><td>Arduino pin # for write strobe (required). </td></tr>
+    <tr><td class="paramname">dc</td><td>Arduino pin # for data/command select (required). </td></tr>
+    <tr><td class="paramname">cs</td><td>Arduino pin # for chip-select (optional, -1 if unused, tie CS low). </td></tr>
+    <tr><td class="paramname">rst</td><td>Arduino pin # for display reset (optional, display reset can be tied to MCU reset, default of -1 means unused). </td></tr>
+    <tr><td class="paramname">rd</td><td>Arduino pin # for read strobe (optional, -1 if unused). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ac5137e06a5f527d594aefabe38f524d8" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. Yes, the name is a misnomer...this library originally handled only SPI displays, parallel being a recent addition (but not wanting to break existing code). </dd></dl>
 
 </div>
 </div>
@@ -645,44 +846,18 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Virtual <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Virtual begin() function to set SPI frequency, must be overridden in subclass. ">begin()</a> function to set SPI frequency, must be overridden in subclass. </p>
+<p>Display-specific initialization function. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">freq</td><td>Maximum SPI hardware clock speed </td></tr>
+    <tr><td class="paramname">freq</td><td>SPI frequency, in hz (or 0 for default or unused). </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="af7b6ae2d5e9dd2cf5cd26dff04872598"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7b6ae2d5e9dd2cf5cd26dff04872598">&#9670;&nbsp;</a></span>initSPI()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_SPITFT::initSPI </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>freq</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Initialiaze the SPI interface (hardware or software) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">freq</td><td>The desired maximum SPI hardware clock frequency </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a5e118fc9c0fb141c8ee9f14e49f20704"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e118fc9c0fb141c8ee9f14e49f20704">&#9670;&nbsp;</a></span>drawPixel()</h2>
+<a id="a1928d1a2b27cc32422624ed54c0ea932"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1928d1a2b27cc32422624ed54c0ea932">&#9670;&nbsp;</a></span>setAddrWindow()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -691,22 +866,28 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SPITFT::drawPixel </td>
+          <td class="memname">virtual void Adafruit_SPITFT::setAddrWindow </td>
           <td>(</td>
-          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>y</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>h</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -716,27 +897,53 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Draw a pixel - sets up transaction. </p>
+<p>Set up the specific display hardware's "address window" for subsequent pixel-pushing operations. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>y coordinate </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw with </td></tr>
+    <tr><td class="paramname">x</td><td>Leftmost pixel of area to be drawn (MUST be within display bounds at current rotation setting). </td></tr>
+    <tr><td class="paramname">y</td><td>Topmost pixel of area to be drawn (MUST be within display bounds at current rotation setting). </td></tr>
+    <tr><td class="paramname">w</td><td>Width of area to be drawn, in pixels (MUST be &gt;0 and, added to x, within display bounds at current rotation). </td></tr>
+    <tr><td class="paramname">h</td><td>Height of area to be drawn, in pixels (MUST be &gt;0 and, added to x, within display bounds at current rotation). </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_adafruit___g_f_x.html#ab7fbf72885c873266f9c7eb53b5c8896">Adafruit_GFX</a>.</p>
+</div>
+</div>
+<a id="ac5137e06a5f527d594aefabe38f524d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5137e06a5f527d594aefabe38f524d8">&#9670;&nbsp;</a></span>initSPI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::initSPI </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>freq</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Configure microcontroller pins for TFT interfacing. Typically called by a subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">freq</td><td>SPI frequency when using hardware SPI. If default (0) is passed, will fall back on a device-specific value. Value is ignored when using software SPI or parallel connection. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>Another anachronistically-named function; this is called even when the display connection is parallel (not SPI). Also, this could probably be made private...quite a few class functions were generously put in the public section. </dd></dl>
 
 </div>
 </div>
 <a id="a795dcd9f5f850c057b0a896204fc7d55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a795dcd9f5f850c057b0a896204fc7d55">&#9670;&nbsp;</a></span>writePixel() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a795dcd9f5f850c057b0a896204fc7d55">&#9670;&nbsp;</a></span>writePixel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -775,17 +982,91 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Write a pixel (must have a transaction in progress) </p>
+<p>Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> call. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>y coordinate </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw with </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position (0 = left). </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position (0 = top). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit pixel color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
 
 <p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#ab66a1577ec595a254e4492d641b36fd8">Adafruit_GFX</a>.</p>
+
+</div>
+</div>
+<a id="a98cf76f440c47e99ed5824b664349655"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98cf76f440c47e99ed5824b664349655">&#9670;&nbsp;</a></span>writePixels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::writePixels </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t *&#160;</td>
+          <td class="paramname"><em>colors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Issue a series of pixels from memory to the display. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">colors</td><td>Pointer to array of 16-bit pixel values in '565' RGB format. </td></tr>
+    <tr><td class="paramname">len</td><td>Number of elements in 'colors' array. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a42824e0f1475f2b3df335d31651dc75a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42824e0f1475f2b3df335d31651dc75a">&#9670;&nbsp;</a></span>writeColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::writeColor </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Issue a series of pixels, all the same color. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">color</td><td>16-bit pixel color in '565' RGB format. </td></tr>
+    <tr><td class="paramname">len</td><td>Number of pixels to draw. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -841,80 +1122,20 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Write a filled rectangle (must have a transaction in progress) </p>
+<p>Draw a filled rectangle to the display. Not self-contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a>. Typically used by higher-level graphics primitives; user code shouldn't need to call this and is likely to use the self-contained <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5964fdb249fb43869c649198e13b727b" title="Draw a filled rectangle to the display. Self-contained and provides its own transaction as needed (se...">fillRect()</a> instead. <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> performs its own edge clipping and rejection; see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275" title="A lower-level version of writeFillRect(). This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions. ">writeFillRectPreclipped()</a> for a more 'raw' implementation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Top left corner x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Top left corner y coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>Width in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>Height in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first corner. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first corner. </td></tr>
+    <tr><td class="paramname">w</td><td>Rectangle width in pixels (positive = right of first corner, negative = left of first corner). </td></tr>
+    <tr><td class="paramname">h</td><td>Rectangle height in pixels (positive = below first corner, negative = above first corner). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit fill color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>Written in this deep-nested way because C by definition will optimize for the 'if' case, not the 'else' &ndash; avoids branches and rejects clipped rectangles at the least-work possibility. </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a60133faeabc10f9d909674bc4c5aabc6">Adafruit_GFX</a>.</p>
-
-</div>
-</div>
-<a id="a9b5f5765414c6b0c94c9a060427803ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b5f5765414c6b0c94c9a060427803ec">&#9670;&nbsp;</a></span>writeFastVLine()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_SPITFT::writeFastVLine </td>
-          <td>(</td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>h</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write a perfectly vertical line (must have a transaction in progress) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>Top-most x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Top-most y coordinate </td></tr>
-    <tr><td class="paramname">h</td><td>Height in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#ae12d09670433af17e666a203b51715f7">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
@@ -964,13 +1185,13 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Write a perfectly horizontal line (must have a transaction in progress) </p>
+<p>Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a>. Typically used by higher-level graphics primitives; user code shouldn't need to call this and is likely to use the self- contained <a class="el" href="class_adafruit___s_p_i_t_f_t.html#aef1099605952f87fbdf59bc480a7a894" title="Draw a horizontal line on the display. Self-contained and provides its own transaction as needed (see...">drawFastHLine()</a> instead. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Left-most x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Left-most y coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>Width in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first point. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first point. </td></tr>
+    <tr><td class="paramname">w</td><td>Line width in pixels (positive = right of first point, negative = point of first corner). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit line color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
@@ -979,8 +1200,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a1928d1a2b27cc32422624ed54c0ea932"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1928d1a2b27cc32422624ed54c0ea932">&#9670;&nbsp;</a></span>setAddrWindow()</h2>
+<a id="a9b5f5765414c6b0c94c9a060427803ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b5f5765414c6b0c94c9a060427803ec">&#9670;&nbsp;</a></span>writeFastVLine()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -989,28 +1210,28 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void Adafruit_SPITFT::setAddrWindow </td>
+          <td class="memname">void Adafruit_SPITFT::writeFastVLine </td>
           <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>y</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>w</em>, </td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>h</em>&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1020,26 +1241,28 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>SPI displays set an address window rectangle for blitting pixels. </p>
+<p>Draw a vertical line on the display. Performs edge clipping and rejection. Not self-contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a>. Typically used by higher-level graphics primitives; user code shouldn't need to call this and is likely to use the self- contained <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ab9bf597887f7098e55e7280d548bc127" title="Draw a vertical line on the display. Self-contained and provides its own transaction as needed (see w...">drawFastVLine()</a> instead. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Top left corner x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Top left corner x coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>Width of window </td></tr>
-    <tr><td class="paramname">h</td><td>Height of window </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first point. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first point. </td></tr>
+    <tr><td class="paramname">h</td><td>Line height in pixels (positive = below first point, negative = above first point). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit line color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
 
+<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#ae12d09670433af17e666a203b51715f7">Adafruit_GFX</a>.</p>
+
 </div>
 </div>
-<a id="a978f34e5e8155c8c26eca39b71925551"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a978f34e5e8155c8c26eca39b71925551">&#9670;&nbsp;</a></span>writePixel() <span class="overload">[2/2]</span></h2>
+<a id="a6ef20b186a133d416f9ba71fb884d275"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ef20b186a133d416f9ba71fb884d275">&#9670;&nbsp;</a></span>writeFillRectPreclipped()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1048,11 +1271,39 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SPITFT::writePixel </td>
+          <td class="memname">void Adafruit_SPITFT::writeFillRectPreclipped </td>
           <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em></td><td>)</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -1062,33 +1313,110 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Write a 2-byte color (must have a transaction in progress) </p>
+<p>A lower-level version of <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a>. This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first corner. MUST BE WITHIN SCREEN BOUNDS. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first corner. MUST BE WITHIN SCREEN BOUNDS. </td></tr>
+    <tr><td class="paramname">w</td><td>Rectangle width in pixels. MUST BE POSITIVE AND NOT EXTEND OFF SCREEN. </td></tr>
+    <tr><td class="paramname">h</td><td>Rectangle height in pixels. MUST BE POSITIVE AND NOT EXTEND OFF SCREEN. </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit fill color in '565' RGB format. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This is a new function, no graphics primitives besides rects and horizontal/vertical lines are written to best use this yet. </dd></dl>
+
+</div>
+</div>
+<a id="a5e118fc9c0fb141c8ee9f14e49f20704"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e118fc9c0fb141c8ee9f14e49f20704">&#9670;&nbsp;</a></span>drawPixel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::drawPixel </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Draw a single pixel to the display at requested coordinates. Self-contained and provides its own transaction as needed (see writePixel(x,y,color) for a lower-level variant). Edge clipping is performed here. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Horizontal position (0 = left). </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position (0 = top). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit pixel color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
 
+<p>Implements <a class="el" href="class_adafruit___g_f_x.html#ab7fbf72885c873266f9c7eb53b5c8896">Adafruit_GFX</a>.</p>
+
 </div>
 </div>
-<a id="a98cf76f440c47e99ed5824b664349655"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98cf76f440c47e99ed5824b664349655">&#9670;&nbsp;</a></span>writePixels()</h2>
+<a id="a5964fdb249fb43869c649198e13b727b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5964fdb249fb43869c649198e13b727b">&#9670;&nbsp;</a></span>fillRect()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SPITFT::writePixels </td>
+          <td class="memname">void Adafruit_SPITFT::fillRect </td>
           <td>(</td>
-          <td class="paramtype">uint16_t *&#160;</td>
-          <td class="paramname"><em>colors</em>, </td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>len</em>&#160;</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1098,34 +1426,50 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Blit multiple 2-byte colors (must have a transaction in progress) </p>
+<p>Draw a filled rectangle to the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> or <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275" title="A lower-level version of writeFillRect(). This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions. ">writeFillRectPreclipped()</a> for lower-level variants). Edge clipping and rejection is performed here. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">colors</td><td>Array of 16-bit 5-6-5 Colors to draw </td></tr>
-    <tr><td class="paramname">len</td><td>How many pixels to draw - 2 bytes per pixel! </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first corner. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first corner. </td></tr>
+    <tr><td class="paramname">w</td><td>Rectangle width in pixels (positive = right of first corner, negative = left of first corner). </td></tr>
+    <tr><td class="paramname">h</td><td>Rectangle height in pixels (positive = below first corner, negative = above first corner). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit fill color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This repeats the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> function almost in its entirety, with the addition of a transaction start/end. It's done this way (rather than starting the transaction and calling <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> to handle clipping and so forth) so that the transaction isn't performed at all if the rectangle is rejected. It's really not that much code. </dd></dl>
 
 </div>
 </div>
-<a id="a42824e0f1475f2b3df335d31651dc75a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42824e0f1475f2b3df335d31651dc75a">&#9670;&nbsp;</a></span>writeColor()</h2>
+<a id="aef1099605952f87fbdf59bc480a7a894"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef1099605952f87fbdf59bc480a7a894">&#9670;&nbsp;</a></span>drawFastHLine()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SPITFT::writeColor </td>
+          <td class="memname">void Adafruit_SPITFT::drawFastHLine </td>
           <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>, </td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>len</em>&#160;</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1135,40 +1479,17 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Blit a 2-byte color many times (must have a transaction in progress) </p>
+<p>Draw a horizontal line on the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> for a lower-level variant). Edge clipping and rejection is performed here. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">color</td><td>The 16-bit 5-6-5 Color to draw </td></tr>
-    <tr><td class="paramname">len</td><td>How many pixels to draw </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first point. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first point. </td></tr>
+    <tr><td class="paramname">w</td><td>Line width in pixels (positive = right of first point, negative = point of first corner). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit line color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a53b00726d150600cd8f0feb9a897fb64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53b00726d150600cd8f0feb9a897fb64">&#9670;&nbsp;</a></span>pushColor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_SPITFT::pushColor </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Push a 2-byte color to the framebuffer RAM, will start transaction. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section note"><dt>Note</dt><dd>This repeats the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> function almost in its entirety, with the addition of a transaction start/end. It's done this way (rather than starting the transaction and calling <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> to handle clipping and so forth) so that the transaction isn't performed at all if the line is rejected. </dd></dl>
 
 </div>
 </div>
@@ -1218,124 +1539,42 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Write a perfectly vertical line - sets up transaction. </p>
+<p>Draw a vertical line on the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> for a lower- level variant). Edge clipping and rejection is performed here. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Top-most x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Top-most y coordinate </td></tr>
-    <tr><td class="paramname">h</td><td>Height in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal position of first point. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical position of first point. </td></tr>
+    <tr><td class="paramname">h</td><td>Line height in pixels (positive = below first point, negative = above first point). </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit line color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This repeats the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a9b5f5765414c6b0c94c9a060427803ec" title="Draw a vertical line on the display. Performs edge clipping and rejection. Not self-contained; should...">writeFastVLine()</a> function almost in its entirety, with the addition of a transaction start/end. It's done this way (rather than starting the transaction and calling <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a9b5f5765414c6b0c94c9a060427803ec" title="Draw a vertical line on the display. Performs edge clipping and rejection. Not self-contained; should...">writeFastVLine()</a> to handle clipping and so forth) so that the transaction isn't performed at all if the line is rejected. </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a1cffbb1d69c5faf49cd0cff27686a837">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
-<a id="aef1099605952f87fbdf59bc480a7a894"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef1099605952f87fbdf59bc480a7a894">&#9670;&nbsp;</a></span>drawFastHLine()</h2>
+<a id="a53b00726d150600cd8f0feb9a897fb64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53b00726d150600cd8f0feb9a897fb64">&#9670;&nbsp;</a></span>pushColor()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SPITFT::drawFastHLine </td>
+          <td class="memname">void Adafruit_SPITFT::pushColor </td>
           <td>(</td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>w</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>&#160;</td>
-        </tr>
-        <tr>
+          <td class="paramname"><em>color</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Write a perfectly horizontal line - sets up transaction. </p>
+<p>Essentially <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55" title="Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a star...">writePixel()</a> with a transaction around it. I don't think this is in use by any of our code anymore (believe it was for some older BMP-reading examples), but is kept here in case any user code relies on it. Consider it DEPRECATED. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Left-most x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Left-most y coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>Width in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a5964fdb249fb43869c649198e13b727b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5964fdb249fb43869c649198e13b727b">&#9670;&nbsp;</a></span>fillRect()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_SPITFT::fillRect </td>
-          <td>(</td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>w</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>h</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Fill a rectangle completely with one color. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>Top left corner x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Top left corner y coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>Width in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>Height in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit pixel color in '565' RGB format. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1386,53 +1625,43 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Draw a 16-bit image (RGB 5/6/5) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56" title="Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground c...">drawBitmap()</a> with arguments in different order. </p>
+<p>Draw a 16-bit image (565 RGB) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56" title="Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground c...">drawBitmap()</a> with arguments in different order. Handles its own transaction and edge clipping/rejection. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Top left corner x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Top left corner y coordinate </td></tr>
-    <tr><td class="paramname">pcolors</td><td>16-bit array with 16-bit color bitmap </td></tr>
-    <tr><td class="paramname">w</td><td>Width of bitmap in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>Height of bitmap in pixels </td></tr>
+    <tr><td class="paramname">x</td><td>Top left corner horizontal coordinate. </td></tr>
+    <tr><td class="paramname">y</td><td>Top left corner vertical coordinate. </td></tr>
+    <tr><td class="paramname">pcolors</td><td>Pointer to 16-bit array of pixel values. </td></tr>
+    <tr><td class="paramname">w</td><td>Width of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">h</td><td>Height of bitmap in pixels. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a6acba5d14538d60f54a50672d31e5f33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6acba5d14538d60f54a50672d31e5f33">&#9670;&nbsp;</a></span>invertDisplay()</h2>
+<a id="a21a13b3b0e6e0bb1328b5050559dd919"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21a13b3b0e6e0bb1328b5050559dd919">&#9670;&nbsp;</a></span>invertDisplay()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Adafruit_SPITFT::invertDisplay </td>
           <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>i</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Invert the display using built-in hardware command. </p>
+<p>Invert the colors of the display (if supported by hardware). Self-contained, no transaction setup required. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i</td><td>True if you want to invert, false to make 'normal' </td></tr>
+    <tr><td class="paramname">i</td><td>true = inverted display, false = normal display. </td></tr>
   </table>
   </dd>
 </dl>
-
-<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a2fa315803f39a5e73b1841874daf0483">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
@@ -1468,16 +1697,42 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Pass 8-bit (each) R,G,B, get back 16-bit packed color This function converts 8-8-8 RGB data to 16-bit 5-6-5. </p>
+<p>Given 8-bit red, green and blue values, return a 'packed' 16-bit color value in '565' RGB format (5 bits red, 6 bits green, 5 bits blue). This is just a mathematical operation, no hardware is touched. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">red</td><td>Red 8 bit color </td></tr>
-    <tr><td class="paramname">green</td><td>Green 8 bit color </td></tr>
-    <tr><td class="paramname">blue</td><td>Blue 8 bit color </td></tr>
+    <tr><td class="paramname">red</td><td>8-bit red brightnesss (0 = off, 255 = max). </td></tr>
+    <tr><td class="paramname">green</td><td>8-bit green brightnesss (0 = off, 255 = max). </td></tr>
+    <tr><td class="paramname">blue</td><td>8-bit blue brightnesss (0 = off, 255 = max). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Unsigned 16-bit down-sampled color in 5-6-5 format </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>'Packed' 16-bit color value (565 format). </dd></dl>
+
+</div>
+</div>
+<a id="a76dfbee0ce62682988badc0dbbdc5790"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76dfbee0ce62682988badc0dbbdc5790">&#9670;&nbsp;</a></span>spiWrite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::spiWrite </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>b</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must have been previously set &ndash; this ONLY issues the byte. This is another of those functions in the library with a now-not-accurate name that's being maintained for compatibility with outside code. This function is used even if display connection is parallel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">b</td><td>8-bit value to write. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1497,36 +1752,10 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Write a command byte (must have a transaction in progress) </p>
+<p>Write a single command byte to the display. Chip-select and transaction must have been previously set &ndash; this ONLY sets the device to COMMAND mode, issues the byte and then restores DATA mode. There is no corresponding explicit writeData() function &ndash; just use <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790" title="Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must h...">spiWrite()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">cmd</td><td>The 8-bit command to send </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a11af568cbec82fc9bab40e52b2afd05e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11af568cbec82fc9bab40e52b2afd05e">&#9670;&nbsp;</a></span>spiWrite()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_SPITFT::spiWrite </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>b</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Write one byte to SPI interface (hardware or software) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">b</td><td>One byte to send, MSB order </td></tr>
+    <tr><td class="paramname">cmd</td><td>8-bit command to write. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1549,8 +1778,107 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Read one byte from SPI interface (hardware or software) </p>
-<dl class="section return"><dt>Returns</dt><dd>One byte, MSB order </dd></dl>
+<p>Read a single 8-bit value from the display. Chip-select and transaction must have been previously set &ndash; this ONLY reads the byte. This is another of those functions in the library with a now-not-accurate name that's being maintained for compatibility with outside code. This function is used even if display connection is parallel. </p>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 8-bit value read (always zero if USE_FAST_PINIO is not supported by the MCU architecture). </dd></dl>
+
+</div>
+</div>
+<a id="af8d3977fd1a982a376cc4d98949d7269"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8d3977fd1a982a376cc4d98949d7269">&#9670;&nbsp;</a></span>SPI_WRITE16()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::SPI_WRITE16 </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>w</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Issue a single 16-bit value to the display. Chip-select, transaction and data/command selection must have been previously set &ndash; this ONLY issues the word. Despite the name, this function is used even if display connection is parallel; name was maintaned for backward compatibility. Naming is also not consistent with the 8-bit version, <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790" title="Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must h...">spiWrite()</a>. Sorry about that. Again, staying compatible with outside code. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">w</td><td>16-bit value to write. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a97e8acadecd766abcb735e0e89c81149"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97e8acadecd766abcb735e0e89c81149">&#9670;&nbsp;</a></span>SPI_WRITE32()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::SPI_WRITE32 </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>l</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Issue a single 32-bit value to the display. Chip-select, transaction and data/command selection must have been previously set &ndash; this ONLY issues the longword. Despite the name, this function is used even if display connection is parallel; name was maintaned for backward compatibility. Naming is also not consistent with the 8-bit version, <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790" title="Issue a single 8-bit value to the display. Chip-select, transaction and data/command selection must h...">spiWrite()</a>. Sorry about that. Again, staying compatible with outside code. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">l</td><td>32-bit value to write. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9d4982ab4b15c7b3bc30c553e1abf279"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d4982ab4b15c7b3bc30c553e1abf279">&#9670;&nbsp;</a></span>SPI_MISO_READ()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_SPITFT::SPI_MISO_READ </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Read the state of the software (bitbang) SPI MISO line. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if HIGH, false if LOW. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a65e9eb00f665cadb411babf9c506a01d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65e9eb00f665cadb411babf9c506a01d">&#9670;&nbsp;</a></span>_freq</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t Adafruit_SPITFT::_freq = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SPI bitrate (if no SPI transactions) </p>
+<p>Dummy var to keep subclasses happy. </p>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['xadvance',['xAdvance',['../struct_g_f_xglyph.html#a9b191040252aa9b5362087d65366bbf2',1,'GFXglyph']]],
-  ['xoffset',['xOffset',['../struct_g_f_xglyph.html#ab030bd9aeb37509ccc94ae3dcec4de98',1,'GFXglyph']]]
+  ['wide',['wide',['../class_adafruit___s_p_i_t_f_t.html#ab49cda19025e4f18f65f1a00ce65693d',1,'Adafruit_SPITFT']]],
+  ['width',['WIDTH',['../class_adafruit___g_f_x.html#ab693a8ac5d94c50c2558b5a3795ddde4',1,'Adafruit_GFX::WIDTH()'],['../struct_g_f_xglyph.html#a02bd34fd474af250b230f52cee75a6c1',1,'GFXglyph::width()']]],
+  ['wrap',['wrap',['../class_adafruit___g_f_x.html#ad6bd603e01861212829d536312a7190b',1,'Adafruit_GFX']]]
 ];
