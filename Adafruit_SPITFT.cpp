@@ -1566,6 +1566,9 @@ inline void Adafruit_SPITFT::SPI_MOSI_HIGH(void) {
  #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
     digitalWrite(swspi._mosi, HIGH);
+ #if defined(ESP32)
+    for(volatile uint8_t i=0; i<1; i++);
+ #endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -1585,6 +1588,9 @@ inline void Adafruit_SPITFT::SPI_MOSI_LOW(void) {
  #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
     digitalWrite(swspi._mosi, LOW);
+ #if defined(ESP32)
+    for(volatile uint8_t i=0; i<1; i++);
+ #endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -1604,6 +1610,9 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
  #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
     digitalWrite(swspi._sck, HIGH);
+ #if defined(ESP32)
+    for(volatile uint8_t i=0; i<1; i++);
+ #endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -1622,7 +1631,10 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
     *swspi.sckPort   &= swspi.sckPinMaskClr;
  #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
+ #if defined(ESP32)
     digitalWrite(swspi._sck, LOW);
+    for(volatile uint8_t i=0; i<1; i++);
+ #endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
