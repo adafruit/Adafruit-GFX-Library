@@ -11,12 +11,8 @@
  * please support Adafruit and open-source hardware by purchasing
  * products from Adafruit!
  *
- * @section author Author
- *
  * Written by Limor "ladyada" Fried for Adafruit Industries,
  * with contributions from the open source community.
- *
- * @section license License
  *
  * BSD license, all text here must be included in any redistribution.
  */
@@ -244,7 +240,6 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // compatibility (some subclasses may be invoking these):
     void         SPI_WRITE16(uint16_t w); // Not inline
     void         SPI_WRITE32(uint32_t l); // Not inline
-    void         SPI_WRITE_PIXELS(uint16_t *data, uint32_t bytes); // ditto
     // Old code had both a spiWrite16() function and SPI_WRITE16 macro
     // in addition to the SPI_WRITE32 macro. The latter two have been
     // made into functions here, and spiWrite16() removed (use SPI_WRITE16()
@@ -379,9 +374,12 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 #endif
       struct {                     //   Values specific to HARDWARE SPI:
         SPIClass   *_spi;          ///< SPI class pointer
-        uint32_t    _freq;
-        SPISettings settings;
-      } hwspi;
+#if defined(SPI_HAS_TRANSACTION)
+        SPISettings settings;      ///< SPI transaction settings
+#else
+        uint32_t    _freq;         ///< SPI bitrate (if no SPI transactions)
+#endif
+      } hwspi;                     ///< Hardware SPI values
       struct {                     //   Values specific to SOFTWARE SPI:
 #if defined(USE_FAST_PINIO)
         PORTreg_t misoPort;        ///< PORT (PIN) register for MISO
@@ -409,7 +407,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         int8_t    _mosi;           ///< MOSI pin #
         int8_t    _miso;           ///< MISO pin #
         int8_t    _sck;            ///< SCK pin #
-      } swspi;
+      } swspi;                     ///< Software SPI values
       struct {                     //   Values specific to 8-bit parallel:
 #if defined(USE_FAST_PINIO)
         volatile uint8_t *writePort; ///< PORT register for DATA WRITE
@@ -443,7 +441,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         int8_t    _wr;             ///< Write strobe pin #
         int8_t    _rd;             ///< Read strobe pin # (or -1)
         bool      wide = 0;        ///< If true, is 16-bit interface
-      } tft8;
+      } tft8;                      ///< Parallel interface settings
 #if !defined(ARDUINO_STM32_FEATHER)
     };
 #endif

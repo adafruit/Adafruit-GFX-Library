@@ -299,7 +299,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
                        tie CS low).
     @param   rst       Arduino pin # for display reset (optional, display reset
                        can be tied to MCU reset, default of -1 means unused).
-    @param   wr        Arduino pin # for read strobe (optional, -1 if unused).
+    @param   rd        Arduino pin # for read strobe (optional, -1 if unused).
     @return  Adafruit_SPITFT object.
     @note    Output pins are not initialized; application typically will need
              to call subclass' begin() function, which in turn calls this
@@ -1084,7 +1084,7 @@ void inline Adafruit_SPITFT::writeFastHLine(int16_t x, int16_t y, int16_t w,
             contained drawFastVLine() instead.
     @param  x      Horizontal position of first point.
     @param  y      Vertical position of first point.
-    @param  w      Line height in pixels (positive = below first point,
+    @param  h      Line height in pixels (positive = below first point,
                    negative = above first point).
     @param  color  16-bit line color in '565' RGB format.
 */
@@ -1365,13 +1365,14 @@ void Adafruit_SPITFT::invertDisplay(bool i) {
 }
 
 /*!
-    @brief  Given 8-bit red, green and blue values, return a 'packed'
-            16-bit color value in '565' RGB format (5 bits red, 6 bits
-            green, 5 bits blue). This is just a mathematical operation,
-            no hardware is touched.
-    @param  red    8-bit red brightnesss (0 = off, 255 = max).
-    @param  green  8-bit green brightnesss (0 = off, 255 = max).
-    @param  blue   8-bit blue brightnesss (0 = off, 255 = max).
+    @brief   Given 8-bit red, green and blue values, return a 'packed'
+             16-bit color value in '565' RGB format (5 bits red, 6 bits
+             green, 5 bits blue). This is just a mathematical operation,
+             no hardware is touched.
+    @param   red    8-bit red brightnesss (0 = off, 255 = max).
+    @param   green  8-bit green brightnesss (0 = off, 255 = max).
+    @param   blue   8-bit blue brightnesss (0 = off, 255 = max).
+    @return  'Packed' 16-bit color value (565 format).
 */
 uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
     return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
@@ -1475,7 +1476,7 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
             the device to COMMAND mode, issues the byte and then restores
             DATA mode. There is no corresponding explicit writeData()
             function -- just use spiWrite().
-    @param  b  8-bit command to write.
+    @param  cmd  8-bit command to write.
 */
 void Adafruit_SPITFT::writeCommand(uint8_t cmd) {
     SPI_DC_LOW();
@@ -1713,7 +1714,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
             parallel; name was maintaned for backward compatibility. Naming
             is also not consistent with the 8-bit version, spiWrite().
             Sorry about that. Again, staying compatible with outside code.
-    @param  w  16-bit value to write.
+    @param  l  32-bit value to write.
 */
 void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
     switch(connection) {
