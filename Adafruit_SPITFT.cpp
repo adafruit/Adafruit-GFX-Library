@@ -192,12 +192,27 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
              need to call subclass' begin() function, which in turn calls
              this library's initSPI() function to initialize pins.
 */
+#if defined(ESP8266) // See notes below
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
+  int8_t dc, int8_t rst) : Adafruit_GFX(w, h),
+  connection(TFT_HARD_SPI), _rst(rst), _cs(cs), _dc(dc) {
+    hwspi._spi = &SPI;
+}
+#else  // !ESP8266
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
   int8_t dc, int8_t rst) : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) {
     // This just invokes the hardware SPI constructor below,
     // passing the default SPI device (&SPI).
 }
+#endif // end !ESP8266
 
+#if !defined(ESP8266)
+// ESP8266 compiler freaks out at this constructor -- it can't disambiguate
+// beteween the SPIClass pointer (argument #3) and a regular integer.
+// Solution here it to just not offer this variant on the ESP8266. You can
+// use the default hardware SPI peripheral, or you can use software SPI,
+// but if there's any library out there that creates a 'virtual' SPIClass
+// peripheral and drives it with software bitbanging, that's not supported.
 /*!
     @brief   Adafruit_SPITFT constructor for hardware SPI using a specific
              SPI peripheral.
@@ -275,6 +290,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
  #endif // end !HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
 }
+#endif // end !ESP8266
 
 /*!
     @brief   Adafruit_SPITFT constructor for parallel display connection.

@@ -130,11 +130,13 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     Adafruit_SPITFT(uint16_t w, uint16_t h,
       int8_t cs, int8_t dc, int8_t rst = -1);
 
+#if !defined(ESP8266) // See notes in .cpp
     // Hardware SPI constructor using an arbitrary SPI peripheral: expects
     // width & height (rotation 0), SPIClass pointer, 2 signal pins (cs, dc)
     // and optional reset pin. cs is required but can be -1 if unused.
     Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
       int8_t cs, int8_t dc, int8_t rst = -1);
+#endif // end !ESP8266
 
     // Parallel constructor: expects width & height (rotation 0), flag
     // indicating whether 16-bit (true) or 8-bit (false) interface, 3 signal
