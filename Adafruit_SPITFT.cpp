@@ -43,14 +43,45 @@
 #endif // end PORT_IOBUS
 
 #if defined(USE_SPI_DMA)
-#include <Adafruit_ZeroDMA.h>
-#include <malloc.h> // memalign() function
+ #include <Adafruit_ZeroDMA.h>
+ #include "wiring_private.h"  // pinPeripheral() function
+ #include <malloc.h>          // memalign() function
+ #define tcNum        2       // Timer/Counter for parallel write strobe PWM
+ #define wrPeripheral PIO_CCL // Use CCL to invert write strobe
 
-// DMA transfer-in-progress indicator and callback
-static volatile bool dma_busy = false;
-static void dma_callback(Adafruit_ZeroDMA *dma) {
-    dma_busy = false;
-}
+    // DMA transfer-in-progress indicator and callback
+    static volatile bool dma_busy = false;
+    static void dma_callback(Adafruit_ZeroDMA *dma) {
+        dma_busy = false;
+    }
+
+ #if defined(__SAMD51__)
+    // Timer/counter info by index #
+    static const struct {
+        Tc *tc;   // -> Timer/Counter base address
+        int gclk; // GCLK ID
+        int evu;  // EVSYS user ID
+    } tcList[] = {
+      { TC0, TC0_GCLK_ID, EVSYS_ID_USER_TC0_EVU },
+      { TC1, TC1_GCLK_ID, EVSYS_ID_USER_TC1_EVU },
+      { TC2, TC2_GCLK_ID, EVSYS_ID_USER_TC2_EVU },
+      { TC3, TC3_GCLK_ID, EVSYS_ID_USER_TC3_EVU },
+  #if defined(TC4)
+      { TC4, TC4_GCLK_ID, EVSYS_ID_USER_TC4_EVU },
+  #endif
+  #if defined(TC5)
+      { TC5, TC5_GCLK_ID, EVSYS_ID_USER_TC5_EVU },
+  #endif
+  #if defined(TC6)
+      { TC6, TC6_GCLK_ID, EVSYS_ID_USER_TC6_EVU },
+  #endif
+  #if defined(TC7)
+      { TC7, TC7_GCLK_ID, EVSYS_ID_USER_TC7_EVU }
+  #endif
+     };
+  #define NUM_TIMERS (sizeof tcList / sizeof tcList[0]) ///< # timer/counters
+ #endif // end __SAMD51__
+
 #endif // end USE_SPI_DMA
 
 // Possible values for Adafruit_SPITFT.connection:
@@ -343,16 +374,16 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
     dcPortClr      = portClearRegister(dc);
     if(cs >= 0) {
    #if !defined(KINETISK)
-        csPinMask = digitalPinToBitMask(cs);
+        csPinMask  = digitalPinToBitMask(cs);
    #endif
-        csPortSet = portSetRegister(cs);
-        csPortClr = portClearRegister(cs);
+        csPortSet  = portSetRegister(cs);
+        csPortClr  = portClearRegister(cs);
     } else { // see comments below
    #if !defined(KINETISK)
-        csPinMask = 0;
+        csPinMask  = 0;
    #endif
-        csPortSet = dcPortSet;
-        csPortClr = dcPortClr;
+        csPortSet  = dcPortSet;
+        csPortClr  = dcPortClr;
     }
     if(rd >= 0) { // if read-strobe pin specified...
    #if defined(KINETISK)
@@ -381,17 +412,17 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
     dcPortSet      = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
     dcPortClr      = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
     if(cs >= 0) {
-        csPinMask = digitalPinToBitMask(cs);
-        csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
-        csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
+        csPinMask  = digitalPinToBitMask(cs);
+        csPortSet  = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
+        csPortClr  = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
     } else {
         // No chip-select line defined; might be permanently tied to GND.
         // Assign a valid GPIO register (though not used for CS), and an
         // empty pin bitmask...the nonsense bit-twiddling might be faster
         // than checking _cs and possibly branching.
-        csPortSet = dcPortSet;
-        csPortClr = dcPortClr;
-        csPinMask = 0;
+        csPortSet  = dcPortSet;
+        csPortClr  = dcPortClr;
+        csPinMask  = 0;
     }
     if(rd >= 0) { // if read-strobe pin specified...
         tft8.rdPinMask =digitalPinToBitMask(rd);
@@ -480,7 +511,9 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
     digitalWrite(_dc, HIGH); // Data mode
 
     switch(connection) {
+
       case TFT_HARD_SPI:
+
 #if defined(SPI_HAS_TRANSACTION)
         hwspi.settings = SPISettings(freq, MSBFIRST, SPI_MODE0);
 #else
@@ -488,7 +521,9 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
 #endif
         hwspi._spi->begin();
         break;
+
       case TFT_SOFT_SPI:
+
         pinMode(swspi._mosi, OUTPUT);
         digitalWrite(swspi._mosi, LOW);
         pinMode(swspi._sck, OUTPUT);
@@ -497,7 +532,9 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
             pinMode(swspi._miso, INPUT);
         }
         break;
+
       case TFT_PARALLEL:
+
         // Initialize data pins.  We were only passed d0, so scan
         // the pin description list looking for the other pins.
         // They'll be on the same PORT, and within the next 7 (or 15) bits
@@ -541,7 +578,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
             digitalWrite(tft8._rd, HIGH);
         }
         break;
-    }
+    } // end switch(connection)
 
     if(_rst >= 0) {
         // Toggle _rst low to reset
@@ -555,23 +592,21 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
     }
 
 #if defined(USE_SPI_DMA)
-
-    // INITIALIZE DMA
-
-    if(dma.allocate() == DMA_STATUS_OK) { // Allocate channel
-        // The DMA library needs to allocate at least one valid descriptor,
+    if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
+       (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
+        // The DMA library needs to alloc at least one valid descriptor,
         // so we do that here. It's not used in the usual sense though,
         // just before a transfer we copy descriptor[0] to this address.
         if(dptr = dma.addDescriptor(NULL, NULL, 42, DMA_BEAT_SIZE_BYTE,
-          false, false)) {
-            // Allocate 2 scanlines worth of pixels on display's major axis,
+              false, false)) {
+            // Alloc 2 scanlines worth of pixels on display's major axis,
             // whichever that is, rounding each up to 2-pixel boundary.
             int  major = (WIDTH > HEIGHT) ? WIDTH : HEIGHT;
             major     += (major & 1); // -> next 2-pixel bound, if needed.
             maxFillLen = major * 2;   // 2 scanlines
             // Note to future self: if you decide to make the pixel buffer
             // much larger, remember that DMA transfer descriptors can't
-            // exceed 65,535 bytes (not 65,536), meaning 32,767 pixels tops.
+            // exceed 65,535 bytes (not 65,536), meaning 32,767 pixels max.
             // Not that we have that kind of RAM to throw around right now.
             if((pixelBuf[0] =
               (uint16_t *)malloc(maxFillLen * sizeof(uint16_t)))) {
@@ -583,60 +618,147 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                 int numDescriptors = (WIDTH * HEIGHT + (maxFillLen - 1)) /
                       maxFillLen;
                 // DMA descriptors MUST be 128-bit (16 byte) aligned.
-                // memalign() is considered 'obsolete' but it's replacements
+                // memalign() is considered obsolete but it's replacements
                 // (aligned_alloc() or posix_memalign()) are not currently
-                // available in the version of ARM GCC in use, but this is,
-                // so here we are.
+                // available in the version of ARM GCC in use, but this
+                // is, so here we are.
                 if((descriptor = (DmacDescriptor *)memalign(16,
                   numDescriptors * sizeof(DmacDescriptor)))) {
                     int                dmac_id;
                     volatile uint32_t *data_reg;
 
-                    // THIS IS AN AFFRONT TO NATURE, but I don't know
-                    // any "clean" way to get the sercom number from the
-                    // SPIClass pointer (e.g. &SPI or &SPI1), which is
-                    // all we have to work with. SPIClass does contain
-                    // a SERCOM pointer but it is a PRIVATE member!
-                    // Doing an UNSPEAKABLY HORRIBLE THING here, directly
-                    // accessing the first 32-bit value in the SPIClass
-                    // structure, knowing that's (currently) where the
-                    // SERCOM pointer lives, but this ENTIRELY DEPENDS
-                    // on that structure not changing nor the compiler
-                    // rearranging things. Oh the humanity!
+                    if(connection == TFT_HARD_SPI) {
+                        // THIS IS AN AFFRONT TO NATURE, but I don't know
+                        // any "clean" way to get the sercom number from the
+                        // the SPIClass pointer (e.g. &SPI or &SPI1), which
+                        // is all we have to work with. SPIClass does contain
+                        // a SERCOM pointer but it is a PRIVATE member!
+                        // Doing an UNSPEAKABLY HORRIBLE THING here, directly
+                        // accessing the first 32-bit value in the SPIClass
+                        // structure, knowing that's (currently) where the
+                        // SERCOM pointer lives, but this ENTIRELY DEPENDS on
+                        // that structure not changing nor the compiler
+                        // rearranging things. Oh the humanity!
 
-                    if(*(SERCOM **)hwspi._spi == &sercom0) {
-                        dmac_id  = SERCOM0_DMAC_ID_TX;
-                        data_reg = &SERCOM0->SPI.DATA.reg;
+                        if(*(SERCOM **)hwspi._spi == &sercom0) {
+                            dmac_id  = SERCOM0_DMAC_ID_TX;
+                            data_reg = &SERCOM0->SPI.DATA.reg;
 #if defined SERCOM1
-                    } else if(*(SERCOM **)hwspi._spi == &sercom1) {
-                        dmac_id  = SERCOM1_DMAC_ID_TX;
-                        data_reg = &SERCOM1->SPI.DATA.reg;
+                        } else if(*(SERCOM **)hwspi._spi == &sercom1) {
+                            dmac_id  = SERCOM1_DMAC_ID_TX;
+                            data_reg = &SERCOM1->SPI.DATA.reg;
 #endif
 #if defined SERCOM2
-                    } else if(*(SERCOM **)hwspi._spi == &sercom2) {
-                        dmac_id  = SERCOM2_DMAC_ID_TX;
-                        data_reg = &SERCOM2->SPI.DATA.reg;
+                        } else if(*(SERCOM **)hwspi._spi == &sercom2) {
+                            dmac_id  = SERCOM2_DMAC_ID_TX;
+                            data_reg = &SERCOM2->SPI.DATA.reg;
 #endif
 #if defined SERCOM3
-                    } else if(*(SERCOM **)hwspi._spi == &sercom3) {
-                        dmac_id  = SERCOM3_DMAC_ID_TX;
-                        data_reg = &SERCOM3->SPI.DATA.reg;
+                        } else if(*(SERCOM **)hwspi._spi == &sercom3) {
+                            dmac_id  = SERCOM3_DMAC_ID_TX;
+                            data_reg = &SERCOM3->SPI.DATA.reg;
 #endif
 #if defined SERCOM4
-                    } else if(*(SERCOM **)hwspi._spi == &sercom4) {
-                        dmac_id  = SERCOM4_DMAC_ID_TX;
-                        data_reg = &SERCOM4->SPI.DATA.reg;
+                        } else if(*(SERCOM **)hwspi._spi == &sercom4) {
+                            dmac_id  = SERCOM4_DMAC_ID_TX;
+                            data_reg = &SERCOM4->SPI.DATA.reg;
 #endif
 #if defined SERCOM5
-                    } else if(*(SERCOM **)hwspi._spi == &sercom5) {
-                        dmac_id  = SERCOM5_DMAC_ID_TX;
-                        data_reg = &SERCOM5->SPI.DATA.reg;
+                        } else if(*(SERCOM **)hwspi._spi == &sercom5) {
+                            dmac_id  = SERCOM5_DMAC_ID_TX;
+                            data_reg = &SERCOM5->SPI.DATA.reg;
 #endif
-                    }
+                        }
+                        dma.setPriority(DMA_PRIORITY_3);
+                        dma.setTrigger(dmac_id);
+                        dma.setAction(DMA_TRIGGER_ACTON_BEAT);
 
-                    dma.setPriority(DMA_PRIORITY_3);
-                    dma.setTrigger(dmac_id);
-                    dma.setAction(DMA_TRIGGER_ACTON_BEAT);
+                } else { // Parallel connection
+
+                        int dmaChannel = dma.getChannel();
+                        // Enable event output, use EVOSEL output
+                        DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOE    = 1;
+                        DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOMODE = 0;
+
+                        // CONFIGURE TIMER/COUNTER (for write strobe)
+
+                        Tc  *timer = tcList[tcNum].tc;   // -> Timer struct
+                        int  id    = tcList[tcNum].gclk; // Timer GCLK ID
+                        GCLK_PCHCTRL_Type pchctrl;
+
+                        // Set up timer clock source from GCLK
+                        GCLK->PCHCTRL[id].bit.CHEN = 0;     // Stop timer
+                        while(GCLK->PCHCTRL[id].bit.CHEN);  // Wait for it
+                        pchctrl.bit.GEN  = GCLK_PCHCTRL_GEN_GCLK0_Val;
+                        pchctrl.bit.CHEN = 1;               // Enable
+                        GCLK->PCHCTRL[id].reg = pchctrl.reg;
+                        while(!GCLK->PCHCTRL[id].bit.CHEN); // Wait for it
+
+                        // Disable timer/counter before configuring it
+                        timer->COUNT8.CTRLA.bit.ENABLE     = 0;
+                        while(timer->COUNT8.SYNCBUSY.bit.STATUS);
+
+                        timer->COUNT8.WAVE.bit.WAVEGEN     = 2; // NPWM
+                        timer->COUNT8.CTRLA.bit.MODE       = 1; // 8-bit
+                        timer->COUNT8.CTRLA.bit.PRESCALER  = 0; // 1:1
+                        while(timer->COUNT8.SYNCBUSY.bit.STATUS);
+
+                        timer->COUNT8.CTRLBCLR.bit.DIR     = 1; // Count UP
+                        while(timer->COUNT8.SYNCBUSY.bit.CTRLB);
+                        timer->COUNT8.CTRLBSET.bit.ONESHOT = 1; // One-shot
+                        while(timer->COUNT8.SYNCBUSY.bit.CTRLB);
+                        timer->COUNT8.PER.reg              = 6; // PWM top
+                        while(timer->COUNT8.SYNCBUSY.bit.PER);
+                        timer->COUNT8.CC[0].reg            = 2; // Compare
+                        while(timer->COUNT8.SYNCBUSY.bit.CC0);
+                        // Enable async input events,
+                        // event action = restart.
+                        timer->COUNT8.EVCTRL.bit.TCEI      = 1;
+                        timer->COUNT8.EVCTRL.bit.EVACT     = 1;
+
+                        // Enable timer
+                        timer->COUNT8.CTRLA.reg |= TC_CTRLA_ENABLE;
+                        while(timer->COUNT8.SYNCBUSY.bit.STATUS);
+
+#if(wrPeripheral == PIO_CCL)
+                        // CONFIGURE CCL (inverts timer/counter output)
+
+                        MCLK->APBCMASK.bit.CCL_ = 1; // Enable CCL clock
+                        CCL->CTRL.bit.ENABLE    = 0; // Disable to config
+                        CCL->CTRL.bit.SWRST     = 1; // Reset CCL registers
+                        CCL->LUTCTRL[tcNum].bit.ENABLE  = 0; // Disable LUT
+                        CCL->LUTCTRL[tcNum].bit.FILTSEL = 0; // No filter
+                        CCL->LUTCTRL[tcNum].bit.INSEL0  = 6; // TC input
+                        CCL->LUTCTRL[tcNum].bit.INSEL1  = 0; // MASK
+                        CCL->LUTCTRL[tcNum].bit.INSEL2  = 0; // MASK
+                        CCL->LUTCTRL[tcNum].bit.TRUTH   = 1; // Invert in 0
+                        CCL->LUTCTRL[tcNum].bit.ENABLE  = 1; // Enable LUT
+                        CCL->CTRL.bit.ENABLE    = 1; // Enable CCL
+#endif
+
+                        // CONFIGURE EVENT SYSTEM
+
+                        // Set up event system clock source from GCLK...
+                        // Disable EVSYS, wait for disable
+                        GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN = 0;
+                        while(GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN);
+                        pchctrl.bit.GEN  = GCLK_PCHCTRL_GEN_GCLK0_Val;
+                        pchctrl.bit.CHEN = 1; // Re-enable
+                        GCLK->PCHCTRL[EVSYS_GCLK_ID_0].reg = pchctrl.reg;
+                        // Wait for it, then enable EVSYS clock
+                        while(!GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN);
+                        MCLK->APBBMASK.bit.EVSYS_ = 1;
+                        // Connect Timer EVU to ch 0
+                        EVSYS->USER[tcList[tcNum].evu].reg = 1;
+                        // Datasheet recommends single write operation;
+                        // reg instead of bit. Also datasheet: PATH bits
+                        // must be zero when using async!
+                        EVSYS_CHANNEL_Type ev;
+                        ev.reg       = 0;
+                        ev.bit.PATH  = 2;                 // Asynchronous
+                        ev.bit.EVGEN = 0x22 + dmaChannel; // DMA channel 0+
+                        EVSYS->Channel[0].CHANNEL.reg = ev.reg;
+                    } // end parallel-specific DMA setup
 
                     // Initialize descriptor list.
                     for(int d=0; d<numDescriptors; d++) {
@@ -647,28 +769,31 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                           DMA_EVENT_OUTPUT_DISABLE;
                         descriptor[d].BTCTRL.bit.BLOCKACT =
                            DMA_BLOCK_ACTION_NOACT;
-                        descriptor[d].BTCTRL.bit.BEATSIZE = DMA_BEAT_SIZE_BYTE;
+                        descriptor[d].BTCTRL.bit.BEATSIZE =
+                          DMA_BEAT_SIZE_BYTE;
                         descriptor[d].BTCTRL.bit.DSTINC   = 0;
-                        descriptor[d].BTCTRL.bit.STEPSEL  = DMA_STEPSEL_SRC;
+                        descriptor[d].BTCTRL.bit.STEPSEL  =
+                          DMA_STEPSEL_SRC;
                         descriptor[d].BTCTRL.bit.STEPSIZE =
                           DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
-                        descriptor[d].DSTADDR.reg         = (uint32_t)data_reg;
+                        descriptor[d].DSTADDR.reg         =
+                          (uint32_t)data_reg;
                     }
                     lastFillColor = 0x0000;
                     lastFillLen   = 0;
                     dma.setCallback(dma_callback);
                     return; // Success!
-                }
-                // Else some alloc/init error along the way...clean up...
+                    // else clean up any partial allocation...
+                } // end descriptor memalign()
                 free(pixelBuf[0]);
                 pixelBuf[0] = pixelBuf[1] = NULL;
-            }
+            } // end pixelBuf malloc()
             // Don't currently have a descriptor delete function in
             // ZeroDMA lib, but if we did, it would be called here.
-        }
+        } // end addDescriptor()
         dma.free(); // Deallocate DMA channel
     }
-#endif // end DMA init
+#endif // end USE_SPI_DMA
 }
 
 /*!
@@ -733,9 +858,15 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
         return;
     }
 #elif defined(USE_SPI_DMA)
-    if(connection == TFT_HARD_SPI) {
+    if((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
         int     maxSpan     = maxFillLen / 2; // One scanline max
         uint8_t pixelBufIdx = 0;              // Active pixel buffer number
+ #if defined(__SAMD51__)
+        if(connection == TFT_PARALLEL) {
+            // Switch WR pin to PWM or CCL
+            pinPeripheral(tft8._wr, wrPeripheral);
+        }
+ #endif // end __SAMD51__
         while(len) {
             int count = (len < maxSpan) ? len : maxSpan;
 
@@ -755,7 +886,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
             descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
             descriptor[pixelBufIdx].DESCADDR.reg      = 0;
 
-            while(dma_busy); // wait for prior line to complete
+            while(dma_busy); // Wait for prior line to finish
 
             // Move new descriptor into place...
             memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
@@ -768,14 +899,19 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
         lastFillColor = 0x0000; // pixelBuf has been sullied
         lastFillLen   = 0;
         while(dma_busy);        // Wait for last line to complete
-#if defined(__SAMD51__)
-        hwspi._spi->setDataMode(SPI_MODE0); // See SAMD51 note in writeColor()
-#endif
+ #if defined(__SAMD51__)
+        if(connection == TFT_HARD_SPI) {
+            // See SAMD51 note in writeColor()
+            hwspi._spi->setDataMode(SPI_MODE0);
+        } else {
+            pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+        }
+ #endif // end __SAMD51__
         return;
     }
 #endif // end USE_SPI_DMA
 
-    // All other cases (non-DMA hard SPI, bitbang SPI, parallel),
+    // All other cases (bitbang SPI or non-DMA hard SPI or parallel),
     // use a loop with the normal 16-bit data write function:
     while(len--) {
         SPI_WRITE16(*colors++);
@@ -818,7 +954,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     }
 #else  // !ESP32
  #if defined(USE_SPI_DMA)
-    if(connection == TFT_HARD_SPI) {
+    if((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
         int i, d, numDescriptors;
         if(hi == lo) { // If high & low bytes are same...
             onePixelBuf = color;
@@ -877,6 +1013,12 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
             descriptor[d-1].DESCADDR.reg        = 0;
         }
         memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
+ #if defined(__SAMD51__)
+        if(connection == TFT_PARALLEL) {
+            // Switch WR pin to PWM or CCL
+            pinPeripheral(tft8._wr, wrPeripheral);
+        }
+ #endif // end __SAMD51__
 
         dma_busy = true;
         dma.startJob();
@@ -887,10 +1029,14 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         // drawing lines, pixel-by-pixel), perhaps because it's a volatile
         // type and doesn't cache. Working on this.
   #if defined(__SAMD51__)
-        // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
-        // state on completion. Workaround is to explicitly set it back...
-        hwspi._spi->setDataMode(SPI_MODE0);
-  #endif
+        if(connection == TFT_HARD_SPI) {
+            // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
+            // state on completion. Workaround is to explicitly set it back...
+            hwspi._spi->setDataMode(SPI_MODE0);
+        } else {
+            pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+        }
+  #endif // end __SAMD51__
         return;
     }
  #endif // end USE_SPI_DMA
@@ -1544,7 +1690,7 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
   #else  // !HAS_PORT_SET_CLR
                 *tft8.portDir = 0x00;           // Set port to input state
                 w             = *tft8.readPort; // Read value from port
-                *tft8.dirSet  = 0xFF;           // Restore port to output
+                *tft8.portDir = 0xFF;           // Restore port to output
   #endif // end HAS_PORT_SET_CLR
             } else { // 16-bit TFT connection
   #if defined(HAS_PORT_SET_CLR)
@@ -1788,7 +1934,7 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
 }
 
 /*!
-    @brief  Set the RD line LOW, then HIGH. Used for parallel-connected
+    @brief  Set the WR line LOW, then HIGH. Used for parallel-connected
             interfaces when writing data.
 */
 inline void Adafruit_SPITFT::TFT_WR_STROBE(void) {
