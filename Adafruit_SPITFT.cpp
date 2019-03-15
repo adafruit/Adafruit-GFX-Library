@@ -673,7 +673,27 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                         dma.setTrigger(dmac_id);
                         dma.setAction(DMA_TRIGGER_ACTON_BEAT);
 
-                } else { // Parallel connection
+                        // Initialize descriptor list.
+                        for(int d=0; d<numDescriptors; d++) {
+                            // No need to set SRCADDR, DESCADDR or BTCNT --
+                            // those are done in the pixel-writing functions.
+                            descriptor[d].BTCTRL.bit.VALID    = true;
+                            descriptor[d].BTCTRL.bit.EVOSEL   =
+                              DMA_EVENT_OUTPUT_DISABLE;
+                            descriptor[d].BTCTRL.bit.BLOCKACT =
+                               DMA_BLOCK_ACTION_NOACT;
+                            descriptor[d].BTCTRL.bit.BEATSIZE =
+                              DMA_BEAT_SIZE_BYTE;
+                            descriptor[d].BTCTRL.bit.DSTINC   = 0;
+                            descriptor[d].BTCTRL.bit.STEPSEL  =
+                              DMA_STEPSEL_SRC;
+                            descriptor[d].BTCTRL.bit.STEPSIZE =
+                              DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
+                            descriptor[d].DSTADDR.reg         =
+                              (uint32_t)data_reg;
+                        }
+
+                    } else { // Parallel connection
 
                         int dmaChannel = dma.getChannel();
                         // Enable event output, use EVOSEL output
@@ -748,6 +768,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                         // Wait for it, then enable EVSYS clock
                         while(!GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN);
                         MCLK->APBBMASK.bit.EVSYS_ = 1;
+
                         // Connect Timer EVU to ch 0
                         EVSYS->USER[tcList[tcNum].evu].reg = 1;
                         // Datasheet recommends single write operation;
@@ -758,27 +779,29 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                         ev.bit.PATH  = 2;                 // Asynchronous
                         ev.bit.EVGEN = 0x22 + dmaChannel; // DMA channel 0+
                         EVSYS->Channel[0].CHANNEL.reg = ev.reg;
+
+                        // Initialize descriptor list.
+                        for(int d=0; d<numDescriptors; d++) {
+                            // No need to set SRCADDR, DESCADDR or BTCNT --
+                            // those are done in the pixel-writing functions.
+                            descriptor[d].BTCTRL.bit.VALID    = true;
+                            // Event strobe on beat xfer:
+                            descriptor[d].BTCTRL.bit.EVOSEL   = 0x3;
+                            descriptor[d].BTCTRL.bit.BLOCKACT =
+                              DMA_BLOCK_ACTION_NOACT;
+                            descriptor[d].BTCTRL.bit.BEATSIZE = tft8.wide ?
+                              DMA_BEAT_SIZE_HWORD : DMA_BEAT_SIZE_BYTE;
+                            descriptor[d].BTCTRL.bit.SRCINC   = 1;
+                            descriptor[d].BTCTRL.bit.DSTINC   = 0;
+                            descriptor[d].BTCTRL.bit.STEPSEL  =
+                              DMA_STEPSEL_SRC;
+                            descriptor[d].BTCTRL.bit.STEPSIZE =
+                               DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
+                            descriptor[d].DSTADDR.reg         =
+                               (uint32_t)tft8.writePort;
+                        }
                     } // end parallel-specific DMA setup
 
-                    // Initialize descriptor list.
-                    for(int d=0; d<numDescriptors; d++) {
-                        // No need to set SRCADDR, DESCADDR or BTCNT --
-                        // those are done in the pixel-writing functions.
-                        descriptor[d].BTCTRL.bit.VALID    = true;
-                        descriptor[d].BTCTRL.bit.EVOSEL   =
-                          DMA_EVENT_OUTPUT_DISABLE;
-                        descriptor[d].BTCTRL.bit.BLOCKACT =
-                           DMA_BLOCK_ACTION_NOACT;
-                        descriptor[d].BTCTRL.bit.BEATSIZE =
-                          DMA_BEAT_SIZE_BYTE;
-                        descriptor[d].BTCTRL.bit.DSTINC   = 0;
-                        descriptor[d].BTCTRL.bit.STEPSEL  =
-                          DMA_STEPSEL_SRC;
-                        descriptor[d].BTCTRL.bit.STEPSIZE =
-                          DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
-                        descriptor[d].DSTADDR.reg         =
-                          (uint32_t)data_reg;
-                    }
                     lastFillColor = 0x0000;
                     lastFillLen   = 0;
                     dma.setCallback(dma_callback);
@@ -892,6 +915,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
             memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
             dma_busy = true;
             dma.startJob();                // Trigger SPI DMA transfer
+            if(connection == TFT_PARALLEL) dma.trigger();
             pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
 
             len -= count;
@@ -1022,6 +1046,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
         dma_busy = true;
         dma.startJob();
+        if(connection == TFT_PARALLEL) dma.trigger();
         while(dma_busy); // Wait for completion
         // Unfortunately blocking is necessary. An earlier version returned
         // immediately and checked dma_busy on startWrite() instead, but it
