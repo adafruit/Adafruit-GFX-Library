@@ -821,8 +821,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::startWrite(void) {
-    if(_cs >= 0) SPI_CS_LOW();
     SPI_BEGIN_TRANSACTION();
+    if(_cs >= 0) SPI_CS_LOW();
 }
 
 /*!
@@ -832,8 +832,8 @@ void Adafruit_SPITFT::startWrite(void) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::endWrite(void) {
-    SPI_END_TRANSACTION();
     if(_cs >= 0) SPI_CS_HIGH();
+    SPI_END_TRANSACTION();
 }
 
 
