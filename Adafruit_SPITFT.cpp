@@ -510,9 +510,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
     pinMode(_dc, OUTPUT);
     digitalWrite(_dc, HIGH); // Data mode
 
-    switch(connection) {
-
-      case TFT_HARD_SPI:
+    if(connection == TFT_HARD_SPI) {
 
 #if defined(SPI_HAS_TRANSACTION)
         hwspi.settings = SPISettings(freq, MSBFIRST, SPI_MODE0);
@@ -520,9 +518,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
         hwspi._freq    = freq; // Save freq value for later
 #endif
         hwspi._spi->begin();
-        break;
 
-      case TFT_SOFT_SPI:
+    } else if(connection == TFT_SOFT_SPI) {
 
         pinMode(swspi._mosi, OUTPUT);
         digitalWrite(swspi._mosi, LOW);
@@ -531,9 +528,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
         if(swspi._miso >= 0) {
             pinMode(swspi._miso, INPUT);
         }
-        break;
 
-      case TFT_PARALLEL:
+    } else { // TFT_PARALLEL
 
         // Initialize data pins.  We were only passed d0, so scan
         // the pin description list looking for the other pins.
@@ -577,8 +573,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
             pinMode(tft8._rd, OUTPUT);
             digitalWrite(tft8._rd, HIGH);
         }
-        break;
-    } // end switch(connection)
+    }
 
     if(_rst >= 0) {
         // Toggle _rst low to reset
@@ -1069,8 +1064,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
     // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
 
-    switch(connection) {
-      case TFT_HARD_SPI:
+    if(connection == TFT_HARD_SPI) {
 #if defined(ESP8266)
         do {
             uint32_t pixelsThisPass = len;
@@ -1096,8 +1090,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
  #endif
         }
 #endif // end !ESP8266
-        break;
-      case TFT_SOFT_SPI:
+    } else if(connection == TFT_SOFT_SPI) {
 #if defined(ESP8266)
         do {
             uint32_t pixelsThisPass = len;
@@ -1142,8 +1135,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
  #endif // end !__AVR__
         }
 #endif // end !ESP8266
-        break;
-      case TFT_PARALLEL:
+    } else { // PARALLEL
         if(hi == lo) {
 #if defined(__AVR__)
             len            *= 2;
@@ -1180,7 +1172,6 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
                 TFT_WR_STROBE();
             }
         }
-        break;
     }
 }
 
@@ -1626,8 +1617,7 @@ inline void Adafruit_SPITFT::SPI_END_TRANSACTION(void) {
     @param  b  8-bit value to write.
 */
 void Adafruit_SPITFT::spiWrite(uint8_t b) {
-    switch(connection) {
-      case TFT_HARD_SPI:
+    if(connection == TFT_HARD_SPI) {
 #if defined(__AVR__)
         for(SPDR = b; !(SPSR & _BV(SPIF)); );
 #elif defined(ESP8266) || defined(ESP32)
@@ -1635,8 +1625,7 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
 #else
         hwspi._spi->transfer(b);
 #endif
-        break;
-      case TFT_SOFT_SPI:
+    } else if(connection == TFT_SOFT_SPI) {
         for(uint8_t bit=0; bit<8; bit++) {
             if(b & 0x80) SPI_MOSI_HIGH();
             else         SPI_MOSI_LOW();
@@ -1644,8 +1633,7 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
             b <<= 1;
             SPI_SCK_LOW();
         }
-        break;
-      case TFT_PARALLEL:
+    } else { // TFT_PARALLEL
 #if defined(__AVR__)
         *tft8.writePort = b;
 #elif defined(USE_FAST_PINIO)
@@ -1653,7 +1641,6 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
         else           *(volatile uint16_t *)tft8.writePort = b;
 #endif
         TFT_WR_STROBE();
-        break;
     }
 }
 
@@ -1684,10 +1671,9 @@ void Adafruit_SPITFT::writeCommand(uint8_t cmd) {
 uint8_t Adafruit_SPITFT::spiRead(void) {
     uint8_t  b = 0;
     uint16_t w = 0;
-    switch(connection) {
-      case TFT_HARD_SPI:
+    if(connection == TFT_HARD_SPI) {
         return hwspi._spi->transfer((uint8_t)0);
-      case TFT_SOFT_SPI:
+    } else if(connection == TFT_SOFT_SPI) {
         if(swspi._miso >= 0) {
             for(uint8_t i=0; i<8; i++) {
                 SPI_SCK_HIGH();
@@ -1697,8 +1683,7 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
             }
         }
         return b;
-      // case TFT_PARALLEL:
-      default: // Avoids compiler warning about no return value
+    } else { // TFT_PARALLEL
         if(tft8._rd >= 0) {
 #if defined(USE_FAST_PINIO)
             TFT_RD_LOW();                       // Read line LOW
@@ -1853,8 +1838,7 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
     @param  w  16-bit value to write.
 */
 void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
-    switch(connection) {
-      case TFT_HARD_SPI:
+    if(connection == TFT_HARD_SPI) {
 #if defined(__AVR__)
         for(SPDR = (w >> 8); (!(SPSR & _BV(SPIF))); );
         for(SPDR =  w      ; (!(SPSR & _BV(SPIF))); );
@@ -1864,8 +1848,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
         hwspi._spi->transfer(w >> 8);
         hwspi._spi->transfer(w);
 #endif
-        break;
-      case TFT_SOFT_SPI:
+    } else if(connection == TFT_SOFT_SPI) {
         for(uint8_t bit=0; bit<16; bit++) {
             if(w & 0x8000) SPI_MOSI_HIGH();
             else           SPI_MOSI_LOW();
@@ -1873,8 +1856,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
             SPI_SCK_LOW();
             w <<= 1;
         }
-        break;
-      case TFT_PARALLEL:
+    } else { // TFT_PARALLEL
 #if defined(__AVR__)
         *tft8.writePort = w >> 8;
         TFT_WR_STROBE();
@@ -1889,7 +1871,6 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
         }
 #endif
         TFT_WR_STROBE();
-        break;
     }
 }
 
@@ -1904,8 +1885,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     @param  l  32-bit value to write.
 */
 void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
-    switch(connection) {
-      case TFT_HARD_SPI:
+    if(connection == TFT_HARD_SPI) {
 #if defined(__AVR__)
         for(SPDR = (l >> 24); !(SPSR & _BV(SPIF)); );
         for(SPDR = (l >> 16); !(SPSR & _BV(SPIF)); );
@@ -1919,8 +1899,7 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
         hwspi._spi->transfer(l >> 8);
         hwspi._spi->transfer(l);
 #endif
-        break;
-      case TFT_SOFT_SPI:
+    } else if(connection == TFT_SOFT_SPI) {
         for(uint8_t bit=0; bit<32; bit++) {
             if(l & 0x80000000) SPI_MOSI_HIGH();
             else               SPI_MOSI_LOW();
@@ -1928,8 +1907,7 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
             SPI_SCK_LOW();
             l <<= 1;
         }
-        break;
-      case TFT_PARALLEL:
+    } else { // TFT_PARALLEL
 #if defined(__AVR__)
         *tft8.writePort = l >> 24;
         TFT_WR_STROBE();
@@ -1954,7 +1932,6 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
         }
 #endif
         TFT_WR_STROBE();
-        break;
     }
 }
 
