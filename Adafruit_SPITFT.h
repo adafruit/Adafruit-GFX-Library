@@ -66,8 +66,12 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
  #define DEFAULT_SPI_FREQ 16000000L  ///< Hardware SPI default speed
 #endif
 
-//#define USE_SPI_DMA                ///< If set, use SPI DMA if available
-// Another "oops" name -- in the future parallel DMA will also be handled.
+#if defined(ADAFRUIT_PYPORTAL)
+#define USE_SPI_DMA                  ///< Auto DMA if using PyPortal
+#else
+//#define USE_SPI_DMA                ///< If set, use DMA if available
+#endif
+// Another "oops" name -- this now also handles parallel DMA.
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
 // Estimated RAM usage:
 // 4 bytes/pixel on display major axis + 8 bytes/pixel on minor axis,
