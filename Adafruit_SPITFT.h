@@ -67,9 +67,9 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
 #endif
 
 #if defined(ADAFRUIT_PYPORTAL)
-#define USE_SPI_DMA                  ///< Auto DMA if using PyPortal
+ #define USE_SPI_DMA                 ///< Auto DMA if using PyPortal
 #else
-//#define USE_SPI_DMA                ///< If set, use DMA if available
+ //#define USE_SPI_DMA               ///< If set, use DMA if available
 #endif
 // Another "oops" name -- this now also handles parallel DMA.
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>

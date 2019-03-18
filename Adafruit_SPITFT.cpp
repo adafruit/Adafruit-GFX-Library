@@ -690,6 +690,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
 
                     } else { // Parallel connection
 
+ #if defined(__SAMD51__)
                         int dmaChannel = dma.getChannel();
                         // Enable event output, use EVOSEL output
                         DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOE    = 1;
@@ -795,6 +796,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                             descriptor[d].DSTADDR.reg         =
                                (uint32_t)tft8.writePort;
                         }
+ #endif // __SAMD51
                     } // end parallel-specific DMA setup
 
                     lastFillColor = 0x0000;
