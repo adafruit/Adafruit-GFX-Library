@@ -379,7 +379,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     PORTreg_t     dcPort;          ///< PORT register for data/command
 #endif // end HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
-#if !defined(ARDUINO_STM32_FEATHER)
+#if defined(__cplusplus) && (__cplusplus >= 201100)
     union {
 #endif
       struct {                     //   Values specific to HARDWARE SPI:
@@ -452,7 +452,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         int8_t    _rd;             ///< Read strobe pin # (or -1)
         bool      wide = 0;        ///< If true, is 16-bit interface
       } tft8;                      ///< Parallel interface settings
-#if !defined(ARDUINO_STM32_FEATHER)
+#if defined(__cplusplus) && (__cplusplus >= 201100)
     };                             ///< Only one interface is active
 #endif
 #if defined(USE_SPI_DMA) // Used by hardware SPI and tft8
