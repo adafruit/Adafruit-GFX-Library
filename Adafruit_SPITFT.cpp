@@ -865,8 +865,16 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
     @param  colors  Pointer to array of 16-bit pixel values in '565' RGB
                     format.
     @param  len     Number of elements in 'colors' array.
+    @param  block   If true (default case if unspecified), function blocks
+                    until DMA transfer is complete. This is simply IGNORED
+                    if DMA is not enabled. If false, the function returns
+                    immediately after the last DMA transfer is started,
+                    and one should use the dmaWait() function before
+                    doing ANY other display-related activities (or even any
+                    SPI-related activities, if using an SPI display that
+                    shares the bus with other devices).
 */
-void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
+void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block) {
 
     if(!len) return; // Avoid 0-byte transfers
 
@@ -917,15 +925,17 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
         }
         lastFillColor = 0x0000; // pixelBuf has been sullied
         lastFillLen   = 0;
-        while(dma_busy);        // Wait for last line to complete
+        if(block) {
+            while(dma_busy);    // Wait for last line to complete
  #if defined(__SAMD51__)
-        if(connection == TFT_HARD_SPI) {
-            // See SAMD51 note in writeColor()
-            hwspi._spi->setDataMode(SPI_MODE0);
-        } else {
-            pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
-        }
+            if(connection == TFT_HARD_SPI) {
+                // See SAMD51 note in writeColor()
+                hwspi._spi->setDataMode(SPI_MODE0);
+            } else {
+                pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+            }
  #endif // end __SAMD51__
+        }
         return;
     }
 #endif // end USE_SPI_DMA
@@ -935,6 +945,26 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len) {
     while(len--) {
         SPI_WRITE16(*colors++);
     }
+}
+
+/*!
+    @brief  Wait for the last DMA transfer in a prior non-blocking
+            writePixels() call to complete. This does nothing if DMA
+            is not enabled, and is not needed if blocking writePixels()
+            was used (as is the default case).
+*/
+void Adafruit_SPITFT::dmaWait(void) {
+#if defined(USE_SPI_DMA)
+    while(dma_busy);
+ #if defined(__SAMD51__)
+    if(connection == TFT_HARD_SPI) {
+        // See SAMD51 note in writeColor()
+        hwspi._spi->setDataMode(SPI_MODE0);
+    } else {
+        pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+    }
+ #endif // end __SAMD51__
+#endif
 }
 
 /*!

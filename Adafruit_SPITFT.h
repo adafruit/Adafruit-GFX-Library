@@ -191,7 +191,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // before ending the transaction. It's more efficient than starting a
     // transaction every time.
     void         writePixel(int16_t x, int16_t y, uint16_t color);
-    void         writePixels(uint16_t *colors, uint32_t len);
+    void         writePixels(uint16_t *colors, uint32_t len, bool block=true);
     void         writeColor(uint16_t color, uint32_t len);
     void         writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                    uint16_t color);
@@ -206,6 +206,10 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // CALLING THIS WITH UNCLIPPED OR NEGATIVE VALUES COULD BE DISASTROUS.
     inline void  writeFillRectPreclipped(int16_t x, int16_t y,
                    int16_t w, int16_t h, uint16_t color);
+    // Another new function, companion to the new non-blocking
+    // writePixels() variant.
+    void dmaWait(void);
+
 
     // These functions are similar to the 'write' functions above, but with
     // a chip-select and/or SPI transaction built-in. They're typically used
