@@ -1,7 +1,7 @@
 var searchData=
 [
   ['wide',['wide',['../class_adafruit___s_p_i_t_f_t.html#ab49cda19025e4f18f65f1a00ce65693d',1,'Adafruit_SPITFT']]],
-  ['width',['WIDTH',['../class_adafruit___g_f_x.html#ab693a8ac5d94c50c2558b5a3795ddde4',1,'Adafruit_GFX::WIDTH()'],['../struct_g_f_xglyph.html#a02bd34fd474af250b230f52cee75a6c1',1,'GFXglyph::width()'],['../class_adafruit___g_f_x.html#a324b5361e7198ef0e79eaf4c80bddfc7',1,'Adafruit_GFX::width()']]],
+  ['width',['width',['../struct_g_f_xglyph.html#a02bd34fd474af250b230f52cee75a6c1',1,'GFXglyph::width()'],['../class_adafruit___g_f_x.html#a324b5361e7198ef0e79eaf4c80bddfc7',1,'Adafruit_GFX::width(void) const'],['../class_adafruit___g_f_x.html#ab693a8ac5d94c50c2558b5a3795ddde4',1,'Adafruit_GFX::WIDTH()']]],
   ['wrap',['wrap',['../class_adafruit___g_f_x.html#ad6bd603e01861212829d536312a7190b',1,'Adafruit_GFX']]],
   ['write',['write',['../class_adafruit___g_f_x.html#a8773d92cafa93d3f749fb55c535d8f2e',1,'Adafruit_GFX']]],
   ['writecolor',['writeColor',['../class_adafruit___s_p_i_t_f_t.html#a42824e0f1475f2b3df335d31651dc75a',1,'Adafruit_SPITFT']]],
