@@ -116,9 +116,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a795dcd9f5f850c057b0a896204fc7d55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55">writePixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
 <tr class="memdesc:a795dcd9f5f850c057b0a896204fc7d55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> call.  <a href="#a795dcd9f5f850c057b0a896204fc7d55">More...</a><br /></td></tr>
 <tr class="separator:a795dcd9f5f850c057b0a896204fc7d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98cf76f440c47e99ed5824b664349655"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a98cf76f440c47e99ed5824b664349655">writePixels</a> (uint16_t *colors, uint32_t len)</td></tr>
-<tr class="memdesc:a98cf76f440c47e99ed5824b664349655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a series of pixels from memory to the display. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls.  <a href="#a98cf76f440c47e99ed5824b664349655">More...</a><br /></td></tr>
-<tr class="separator:a98cf76f440c47e99ed5824b664349655"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d1cc6b3da368812afc8ab0675f08c2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2d1cc6b3da368812afc8ab0675f08c2b">writePixels</a> (uint16_t *colors, uint32_t len, bool block=true)</td></tr>
+<tr class="memdesc:a2d1cc6b3da368812afc8ab0675f08c2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a series of pixels from memory to the display. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls.  <a href="#a2d1cc6b3da368812afc8ab0675f08c2b">More...</a><br /></td></tr>
+<tr class="separator:a2d1cc6b3da368812afc8ab0675f08c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42824e0f1475f2b3df335d31651dc75a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a42824e0f1475f2b3df335d31651dc75a">writeColor</a> (uint16_t color, uint32_t len)</td></tr>
 <tr class="memdesc:a42824e0f1475f2b3df335d31651dc75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue a series of pixels, all the same color. Not self- contained; should follow <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932" title="Set up the specific display hardware&#39;s &quot;address window&quot; for subsequent pixel-pushing operations...">setAddrWindow()</a> calls.  <a href="#a42824e0f1475f2b3df335d31651dc75a">More...</a><br /></td></tr>
 <tr class="separator:a42824e0f1475f2b3df335d31651dc75a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,6 +134,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a6ef20b186a133d416f9ba71fb884d275"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275">writeFillRectPreclipped</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
 <tr class="memdesc:a6ef20b186a133d416f9ba71fb884d275"><td class="mdescLeft">&#160;</td><td class="mdescRight">A lower-level version of <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a>. This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions.  <a href="#a6ef20b186a133d416f9ba71fb884d275">More...</a><br /></td></tr>
 <tr class="separator:a6ef20b186a133d416f9ba71fb884d275"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae69f8c2c187cccd5c9df9c25d488f1e5"><td class="memItemLeft" align="right" valign="top"><a id="ae69f8c2c187cccd5c9df9c25d488f1e5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ae69f8c2c187cccd5c9df9c25d488f1e5">dmaWait</a> (void)</td></tr>
+<tr class="memdesc:ae69f8c2c187cccd5c9df9c25d488f1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the last DMA transfer in a prior non-blocking <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2d1cc6b3da368812afc8ab0675f08c2b" title="Issue a series of pixels from memory to the display. Not self- contained; should follow startWrite() ...">writePixels()</a> call to complete. This does nothing if DMA is not enabled, and is not needed if blocking <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a2d1cc6b3da368812afc8ab0675f08c2b" title="Issue a series of pixels from memory to the display. Not self- contained; should follow startWrite() ...">writePixels()</a> was used (as is the default case). <br /></td></tr>
+<tr class="separator:ae69f8c2c187cccd5c9df9c25d488f1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5e118fc9c0fb141c8ee9f14e49f20704">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
 <tr class="memdesc:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single pixel to the display at requested coordinates. Self-contained and provides its own transaction as needed (see writePixel(x,y,color) for a lower-level variant). Edge clipping is performed here.  <a href="#a5e118fc9c0fb141c8ee9f14e49f20704">More...</a><br /></td></tr>
 <tr class="separator:a5e118fc9c0fb141c8ee9f14e49f20704"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -996,8 +1000,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a98cf76f440c47e99ed5824b664349655"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98cf76f440c47e99ed5824b664349655">&#9670;&nbsp;</a></span>writePixels()</h2>
+<a id="a2d1cc6b3da368812afc8ab0675f08c2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d1cc6b3da368812afc8ab0675f08c2b">&#9670;&nbsp;</a></span>writePixels()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1012,7 +1016,13 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>len</em>&#160;</td>
+          <td class="paramname"><em>len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>block</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1027,6 +1037,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   <table class="params">
     <tr><td class="paramname">colors</td><td>Pointer to array of 16-bit pixel values in '565' RGB format. </td></tr>
     <tr><td class="paramname">len</td><td>Number of elements in 'colors' array. </td></tr>
+    <tr><td class="paramname">block</td><td>If true (default case if unspecified), function blocks until DMA transfer is complete. This is simply IGNORED if DMA is not enabled. If false, the function returns immediately after the last DMA transfer is started, and one should use the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ae69f8c2c187cccd5c9df9c25d488f1e5" title="Wait for the last DMA transfer in a prior non-blocking writePixels() call to complete. This does nothing if DMA is not enabled, and is not needed if blocking writePixels() was used (as is the default case). ">dmaWait()</a> function before doing ANY other display-related activities (or even any SPI-related activities, if using an SPI display that shares the bus with other devices). </td></tr>
   </table>
   </dd>
 </dl>

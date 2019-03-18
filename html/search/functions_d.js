@@ -10,5 +10,5 @@ var searchData=
   ['writefillrectpreclipped',['writeFillRectPreclipped',['../class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275',1,'Adafruit_SPITFT']]],
   ['writeline',['writeLine',['../class_adafruit___g_f_x.html#ae1e5204b9251a04a57c821f69a8e638b',1,'Adafruit_GFX']]],
   ['writepixel',['writePixel',['../class_adafruit___g_f_x.html#ab66a1577ec595a254e4492d641b36fd8',1,'Adafruit_GFX::writePixel()'],['../class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55',1,'Adafruit_SPITFT::writePixel()']]],
-  ['writepixels',['writePixels',['../class_adafruit___s_p_i_t_f_t.html#a98cf76f440c47e99ed5824b664349655',1,'Adafruit_SPITFT']]]
+  ['writepixels',['writePixels',['../class_adafruit___s_p_i_t_f_t.html#a2d1cc6b3da368812afc8ab0675f08c2b',1,'Adafruit_SPITFT']]]
 ];
