@@ -1005,7 +1005,8 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     }
 #else  // !ESP32
  #if defined(USE_SPI_DMA)
-    if((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
+    if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
+       (len >= 16)) { // DMA setup takes longer on short pixel runs
         int i, d, numDescriptors;
         if(hi == lo) { // If high & low bytes are same...
             onePixelBuf = color;
