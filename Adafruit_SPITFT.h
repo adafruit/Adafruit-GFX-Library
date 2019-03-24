@@ -195,7 +195,8 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // before ending the transaction. It's more efficient than starting a
     // transaction every time.
     void         writePixel(int16_t x, int16_t y, uint16_t color);
-    void         writePixels(uint16_t *colors, uint32_t len, bool block=true);
+    void         writePixels(uint16_t *colors, uint32_t len,
+                   bool block=true, bool bigEndian=false);
     void         writeColor(uint16_t color, uint32_t len);
     void         writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                    uint16_t color);

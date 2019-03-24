@@ -864,19 +864,33 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 /*!
     @brief  Issue a series of pixels from memory to the display. Not self-
             contained; should follow startWrite() and setAddrWindow() calls.
-    @param  colors  Pointer to array of 16-bit pixel values in '565' RGB
-                    format.
-    @param  len     Number of elements in 'colors' array.
-    @param  block   If true (default case if unspecified), function blocks
-                    until DMA transfer is complete. This is simply IGNORED
-                    if DMA is not enabled. If false, the function returns
-                    immediately after the last DMA transfer is started,
-                    and one should use the dmaWait() function before
-                    doing ANY other display-related activities (or even any
-                    SPI-related activities, if using an SPI display that
-                    shares the bus with other devices).
+    @param  colors     Pointer to array of 16-bit pixel values in '565' RGB
+                       format.
+    @param  len        Number of elements in 'colors' array.
+    @param  block      If true (default case if unspecified), function blocks
+                       until DMA transfer is complete. This is simply IGNORED
+                       if DMA is not enabled. If false, the function returns
+                       immediately after the last DMA transfer is started,
+                       and one should use the dmaWait() function before
+                       doing ANY other display-related activities (or even
+                       any SPI-related activities, if using an SPI display
+                       that shares the bus with other devices).
+    @param  bigEndian  If using DMA, and if set true, bitmap in memory is in
+                       big-endian order (most significant byte first). By
+                       default this is false, as most microcontrollers seem
+                       to be little-endian and 16-bit pixel values must be
+                       byte-swapped before issuing to the display (which tend
+                       to be big-endian when using SPI or 8-bit parallel).
+                       If an application can optimize around this -- for
+                       example, a bitmap in a uint16_t array having the byte
+                       values already reordered big-endian, this can save
+                       some processing time here, ESPECIALLY if using this
+                       function's non-blocking DMA mode. Not all cases are
+                       covered...this is really here only for SAMD DMA and
+                       much forethought on the application side.
 */
-void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block) {
+void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
+  bool block, bool bigEndian) {
 
     if(!len) return; // Avoid 0-byte transfers
 
@@ -895,36 +909,65 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block) {
             pinPeripheral(tft8._wr, wrPeripheral);
         }
  #endif // end __SAMD51__
-        while(len) {
-            int count = (len < maxSpan) ? len : maxSpan;
+        if(!bigEndian) { // Normal little-endian situation...
+            while(len) {
+                int count = (len < maxSpan) ? len : maxSpan;
 
-            // Because TFT and SAMD endianisms are different, must swap bytes
-            // from the 'colors' array passed into a DMA working buffer. This
-            // can take place while the prior DMA transfer is in progress,
-            // hence the need for two pixelBufs.
-            for(int i=0; i<count; i++) {
-                pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
+                // Because TFT and SAMD endianisms are different, must swap
+                // bytes from the 'colors' array passed into a DMA working
+                // buffer. This can take place while the prior DMA transfer
+                // is in progress, hence the need for two pixelBufs.
+                for(int i=0; i<count; i++) {
+                    pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
+                }
+                // The transfers themselves are relatively small, so we don't
+                // need a long descriptor list. We just alternate between the
+                // first two, sharing pixelBufIdx for that purpose.
+                descriptor[pixelBufIdx].SRCADDR.reg       =
+                  (uint32_t)pixelBuf[pixelBufIdx] + count * 2;
+                descriptor[pixelBufIdx].BTCTRL.bit.SRCINC = 1;
+                descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
+                descriptor[pixelBufIdx].DESCADDR.reg      = 0;
+
+                while(dma_busy); // Wait for prior line to finish
+
+                // Move new descriptor into place...
+                memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
+                dma_busy = true;
+                dma.startJob();                // Trigger SPI DMA transfer
+                if(connection == TFT_PARALLEL) dma.trigger();
+                pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
+
+                len -= count;
             }
-            // The transfers themselves are relatively small, so we don't
-            // need a long descriptor list. We just alternate between the
-            // first two, sharing pixelBufIdx for that purpose.
-            descriptor[pixelBufIdx].SRCADDR.reg       =
-              (uint32_t)pixelBuf[pixelBufIdx] + count * 2;
-            descriptor[pixelBufIdx].BTCTRL.bit.SRCINC = 1;
-            descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
-            descriptor[pixelBufIdx].DESCADDR.reg      = 0;
+        } else { // bigEndian == true
+            // With big-endian pixel data, this can be handled as a single
+            // DMA transfer using chained descriptors. Even full screen, this
+            // needs only a relatively short descriptor list, each
+            // transferring a max of 32,767 (not 32,768) pixels. The list
+            // was allocated large enough to accommodate a full screen's
+            // worth of data, so this won't run past the end of the list.
+            int d, numDescriptors = (len + 32766) / 32767;
+            for(d=0; d<numDescriptors; d++) {
+                int count = (len < 32767) ? len : 32767;
+                descriptor[d].SRCADDR.reg       = (uint32_t)colors;
+                descriptor[d].BTCTRL.bit.SRCINC = 1;
+                descriptor[d].BTCNT.reg         = count * 2;
+                descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
+                len    -= count;
+                colors += count;
+            }
+            descriptor[d-1].DESCADDR.reg        = 0;
 
-            while(dma_busy); // Wait for prior line to finish
+            while(dma_busy); // Wait for prior transfer (if any) to finish
 
-            // Move new descriptor into place...
-            memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
+            // Move first descriptor into place and start transfer...
+            memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
             dma_busy = true;
             dma.startJob();                // Trigger SPI DMA transfer
             if(connection == TFT_PARALLEL) dma.trigger();
-            pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
+        } // end bigEndian
 
-            len -= count;
-        }
         lastFillColor = 0x0000; // pixelBuf has been sullied
         lastFillLen   = 0;
         if(block) {
@@ -1006,7 +1049,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 #else  // !ESP32
  #if defined(USE_SPI_DMA)
     if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
-       (len >= 16)) { // DMA setup takes longer on short pixel runs
+       (len >= 16)) { // Don't bother with DMA on short pixel runs
         int i, d, numDescriptors;
         if(hi == lo) { // If high & low bytes are same...
             onePixelBuf = color;
