@@ -950,7 +950,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
             int d, numDescriptors = (len + 32766) / 32767;
             for(d=0; d<numDescriptors; d++) {
                 int count = (len < 32767) ? len : 32767;
-                descriptor[d].SRCADDR.reg       = (uint32_t)colors;
+                descriptor[d].SRCADDR.reg       = (uint32_t)colors + count * 2;
                 descriptor[d].BTCTRL.bit.SRCINC = 1;
                 descriptor[d].BTCNT.reg         = count * 2;
                 descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
