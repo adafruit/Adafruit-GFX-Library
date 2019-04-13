@@ -9,6 +9,7 @@ git:
   quiet: true
 env:
   global:
+     - ARDUINO_IDE_VERSION="1.8.8"
      - PRETTYNAME="Adafruit GFX Library"
 
 before_install:
