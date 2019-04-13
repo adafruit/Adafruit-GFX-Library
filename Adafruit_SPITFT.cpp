@@ -1640,7 +1640,7 @@ uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
  */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8_t numDataBytes) {
     SPI_BEGIN_TRANSACTION();
-    SPI_CS_LOW();
+    if(_cs > 0) SPI_CS_LOW();
   
     SPI_DC_LOW(); // Command mode
     spiWrite(commandByte); // Send the command byte
@@ -1651,7 +1651,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8
       dataBytes++;
     }
   
-    SPI_CS_HIGH();
+    if(_cs > 0) SPI_CS_HIGH();
     SPI_END_TRANSACTION();
 }
 
@@ -1663,7 +1663,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8
  */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes) {
     SPI_BEGIN_TRANSACTION();
-    SPI_CS_LOW();
+    if(_cs > 0) SPI_CS_LOW();
   
     SPI_DC_LOW(); // Command mode
     spiWrite(commandByte); // Send the command byte
@@ -1673,7 +1673,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
       spiWrite(pgm_read_byte(dataBytes++)); // Send the data bytes
     }
   
-    SPI_CS_HIGH();
+    if(_cs > 0) SPI_CS_HIGH();
     SPI_END_TRANSACTION();
 }
 
