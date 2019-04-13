@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['sendcommand',['sendCommand',['../class_adafruit___s_p_i_t_f_t.html#aa40496b6d0513cc9a8eef190ced96238',1,'Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes=NULL, uint8_t numDataBytes=0)'],['../class_adafruit___s_p_i_t_f_t.html#a25f7cee641ff20ecdb38ca6048e8b68c',1,'Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes)']]],
   ['setaddrwindow',['setAddrWindow',['../class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932',1,'Adafruit_SPITFT']]],
   ['setcursor',['setCursor',['../class_adafruit___g_f_x.html#aaf96a40cad0f34dd8ec73494b3866c33',1,'Adafruit_GFX']]],
   ['setfont',['setFont',['../class_adafruit___g_f_x.html#ab0479a2bb4e09e7c39c35e35c55d6ed1',1,'Adafruit_GFX']]],

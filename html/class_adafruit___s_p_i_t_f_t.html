@@ -113,6 +113,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a65f00bcb36ed34e9f8fb72d45c6d0cad">endWrite</a> (void)</td></tr>
 <tr class="memdesc:a65f00bcb36ed34e9f8fb72d45c6d0cad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call after issuing command(s) or data to display. Performs chip-deselect (if required) and ends an SPI transaction (if using hardware SPI and transactions are supported). Required for all display types; not an SPI-specific function. <br /></td></tr>
 <tr class="separator:a65f00bcb36ed34e9f8fb72d45c6d0cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa40496b6d0513cc9a8eef190ced96238"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aa40496b6d0513cc9a8eef190ced96238">sendCommand</a> (uint8_t commandByte, uint8_t *dataBytes=NULL, uint8_t numDataBytes=0)</td></tr>
+<tr class="memdesc:aa40496b6d0513cc9a8eef190ced96238"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> Send Command handles complete sending of commands and data.  <a href="#aa40496b6d0513cc9a8eef190ced96238">More...</a><br /></td></tr>
+<tr class="separator:aa40496b6d0513cc9a8eef190ced96238"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25f7cee641ff20ecdb38ca6048e8b68c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a25f7cee641ff20ecdb38ca6048e8b68c">sendCommand</a> (uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes)</td></tr>
+<tr class="memdesc:a25f7cee641ff20ecdb38ca6048e8b68c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> Send Command handles complete sending of commands and const data.  <a href="#a25f7cee641ff20ecdb38ca6048e8b68c">More...</a><br /></td></tr>
+<tr class="separator:a25f7cee641ff20ecdb38ca6048e8b68c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a795dcd9f5f850c057b0a896204fc7d55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55">writePixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
 <tr class="memdesc:a795dcd9f5f850c057b0a896204fc7d55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> call.  <a href="#a795dcd9f5f850c057b0a896204fc7d55">More...</a><br /></td></tr>
 <tr class="separator:a795dcd9f5f850c057b0a896204fc7d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -938,6 +944,94 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Another anachronistically-named function; this is called even when the display connection is parallel (not SPI). Also, this could probably be made private...quite a few class functions were generously put in the public section. </dd></dl>
+
+</div>
+</div>
+<a id="aa40496b6d0513cc9a8eef190ced96238"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa40496b6d0513cc9a8eef190ced96238">&#9670;&nbsp;</a></span>sendCommand() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::sendCommand </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>commandByte</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>dataBytes</em> = <code>NULL</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>numDataBytes</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> Send Command handles complete sending of commands and data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandByte</td><td>The Command Byte </td></tr>
+    <tr><td class="paramname">dataBytes</td><td>A pointer to the Data bytes to send </td></tr>
+    <tr><td class="paramname">numDataBytes</td><td>The number of bytes we should send </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a25f7cee641ff20ecdb38ca6048e8b68c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25f7cee641ff20ecdb38ca6048e8b68c">&#9670;&nbsp;</a></span>sendCommand() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::sendCommand </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>commandByte</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>dataBytes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>numDataBytes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> Send Command handles complete sending of commands and const data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandByte</td><td>The Command Byte </td></tr>
+    <tr><td class="paramname">dataBytes</td><td>A pointer to the Data bytes to send </td></tr>
+    <tr><td class="paramname">numDataBytes</td><td>The number of bytes we should send </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
