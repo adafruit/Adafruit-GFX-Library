@@ -1656,7 +1656,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8
   
     SPI_DC_HIGH();
     for (int i=0; i<numDataBytes; i++) {
-      spiWrite(dataBytes); // Send the data bytes
+      spiWrite(*dataBytes); // Send the data bytes
       dataBytes++;
     }
   
@@ -1681,7 +1681,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
     SPI_DC_HIGH();
     for (int i=0; i<numDataBytes; i++) {
       // Send the data bytes
-      spiWrite(dataBytes);
+      spiWrite(*dataBytes);
     }
   
     if(_cs >= 0) SPI_CS_HIGH();
