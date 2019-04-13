@@ -3,7 +3,7 @@ sudo: false
 cache:
   directories:
     - ~/arduino_ide
-#    - ~/.arduino15/packages/
+    - ~/.arduino15/packages/
 git:
   depth: false
   quiet: true
