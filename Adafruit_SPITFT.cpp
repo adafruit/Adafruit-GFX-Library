@@ -1632,6 +1632,51 @@ uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
     return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
 }
 
+/*!
+ @brief   Adafruit_SPITFT Send Command handles complete sending of commands and data
+ @param   commandByte       The Command Byte
+ @param   dataBytes         A pointer to the Data bytes to send
+ @param   numDataBytes      The number of bytes we should send
+ */
+void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8_t numDataBytes) {
+    SPI_BEGIN_TRANSACTION();
+    if(_cs >= 0) SPI_CS_LOW();
+  
+    SPI_DC_LOW(); // Command mode
+    spiWrite(commandByte); // Send the command byte
+  
+    SPI_DC_HIGH();
+    for (int i=0; i<numDataBytes; i++) {
+      spiWrite(*dataBytes); // Send the data bytes
+      dataBytes++;
+    }
+  
+    if(_cs >= 0) SPI_CS_HIGH();
+    SPI_END_TRANSACTION();
+}
+
+/*!
+ @brief   Adafruit_SPITFT Send Command handles complete sending of commands and const data
+ @param   commandByte       The Command Byte
+ @param   dataBytes         A pointer to the Data bytes to send
+ @param   numDataBytes      The number of bytes we should send
+ */
+void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes) {
+    SPI_BEGIN_TRANSACTION();
+    if(_cs >= 0) SPI_CS_LOW();
+  
+    SPI_DC_LOW(); // Command mode
+    spiWrite(commandByte); // Send the command byte
+  
+    SPI_DC_HIGH();
+    for (int i=0; i<numDataBytes; i++) {
+      spiWrite(pgm_read_byte(dataBytes++)); // Send the data bytes
+    }
+  
+    if(_cs >= 0) SPI_CS_HIGH();
+    SPI_END_TRANSACTION();
+}
+
 
 // -------------------------------------------------------------------------
 // Lowest-level hardware-interfacing functions. Many of these are inline and
