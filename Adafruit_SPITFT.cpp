@@ -1633,15 +1633,6 @@ uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
 }
 
 /*!
- @brief   Adafruit_SPITFT Send Command handles complete sending of a command
- @param   commandByte       The Command Byte
- */
-void Adafruit_SPITFT::sendCommand(uint8_t commandByte) {
-    uint8_t dataBytes = NULL;
-    sendCommand(commandByte, &dataBytes, 0);
-}
-
-/*!
  @brief   Adafruit_SPITFT Send Command handles complete sending of commands and data
  @param   commandByte       The Command Byte
  @param   dataBytes         A pointer to the Data bytes to send
@@ -1675,13 +1666,11 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
     if(_cs >= 0) SPI_CS_LOW();
   
     SPI_DC_LOW(); // Command mode
-    // Send the command byte
-    spiWrite(commandByte);
+    spiWrite(commandByte); // Send the command byte
   
     SPI_DC_HIGH();
     for (int i=0; i<numDataBytes; i++) {
-      // Send the data bytes
-      spiWrite(*dataBytes);
+      spiWrite(pgm_read_byte(dataBytes++)); // Send the data bytes
     }
   
     if(_cs >= 0) SPI_CS_HIGH();
