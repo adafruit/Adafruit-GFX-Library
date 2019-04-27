@@ -663,6 +663,16 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                             dmac_id  = SERCOM5_DMAC_ID_TX;
                             data_reg = &SERCOM5->SPI.DATA.reg;
 #endif
+#if defined SERCOM6
+                        } else if(*(SERCOM **)hwspi._spi == &sercom6) {
+                            dmac_id  = SERCOM6_DMAC_ID_TX;
+                            data_reg = &SERCOM6->SPI.DATA.reg;
+#endif
+#if defined SERCOM7
+                        } else if(*(SERCOM **)hwspi._spi == &sercom7) {
+                            dmac_id  = SERCOM7_DMAC_ID_TX;
+                            data_reg = &SERCOM7->SPI.DATA.reg;
+#endif
                         }
                         dma.setPriority(DMA_PRIORITY_3);
                         dma.setTrigger(dmac_id);
