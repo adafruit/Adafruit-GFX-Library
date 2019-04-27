@@ -811,7 +811,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   <table class="params">
     <tr><td class="paramname">w</td><td>Display width in pixels at default rotation (0). </td></tr>
     <tr><td class="paramname">h</td><td>Display height in pixels at default rotation (0). </td></tr>
-    <tr><td class="paramname">busWidth</td><td>If tft16 (enumeration in header file), is a 16-bit parallel connection, else 8-bit. 16-bit isn't fully implemented or tested yet so applications should pass "tft8" for now...needed to stick a required enum argument in there to disambiguate this constructor from the soft-SPI case. Argument is ignored on 8-bit architectures (no 'wide' support there since PORTs are 8 bits anyway). </td></tr>
+    <tr><td class="paramname">busWidth</td><td>If tft16 (enumeration in header file), is a 16-bit parallel connection, else 8-bit. 16-bit isn't fully implemented or tested yet so applications should pass "tft8bitbus" for now...needed to stick a required enum argument in there to disambiguate this constructor from the soft-SPI case. Argument is ignored on 8-bit architectures (no 'wide' support there since PORTs are 8 bits anyway). </td></tr>
     <tr><td class="paramname">d0</td><td>Arduino pin # for data bit 0 (1+ are extrapolated). The 8 (or 16) data bits MUST be contiguous and byte- aligned (or word-aligned for wide interface) within the same PORT register (might not correspond to Arduino pin sequence). </td></tr>
     <tr><td class="paramname">wr</td><td>Arduino pin # for write strobe (required). </td></tr>
     <tr><td class="paramname">dc</td><td>Arduino pin # for data/command select (required). </td></tr>
