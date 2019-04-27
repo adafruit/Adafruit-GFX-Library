@@ -330,7 +330,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     @param   busWidth  If tft16 (enumeration in header file), is a 16-bit
                        parallel connection, else 8-bit.
                        16-bit isn't fully implemented or tested yet so
-                       applications should pass "tft8" for now...needed to
+                       applications should pass "tft8bitbus" for now...needed to
                        stick a required enum argument in there to
                        disambiguate this constructor from the soft-SPI case.
                        Argument is ignored on 8-bit architectures (no 'wide'
@@ -361,7 +361,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
     tft8._d0  = d0;
     tft8._wr  = wr;
     tft8._rd  = rd;
-    tft8.wide = (busWidth == tft16);
+    tft8.wide = (busWidth == tft16bitbus);
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
