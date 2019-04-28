@@ -94,7 +94,7 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
 // an enumerated type as the first argument: tft8 (for 8-bit parallel) or
 // tft16 (for 16-bit)...even though 16-bit isn't fully implemented or tested
 // and might never be, still needed that disambiguation from soft SPI.
-enum tftBusWidth { tft8, tft16 }; ///< For first arg to parallel constructor
+enum tftBusWidth { tft8bitbus, tft16bitbus }; ///< For first arg to parallel constructor
 
 // CLASS DEFINITION --------------------------------------------------------
 

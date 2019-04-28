@@ -330,7 +330,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     @param   busWidth  If tft16 (enumeration in header file), is a 16-bit
                        parallel connection, else 8-bit.
                        16-bit isn't fully implemented or tested yet so
-                       applications should pass "tft8" for now...needed to
+                       applications should pass "tft8bitbus" for now...needed to
                        stick a required enum argument in there to
                        disambiguate this constructor from the soft-SPI case.
                        Argument is ignored on 8-bit architectures (no 'wide'
@@ -361,7 +361,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
     tft8._d0  = d0;
     tft8._wr  = wr;
     tft8._rd  = rd;
-    tft8.wide = (busWidth == tft16);
+    tft8.wide = (busWidth == tft16bitbus);
 #if defined(USE_FAST_PINIO)
  #if defined(HAS_PORT_SET_CLR)
   #if defined(CORE_TEENSY)
@@ -662,6 +662,16 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
                         } else if(*(SERCOM **)hwspi._spi == &sercom5) {
                             dmac_id  = SERCOM5_DMAC_ID_TX;
                             data_reg = &SERCOM5->SPI.DATA.reg;
+#endif
+#if defined SERCOM6
+                        } else if(*(SERCOM **)hwspi._spi == &sercom6) {
+                            dmac_id  = SERCOM6_DMAC_ID_TX;
+                            data_reg = &SERCOM6->SPI.DATA.reg;
+#endif
+#if defined SERCOM7
+                        } else if(*(SERCOM **)hwspi._spi == &sercom7) {
+                            dmac_id  = SERCOM7_DMAC_ID_TX;
+                            data_reg = &SERCOM7->SPI.DATA.reg;
 #endif
                         }
                         dma.setPriority(DMA_PRIORITY_3);
