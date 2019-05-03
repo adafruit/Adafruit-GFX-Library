@@ -537,6 +537,9 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
         // device needs to be set up before calling this because it's
         // immediately followed with initialization commands. Blargh.
         if(
+#if !defined(SPI_INTERFACES_COUNT)
+            1
+#endif
 #if SPI_INTERFACES_COUNT > 0
              (hwspi._spi == &SPI)
 #endif
@@ -556,7 +559,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
           || (hwspi._spi == &SPI5)
 #endif
         ) {
-          hwspi._spi->begin();
+            hwspi._spi->begin();
         }
     } else if(connection == TFT_SOFT_SPI) {
 
