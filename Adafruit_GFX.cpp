@@ -33,6 +33,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Adafruit_GFX.h"
 #include "glcdfont.c"
+#include "math.h"
+#define pi 3.1415926
 #ifdef __AVR__
   #include <avr/pgmspace.h>
 #elif defined(ESP8266) || defined(ESP32)
@@ -308,7 +310,78 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         endWrite();
     }
 }
-
+void Adafruit_GFX::drawPentagram(int16_t x0, int16_t y0, int16_t r, 
+		uint16_t color){
+	int16_t x[5];
+	int16_t y[5];
+	x[0] = x0;
+	x[1] = x0 - r*cos(pi/10);
+	x[2] = x0 - r*sin(pi/5);
+	x[3] = x0 + r*sin(pi/5);
+	x[4] = x0 + r*cos(pi/10);
+	y[0] = y0 + r;
+	y[1] = y0 + r*sin(pi/10);
+	y[2] = y0 - r*cos(pi/5);
+	y[3] = y0 - r*cos(pi/5);
+	y[4] = y0 + r*sin(pi/10);
+	startWrite();
+	for(int i =0;i < 5;i++){
+		drawLine(x[i],y[i],x[(i+2)%5],y[(i+2)%5],color);
+	}
+	endWrite();
+}
+void Adafruit_GFX::drawEllipse(int16_t x0, int16_t y0, int16_t rx, int16_t ry, 
+		uint16_t color) {
+	int16_t Rx2 = rx*rx;
+	int16_t Ry2 = ry*ry;
+	int16_t twoRx2 = 2*Rx2;
+	int16_t twoRy2 = 2*Ry2;
+	int16_t p;
+	int16_t x = 0;
+	int16_t y = ry;
+	int16_t px = 0;
+	int16_t py = twoRx2*y;
+	startWrite();
+	writePixel(x0 + x,y0 + y,color);
+	writePixel(x0 - x,y0 + y,color);
+	writePixel(x0 + x,y0 - y,color);
+	writePixel(x0 - x,y0 - y,color);
+	//region1
+	p = (int16_t)(Ry2-Rx2*ry+0.25*Rx2);
+	while(px < py){
+		x++;
+		px += twoRy2;
+		if(p < 0)
+			p += Ry2 + px;
+		else{
+			y--;
+			py -= twoRx2;
+			p += Ry2 + px - py;
+		}
+		writePixel(x0 + x,y0 + y,color);
+		writePixel(x0 - x,y0 + y,color);
+		writePixel(x0 + x,y0 - y,color);
+		writePixel(x0 - x,y0 - y,color);
+	}
+	//region2
+	p = (int16_t)(Ry2*(x+0.5)*(x+0.5)+Rx2*(y-1)*(y-1)-Rx2*Ry2);
+	while(y > 0){
+		y--;
+		py -= twoRx2;
+		if(p > 0)
+			p += Rx2 - py;
+		else{
+			x++;
+			px += twoRy2;
+			p += Rx2 - py + px;
+		}
+		writePixel(x0 + x,y0 + y,color);
+		writePixel(x0 - x,y0 + y,color);
+		writePixel(x0 + x,y0 - y,color);
+		writePixel(x0 - x,y0 - y,color);
+	}
+	endWrite();
+}
 /**************************************************************************/
 /*!
    @brief    Draw a circle outline

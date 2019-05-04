@@ -51,6 +51,8 @@ class Adafruit_GFX : public Print {
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void
+	drawPentagram(int16_t x0, int16_t y0, int16_t r, uint16_t color),
+	drawEllipse(int16_t x0, int16_t y0, int16_t rx, int16_t ry, uint16_t color),
     drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color),
     drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
       uint16_t color),
