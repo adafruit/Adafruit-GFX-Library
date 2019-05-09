@@ -255,9 +255,16 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
     @param   rst       Arduino pin # for display reset (optional, display reset
                        can be tied to MCU reset, default of -1 means unused).
     @return  Adafruit_SPITFT object.
-    @note    Output pins are not initialized; application typically will
-             need to call subclass' begin() function, which in turn calls
-             this library's initSPI() function to initialize pins.
+    @note    Output pins are not initialized in constructor; application
+             typically will need to call subclass' begin() function, which
+             in turn calls this library's initSPI() function to initialize
+             pins. EXCEPT...if you have built your own SERCOM SPI peripheral
+             (calling the SPIClass constructor) rather than one of the
+             built-in SPI devices (e.g. &SPI, &SPI1 and so forth), you will
+             need to call the begin() function for your object as well as
+             pinPeripheral() for the MOSI, MISO and SCK pins to configure
+             GPIO manually. Do this BEFORE calling the display-specific
+             begin or init function. Unfortunate but unavoidable.
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
   int8_t cs, int8_t dc, int8_t rst) : Adafruit_GFX(w, h),
@@ -517,8 +524,43 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
 #else
         hwspi._freq    = freq; // Save freq value for later
 #endif
-        hwspi._spi->begin();
-
+        // Call hwspi._spi->begin() ONLY if this is among the 'established'
+        // SPI interfaces in variant.h. For DIY roll-your-own SERCOM SPIs,
+        // begin() and pinPeripheral() calls MUST be made in one's calling
+        // code, BEFORE the screen-specific begin/init function is called.
+        // Reason for this is that SPI::begin() makes its own calls to
+        // pinPeripheral() based on g_APinDescription[n].ulPinType, which
+        // on non-established SPI interface pins will always be PIO_DIGITAL
+        // or similar, while we need PIO_SERCOM or PIO_SERCOM_ALT...it's
+        // highly unique between devices and variants for each pin or
+        // SERCOM so we can't make those calls ourselves here. And the SPI
+        // device needs to be set up before calling this because it's
+        // immediately followed with initialization commands. Blargh.
+        if(
+#if !defined(SPI_INTERFACES_COUNT)
+            1
+#endif
+#if SPI_INTERFACES_COUNT > 0
+             (hwspi._spi == &SPI)
+#endif
+#if SPI_INTERFACES_COUNT > 1
+          || (hwspi._spi == &SPI1)
+#endif
+#if SPI_INTERFACES_COUNT > 2
+          || (hwspi._spi == &SPI2)
+#endif
+#if SPI_INTERFACES_COUNT > 3
+          || (hwspi._spi == &SPI3)
+#endif
+#if SPI_INTERFACES_COUNT > 4
+          || (hwspi._spi == &SPI4)
+#endif
+#if SPI_INTERFACES_COUNT > 5
+          || (hwspi._spi == &SPI5)
+#endif
+        ) {
+            hwspi._spi->begin();
+        }
     } else if(connection == TFT_SOFT_SPI) {
 
         pinMode(swspi._mosi, OUTPUT);
