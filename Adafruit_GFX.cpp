@@ -636,8 +636,8 @@ void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0,
 
     // For lower part of triangle, find scanline crossings for segments
     // 0-2 and 1-2.  This loop is skipped if y1=y2.
-    sa = dx12 * (y - y1);
-    sb = dx02 * (y - y0);
+    sa = (int32_t)dx12 * (y - y1);
+    sb = (int32_t)dx02 * (y - y0);
     for(; y<=y2; y++) {
         a   = x1 + sa / dy12;
         b   = x0 + sb / dy02;
