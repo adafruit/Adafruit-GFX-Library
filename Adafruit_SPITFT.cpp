@@ -1729,6 +1729,29 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
     SPI_END_TRANSACTION();
 }
 
+/*!
+ @brief   Read 8 bits of data from display configuration memory (not RAM).
+ This is highly undocumented/supported and should be avoided,
+ function is only included because some of the examples use it.
+ @param   command
+ The command register to read data from.
+ @param   index
+ The byte index into the command to read from.
+ @return  Unsigned 8-bit data read from display register.
+ */
+/**************************************************************************/
+uint8_t Adafruit_SPITFT::readcommand8(uint8_t commandByte, uint8_t index) {
+  uint8_t result;
+  startWrite();
+  SPI_DC_LOW();     // Command mode
+  spiWrite(commandByte);
+  SPI_DC_HIGH();    // Data mode
+  do {
+    result = spiRead();
+  } while(index--); // Discard bytes up to index'th
+  endWrite();
+  return result;
+}
 
 // -------------------------------------------------------------------------
 // Lowest-level hardware-interfacing functions. Many of these are inline and
