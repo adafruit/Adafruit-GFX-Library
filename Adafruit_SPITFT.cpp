@@ -1733,7 +1733,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
  @brief   Read 8 bits of data from display configuration memory (not RAM).
  This is highly undocumented/supported and should be avoided,
  function is only included because some of the examples use it.
- @param   command
+ @param   commandByte
  The command register to read data from.
  @param   index
  The byte index into the command to read from.
