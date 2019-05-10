@@ -119,6 +119,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a25f7cee641ff20ecdb38ca6048e8b68c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a25f7cee641ff20ecdb38ca6048e8b68c">sendCommand</a> (uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes)</td></tr>
 <tr class="memdesc:a25f7cee641ff20ecdb38ca6048e8b68c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> Send Command handles complete sending of commands and const data.  <a href="#a25f7cee641ff20ecdb38ca6048e8b68c">More...</a><br /></td></tr>
 <tr class="separator:a25f7cee641ff20ecdb38ca6048e8b68c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a641ccc4f159129259ee08738cb99627b"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a641ccc4f159129259ee08738cb99627b">readcommand8</a> (uint8_t commandByte, uint8_t index=0)</td></tr>
+<tr class="memdesc:a641ccc4f159129259ee08738cb99627b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read 8 bits of data from display configuration memory (not RAM). This is highly undocumented/supported and should be avoided, function is only included because some of the examples use it.  <a href="#a641ccc4f159129259ee08738cb99627b">More...</a><br /></td></tr>
+<tr class="separator:a641ccc4f159129259ee08738cb99627b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a795dcd9f5f850c057b0a896204fc7d55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55">writePixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
 <tr class="memdesc:a795dcd9f5f850c057b0a896204fc7d55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b" title="Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an S...">startWrite()</a> call.  <a href="#a795dcd9f5f850c057b0a896204fc7d55">More...</a><br /></td></tr>
 <tr class="separator:a795dcd9f5f850c057b0a896204fc7d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1032,6 +1035,44 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a641ccc4f159129259ee08738cb99627b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a641ccc4f159129259ee08738cb99627b">&#9670;&nbsp;</a></span>readcommand8()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t Adafruit_SPITFT::readcommand8 </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>commandByte</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>index</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read 8 bits of data from display configuration memory (not RAM). This is highly undocumented/supported and should be avoided, function is only included because some of the examples use it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandByte</td><td>The command register to read data from. </td></tr>
+    <tr><td class="paramname">index</td><td>The byte index into the command to read from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 8-bit data read from display register. </dd></dl>
 
 </div>
 </div>
