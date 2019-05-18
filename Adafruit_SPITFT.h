@@ -181,8 +181,11 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // Brief comments here...documented more thoroughly in .cpp file.
 
     // Subclass' begin() function invokes this to initialize hardware.
+    // freq=0 to use default SPI speed. spiMode must be one of the SPI_MODEn
+    // values defined in SPI.h, which are NOT the same as 0 for SPI_MODE0,
+    // 1 for SPI_MODE1, etc...use ONLY the SPI_MODEn defines! Only!
     // Name is outdated (interface may be parallel) but for compatibility:
-    void         initSPI(uint32_t freq = 0); // 0 = use default SPI speed
+    void         initSPI(uint32_t freq = 0, uint8_t spiMode = SPI_MODE0);
     // Chip select and/or hardware SPI transaction start as needed:
     void         startWrite(void);
     // Chip deselect and/or hardware SPI transaction end as needed:
@@ -392,6 +395,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         SPISettings settings;      ///< SPI transaction settings
 #else
         uint32_t    _freq;         ///< SPI bitrate (if no SPI transactions)
+        uint32_t    _mode;         ///< SPI data mode (if no SPI transactions)
 #endif
       } hwspi;                     ///< Hardware SPI values
       struct {                     //   Values specific to SOFTWARE SPI:
