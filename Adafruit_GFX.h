@@ -17,7 +17,7 @@ class Adafruit_GFX : public Print {
   Adafruit_GFX(int16_t w, int16_t h); // Constructor
 
   // This MUST be defined by the subclass:
-  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;    ///< Virtual drawPixel() function to draw to the screen/framebuffer/etc, must be overridden in subclass. @param x X coordinate.  @param y Y coordinate. @param color 16-bit pixel color. 
+  virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;    ///< Virtual drawPixel() function to draw to the screen/framebuffer/etc, must be overridden in subclass. @param x X coordinate.  @param y Y coordinate. @param color 16-bit pixel color.
 
   // TRANSACTION API / CORE DRAW API
   // These MAY be overridden by the subclass to provide device-specific
@@ -35,6 +35,7 @@ class Adafruit_GFX : public Print {
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void setRotation(uint8_t r);
   virtual void invertDisplay(boolean i);
+  virtual void display();
 
   // BASIC DRAW API
   // These MAY be overridden by the subclass to provide device-specific
@@ -45,6 +46,7 @@ class Adafruit_GFX : public Print {
     drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
+    clearDisplay(),
     // Optional and probably not necessary to change
     drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color),
     drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
@@ -102,12 +104,10 @@ class Adafruit_GFX : public Print {
     setTextWrap(boolean w),
     cp437(boolean x=true),
     setFont(const GFXfont *f = NULL),
-    getTextBounds(const char *string, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
-    getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
-    getTextBounds(const String &str, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+    getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    getTextBounds(char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
 
 #if ARDUINO >= 100
