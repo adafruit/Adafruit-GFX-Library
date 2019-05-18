@@ -395,8 +395,8 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         SPISettings settings;      ///< SPI transaction settings
 #else
         uint32_t    _freq;         ///< SPI bitrate (if no SPI transactions)
-        uint32_t    _mode;         ///< SPI data mode (if no SPI transactions)
 #endif
+        uint32_t    _mode;         ///< SPI data mode (transactions or no)
       } hwspi;                     ///< Hardware SPI values
       struct {                     //   Values specific to SOFTWARE SPI:
 #if defined(USE_FAST_PINIO)

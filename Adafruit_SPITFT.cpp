@@ -528,8 +528,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
         hwspi.settings = SPISettings(freq, MSBFIRST, spiMode);
 #else
         hwspi._freq    = freq;    // Save freq value for later
-        hwspi._mode    = spiMode; // Save spiMode value for later
 #endif
+        hwspi._mode    = spiMode; // Save spiMode value for later
         // Call hwspi._spi->begin() ONLY if this is among the 'established'
         // SPI interfaces in variant.h. For DIY roll-your-own SERCOM SPIs,
         // begin() and pinPeripheral() calls MUST be made in one's calling
@@ -1033,7 +1033,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
  #if defined(__SAMD51__) || defined(_SAMD21_)
             if(connection == TFT_HARD_SPI) {
                 // See SAMD51/21 note in writeColor()
-                hwspi._spi->setDataMode(SPI_MODE0);
+                hwspi._spi->setDataMode(hwspi._mode);
             } else {
                 pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
             }
@@ -1062,7 +1062,7 @@ void Adafruit_SPITFT::dmaWait(void) {
  #if defined(__SAMD51__) || defined(_SAMD21_)
     if(connection == TFT_HARD_SPI) {
         // See SAMD51/21 note in writeColor()
-        hwspi._spi->setDataMode(SPI_MODE0);
+        hwspi._spi->setDataMode(hwspi._mode);
     } else {
         pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
     }
@@ -1188,7 +1188,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
             // state on completion. Workaround is to explicitly set it back...
             // (5/17/2019: apparently SAMD21 too, in certain cases, observed
             // with ST7789 display.)
-            hwspi._spi->setDataMode(SPI_MODE0);
+            hwspi._spi->setDataMode(hwspi._mode);
         } else {
             pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
         }
