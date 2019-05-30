@@ -127,7 +127,7 @@ class Adafruit_GFX : public Print {
   /*!
     @brief   Set text font color with custom background color
     @param   c   16-bit 5-6-5 Color to draw text with
-    @param   b   16-bit 5-6-5 Color to draw background/fill with
+    @param   bg  16-bit 5-6-5 Color to draw background/fill with
   */
   /**********************************************************************/
   void setTextColor(uint16_t c, uint16_t bg) {

@@ -496,15 +496,15 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 /*!
     @brief  Configure microcontroller pins for TFT interfacing. Typically
             called by a subclass' begin() function.
-    @param  freq  SPI frequency when using hardware SPI. If default (0)
-                  is passed, will fall back on a device-specific value.
-                  Value is ignored when using software SPI or parallel
-                  connection.
-    @param  mode  SPI mode when using hardware SPI. MUST be one of the
-                  values SPI_MODE0, SPI_MODE1, SPI_MODE2 or SPI_MODE3
-                  defined in SPI.h. Do NOT attempt to pass '0' for SPI_MODE0
-                  and so forth...the values are NOT the same! Use ONLY the
-                  defines! (Pity it's not an enum.)
+    @param  freq     SPI frequency when using hardware SPI. If default (0)
+                     is passed, will fall back on a device-specific value.
+                     Value is ignored when using software SPI or parallel
+                     connection.
+    @param  spiMode  SPI mode when using hardware SPI. MUST be one of the
+                     values SPI_MODE0, SPI_MODE1, SPI_MODE2 or SPI_MODE3
+                     defined in SPI.h. Do NOT attempt to pass '0' for
+                     SPI_MODE0 and so forth...the values are NOT the same!
+                     Use ONLY the defines! (Pity it's not an enum.)
     @note   Another anachronistically-named function; this is called even
             when the display connection is parallel (not SPI). Also, this
             could probably be made private...quite a few class functions
