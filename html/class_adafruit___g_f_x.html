@@ -206,27 +206,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:ab7f5a29b3a3dffe30c6a3f4c1f604a5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a">drawChar</a> (int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)</td></tr>
 <tr class="memdesc:ab7f5a29b3a3dffe30c6a3f4c1f604a5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a single character.  <a href="#ab7f5a29b3a3dffe30c6a3f4c1f604a5a">More...</a><br /></td></tr>
 <tr class="separator:ab7f5a29b3a3dffe30c6a3f4c1f604a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf96a40cad0f34dd8ec73494b3866c33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aaf96a40cad0f34dd8ec73494b3866c33">setCursor</a> (int16_t x, int16_t y)</td></tr>
-<tr class="memdesc:aaf96a40cad0f34dd8ec73494b3866c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text cursor location.  <a href="#aaf96a40cad0f34dd8ec73494b3866c33">More...</a><br /></td></tr>
-<tr class="separator:aaf96a40cad0f34dd8ec73494b3866c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59178a0e0c845a14a39b457c43567dd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a59178a0e0c845a14a39b457c43567dd9">setTextColor</a> (uint16_t c)</td></tr>
-<tr class="memdesc:a59178a0e0c845a14a39b457c43567dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text font color with transparant background.  <a href="#a59178a0e0c845a14a39b457c43567dd9">More...</a><br /></td></tr>
-<tr class="separator:a59178a0e0c845a14a39b457c43567dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6e88c585d3ab6b4f95199361f224fc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab6e88c585d3ab6b4f95199361f224fc6">setTextColor</a> (uint16_t c, uint16_t bg)</td></tr>
-<tr class="memdesc:ab6e88c585d3ab6b4f95199361f224fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text font color with custom background color.  <a href="#ab6e88c585d3ab6b4f95199361f224fc6">More...</a><br /></td></tr>
-<tr class="separator:ab6e88c585d3ab6b4f95199361f224fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39eb4a8a2c9fa4ab7d58ceffd19535d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a39eb4a8a2c9fa4ab7d58ceffd19535d5">setTextSize</a> (uint8_t s)</td></tr>
-<tr class="memdesc:a39eb4a8a2c9fa4ab7d58ceffd19535d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger.  <a href="#a39eb4a8a2c9fa4ab7d58ceffd19535d5">More...</a><br /></td></tr>
-<tr class="separator:a39eb4a8a2c9fa4ab7d58ceffd19535d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aeeacd62bf26f3e7abbdc4b5b50faa6fa">setTextWrap</a> (boolean w)</td></tr>
-<tr class="memdesc:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether text that is too long should 'wrap' around to the next line.  <a href="#aeeacd62bf26f3e7abbdc4b5b50faa6fa">More...</a><br /></td></tr>
-<tr class="separator:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d447fe274e3f0ff12f12afa538d0afe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6d447fe274e3f0ff12f12afa538d0afe">cp437</a> (boolean x=true)</td></tr>
-<tr class="memdesc:a6d447fe274e3f0ff12f12afa538d0afe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable (or disable) Code Page 437-compatible charset. There was an error in glcdfont.c for the longest time &ndash; one character (#176, the 'light shade' block) was missing &ndash; this threw off the index of every character that followed it. But a TON of code has been written with the erroneous character indices. By default, the library uses the original 'wrong' behavior and old sketches will still work. Pass 'true' to this function to use correct CP437 character values in your code.  <a href="#a6d447fe274e3f0ff12f12afa538d0afe">More...</a><br /></td></tr>
-<tr class="separator:a6d447fe274e3f0ff12f12afa538d0afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0479a2bb4e09e7c39c35e35c55d6ed1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab0479a2bb4e09e7c39c35e35c55d6ed1">setFont</a> (const <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *f=NULL)</td></tr>
-<tr class="memdesc:ab0479a2bb4e09e7c39c35e35c55d6ed1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the font to display when print()ing, either custom or default.  <a href="#ab0479a2bb4e09e7c39c35e35c55d6ed1">More...</a><br /></td></tr>
-<tr class="separator:ab0479a2bb4e09e7c39c35e35c55d6ed1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90983ed41807de26d48bcf588d7c9a19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19">getTextBounds</a> (const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)</td></tr>
 <tr class="memdesc:a90983ed41807de26d48bcf588d7c9a19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a string with current font/size. Pass string and a cursor position, returns UL corner and W,H.  <a href="#a90983ed41807de26d48bcf588d7c9a19">More...</a><br /></td></tr>
 <tr class="separator:a90983ed41807de26d48bcf588d7c9a19"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,15 +215,36 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a4258c8e7e5e897a3e5e87748e4585579"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a4258c8e7e5e897a3e5e87748e4585579">getTextBounds</a> (const String &amp;str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)</td></tr>
 <tr class="memdesc:a4258c8e7e5e897a3e5e87748e4585579"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a string with current font/size. Pass string and a cursor position, returns UL corner and W,H.  <a href="#a4258c8e7e5e897a3e5e87748e4585579">More...</a><br /></td></tr>
 <tr class="separator:a4258c8e7e5e897a3e5e87748e4585579"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39eb4a8a2c9fa4ab7d58ceffd19535d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a39eb4a8a2c9fa4ab7d58ceffd19535d5">setTextSize</a> (uint8_t s)</td></tr>
+<tr class="memdesc:a39eb4a8a2c9fa4ab7d58ceffd19535d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger.  <a href="#a39eb4a8a2c9fa4ab7d58ceffd19535d5">More...</a><br /></td></tr>
+<tr class="separator:a39eb4a8a2c9fa4ab7d58ceffd19535d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0479a2bb4e09e7c39c35e35c55d6ed1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab0479a2bb4e09e7c39c35e35c55d6ed1">setFont</a> (const <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *f=NULL)</td></tr>
+<tr class="memdesc:ab0479a2bb4e09e7c39c35e35c55d6ed1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the font to display when print()ing, either custom or default.  <a href="#ab0479a2bb4e09e7c39c35e35c55d6ed1">More...</a><br /></td></tr>
+<tr class="separator:ab0479a2bb4e09e7c39c35e35c55d6ed1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf96a40cad0f34dd8ec73494b3866c33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aaf96a40cad0f34dd8ec73494b3866c33">setCursor</a> (int16_t x, int16_t y)</td></tr>
+<tr class="memdesc:aaf96a40cad0f34dd8ec73494b3866c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text cursor location.  <a href="#aaf96a40cad0f34dd8ec73494b3866c33">More...</a><br /></td></tr>
+<tr class="separator:aaf96a40cad0f34dd8ec73494b3866c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59178a0e0c845a14a39b457c43567dd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a59178a0e0c845a14a39b457c43567dd9">setTextColor</a> (uint16_t c)</td></tr>
+<tr class="memdesc:a59178a0e0c845a14a39b457c43567dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text font color with transparant background.  <a href="#a59178a0e0c845a14a39b457c43567dd9">More...</a><br /></td></tr>
+<tr class="separator:a59178a0e0c845a14a39b457c43567dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6e88c585d3ab6b4f95199361f224fc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab6e88c585d3ab6b4f95199361f224fc6">setTextColor</a> (uint16_t c, uint16_t bg)</td></tr>
+<tr class="memdesc:ab6e88c585d3ab6b4f95199361f224fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text font color with custom background color.  <a href="#ab6e88c585d3ab6b4f95199361f224fc6">More...</a><br /></td></tr>
+<tr class="separator:ab6e88c585d3ab6b4f95199361f224fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aeeacd62bf26f3e7abbdc4b5b50faa6fa">setTextWrap</a> (boolean w)</td></tr>
+<tr class="memdesc:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether text that is too long for the screen width should automatically wrap around to the next line (else clip right).  <a href="#aeeacd62bf26f3e7abbdc4b5b50faa6fa">More...</a><br /></td></tr>
+<tr class="separator:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d447fe274e3f0ff12f12afa538d0afe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6d447fe274e3f0ff12f12afa538d0afe">cp437</a> (boolean x=true)</td></tr>
+<tr class="memdesc:a6d447fe274e3f0ff12f12afa538d0afe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable (or disable) Code Page 437-compatible charset. There was an error in glcdfont.c for the longest time &ndash; one character (#176, the 'light shade' block) was missing &ndash; this threw off the index of every character that followed it. But a TON of code has been written with the erroneous character indices. By default, the library uses the original 'wrong' behavior and old sketches will still work. Pass 'true' to this function to use correct CP437 character values in your code.  <a href="#a6d447fe274e3f0ff12f12afa538d0afe">More...</a><br /></td></tr>
+<tr class="separator:a6d447fe274e3f0ff12f12afa538d0afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8773d92cafa93d3f749fb55c535d8f2e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a8773d92cafa93d3f749fb55c535d8f2e">write</a> (uint8_t)</td></tr>
 <tr class="memdesc:a8773d92cafa93d3f749fb55c535d8f2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print one byte/character of data, used to support print()  <a href="#a8773d92cafa93d3f749fb55c535d8f2e">More...</a><br /></td></tr>
 <tr class="separator:a8773d92cafa93d3f749fb55c535d8f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49da524caa19e5202ed2ed7fd5a3baea"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a49da524caa19e5202ed2ed7fd5a3baea">height</a> (void) const</td></tr>
-<tr class="memdesc:a49da524caa19e5202ed2ed7fd5a3baea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get height of the display, accounting for the current rotation.  <a href="#a49da524caa19e5202ed2ed7fd5a3baea">More...</a><br /></td></tr>
-<tr class="separator:a49da524caa19e5202ed2ed7fd5a3baea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a324b5361e7198ef0e79eaf4c80bddfc7"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a324b5361e7198ef0e79eaf4c80bddfc7">width</a> (void) const</td></tr>
-<tr class="memdesc:a324b5361e7198ef0e79eaf4c80bddfc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get width of the display, accounting for the current rotation.  <a href="#a324b5361e7198ef0e79eaf4c80bddfc7">More...</a><br /></td></tr>
+<tr class="memdesc:a324b5361e7198ef0e79eaf4c80bddfc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get width of the display, accounting for current rotation.  <a href="#a324b5361e7198ef0e79eaf4c80bddfc7">More...</a><br /></td></tr>
 <tr class="separator:a324b5361e7198ef0e79eaf4c80bddfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49da524caa19e5202ed2ed7fd5a3baea"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a49da524caa19e5202ed2ed7fd5a3baea">height</a> (void) const</td></tr>
+<tr class="memdesc:a49da524caa19e5202ed2ed7fd5a3baea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get height of the display, accounting for current rotation.  <a href="#a49da524caa19e5202ed2ed7fd5a3baea">More...</a><br /></td></tr>
+<tr class="separator:a49da524caa19e5202ed2ed7fd5a3baea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab90e1378511b93189a7b557d7dda5d73"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab90e1378511b93189a7b557d7dda5d73">getRotation</a> (void) const</td></tr>
 <tr class="memdesc:ab90e1378511b93189a7b557d7dda5d73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get rotation setting for display.  <a href="#ab90e1378511b93189a7b557d7dda5d73">More...</a><br /></td></tr>
 <tr class="separator:ab90e1378511b93189a7b557d7dda5d73"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -407,7 +407,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5e118fc9c0fb141c8ee9f14e49f20704">Adafruit_SPITFT</a>, <a class="el" href="class_g_f_xcanvas16.html#ade30ed51e7dd07be0436b4f9407b6fd8">GFXcanvas16</a>, <a class="el" href="class_g_f_xcanvas8.html#a596553ea995b2d7830cc3eef0c4085fc">GFXcanvas8</a>, and <a class="el" href="class_g_f_xcanvas1.html#a0859d124c8dcaa147ef22a54d6e843a8">GFXcanvas1</a>.</p>
+<p>Implemented in <a class="el" href="class_g_f_xcanvas16.html#ade30ed51e7dd07be0436b4f9407b6fd8">GFXcanvas16</a>, <a class="el" href="class_g_f_xcanvas8.html#a596553ea995b2d7830cc3eef0c4085fc">GFXcanvas8</a>, <a class="el" href="class_g_f_xcanvas1.html#a0859d124c8dcaa147ef22a54d6e843a8">GFXcanvas1</a>, and <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5e118fc9c0fb141c8ee9f14e49f20704">Adafruit_SPITFT</a>.</p>
 
 </div>
 </div>
@@ -2496,210 +2496,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="aaf96a40cad0f34dd8ec73494b3866c33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf96a40cad0f34dd8ec73494b3866c33">&#9670;&nbsp;</a></span>setCursor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setCursor </td>
-          <td>(</td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Set text cursor location. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>X coordinate in pixels </td></tr>
-    <tr><td class="paramname">y</td><td>Y coordinate in pixels </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a59178a0e0c845a14a39b457c43567dd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59178a0e0c845a14a39b457c43567dd9">&#9670;&nbsp;</a></span>setTextColor() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setTextColor </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>c</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Set text font color with transparant background. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">c</td><td>16-bit 5-6-5 Color to draw text with </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ab6e88c585d3ab6b4f95199361f224fc6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6e88c585d3ab6b4f95199361f224fc6">&#9670;&nbsp;</a></span>setTextColor() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setTextColor </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>c</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Set text font color with custom background color. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">c</td><td>16-bit 5-6-5 Color to draw text with </td></tr>
-    <tr><td class="paramname">b</td><td>16-bit 5-6-5 Color to draw background/fill with </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a39eb4a8a2c9fa4ab7d58ceffd19535d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39eb4a8a2c9fa4ab7d58ceffd19535d5">&#9670;&nbsp;</a></span>setTextSize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setTextSize </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>s</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">s</td><td>Desired text size. 1 is default 6x8, 2 is 12x16, 3 is 18x24, etc </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aeeacd62bf26f3e7abbdc4b5b50faa6fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeeacd62bf26f3e7abbdc4b5b50faa6fa">&#9670;&nbsp;</a></span>setTextWrap()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setTextWrap </td>
-          <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
-          <td class="paramname"><em>w</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Whether text that is too long should 'wrap' around to the next line. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">w</td><td>Set true for wrapping, false for clipping </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a6d447fe274e3f0ff12f12afa538d0afe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d447fe274e3f0ff12f12afa538d0afe">&#9670;&nbsp;</a></span>cp437()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::cp437 </td>
-          <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
-          <td class="paramname"><em>x</em> = <code>true</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enable (or disable) Code Page 437-compatible charset. There was an error in glcdfont.c for the longest time &ndash; one character (#176, the 'light shade' block) was missing &ndash; this threw off the index of every character that followed it. But a TON of code has been written with the erroneous character indices. By default, the library uses the original 'wrong' behavior and old sketches will still work. Pass 'true' to this function to use correct CP437 character values in your code. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>Whether to enable (True) or not (False) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ab0479a2bb4e09e7c39c35e35c55d6ed1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0479a2bb4e09e7c39c35e35c55d6ed1">&#9670;&nbsp;</a></span>setFont()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setFont </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *&#160;</td>
-          <td class="paramname"><em>f</em> = <code>NULL</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Set the font to display when print()ing, either custom or default. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">f</td><td>The <a class="el" href="struct_g_f_xfont.html" title="Data stored for FONT AS A WHOLE. ">GFXfont</a> object, if NULL use built in 6x8 font </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a90983ed41807de26d48bcf588d7c9a19"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90983ed41807de26d48bcf588d7c9a19">&#9670;&nbsp;</a></span>getTextBounds() <span class="overload">[1/3]</span></h2>
 
@@ -2916,6 +2712,251 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="a39eb4a8a2c9fa4ab7d58ceffd19535d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39eb4a8a2c9fa4ab7d58ceffd19535d5">&#9670;&nbsp;</a></span>setTextSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setTextSize </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>Desired text size. 1 is default 6x8, 2 is 12x16, 3 is 18x24, etc </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab0479a2bb4e09e7c39c35e35c55d6ed1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0479a2bb4e09e7c39c35e35c55d6ed1">&#9670;&nbsp;</a></span>setFont()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setFont </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *&#160;</td>
+          <td class="paramname"><em>f</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the font to display when print()ing, either custom or default. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>The <a class="el" href="struct_g_f_xfont.html" title="Data stored for FONT AS A WHOLE. ">GFXfont</a> object, if NULL use built in 6x8 font </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaf96a40cad0f34dd8ec73494b3866c33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf96a40cad0f34dd8ec73494b3866c33">&#9670;&nbsp;</a></span>setCursor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setCursor </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set text cursor location. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>X coordinate in pixels </td></tr>
+    <tr><td class="paramname">y</td><td>Y coordinate in pixels </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a59178a0e0c845a14a39b457c43567dd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59178a0e0c845a14a39b457c43567dd9">&#9670;&nbsp;</a></span>setTextColor() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setTextColor </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set text font color with transparant background. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>16-bit 5-6-5 Color to draw text with </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>For 'transparent' background, background and foreground are set to same color rather than using a separate flag. </dd></dl>
+
+</div>
+</div>
+<a id="ab6e88c585d3ab6b4f95199361f224fc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6e88c585d3ab6b4f95199361f224fc6">&#9670;&nbsp;</a></span>setTextColor() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setTextColor </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>bg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set text font color with custom background color. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>16-bit 5-6-5 Color to draw text with </td></tr>
+    <tr><td class="paramname">bg</td><td>16-bit 5-6-5 Color to draw background/fill with </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aeeacd62bf26f3e7abbdc4b5b50faa6fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeeacd62bf26f3e7abbdc4b5b50faa6fa">&#9670;&nbsp;</a></span>setTextWrap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setTextWrap </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>w</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set whether text that is too long for the screen width should automatically wrap around to the next line (else clip right). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">w</td><td>true for wrapping, false for clipping </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6d447fe274e3f0ff12f12afa538d0afe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d447fe274e3f0ff12f12afa538d0afe">&#9670;&nbsp;</a></span>cp437()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::cp437 </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>x</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enable (or disable) Code Page 437-compatible charset. There was an error in glcdfont.c for the longest time &ndash; one character (#176, the 'light shade' block) was missing &ndash; this threw off the index of every character that followed it. But a TON of code has been written with the erroneous character indices. By default, the library uses the original 'wrong' behavior and old sketches will still work. Pass 'true' to this function to use correct CP437 character values in your code. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>true = enable (new behavior), false = disable (old behavior) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a8773d92cafa93d3f749fb55c535d8f2e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8773d92cafa93d3f749fb55c535d8f2e">&#9670;&nbsp;</a></span>write()</h2>
 
@@ -2950,32 +2991,14 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a49da524caa19e5202ed2ed7fd5a3baea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a49da524caa19e5202ed2ed7fd5a3baea">&#9670;&nbsp;</a></span>height()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int16_t Adafruit_GFX::height </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get height of the display, accounting for the current rotation. </p>
-<dl class="section return"><dt>Returns</dt><dd>Height in pixels </dd></dl>
-
-</div>
-</div>
 <a id="a324b5361e7198ef0e79eaf4c80bddfc7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a324b5361e7198ef0e79eaf4c80bddfc7">&#9670;&nbsp;</a></span>width()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int16_t Adafruit_GFX::width </td>
@@ -2985,10 +3008,44 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Get width of the display, accounting for the current rotation. </p>
+<p>Get width of the display, accounting for current rotation. </p>
 <dl class="section return"><dt>Returns</dt><dd>Width in pixels </dd></dl>
+
+</div>
+</div>
+<a id="a49da524caa19e5202ed2ed7fd5a3baea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49da524caa19e5202ed2ed7fd5a3baea">&#9670;&nbsp;</a></span>height()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int16_t Adafruit_GFX::height </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get height of the display, accounting for current rotation. </p>
+<dl class="section return"><dt>Returns</dt><dd>Height in pixels </dd></dl>
 
 </div>
 </div>
@@ -2997,6 +3054,9 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">uint8_t Adafruit_GFX::getRotation </td>
@@ -3006,6 +3066,11 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Get rotation setting for display. </p>
@@ -3018,6 +3083,9 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int16_t Adafruit_GFX::getCursorX </td>
@@ -3027,6 +3095,11 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Get text cursor X location. </p>
@@ -3039,6 +3112,9 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int16_t Adafruit_GFX::getCursorY </td>
@@ -3048,6 +3124,11 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Get text cursor Y location. </p>

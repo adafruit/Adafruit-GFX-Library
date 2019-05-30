@@ -90,17 +90,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa5fb594cf6f9cd4c1815a7c1011b5830"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to let us know if a coordinate is within the bounds of the button.  <a href="#aa5fb594cf6f9cd4c1815a7c1011b5830">More...</a><br /></td></tr>
 <tr class="separator:aa5fb594cf6f9cd4c1815a7c1011b5830"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a221d9753f7d8e8f7f9c1ebbee69d02bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x___button.html#a221d9753f7d8e8f7f9c1ebbee69d02bd">press</a> (boolean p)</td></tr>
-<tr class="memdesc:a221d9753f7d8e8f7f9c1ebbee69d02bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the state of the button, should be done by some touch function.  <a href="#a221d9753f7d8e8f7f9c1ebbee69d02bd">More...</a><br /></td></tr>
+<tr class="memdesc:a221d9753f7d8e8f7f9c1ebbee69d02bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets button state, should be done by some touch function.  <a href="#a221d9753f7d8e8f7f9c1ebbee69d02bd">More...</a><br /></td></tr>
 <tr class="separator:a221d9753f7d8e8f7f9c1ebbee69d02bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1faefaf249e868786a416bc097e2cf07"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x___button.html#a1faefaf249e868786a416bc097e2cf07">isPressed</a> ()</td></tr>
-<tr class="memdesc:a1faefaf249e868786a416bc097e2cf07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the button is currently pressed.  <a href="#a1faefaf249e868786a416bc097e2cf07">More...</a><br /></td></tr>
-<tr class="separator:a1faefaf249e868786a416bc097e2cf07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41bcfc81edaf30a11d171a69e7e7c679"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x___button.html#a41bcfc81edaf30a11d171a69e7e7c679">justPressed</a> ()</td></tr>
 <tr class="memdesc:a41bcfc81edaf30a11d171a69e7e7c679"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the button was pressed since we last checked state.  <a href="#a41bcfc81edaf30a11d171a69e7e7c679">More...</a><br /></td></tr>
 <tr class="separator:a41bcfc81edaf30a11d171a69e7e7c679"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a139332b95997168ba0da37973d2887"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x___button.html#a8a139332b95997168ba0da37973d2887">justReleased</a> ()</td></tr>
 <tr class="memdesc:a8a139332b95997168ba0da37973d2887"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the button was released since we last checked state.  <a href="#a8a139332b95997168ba0da37973d2887">More...</a><br /></td></tr>
 <tr class="separator:a8a139332b95997168ba0da37973d2887"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1039a89897fa2d58d7b4d32ce862bf3"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x___button.html#ab1039a89897fa2d58d7b4d32ce862bf3">isPressed</a> (void)</td></tr>
+<tr class="memdesc:ab1039a89897fa2d58d7b4d32ce862bf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the button is currently pressed.  <a href="#ab1039a89897fa2d58d7b4d32ce862bf3">More...</a><br /></td></tr>
+<tr class="separator:ab1039a89897fa2d58d7b4d32ce862bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A simple drawn button UI element. </p>
@@ -360,6 +360,9 @@ Public Member Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Adafruit_GFX_Button::press </td>
@@ -369,35 +372,20 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Sets the state of the button, should be done by some touch function. </p>
+<p>Sets button state, should be done by some touch function. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p</td><td>True for pressed, false for not. </td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a1faefaf249e868786a416bc097e2cf07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1faefaf249e868786a416bc097e2cf07">&#9670;&nbsp;</a></span>isPressed()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">boolean Adafruit_GFX_Button::isPressed </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Query whether the button is currently pressed. </p>
-<dl class="section return"><dt>Returns</dt><dd>True if pressed </dd></dl>
 
 </div>
 </div>
@@ -438,6 +426,35 @@ Public Member Functions</h2></td></tr>
 
 <p>Query whether the button was released since we last checked state. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if was pressed before, now is not. </dd></dl>
+
+</div>
+</div>
+<a id="ab1039a89897fa2d58d7b4d32ce862bf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1039a89897fa2d58d7b4d32ce862bf3">&#9670;&nbsp;</a></span>isPressed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean Adafruit_GFX_Button::isPressed </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Query whether the button is currently pressed. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if pressed </dd></dl>
 
 </div>
 </div>
