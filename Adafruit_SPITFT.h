@@ -66,7 +66,7 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
  #define DEFAULT_SPI_FREQ 16000000L  ///< Hardware SPI default speed
 #endif
 
-#if defined(ADAFRUIT_PYPORTAL)
+#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
  #define USE_SPI_DMA                 ///< Auto DMA if using PyPortal
 #else
  //#define USE_SPI_DMA               ///< If set, use DMA if available
