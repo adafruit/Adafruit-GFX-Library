@@ -66,7 +66,7 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
  #define DEFAULT_SPI_FREQ 16000000L  ///< Hardware SPI default speed
 #endif
 
-#if defined(ADAFRUIT_PYPORTAL)
+#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
  #define USE_SPI_DMA                 ///< Auto DMA if using PyPortal
 #else
  //#define USE_SPI_DMA               ///< If set, use DMA if available
@@ -181,8 +181,11 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // Brief comments here...documented more thoroughly in .cpp file.
 
     // Subclass' begin() function invokes this to initialize hardware.
+    // freq=0 to use default SPI speed. spiMode must be one of the SPI_MODEn
+    // values defined in SPI.h, which are NOT the same as 0 for SPI_MODE0,
+    // 1 for SPI_MODE1, etc...use ONLY the SPI_MODEn defines! Only!
     // Name is outdated (interface may be parallel) but for compatibility:
-    void         initSPI(uint32_t freq = 0); // 0 = use default SPI speed
+    void         initSPI(uint32_t freq = 0, uint8_t spiMode = SPI_MODE0);
     // Chip select and/or hardware SPI transaction start as needed:
     void         startWrite(void);
     // Chip deselect and/or hardware SPI transaction end as needed:
@@ -393,6 +396,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 #else
         uint32_t    _freq;         ///< SPI bitrate (if no SPI transactions)
 #endif
+        uint32_t    _mode;         ///< SPI data mode (transactions or no)
       } hwspi;                     ///< Hardware SPI values
       struct {                     //   Values specific to SOFTWARE SPI:
 #if defined(USE_FAST_PINIO)

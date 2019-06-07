@@ -1181,88 +1181,12 @@ size_t Adafruit_GFX::write(uint8_t c) {
 
 /**************************************************************************/
 /*!
-    @brief  Set text cursor location
-    @param  x    X coordinate in pixels
-    @param  y    Y coordinate in pixels
-*/
-/**************************************************************************/
-void Adafruit_GFX::setCursor(int16_t x, int16_t y) {
-    cursor_x = x;
-    cursor_y = y;
-}
-
-/**************************************************************************/
-/*!
-    @brief  Get text cursor X location
-    @returns    X coordinate in pixels
-*/
-/**************************************************************************/
-int16_t Adafruit_GFX::getCursorX(void) const {
-    return cursor_x;
-}
-
-/**************************************************************************/
-/*!
-    @brief      Get text cursor Y location
-    @returns    Y coordinate in pixels
-*/
-/**************************************************************************/
-int16_t Adafruit_GFX::getCursorY(void) const {
-    return cursor_y;
-}
-
-/**************************************************************************/
-/*!
     @brief   Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger.
     @param  s  Desired text size. 1 is default 6x8, 2 is 12x16, 3 is 18x24, etc
 */
 /**************************************************************************/
 void Adafruit_GFX::setTextSize(uint8_t s) {
     textsize = (s > 0) ? s : 1;
-}
-
-/**************************************************************************/
-/*!
-    @brief   Set text font color with transparant background
-    @param   c   16-bit 5-6-5 Color to draw text with
-*/
-/**************************************************************************/
-void Adafruit_GFX::setTextColor(uint16_t c) {
-    // For 'transparent' background, we'll set the bg
-    // to the same as fg instead of using a flag
-    textcolor = textbgcolor = c;
-}
-
-/**************************************************************************/
-/*!
-    @brief   Set text font color with custom background color
-    @param   c   16-bit 5-6-5 Color to draw text with
-    @param   b   16-bit 5-6-5 Color to draw background/fill with
-*/
-/**************************************************************************/
-void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
-    textcolor   = c;
-    textbgcolor = b;
-}
-
-/**************************************************************************/
-/*!
-    @brief      Whether text that is too long should 'wrap' around to the next line.
-    @param  w Set true for wrapping, false for clipping
-*/
-/**************************************************************************/
-void Adafruit_GFX::setTextWrap(boolean w) {
-    wrap = w;
-}
-
-/**************************************************************************/
-/*!
-    @brief      Get rotation setting for display
-    @returns    0 thru 3 corresponding to 4 cardinal rotations
-*/
-/**************************************************************************/
-uint8_t Adafruit_GFX::getRotation(void) const {
-    return rotation;
 }
 
 /**************************************************************************/
@@ -1285,22 +1209,6 @@ void Adafruit_GFX::setRotation(uint8_t x) {
             _height = WIDTH;
             break;
     }
-}
-
-/**************************************************************************/
-/*!
-    @brief Enable (or disable) Code Page 437-compatible charset.
-    There was an error in glcdfont.c for the longest time -- one character
-    (#176, the 'light shade' block) was missing -- this threw off the index
-    of every character that followed it.  But a TON of code has been written
-    with the erroneous character indices.  By default, the library uses the
-    original 'wrong' behavior and old sketches will still work.  Pass 'true'
-    to this function to use correct CP437 character values in your code.
-    @param  x  Whether to enable (True) or not (False)
-*/
-/**************************************************************************/
-void Adafruit_GFX::cp437(boolean x) {
-    _cp437 = x;
 }
 
 /**************************************************************************/
@@ -1488,26 +1396,6 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str,
 
 /**************************************************************************/
 /*!
-    @brief      Get width of the display, accounting for the current rotation
-    @returns    Width in pixels
-*/
-/**************************************************************************/
-int16_t Adafruit_GFX::width(void) const {
-    return _width;
-}
-
-/**************************************************************************/
-/*!
-    @brief      Get height of the display, accounting for the current rotation
-    @returns    Height in pixels
-*/
-/**************************************************************************/
-int16_t Adafruit_GFX::height(void) const {
-    return _height;
-}
-
-/**************************************************************************/
-/*!
     @brief      Invert the display (ideally using built-in hardware command)
     @param   i  True if you want to invert, false to make 'normal'
 */
@@ -1617,35 +1505,16 @@ void Adafruit_GFX_Button::drawButton(boolean inverted) {
 
 /**************************************************************************/
 /*!
-   @brief    Helper to let us know if a coordinate is within the bounds of the button
+    @brief    Helper to let us know if a coordinate is within the bounds of the button
     @param    x       The X coordinate to check
     @param    y       The Y coordinate to check
-   @returns   True if within button graphics outline
+    @returns  True if within button graphics outline
 */
 /**************************************************************************/
 boolean Adafruit_GFX_Button::contains(int16_t x, int16_t y) {
   return ((x >= _x1) && (x < (int16_t) (_x1 + _w)) &&
           (y >= _y1) && (y < (int16_t) (_y1 + _h)));
 }
-
-/**************************************************************************/
-/*!
-   @brief    Sets the state of the button, should be done by some touch function
-   @param    p  True for pressed, false for not.
-*/
-/**************************************************************************/
-void Adafruit_GFX_Button::press(boolean p) {
-  laststate = currstate;
-  currstate = p;
-}
-
-/**************************************************************************/
-/*!
-   @brief    Query whether the button is currently pressed
-   @returns  True if pressed
-*/
-/**************************************************************************/
-boolean Adafruit_GFX_Button::isPressed() { return currstate; }
 
 /**************************************************************************/
 /*!
@@ -1707,20 +1576,10 @@ GFXcanvas1::~GFXcanvas1(void) {
 
 /**************************************************************************/
 /*!
-   @brief    Get a pointer to the internal buffer memory
-   @returns  A pointer to the allocated buffer
-*/
-/**************************************************************************/
-uint8_t* GFXcanvas1::getBuffer(void) {
-    return buffer;
-}
-
-/**************************************************************************/
-/*!
-   @brief    Draw a pixel to the canvas framebuffer
-    @param   x   x coordinate
-    @param   y   y coordinate
-   @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Draw a pixel to the canvas framebuffer
+    @param  x     x coordinate
+    @param  y     y coordinate
+    @param  color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -1765,8 +1624,8 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 /**************************************************************************/
 /*!
-   @brief    Fill the framebuffer completely with one color
-    @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Fill the framebuffer completely with one color
+    @param  color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas1::fillScreen(uint16_t color) {
@@ -1799,23 +1658,12 @@ GFXcanvas8::~GFXcanvas8(void) {
     if(buffer) free(buffer);
 }
 
-
 /**************************************************************************/
 /*!
-   @brief    Get a pointer to the internal buffer memory
-   @returns  A pointer to the allocated buffer
-*/
-/**************************************************************************/
-uint8_t* GFXcanvas8::getBuffer(void) {
-    return buffer;
-}
-
-/**************************************************************************/
-/*!
-   @brief    Draw a pixel to the canvas framebuffer
-    @param   x   x coordinate
-    @param   y   y coordinate
-   @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Draw a pixel to the canvas framebuffer
+    @param  x   x coordinate
+    @param  y   y coordinate
+    @param  color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -1846,8 +1694,8 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 /**************************************************************************/
 /*!
-   @brief    Fill the framebuffer completely with one color
-    @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Fill the framebuffer completely with one color
+    @param  color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas8::fillScreen(uint16_t color) {
@@ -1916,20 +1764,10 @@ GFXcanvas16::~GFXcanvas16(void) {
 
 /**************************************************************************/
 /*!
-   @brief    Get a pointer to the internal buffer memory
-   @returns  A pointer to the allocated buffer
-*/
-/**************************************************************************/
-uint16_t* GFXcanvas16::getBuffer(void) {
-    return buffer;
-}
-
-/**************************************************************************/
-/*!
-   @brief    Draw a pixel to the canvas framebuffer
-    @param   x   x coordinate
-    @param   y   y coordinate
-   @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Draw a pixel to the canvas framebuffer
+    @param  x   x coordinate
+    @param  y   y coordinate
+    @param  color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -1960,8 +1798,8 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 /**************************************************************************/
 /*!
-   @brief    Fill the framebuffer completely with one color
-    @param    color 16-bit 5-6-5 Color to fill with
+    @brief  Fill the framebuffer completely with one color
+    @param  color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas16::fillScreen(uint16_t color) {
@@ -1976,3 +1814,22 @@ void GFXcanvas16::fillScreen(uint16_t color) {
     }
 }
 
+/**************************************************************************/
+/*!
+    @brief  Reverses the "endian-ness" of each 16-bit pixel within the
+            canvas; little-endian to big-endian, or big-endian to little.
+            Most microcontrollers (such as SAMD) are little-endian, while
+            most displays tend toward big-endianness. All the drawing
+            functions (including RGB bitmap drawing) take care of this
+            automatically, but some specialized code (usually involving
+            DMA) can benefit from having pixel data already in the
+            display-native order. Note that this does NOT convert to a
+            SPECIFIC endian-ness, it just flips the bytes within each word.
+*/
+/**************************************************************************/
+void GFXcanvas16::byteSwap(void) {
+    if(buffer) {
+        uint32_t i, pixels = WIDTH * HEIGHT;
+        for(i=0; i<pixels; i++) buffer[i] = __builtin_bswap16(buffer[i]);
+    }
+}

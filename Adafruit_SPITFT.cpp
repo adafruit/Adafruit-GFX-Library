@@ -496,16 +496,21 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 /*!
     @brief  Configure microcontroller pins for TFT interfacing. Typically
             called by a subclass' begin() function.
-    @param  freq  SPI frequency when using hardware SPI. If default (0)
-                  is passed, will fall back on a device-specific value.
-                  Value is ignored when using software SPI or parallel
-                  connection.
+    @param  freq     SPI frequency when using hardware SPI. If default (0)
+                     is passed, will fall back on a device-specific value.
+                     Value is ignored when using software SPI or parallel
+                     connection.
+    @param  spiMode  SPI mode when using hardware SPI. MUST be one of the
+                     values SPI_MODE0, SPI_MODE1, SPI_MODE2 or SPI_MODE3
+                     defined in SPI.h. Do NOT attempt to pass '0' for
+                     SPI_MODE0 and so forth...the values are NOT the same!
+                     Use ONLY the defines! (Pity it's not an enum.)
     @note   Another anachronistically-named function; this is called even
             when the display connection is parallel (not SPI). Also, this
             could probably be made private...quite a few class functions
             were generously put in the public section.
 */
-void Adafruit_SPITFT::initSPI(uint32_t freq) {
+void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 
     if(!freq) freq = DEFAULT_SPI_FREQ; // If no freq specified, use default
 
@@ -520,10 +525,11 @@ void Adafruit_SPITFT::initSPI(uint32_t freq) {
     if(connection == TFT_HARD_SPI) {
 
 #if defined(SPI_HAS_TRANSACTION)
-        hwspi.settings = SPISettings(freq, MSBFIRST, SPI_MODE0);
+        hwspi.settings = SPISettings(freq, MSBFIRST, spiMode);
 #else
-        hwspi._freq    = freq; // Save freq value for later
+        hwspi._freq    = freq;    // Save freq value for later
 #endif
+        hwspi._mode    = spiMode; // Save spiMode value for later
         // Call hwspi._spi->begin() ONLY if this is among the 'established'
         // SPI interfaces in variant.h. For DIY roll-your-own SERCOM SPIs,
         // begin() and pinPeripheral() calls MUST be made in one's calling
@@ -1024,14 +1030,14 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
         lastFillLen   = 0;
         if(block) {
             while(dma_busy);    // Wait for last line to complete
- #if defined(__SAMD51__)
+ #if defined(__SAMD51__) || defined(_SAMD21_)
             if(connection == TFT_HARD_SPI) {
-                // See SAMD51 note in writeColor()
-                hwspi._spi->setDataMode(SPI_MODE0);
+                // See SAMD51/21 note in writeColor()
+                hwspi._spi->setDataMode(hwspi._mode);
             } else {
                 pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
             }
- #endif // end __SAMD51__
+ #endif // end __SAMD51__ || _SAMD21_
         }
         return;
     }
@@ -1053,14 +1059,14 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
 void Adafruit_SPITFT::dmaWait(void) {
 #if defined(USE_SPI_DMA)
     while(dma_busy);
- #if defined(__SAMD51__)
+ #if defined(__SAMD51__) || defined(_SAMD21_)
     if(connection == TFT_HARD_SPI) {
-        // See SAMD51 note in writeColor()
-        hwspi._spi->setDataMode(SPI_MODE0);
+        // See SAMD51/21 note in writeColor()
+        hwspi._spi->setDataMode(hwspi._mode);
     } else {
         pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
     }
- #endif // end __SAMD51__
+ #endif // end __SAMD51__ || _SAMD21_
 #endif
 }
 
@@ -1176,11 +1182,13 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         // turns out to be MUCH slower on many graphics operations (as when
         // drawing lines, pixel-by-pixel), perhaps because it's a volatile
         // type and doesn't cache. Working on this.
-  #if defined(__SAMD51__)
+  #if defined(__SAMD51__) || defined(_SAMD21_)
         if(connection == TFT_HARD_SPI) {
             // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
             // state on completion. Workaround is to explicitly set it back...
-            hwspi._spi->setDataMode(SPI_MODE0);
+            // (5/17/2019: apparently SAMD21 too, in certain cases, observed
+            // with ST7789 display.)
+            hwspi._spi->setDataMode(hwspi._mode);
         } else {
             pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
         }
@@ -1782,7 +1790,7 @@ inline void Adafruit_SPITFT::SPI_BEGIN_TRANSACTION(void) {
         hwspi._spi->setClock(hwspi._freq);
  #endif
         hwspi._spi->setBitOrder(MSBFIRST);
-        hwspi._spi->setDataMode(SPI_MODE0);
+        hwspi._spi->setDataMode(hwspi._mode);
 #endif // end !SPI_HAS_TRANSACTION
     }
 }

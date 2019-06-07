@@ -95,20 +95,70 @@ class Adafruit_GFX : public Print {
       uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
-    setCursor(int16_t x, int16_t y),
-    setTextColor(uint16_t c),
-    setTextColor(uint16_t c, uint16_t bg),
-    setTextSize(uint8_t s),
-    setTextWrap(boolean w),
-    cp437(boolean x=true),
-    setFont(const GFXfont *f = NULL),
     getTextBounds(const char *string, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     getTextBounds(const String &str, int16_t x, int16_t y,
-      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
+    setTextSize(uint8_t s),
+    setFont(const GFXfont *f = NULL);
 
+  /**********************************************************************/
+  /*!
+    @brief  Set text cursor location
+    @param  x    X coordinate in pixels
+    @param  y    Y coordinate in pixels
+  */
+  /**********************************************************************/
+  void setCursor(int16_t x, int16_t y) { cursor_x = x; cursor_y = y; }
+
+  /**********************************************************************/
+  /*!
+    @brief   Set text font color with transparant background
+    @param   c   16-bit 5-6-5 Color to draw text with
+    @note    For 'transparent' background, background and foreground
+             are set to same color rather than using a separate flag.
+  */
+  /**********************************************************************/
+  void setTextColor(uint16_t c) { textcolor = textbgcolor = c; }
+
+  /**********************************************************************/
+  /*!
+    @brief   Set text font color with custom background color
+    @param   c   16-bit 5-6-5 Color to draw text with
+    @param   bg  16-bit 5-6-5 Color to draw background/fill with
+  */
+  /**********************************************************************/
+  void setTextColor(uint16_t c, uint16_t bg) {
+    textcolor   = c;
+    textbgcolor = bg;
+  }
+
+  /**********************************************************************/
+  /*!
+  @brief  Set whether text that is too long for the screen width should
+          automatically wrap around to the next line (else clip right).
+  @param  w  true for wrapping, false for clipping
+  */
+  /**********************************************************************/
+  void setTextWrap(boolean w) { wrap = w; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Enable (or disable) Code Page 437-compatible charset.
+            There was an error in glcdfont.c for the longest time -- one
+            character (#176, the 'light shade' block) was missing -- this
+            threw off the index of every character that followed it.
+            But a TON of code has been written with the erroneous
+            character indices. By default, the library uses the original
+            'wrong' behavior and old sketches will still work. Pass
+            'true' to this function to use correct CP437 character values
+            in your code.
+    @param  x  true = enable (new behavior), false = disable (old behavior)
+  */
+  /**********************************************************************/
+  void cp437(boolean x=true) { _cp437 = x; }
 
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
@@ -116,14 +166,47 @@ class Adafruit_GFX : public Print {
   virtual void   write(uint8_t);
 #endif
 
-  int16_t height(void) const;
-  int16_t width(void) const;
+  /************************************************************************/
+  /*!
+    @brief      Get width of the display, accounting for current rotation
+    @returns    Width in pixels
+  */
+  /************************************************************************/
+  int16_t width(void) const { return _width; };
 
-  uint8_t getRotation(void) const;
+  /************************************************************************/
+  /*!
+    @brief      Get height of the display, accounting for current rotation
+    @returns    Height in pixels
+  */
+  /************************************************************************/
+  int16_t height(void) const { return _height; }
 
-  // get current cursor position (get rotation safe maximum values, using: width() for x, height() for y)
-  int16_t getCursorX(void) const;
-  int16_t getCursorY(void) const;
+  /************************************************************************/
+  /*!
+    @brief      Get rotation setting for display
+    @returns    0 thru 3 corresponding to 4 cardinal rotations
+  */
+  /************************************************************************/
+  uint8_t getRotation(void) const { return rotation; }
+
+  // get current cursor position (get rotation safe maximum values,
+  // using: width() for x, height() for y)
+  /************************************************************************/
+  /*!
+    @brief  Get text cursor X location
+    @returns    X coordinate in pixels
+  */
+  /************************************************************************/
+  int16_t getCursorX(void) const { return cursor_x; }
+
+  /************************************************************************/
+  /*!
+    @brief      Get text cursor Y location
+    @returns    Y coordinate in pixels
+  */
+  /************************************************************************/
+  int16_t getCursorY(void) const { return cursor_y; };
 
  protected:
   void
@@ -167,10 +250,24 @@ class Adafruit_GFX_Button {
   void drawButton(boolean inverted = false);
   boolean contains(int16_t x, int16_t y);
 
-  void press(boolean p);
-  boolean isPressed();
+  /**********************************************************************/
+  /*!
+    @brief    Sets button state, should be done by some touch function
+    @param    p  True for pressed, false for not.
+  */
+  /**********************************************************************/
+  void press(boolean p) { laststate = currstate; currstate = p; }
+
   boolean justPressed();
   boolean justReleased();
+
+  /**********************************************************************/
+  /*!
+    @brief    Query whether the button is currently pressed
+    @returns  True if pressed
+  */
+  /**********************************************************************/
+  boolean isPressed(void) { return currstate; };
 
  private:
   Adafruit_GFX *_gfx;
@@ -191,7 +288,13 @@ class GFXcanvas1 : public Adafruit_GFX {
   ~GFXcanvas1(void);
   void     drawPixel(int16_t x, int16_t y, uint16_t color),
            fillScreen(uint16_t color);
-  uint8_t *getBuffer(void);
+  /**********************************************************************/
+  /*!
+    @brief    Get a pointer to the internal buffer memory
+    @returns  A pointer to the allocated buffer
+  */
+  /**********************************************************************/
+  uint8_t *getBuffer(void) const { return buffer; }
  private:
   uint8_t *buffer;
 };
@@ -205,8 +308,13 @@ class GFXcanvas8 : public Adafruit_GFX {
   void     drawPixel(int16_t x, int16_t y, uint16_t color),
            fillScreen(uint16_t color),
            writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-  uint8_t *getBuffer(void);
+  /**********************************************************************/
+  /*!
+   @brief    Get a pointer to the internal buffer memory
+   @returns  A pointer to the allocated buffer
+  */
+  /**********************************************************************/
+  uint8_t *getBuffer(void) const { return buffer; }
  private:
   uint8_t *buffer;
 };
@@ -218,8 +326,15 @@ class GFXcanvas16 : public Adafruit_GFX {
   GFXcanvas16(uint16_t w, uint16_t h);
   ~GFXcanvas16(void);
   void      drawPixel(int16_t x, int16_t y, uint16_t color),
-            fillScreen(uint16_t color);
-  uint16_t *getBuffer(void);
+            fillScreen(uint16_t color),
+            byteSwap(void);
+  /**********************************************************************/
+  /*!
+    @brief    Get a pointer to the internal buffer memory
+    @returns  A pointer to the allocated buffer
+  */
+  /**********************************************************************/
+  uint16_t *getBuffer(void) const { return buffer; }
  private:
   uint16_t *buffer;
 };
