@@ -1484,7 +1484,8 @@ void Adafruit_GFX_Button::initButton(
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
    @param    label  Ascii string of the text inside the button
-   @param    textsize The font magnification of the label text
+   @param    textsize_x The font magnification in X-axis of the label text
+   @param    textsize_y The font magnification in Y-axis of the label text
 */
 /**************************************************************************/
 // Classic initButton() function: pass center & size
@@ -1533,7 +1534,8 @@ void Adafruit_GFX_Button::initButtonUL(
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
    @param    label  Ascii string of the text inside the button
-   @param    textsize The font magnification of the label text
+   @param    textsize_x The font magnification in X-axis of the label text
+   @param    textsize_y The font magnification in Y-axis of the label text
 */
 /**************************************************************************/
 void Adafruit_GFX_Button::initButtonUL(
