@@ -62,6 +62,30 @@ POSSIBILITY OF SUCH DAMAGE.
  #define pgm_read_pointer(addr) ((void *)pgm_read_word(addr))
 #endif
 
+inline GFXglyph * pgm_read_glyph_ptr(const GFXfont *gfxFont, uint8_t c)
+{
+#ifdef __AVR__
+    return &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
+#else
+    // expression in __AVR__ section may generate "dereferencing type-punned pointer will break strict-aliasing rules" warning
+    // In fact, on other platforms (such as STM32) there is no need to do this pointer magic as program memory may be read in a usual way
+    // So expression may be simplified
+    return gfxFont->glyph + c;
+#endif //__AVR__
+}
+
+inline uint8_t * pgm_read_bitmap_ptr(const GFXfont *gfxFont)
+{
+#ifdef __AVR__
+    return (uint8_t *)pgm_read_pointer(&gfxFont->bitmap);
+#else
+    // expression in __AVR__ section generates "dereferencing type-punned pointer will break strict-aliasing rules" warning
+    // In fact, on other platforms (such as STM32) there is no need to do this pointer magic as program memory may be read in a usual way
+    // So expression may be simplified
+    return gfxFont->bitmap;
+#endif //__AVR__
+}
+
 #ifndef min
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
@@ -84,7 +108,7 @@ WIDTH(w), HEIGHT(h)
     _height   = HEIGHT;
     rotation  = 0;
     cursor_y  = cursor_x    = 0;
-    textsize  = 1;
+    textsize_x = textsize_y  = 1;
     textcolor = textbgcolor = 0xFFFF;
     wrap      = true;
     _cp437    = false;
@@ -772,7 +796,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP. 
+   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP.
    Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
    C Array can be directly used with this function.
    There is no RAM-resident version of this function; if generating bitmaps
@@ -807,7 +831,7 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y) pos.  
+   @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified (x,y) pos.
    Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -829,7 +853,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a RAM-resident 8-bit image (grayscale) at the specified (x,y) pos.  
+   @brief   Draw a RAM-resident 8-bit image (grayscale) at the specified (x,y) pos.
    Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -916,7 +940,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   @brief   Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.
    For 16-bit display devices; no color reduction performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -938,7 +962,7 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.  
+   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position.
    For 16-bit display devices; no color reduction performed.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
@@ -1032,13 +1056,31 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y,
 /**************************************************************************/
 void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
   uint16_t color, uint16_t bg, uint8_t size) {
+    drawChar(x, y, c, color, bg, size, size);
+}
+
+// Draw a character
+/**************************************************************************/
+/*!
+   @brief   Draw a single character
+    @param    x   Bottom left corner x coordinate
+    @param    y   Bottom left corner y coordinate
+    @param    c   The 8-bit font-indexed character (likely ascii)
+    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    bg 16-bit 5-6-5 Color to fill background with (if same as color, no background)
+    @param    size_x  Font magnification level in X-axis, 1 is 'original' size
+    @param    size_y  Font magnification level in Y-axis, 1 is 'original' size
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
+  uint16_t color, uint16_t bg, uint8_t size_x, uint8_t size_y) {
 
     if(!gfxFont) { // 'Classic' built-in font
 
         if((x >= _width)            || // Clip right
            (y >= _height)           || // Clip bottom
-           ((x + 6 * size - 1) < 0) || // Clip left
-           ((y + 8 * size - 1) < 0))   // Clip top
+           ((x + 6 * size_x - 1) < 0) || // Clip left
+           ((y + 8 * size_y - 1) < 0))   // Clip top
             return;
 
         if(!_cp437 && (c >= 176)) c++; // Handle 'classic' charset behavior
@@ -1048,21 +1090,21 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
             uint8_t line = pgm_read_byte(&font[c * 5 + i]);
             for(int8_t j=0; j<8; j++, line >>= 1) {
                 if(line & 1) {
-                    if(size == 1)
+                    if(size_x == 1 && size_y == 1)
                         writePixel(x+i, y+j, color);
                     else
-                        writeFillRect(x+i*size, y+j*size, size, size, color);
+                        writeFillRect(x+i*size_x, y+j*size_y, size_x, size_y, color);
                 } else if(bg != color) {
-                    if(size == 1)
+                    if(size_x == 1 && size_y == 1)
                         writePixel(x+i, y+j, bg);
                     else
-                        writeFillRect(x+i*size, y+j*size, size, size, bg);
+                        writeFillRect(x+i*size_x, y+j*size_y, size_x, size_y, bg);
                 }
             }
         }
         if(bg != color) { // If opaque, draw vertical line for last column
-            if(size == 1) writeFastVLine(x+5, y, 8, bg);
-            else          writeFillRect(x+5*size, y, size, 8*size, bg);
+            if(size_x == 1 && size_y == 1) writeFastVLine(x+5, y, 8, bg);
+            else          writeFillRect(x+5*size_x, y, size_x, 8*size_y, bg);
         }
         endWrite();
 
@@ -1073,8 +1115,8 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         // drawChar() directly with 'bad' characters of font may cause mayhem!
 
         c -= (uint8_t)pgm_read_byte(&gfxFont->first);
-        GFXglyph *glyph  = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
-        uint8_t  *bitmap = (uint8_t *)pgm_read_pointer(&gfxFont->bitmap);
+        GFXglyph *glyph  = pgm_read_glyph_ptr(gfxFont, c);
+        uint8_t  *bitmap = pgm_read_bitmap_ptr(gfxFont);
 
         uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
         uint8_t  w  = pgm_read_byte(&glyph->width),
@@ -1084,7 +1126,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         uint8_t  xx, yy, bits = 0, bit = 0;
         int16_t  xo16 = 0, yo16 = 0;
 
-        if(size > 1) {
+        if(size_x > 1 || size_y > 1) {
             xo16 = xo;
             yo16 = yo;
         }
@@ -1114,11 +1156,11 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
                     bits = pgm_read_byte(&bitmap[bo++]);
                 }
                 if(bits & 0x80) {
-                    if(size == 1) {
+                    if(size_x == 1 && size_y == 1) {
                         writePixel(x+xo+xx, y+yo+yy, color);
                     } else {
-                        writeFillRect(x+(xo16+xx)*size, y+(yo16+yy)*size,
-                          size, size, color);
+                        writeFillRect(x+(xo16+xx)*size_x, y+(yo16+yy)*size_y,
+                          size_x, size_y, color);
                     }
                 }
                 bits <<= 1;
@@ -1139,39 +1181,38 @@ size_t Adafruit_GFX::write(uint8_t c) {
 
         if(c == '\n') {                        // Newline?
             cursor_x  = 0;                     // Reset x to zero,
-            cursor_y += textsize * 8;          // advance y one line
+            cursor_y += textsize_y * 8;        // advance y one line
         } else if(c != '\r') {                 // Ignore carriage returns
-            if(wrap && ((cursor_x + textsize * 6) > _width)) { // Off right?
+            if(wrap && ((cursor_x + textsize_x * 6) > _width)) { // Off right?
                 cursor_x  = 0;                 // Reset x to zero,
-                cursor_y += textsize * 8;      // advance y one line
+                cursor_y += textsize_y * 8;    // advance y one line
             }
-            drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
-            cursor_x += textsize * 6;          // Advance x one char
+            drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize_x, textsize_y);
+            cursor_x += textsize_x * 6;          // Advance x one char
         }
 
     } else { // Custom font
 
         if(c == '\n') {
             cursor_x  = 0;
-            cursor_y += (int16_t)textsize *
+            cursor_y += (int16_t)textsize_y *
                         (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
         } else if(c != '\r') {
             uint8_t first = pgm_read_byte(&gfxFont->first);
             if((c >= first) && (c <= (uint8_t)pgm_read_byte(&gfxFont->last))) {
-                GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(
-                  &gfxFont->glyph))[c - first]);
+                GFXglyph *glyph  = pgm_read_glyph_ptr(gfxFont, c - first);
                 uint8_t   w     = pgm_read_byte(&glyph->width),
                           h     = pgm_read_byte(&glyph->height);
                 if((w > 0) && (h > 0)) { // Is there an associated bitmap?
                     int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset); // sic
-                    if(wrap && ((cursor_x + textsize * (xo + w)) > _width)) {
+                    if(wrap && ((cursor_x + textsize_x * (xo + w)) > _width)) {
                         cursor_x  = 0;
-                        cursor_y += (int16_t)textsize *
+                        cursor_y += (int16_t)textsize_y *
                           (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
                     }
-                    drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
+                    drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize_x, textsize_y);
                 }
-                cursor_x += (uint8_t)pgm_read_byte(&glyph->xAdvance) * (int16_t)textsize;
+                cursor_x += (uint8_t)pgm_read_byte(&glyph->xAdvance) * (int16_t)textsize_x;
             }
         }
 
@@ -1186,7 +1227,19 @@ size_t Adafruit_GFX::write(uint8_t c) {
 */
 /**************************************************************************/
 void Adafruit_GFX::setTextSize(uint8_t s) {
-    textsize = (s > 0) ? s : 1;
+    setTextSize(s, s);
+}
+
+/**************************************************************************/
+/*!
+    @brief   Set text 'magnification' size. Each increase in s makes 1 pixel that much bigger.
+    @param  s_x  Desired text width magnification level in X-axis. 1 is default
+    @param  s_y  Desired text width magnification level in Y-axis. 1 is default
+*/
+/**************************************************************************/
+void Adafruit_GFX::setTextSize(uint8_t s_x, uint8_t s_y) {
+    textsize_x = (s_x > 0) ? s_x : 1;
+    textsize_y = (s_y > 0) ? s_y : 1;
 }
 
 /**************************************************************************/
@@ -1253,32 +1306,32 @@ void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
 
         if(c == '\n') { // Newline?
             *x  = 0;    // Reset x to zero, advance y by one line
-            *y += textsize * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+            *y += textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
         } else if(c != '\r') { // Not a carriage return; is normal char
             uint8_t first = pgm_read_byte(&gfxFont->first),
                     last  = pgm_read_byte(&gfxFont->last);
             if((c >= first) && (c <= last)) { // Char present in this font?
-                GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(
-                  &gfxFont->glyph))[c - first]);
+                GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c - first);
                 uint8_t gw = pgm_read_byte(&glyph->width),
                         gh = pgm_read_byte(&glyph->height),
                         xa = pgm_read_byte(&glyph->xAdvance);
                 int8_t  xo = pgm_read_byte(&glyph->xOffset),
                         yo = pgm_read_byte(&glyph->yOffset);
-                if(wrap && ((*x+(((int16_t)xo+gw)*textsize)) > _width)) {
+                if(wrap && ((*x+(((int16_t)xo+gw)*textsize_x)) > _width)) {
                     *x  = 0; // Reset x to zero, advance y by one line
-                    *y += textsize * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+                    *y += textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
                 }
-                int16_t ts = (int16_t)textsize,
-                        x1 = *x + xo * ts,
-                        y1 = *y + yo * ts,
-                        x2 = x1 + gw * ts - 1,
-                        y2 = y1 + gh * ts - 1;
+                int16_t tsx = (int16_t)textsize_x,
+                        tsy = (int16_t)textsize_y,
+                        x1 = *x + xo * tsx,
+                        y1 = *y + yo * tsy,
+                        x2 = x1 + gw * tsx - 1,
+                        y2 = y1 + gh * tsy - 1;
                 if(x1 < *minx) *minx = x1;
                 if(y1 < *miny) *miny = y1;
                 if(x2 > *maxx) *maxx = x2;
                 if(y2 > *maxy) *maxy = y2;
-                *x += xa * ts;
+                *x += xa * tsx;
             }
         }
 
@@ -1286,20 +1339,20 @@ void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y,
 
         if(c == '\n') {                     // Newline?
             *x  = 0;                        // Reset x to zero,
-            *y += textsize * 8;             // advance y one line
+            *y += textsize_y * 8;           // advance y one line
             // min/max x/y unchaged -- that waits for next 'normal' character
         } else if(c != '\r') {  // Normal char; ignore carriage returns
-            if(wrap && ((*x + textsize * 6) > _width)) { // Off right?
+            if(wrap && ((*x + textsize_x * 6) > _width)) { // Off right?
                 *x  = 0;                    // Reset x to zero,
-                *y += textsize * 8;         // advance y one line
+                *y += textsize_y * 8;       // advance y one line
             }
-            int x2 = *x + textsize * 6 - 1, // Lower-right pixel of char
-                y2 = *y + textsize * 8 - 1;
+            int x2 = *x + textsize_x * 6 - 1, // Lower-right pixel of char
+                y2 = *y + textsize_y * 8 - 1;
             if(x2 > *maxx) *maxx = x2;      // Track max x, y
             if(y2 > *maxy) *maxy = y2;
             if(*x < *minx) *minx = *x;      // Track min x, y
             if(*y < *miny) *miny = *y;
-            *x += textsize * 6;             // Advance x one char
+            *x += textsize_x * 6;             // Advance x one char
         }
     }
 }
@@ -1443,6 +1496,33 @@ void Adafruit_GFX_Button::initButton(
 
 /**************************************************************************/
 /*!
+   @brief    Initialize button with our desired color/size/settings
+   @param    gfx     Pointer to our display so we can draw to it!
+   @param    x       The X coordinate of the center of the button
+   @param    y       The Y coordinate of the center of the button
+   @param    w       Width of the buttton
+   @param    h       Height of the buttton
+   @param    outline  Color of the outline (16-bit 5-6-5 standard)
+   @param    fill  Color of the button fill (16-bit 5-6-5 standard)
+   @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
+   @param    label  Ascii string of the text inside the button
+   @param    textsize_x The font magnification in X-axis of the label text
+   @param    textsize_y The font magnification in Y-axis of the label text
+*/
+/**************************************************************************/
+// Classic initButton() function: pass center & size
+void Adafruit_GFX_Button::initButton(
+ Adafruit_GFX *gfx, int16_t x, int16_t y, uint16_t w, uint16_t h,
+ uint16_t outline, uint16_t fill, uint16_t textcolor,
+ char *label, uint8_t textsize_x, uint8_t textsize_y)
+{
+  // Tweak arguments and pass to the newer initButtonUL() function...
+  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill,
+    textcolor, label, textsize_x, textsize_y);
+}
+
+/**************************************************************************/
+/*!
    @brief    Initialize button with our desired color/size/settings, with upper-left coordinates
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x1       The X coordinate of the Upper-Left corner of the button
@@ -1461,6 +1541,30 @@ void Adafruit_GFX_Button::initButtonUL(
  uint16_t outline, uint16_t fill, uint16_t textcolor,
  char *label, uint8_t textsize)
 {
+  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, label, textsize, textsize);
+}
+
+/**************************************************************************/
+/*!
+   @brief    Initialize button with our desired color/size/settings, with upper-left coordinates
+   @param    gfx     Pointer to our display so we can draw to it!
+   @param    x1       The X coordinate of the Upper-Left corner of the button
+   @param    y1       The Y coordinate of the Upper-Left corner of the button
+   @param    w       Width of the buttton
+   @param    h       Height of the buttton
+   @param    outline  Color of the outline (16-bit 5-6-5 standard)
+   @param    fill  Color of the button fill (16-bit 5-6-5 standard)
+   @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
+   @param    label  Ascii string of the text inside the button
+   @param    textsize_x The font magnification in X-axis of the label text
+   @param    textsize_y The font magnification in Y-axis of the label text
+*/
+/**************************************************************************/
+void Adafruit_GFX_Button::initButtonUL(
+ Adafruit_GFX *gfx, int16_t x1, int16_t y1, uint16_t w, uint16_t h,
+ uint16_t outline, uint16_t fill, uint16_t textcolor,
+ char *label, uint8_t textsize_x, uint8_t textsize_y)
+{
   _x1           = x1;
   _y1           = y1;
   _w            = w;
@@ -1468,7 +1572,8 @@ void Adafruit_GFX_Button::initButtonUL(
   _outlinecolor = outline;
   _fillcolor    = fill;
   _textcolor    = textcolor;
-  _textsize     = textsize;
+  _textsize_x   = textsize_x;
+  _textsize_y   = textsize_y;
   _gfx          = gfx;
   strncpy(_label, label, 9);
 }
@@ -1496,10 +1601,10 @@ void Adafruit_GFX_Button::drawButton(boolean inverted) {
   _gfx->fillRoundRect(_x1, _y1, _w, _h, r, fill);
   _gfx->drawRoundRect(_x1, _y1, _w, _h, r, outline);
 
-  _gfx->setCursor(_x1 + (_w/2) - (strlen(_label) * 3 * _textsize),
-    _y1 + (_h/2) - (4 * _textsize));
+  _gfx->setCursor(_x1 + (_w/2) - (strlen(_label) * 3 * _textsize_x),
+    _y1 + (_h/2) - (4 * _textsize_y));
   _gfx->setTextColor(text);
-  _gfx->setTextSize(_textsize);
+  _gfx->setTextSize(_textsize_x, _textsize_y);
   _gfx->print(_label);
 }
 

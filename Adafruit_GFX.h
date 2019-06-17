@@ -95,6 +95,8 @@ class Adafruit_GFX : public Print {
       uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
     drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
       uint16_t bg, uint8_t size),
+    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+	      uint16_t bg, uint8_t size_x, uint8_t size_y),
     getTextBounds(const char *string, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
@@ -102,6 +104,7 @@ class Adafruit_GFX : public Print {
     getTextBounds(const String &str, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
     setTextSize(uint8_t s),
+    setTextSize(uint8_t sx, uint8_t sy),
     setFont(const GFXfont *f = NULL);
 
   /**********************************************************************/
@@ -224,7 +227,8 @@ class Adafruit_GFX : public Print {
     textcolor,      ///< 16-bit background color for print()
     textbgcolor;    ///< 16-bit text color for print()
   uint8_t
-    textsize,       ///< Desired magnification of text to print()
+    textsize_x,      ///< Desired magnification in X-axis of text to print()
+    textsize_y,      ///< Desired magnification in Y-axis of text to print()
     rotation;       ///< Display rotation (0 thru 3)
   boolean
     wrap,           ///< If set, 'wrap' text at right edge of display
@@ -243,10 +247,16 @@ class Adafruit_GFX_Button {
   void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
    uint16_t textcolor, char *label, uint8_t textsize);
+  void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
+   uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
+   uint16_t textcolor, char *label, uint8_t textsize_x, uint8_t textsize_y);
   // New/alt initButton() uses upper-left corner & size
   void initButtonUL(Adafruit_GFX *gfx, int16_t x1, int16_t y1,
    uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
    uint16_t textcolor, char *label, uint8_t textsize);
+  void initButtonUL(Adafruit_GFX *gfx, int16_t x1, int16_t y1,
+   uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
+   uint16_t textcolor, char *label, uint8_t textsize_x, uint8_t textsize_y);
   void drawButton(boolean inverted = false);
   boolean contains(int16_t x, int16_t y);
 
@@ -273,7 +283,8 @@ class Adafruit_GFX_Button {
   Adafruit_GFX *_gfx;
   int16_t       _x1, _y1; // Coordinates of top-left corner
   uint16_t      _w, _h;
-  uint8_t       _textsize;
+  uint8_t       _textsize_x;
+  uint8_t       _textsize_y;
   uint16_t      _outlinecolor, _fillcolor, _textcolor;
   char          _label[10];
 
