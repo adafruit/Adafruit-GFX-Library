@@ -120,6 +120,8 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
   #if defined(CORE_TEENSY)
    #if !defined(KINETISK)
     dcPinMask          = digitalPinToBitMask(dc);
+    swspi.sckPinMask   = digitalPinToBitMask(sck);
+    swspi.mosiPinMask  = digitalPinToBitMask(mosi);
    #endif
     dcPortSet          = portSetRegister(dc);
     dcPortClr          = portClearRegister(dc);
@@ -142,6 +144,9 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
     }
     if(miso >= 0) {
         swspi.misoPort = portInputRegister(miso);
+        #if !defined(KINETISK)
+        swspi.misoPinMask = digitalPinToBitMask(miso);
+        #endif
     } else {
         swspi.misoPort = portInputRegister(dc);
     }
@@ -1981,6 +1986,9 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
     *swspi.sckPortSet = 1;
   #else  // !KINETISK
     *swspi.sckPortSet = swspi.sckPinMask;
+    #if defined(__IMXRT1052__) || defined(__IMXRT1062__)  // Teensy 4.x
+    for(volatile uint8_t i=0; i<1; i++);
+    #endif  
   #endif
  #else  // !HAS_PORT_SET_CLR
     *swspi.sckPort   |= swspi.sckPinMaskSet;
@@ -2003,6 +2011,9 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
     *swspi.sckPortClr = 1;
   #else  // !KINETISK
     *swspi.sckPortClr = swspi.sckPinMask;
+    #if defined(__IMXRT1052__) || defined(__IMXRT1062__)  // Teensy 4.x
+    for(volatile uint8_t i=0; i<1; i++);
+    #endif  
   #endif
  #else  // !HAS_PORT_SET_CLR
     *swspi.sckPort   &= swspi.sckPinMaskClr;
