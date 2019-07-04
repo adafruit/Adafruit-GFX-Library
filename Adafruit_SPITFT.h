@@ -28,30 +28,30 @@
 // HARDWARE CONFIG ---------------------------------------------------------
 
 #if defined(__AVR__)
- typedef uint8_t  PORT_t;            ///< PORT values are 8-bit
+ typedef uint8_t  ADAGFX_PORT_t;            ///< PORT values are 8-bit
  #define USE_FAST_PINIO              ///< Use direct PORT register access
 #elif defined(ARDUINO_STM32_FEATHER) // WICED
  typedef class HardwareSPI SPIClass; ///< SPI is a bit odd on WICED
- typedef uint32_t PORT_t;            ///< PORT values are 32-bit
+ typedef uint32_t ADAGFX_PORT_t;            ///< PORT values are 32-bit
 #elif defined(__arm__)
  #if defined(ARDUINO_ARCH_SAMD)
   // Adafruit M0, M4
-  typedef uint32_t PORT_t;           ///< PORT values are 32-bit
+  typedef uint32_t ADAGFX_PORT_t;           ///< PORT values are 32-bit
   #define USE_FAST_PINIO             ///< Use direct PORT register access
   #define HAS_PORT_SET_CLR           ///< PORTs have set & clear registers
  #elif defined(CORE_TEENSY)
   // PJRC Teensy 4.x
   #if defined(__IMXRT1052__) || defined(__IMXRT1062__)  // Teensy 4.x
-  typedef uint32_t PORT_t;            ///< PORT values are 32-bit
+  typedef uint32_t ADAGFX_PORT_t;            ///< PORT values are 32-bit
   // PJRC Teensy 3.x
   #else
-  typedef uint8_t PORT_t;            ///< PORT values are 8-bit
+  typedef uint8_t ADAGFX_PORT_t;            ///< PORT values are 8-bit
   #endif
   #define USE_FAST_PINIO             ///< Use direct PORT register access
   #define HAS_PORT_SET_CLR           ///< PORTs have set & clear registers
  #else
   // Arduino Due?
-  typedef uint32_t PORT_t;           ///< PORT values are 32-bit
+  typedef uint32_t ADAGFX_PORT_t;           ///< PORT values are 32-bit
   // USE_FAST_PINIO not available here (yet)...Due has a totally different
   // GPIO register set and will require some changes elsewhere (e.g. in
   // constructors especially).
@@ -61,9 +61,9 @@
  // but don't worry about it too much...the digitalWrite() implementation
  // on these platforms is reasonably efficient and already RAM-resident,
  // only gotcha then is no parallel connection support for now.
- typedef uint32_t PORT_t;            ///< PORT values are 32-bit
+ typedef uint32_t ADAGFX_PORT_t;            ///< PORT values are 32-bit
 #endif // end !ARM
-typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
+typedef volatile  ADAGFX_PORT_t* PORTreg_t; ///< PORT register type
 
 #if defined(__AVR__)
  #define DEFAULT_SPI_FREQ  8000000L  ///< Hardware SPI default speed
@@ -412,19 +412,19 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         PORTreg_t sckPortSet;      ///< PORT register for SCK SET
         PORTreg_t sckPortClr;      ///< PORT register for SCK CLEAR
  #if !defined(KINETISK)
-        PORT_t    mosiPinMask;     ///< Bitmask for MOSI
-        PORT_t    sckPinMask;      ///< Bitmask for SCK
+        ADAGFX_PORT_t    mosiPinMask;     ///< Bitmask for MOSI
+        ADAGFX_PORT_t    sckPinMask;      ///< Bitmask for SCK
  #endif // end !KINETISK
 #else  // !HAS_PORT_SET_CLR
         PORTreg_t mosiPort;        ///< PORT register for MOSI
         PORTreg_t sckPort;         ///< PORT register for SCK
-        PORT_t    mosiPinMaskSet;  ///< Bitmask for MOSI SET (OR)
-        PORT_t    mosiPinMaskClr;  ///< Bitmask for MOSI CLEAR (AND)
-        PORT_t    sckPinMaskSet;   ///< Bitmask for SCK SET (OR bitmask)
-        PORT_t    sckPinMaskClr;   ///< Bitmask for SCK CLEAR (AND)
+        ADAGFX_PORT_t    mosiPinMaskSet;  ///< Bitmask for MOSI SET (OR)
+        ADAGFX_PORT_t    mosiPinMaskClr;  ///< Bitmask for MOSI CLEAR (AND)
+        ADAGFX_PORT_t    sckPinMaskSet;   ///< Bitmask for SCK SET (OR bitmask)
+        ADAGFX_PORT_t    sckPinMaskClr;   ///< Bitmask for SCK CLEAR (AND)
 #endif // end HAS_PORT_SET_CLR
  #if !defined(KINETISK)
-        PORT_t    misoPinMask;     ///< Bitmask for MISO
+        ADAGFX_PORT_t    misoPinMask;     ///< Bitmask for MISO
  #endif // end !KINETISK
 #endif // end USE_FAST_PINIO
         int8_t    _mosi;           ///< MOSI pin #
@@ -456,19 +456,19 @@ class Adafruit_SPITFT : public Adafruit_GFX {
         PORTreg_t rdPortSet;       ///< PORT register for read strobe SET
         PORTreg_t rdPortClr;       ///< PORT register for read strobe CLEAR
  #if !defined(KINETISK)
-        PORT_t    wrPinMask;       ///< Bitmask for write strobe
+        ADAGFX_PORT_t    wrPinMask;       ///< Bitmask for write strobe
  #endif // end !KINETISK
-        PORT_t    rdPinMask;       ///< Bitmask for read strobe
+        ADAGFX_PORT_t    rdPinMask;       ///< Bitmask for read strobe
 #else  // !HAS_PORT_SET_CLR
         // Port direction register pointer is always 8-bit regardless of
         // PORTreg_t -- even if 32-bit port, we modify a byte-aligned 8 bits.
         volatile uint8_t *portDir; ///< PORT direction register
         PORTreg_t wrPort;          ///< PORT register for write strobe
         PORTreg_t rdPort;          ///< PORT register for read strobe
-        PORT_t    wrPinMaskSet;    ///< Bitmask for write strobe SET (OR)
-        PORT_t    wrPinMaskClr;    ///< Bitmask for write strobe CLEAR (AND)
-        PORT_t    rdPinMaskSet;    ///< Bitmask for read strobe SET (OR)
-        PORT_t    rdPinMaskClr;    ///< Bitmask for read strobe CLEAR (AND)
+        ADAGFX_PORT_t    wrPinMaskSet;    ///< Bitmask for write strobe SET (OR)
+        ADAGFX_PORT_t    wrPinMaskClr;    ///< Bitmask for write strobe CLEAR (AND)
+        ADAGFX_PORT_t    rdPinMaskSet;    ///< Bitmask for read strobe SET (OR)
+        ADAGFX_PORT_t    rdPinMaskClr;    ///< Bitmask for read strobe CLEAR (AND)
 #endif // end HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
         int8_t    _d0;             ///< Data pin 0 #
@@ -492,14 +492,14 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
  #if !defined(KINETISK)
-    PORT_t        csPinMask;       ///< Bitmask for chip select
-    PORT_t        dcPinMask;       ///< Bitmask for data/command
+    ADAGFX_PORT_t        csPinMask;       ///< Bitmask for chip select
+    ADAGFX_PORT_t        dcPinMask;       ///< Bitmask for data/command
  #endif // end !KINETISK
 #else  // !HAS_PORT_SET_CLR
-    PORT_t        csPinMaskSet;    ///< Bitmask for chip select SET (OR)
-    PORT_t        csPinMaskClr;    ///< Bitmask for chip select CLEAR (AND)
-    PORT_t        dcPinMaskSet;    ///< Bitmask for data/command SET (OR)
-    PORT_t        dcPinMaskClr;    ///< Bitmask for data/command CLEAR (AND)
+    ADAGFX_PORT_t        csPinMaskSet;    ///< Bitmask for chip select SET (OR)
+    ADAGFX_PORT_t        csPinMaskClr;    ///< Bitmask for chip select CLEAR (AND)
+    ADAGFX_PORT_t        dcPinMaskSet;    ///< Bitmask for data/command SET (OR)
+    ADAGFX_PORT_t        dcPinMaskClr;    ///< Bitmask for data/command CLEAR (AND)
 #endif // end HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
     uint8_t       connection;      ///< TFT_HARD_SPI, TFT_SOFT_SPI, etc.
