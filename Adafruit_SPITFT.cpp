@@ -51,6 +51,7 @@
 #endif // end PORT_IOBUS
 
 #if defined(USE_SPI_DMA)
+ #pragma message ("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
  #include <Adafruit_ZeroDMA.h>
  #include "wiring_private.h"  // pinPeripheral() function
  #include <malloc.h>          // memalign() function
