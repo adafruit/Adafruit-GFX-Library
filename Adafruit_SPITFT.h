@@ -82,7 +82,6 @@ typedef volatile  PORT_t* PORTreg_t; ///< PORT register type
 #endif
 
 #if defined(USE_SPI_DMA)
- #pragma message ("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
  #include <Adafruit_ZeroDMA.h>
 #endif
 
