@@ -1794,17 +1794,19 @@ inline void Adafruit_SPITFT::SPI_BEGIN_TRANSACTION(void) {
 #if defined(SPI_HAS_TRANSACTION)
         hwspi._spi->beginTransaction(hwspi.settings);
 #else // No transactions, configure SPI manually...
- #if defined(__AVR__) || defined(TEENSYDUINO) || defined(ARDUINO_ARCH_STM32F1)
+ #if !defined(ARDUINO_ARCH_MBED)
+   #if defined(__AVR__) || defined(TEENSYDUINO) || defined(ARDUINO_ARCH_STM32F1)
         hwspi._spi->setClockDivider(SPI_CLOCK_DIV2);
- #elif defined(__arm__)
+     #elif defined(__arm__)
         hwspi._spi->setClockDivider(11);
- #elif defined(ESP8266) || defined(ESP32)
+     #elif defined(ESP8266) || defined(ESP32)
         hwspi._spi->setFrequency(hwspi._freq);
- #elif defined(RASPI) || defined(ARDUINO_ARCH_STM32F1)
+     #elif defined(RASPI) || defined(ARDUINO_ARCH_STM32F1)
         hwspi._spi->setClock(hwspi._freq);
- #endif
+     #endif
         hwspi._spi->setBitOrder(MSBFIRST);
         hwspi._spi->setDataMode(hwspi._mode);
+   #endif //end ARDUINO_ARCH_EMBED
 #endif // end !SPI_HAS_TRANSACTION
     }
 }
