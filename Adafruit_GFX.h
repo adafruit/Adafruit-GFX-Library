@@ -376,4 +376,4 @@ class GFXcanvas16 : public Adafruit_GFX {
   uint16_t *buffer;
 };
 
-#endif // _ADAFRUIT_GFX_H 
+#endif // _ADAFRUIT_GFX_H
