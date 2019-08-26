@@ -2011,4 +2011,4 @@ void GFXcanvas16::byteSwap(void) {
         uint32_t i, pixels = WIDTH * HEIGHT;
         for(i=0; i<pixels; i++) buffer[i] = __builtin_bswap16(buffer[i]);
     }
-} 
+}
