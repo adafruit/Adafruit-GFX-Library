@@ -9,6 +9,7 @@
 #endif
 #include "gfxfont.h"
 
+
 /// A generic graphics superclass that can handle all sorts of drawing. At a minimum you can subclass and provide drawPixel(). At a maximum you can do a ton of overriding to optimize. Used for any/all Adafruit displays!
 class Adafruit_GFX : public Print {
 
@@ -93,9 +94,9 @@ class Adafruit_GFX : public Print {
       int16_t w, int16_t h),
     drawRGBBitmap(int16_t x, int16_t y,
       uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h),
-    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+    drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color,
       uint16_t bg, uint8_t size),
-    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+    drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color,
 	      uint16_t bg, uint8_t size_x, uint8_t size_y),
     getTextBounds(const char *string, int16_t x, int16_t y,
       int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
@@ -106,6 +107,10 @@ class Adafruit_GFX : public Print {
     setTextSize(uint8_t s),
     setTextSize(uint8_t sx, uint8_t sy),
     setFont(const GFXfont *f = NULL);
+
+  // Serial UTF-8 decoder
+  uint16_t decodeUTF8(uint8_t c);
+
 
   /**********************************************************************/
   /*!
@@ -163,6 +168,18 @@ class Adafruit_GFX : public Print {
   /**********************************************************************/
   void cp437(boolean x=true) { _cp437 = x; }
 
+ /**********************************************************************/
+  /*!
+    @brief  Enable (or disable) UTF-8-compatible charset in custom made fonts
+            By default, the font.h files boundled to the library use ASCII charset
+	    as UTF-8 fonts need more memory as many AVR chips can offer.
+            Pass 'true' to this function if you are willing to use UTF-8 fonts that
+            you generated whith fontconvert and also your board has enough free memory.
+    @param  x  true = enable (new behavior), false = disable (old behavior)
+  */
+  /**********************************************************************/
+  void utf8(boolean x=true) { _utf8 = x; }
+
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
 #else
@@ -211,6 +228,10 @@ class Adafruit_GFX : public Print {
   /************************************************************************/
   int16_t getCursorY(void) const { return cursor_y; };
 
+  // Set or get an arbitrary library attribute or configuration option
+  void    setAttribute(uint8_t id = 0, uint8_t a = 0);
+  uint8_t getAttribute(uint8_t id = 0);
+
  protected:
   void
     charBounds(char c, int16_t *x, int16_t *y,
@@ -232,9 +253,14 @@ class Adafruit_GFX : public Print {
     rotation;       ///< Display rotation (0 thru 3)
   boolean
     wrap,           ///< If set, 'wrap' text at right edge of display
-    _cp437;         ///< If set, use correct CP437 charset (default is off)
+    _cp437,         ///< If set, use correct CP437 charset (default is off)
+    _utf8;         ///< If set, use correct UTF charset (default is off)
   GFXfont
     *gfxFont;       ///< Pointer to special font
+
+  uint8_t  decoderState = 0;   // UTF-8 decoder state
+  uint16_t decoderBuffer;      // Unicode code-point buffer
+
 };
 
 
@@ -350,4 +376,4 @@ class GFXcanvas16 : public Adafruit_GFX {
   uint16_t *buffer;
 };
 
-#endif // _ADAFRUIT_GFX_H
+#endif // _ADAFRUIT_GFX_H 
