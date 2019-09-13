@@ -889,6 +889,19 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 }
 
 /*!
+    @brief  Allow changing the SPI clock speed after initialization
+    @param  freq Desired frequency of SPI clock, may not be the
+    end frequency you get based on what the chip can do!
+*/
+void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
+#if defined(SPI_HAS_TRANSACTION)
+  hwspi.settings = SPISettings(freq, MSBFIRST, hwspi._mode);
+#else
+  hwspi._freq    = freq;    // Save freq value for later
+#endif
+}
+
+/*!
     @brief  Call before issuing command(s) or data to display. Performs
             chip-select (if required) and starts an SPI transaction (if
             using hardware SPI and transactions are supported). Required

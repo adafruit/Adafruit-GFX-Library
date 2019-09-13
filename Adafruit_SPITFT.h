@@ -71,7 +71,7 @@ typedef volatile  ADAGFX_PORT_t* PORTreg_t; ///< PORT register type
  #define DEFAULT_SPI_FREQ 16000000L  ///< Hardware SPI default speed
 #endif
 
-#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || defined(ADAFRUIT_PYGAMER_M4_EXPRESS) || defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
+#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || defined(ADAFRUIT_PYGAMER_M4_EXPRESS)|| defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
  #define USE_SPI_DMA                 ///< Auto DMA if using PyPortal
 #else
  //#define USE_SPI_DMA               ///< If set, use DMA if available
@@ -190,6 +190,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
     // 1 for SPI_MODE1, etc...use ONLY the SPI_MODEn defines! Only!
     // Name is outdated (interface may be parallel) but for compatibility:
     void         initSPI(uint32_t freq = 0, uint8_t spiMode = SPI_MODE0);
+    void         setSPISpeed(uint32_t freq);
     // Chip select and/or hardware SPI transaction start as needed:
     void         startWrite(void);
     // Chip deselect and/or hardware SPI transaction end as needed:
