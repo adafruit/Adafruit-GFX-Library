@@ -105,6 +105,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a95164c088118b25d8e3efe48f9e86dbe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a95164c088118b25d8e3efe48f9e86dbe">initSPI</a> (uint32_t freq=0, uint8_t spiMode=SPI_MODE0)</td></tr>
 <tr class="memdesc:a95164c088118b25d8e3efe48f9e86dbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure microcontroller pins for TFT interfacing. Typically called by a subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function.  <a href="#a95164c088118b25d8e3efe48f9e86dbe">More...</a><br /></td></tr>
 <tr class="separator:a95164c088118b25d8e3efe48f9e86dbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4eb7f9703e15a7a289e61f5bc450ca4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a4eb7f9703e15a7a289e61f5bc450ca4d">setSPISpeed</a> (uint32_t freq)</td></tr>
+<tr class="memdesc:a4eb7f9703e15a7a289e61f5bc450ca4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow changing the SPI clock speed after initialization.  <a href="#a4eb7f9703e15a7a289e61f5bc450ca4d">More...</a><br /></td></tr>
+<tr class="separator:a4eb7f9703e15a7a289e61f5bc450ca4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad15008e1d7d71ccc707f6efab2a86e6b"><td class="memItemLeft" align="right" valign="top"><a id="ad15008e1d7d71ccc707f6efab2a86e6b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b">startWrite</a> (void)</td></tr>
 <tr class="memdesc:ad15008e1d7d71ccc707f6efab2a86e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call before issuing command(s) or data to display. Performs chip-select (if required) and starts an SPI transaction (if using hardware SPI and transactions are supported). Required for all display types; not an SPI-specific function. <br /></td></tr>
@@ -972,6 +975,32 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Another anachronistically-named function; this is called even when the display connection is parallel (not SPI). Also, this could probably be made private...quite a few class functions were generously put in the public section. </dd></dl>
+
+</div>
+</div>
+<a id="a4eb7f9703e15a7a289e61f5bc450ca4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eb7f9703e15a7a289e61f5bc450ca4d">&#9670;&nbsp;</a></span>setSPISpeed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::setSPISpeed </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>freq</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allow changing the SPI clock speed after initialization. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">freq</td><td>Desired frequency of SPI clock, may not be the end frequency you get based on what the chip can do! </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
