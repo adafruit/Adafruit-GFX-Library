@@ -1,6 +1,5 @@
 language: c
 sudo: false
-dist: "trusty"
 cache:
   directories:
     - ~/arduino_ide
@@ -11,6 +10,13 @@ git:
 env:
   global:
      - PRETTYNAME="Adafruit GFX Library"
+
+addons:
+  apt:
+    packages:
+      - python3
+      - python3-pip
+      - python3-setuptools
 
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
