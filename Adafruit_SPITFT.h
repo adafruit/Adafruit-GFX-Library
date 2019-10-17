@@ -71,8 +71,10 @@ typedef volatile  ADAGFX_PORT_t* PORTreg_t; ///< PORT register type
  #define DEFAULT_SPI_FREQ 16000000L  ///< Hardware SPI default speed
 #endif
 
-#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || defined(ADAFRUIT_PYGAMER_M4_EXPRESS)|| defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
- #define USE_SPI_DMA                 ///< Auto DMA if using PyPortal
+#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || \
+    defined(ADAFRUIT_PYGAMER_M4_EXPRESS)|| defined(ADAFRUIT_MONSTER_M4SK_EXPRESS) \
+    defined(NRF52)
+ #define USE_SPI_DMA                 ///< Auto DMA
 #else
  //#define USE_SPI_DMA               ///< If set, use DMA if available
 #endif
@@ -82,11 +84,7 @@ typedef volatile  ADAGFX_PORT_t* PORTreg_t; ///< PORT register type
 // 4 bytes/pixel on display major axis + 8 bytes/pixel on minor axis,
 // e.g. 320x240 pixels = 320 * 4 + 240 * 8 = 3,200 bytes.
 
-#if !defined(ARDUINO_ARCH_SAMD)
- #undef USE_SPI_DMA                  ///< DMA currently for SAMD chips only
-#endif
-
-#if defined(USE_SPI_DMA)
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(__SAMD21__))
  #include <Adafruit_ZeroDMA.h>
 #endif
 
@@ -479,7 +477,7 @@ class Adafruit_SPITFT : public Adafruit_GFX {
 #if defined(__cplusplus) && (__cplusplus >= 201100)
     };                             ///< Only one interface is active
 #endif
-#if defined(USE_SPI_DMA) // Used by hardware SPI and tft8
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(__SAMD21__)) // Used by hardware SPI and tft8
     Adafruit_ZeroDMA dma;                  ///< DMA instance
     DmacDescriptor  *dptr          = NULL; ///< 1st descriptor
     DmacDescriptor  *descriptor    = NULL; ///< Allocated descriptor list
