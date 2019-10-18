@@ -50,8 +50,8 @@
 #define digitalPinToPort(P) (&(PORT_IOBUS->Group[g_APinDescription[P].ulPort]))
 #endif // end PORT_IOBUS
 
-#if defined(USE_SPI_DMA)
- #pragma message ("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+// #pragma message ("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
  #include <Adafruit_ZeroDMA.h>
  #include "wiring_private.h"  // pinPeripheral() function
  #include <malloc.h>          // memalign() function
@@ -648,7 +648,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
         delay(200);
     }
 
-#if defined(USE_SPI_DMA)
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
     if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
        (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
         // The DMA library needs to alloc at least one valid descriptor,
@@ -1003,7 +1003,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
     }
 
     return;
-#elif defined(USE_SPI_DMA)
+#elif defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
     if((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
         int     maxSpan     = maxFillLen / 2; // One scanline max
         uint8_t pixelBufIdx = 0;              // Active pixel buffer number
@@ -1076,14 +1076,14 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
         lastFillLen   = 0;
         if(block) {
             while(dma_busy);    // Wait for last line to complete
- #if defined(__SAMD51__) || defined(_SAMD21_)
+ #if defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO)
             if(connection == TFT_HARD_SPI) {
                 // See SAMD51/21 note in writeColor()
                 hwspi._spi->setDataMode(hwspi._mode);
             } else {
                 pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
             }
- #endif // end __SAMD51__ || _SAMD21_
+ #endif // end __SAMD51__ || ARDUINO_SAMD_ZERO
         }
         return;
     }
@@ -1103,16 +1103,16 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
             was used (as is the default case).
 */
 void Adafruit_SPITFT::dmaWait(void) {
-#if defined(USE_SPI_DMA)
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
     while(dma_busy);
- #if defined(__SAMD51__) || defined(_SAMD21_)
+ #if defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO)
     if(connection == TFT_HARD_SPI) {
         // See SAMD51/21 note in writeColor()
         hwspi._spi->setDataMode(hwspi._mode);
     } else {
         pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
     }
- #endif // end __SAMD51__ || _SAMD21_
+ #endif // end __SAMD51__ || ARDUINO_SAMD_ZERO
 #endif
 }
 
@@ -1175,7 +1175,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       return;
     }
 #else  // !ESP32
- #if defined(USE_SPI_DMA)
+ #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
     if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
        (len >= 16)) { // Don't bother with DMA on short pixel runs
         int i, d, numDescriptors;
@@ -1252,7 +1252,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         // turns out to be MUCH slower on many graphics operations (as when
         // drawing lines, pixel-by-pixel), perhaps because it's a volatile
         // type and doesn't cache. Working on this.
-  #if defined(__SAMD51__) || defined(_SAMD21_)
+  #if defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO)
         if(connection == TFT_HARD_SPI) {
             // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
             // state on completion. Workaround is to explicitly set it back...
