@@ -73,7 +73,7 @@ typedef volatile  ADAGFX_PORT_t* PORTreg_t; ///< PORT register type
 
 #if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYBADGE_M4_EXPRESS) || \
     defined(ADAFRUIT_PYGAMER_M4_EXPRESS)|| defined(ADAFRUIT_MONSTER_M4SK_EXPRESS) || \
-    defined(NRF52)
+    defined(NRF52_SERIES)
  #define USE_SPI_DMA                 ///< Auto DMA
 #else
  //#define USE_SPI_DMA               ///< If set, use DMA if available
