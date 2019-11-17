@@ -107,6 +107,11 @@ class Adafruit_GFX : public Print {
     setTextSize(uint8_t sx, uint8_t sy),
     setFont(const GFXfont *f = NULL);
 
+    // Overwriting text Albert
+    void printNew(const long value, const int chCount);
+    void printNew(const float value, const unsigned decimals, const int chCount);
+    void printNew(const String &newString, const String &oldString); 
+
   /**********************************************************************/
   /*!
     @brief  Set text cursor location
@@ -235,6 +240,11 @@ class Adafruit_GFX : public Print {
     _cp437;         ///< If set, use correct CP437 charset (default is off)
   GFXfont
     *gfxFont;       ///< Pointer to special font
+
+    // Overwriting text Albert
+    void getNumberBounds(const int chCount);
+    int16_t x, y, OriginalCursor_x, OriginalCursor_y;
+    uint16_t w, h, charWidth, char2Width;
 };
 
 

@@ -1459,6 +1459,48 @@ void Adafruit_GFX::invertDisplay(boolean i) {
 
 /***************************************************************************/
 
+/*!
+    @brief   Overwriting text Albert https://www.avdweb.nl/arduino/hardware-interfacing/ili9341-tft
+    @param   value  
+    @param   decimals   The number of decimals in a float value
+    @param   chCount    The number of characters of the longest value
+    @param   newString  This string will overwrite the oldString
+    @param   oldString  The string that has to be overwritten, the same as the previous printed string
+*/
+
+void Adafruit_GFX::printNew(const long value, const int chCount)
+{ getNumberBounds(chCount);
+  print(value); 
+  setCursor(OriginalCursor_x, OriginalCursor_y);  
+}
+
+void Adafruit_GFX::printNew(const float value, const unsigned decimals, const int chCount)
+{ getNumberBounds(chCount);
+  print(value, decimals); 
+  setCursor(OriginalCursor_x, OriginalCursor_y);  
+}
+
+void Adafruit_GFX::printNew(const String &newString, const String &oldString) // overloading needs const here
+{ OriginalCursor_x = cursor_x;
+  OriginalCursor_y = cursor_y;
+  getTextBounds(oldString.c_str(), OriginalCursor_x, OriginalCursor_y, &x, &y, &w, &h);
+  fillRect(x, y, w, h, textbgcolor); // textbgcolor is protected in Adafruit_GFX.h
+  print(newString.c_str()); 
+  setCursor(OriginalCursor_x, OriginalCursor_y);   
+}
+
+void Adafruit_GFX::getNumberBounds(const int chCount)
+{ OriginalCursor_x = cursor_x; 
+  OriginalCursor_y = cursor_y;
+  getTextBounds("3",  OriginalCursor_x, OriginalCursor_y, &x, &y, &charWidth, &h); // this code is not elegant but it works, could possibly be improved
+  getTextBounds("33", OriginalCursor_x, OriginalCursor_y, &x, &y, &char2Width, &h); // font '3' is the widest font
+  int space = char2Width-2*charWidth;
+  w = chCount*charWidth + (chCount-1)*space;
+  // Serial << x, y, w, h; // 0: 22 64 22 34 // 00: 22 64 48 34
+  // textbgcolor = ILI9341_GREEN; // testing with green background
+  fillRect(x, y, w, h, textbgcolor); // textbgcolor is protected in Adafruit_GFX.h 
+}
+
 /**************************************************************************/
 /*!
    @brief    Create a simple drawn button UI element
