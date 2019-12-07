@@ -592,7 +592,6 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
         }
 
     } else { // TFT_PARALLEL
-
         // Initialize data pins.  We were only passed d0, so scan
         // the pin description list looking for the other pins.
         // They'll be on the same PORT, and within the next 7 (or 15) bits
@@ -1768,29 +1767,6 @@ uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
  @param   dataBytes         A pointer to the Data bytes to send
  @param   numDataBytes      The number of bytes we should send
  */
-void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8_t numDataBytes) {
-    SPI_BEGIN_TRANSACTION();
-    if(_cs >= 0) SPI_CS_LOW();
-  
-    SPI_DC_LOW(); // Command mode
-    spiWrite(commandByte); // Send the command byte
-  
-    SPI_DC_HIGH();
-    for (int i=0; i<numDataBytes; i++) {
-      spiWrite(*dataBytes); // Send the data bytes
-      dataBytes++;
-    }
-  
-    if(_cs >= 0) SPI_CS_HIGH();
-    SPI_END_TRANSACTION();
-}
-
-/*!
- @brief   Adafruit_SPITFT Send Command handles complete sending of commands and const data
- @param   commandByte       The Command Byte
- @param   dataBytes         A pointer to the Data bytes to send
- @param   numDataBytes      The number of bytes we should send
- */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes) {
     SPI_BEGIN_TRANSACTION();
     if(_cs >= 0) SPI_CS_LOW();
@@ -1800,7 +1776,46 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
   
     SPI_DC_HIGH();
     for (int i=0; i<numDataBytes; i++) {
-      spiWrite(pgm_read_byte(dataBytes++)); // Send the data bytes
+      if((connection == TFT_PARALLEL) && tft8.wide) {
+        SPI_WRITE16(*(uint16_t *)dataBytes);
+        dataBytes += 2;
+      } else {
+        spiWrite(*dataBytes); // Send the data bytes
+        dataBytes++;
+      }
+    }
+  
+    if(_cs >= 0) SPI_CS_HIGH();
+    SPI_END_TRANSACTION();
+}
+
+/*!
+ @brief  Adafruit_SPITFT sendCommand16 handles complete sending of
+         commands and data for 16-bit parallel displays. Currently somewhat
+         rigged for the NT35510, which has the odd behavior of wanting
+         commands 16-bit, but subsequent data as 8-bit values, despite
+         the 16-bit bus (high byte is always 0). Also seems to require
+         issuing and incrementing address with each transfer.
+ @param  commandWord   The command word (16 bits)
+ @param  dataBytes     A pointer to the data bytes to send
+ @param  numDataBytes  The number of bytes we should send
+ */
+void Adafruit_SPITFT::sendCommand16(uint16_t commandWord,
+  const uint8_t *dataBytes, uint8_t numDataBytes) {
+    SPI_BEGIN_TRANSACTION();
+    if(_cs >= 0) SPI_CS_LOW();
+  
+    if(numDataBytes == 0) {
+      SPI_DC_LOW();             // Command mode
+      SPI_WRITE16(commandWord); // Send the command word
+      SPI_DC_HIGH();            // Data mode
+    }
+    for(int i=0; i<numDataBytes; i++) {
+      SPI_DC_LOW();             // Command mode
+      SPI_WRITE16(commandWord); // Send the command word
+      SPI_DC_HIGH();            // Data mode
+      commandWord++;
+      SPI_WRITE16((uint16_t)pgm_read_byte(dataBytes++));
     }
   
     if(_cs >= 0) SPI_CS_HIGH();
@@ -1829,6 +1844,39 @@ uint8_t Adafruit_SPITFT::readcommand8(uint8_t commandByte, uint8_t index) {
   } while(index--); // Discard bytes up to index'th
   endWrite();
   return result;
+}
+
+/*!
+ @brief   Read 16 bits of data from display register.
+          For 16-bit parallel displays only.
+ @param   addr  Command/register to access.
+ @return  Unsigned 16-bit data.
+ */
+uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
+#if defined(USE_FAST_PINIO) // NOT SUPPORTED without USE_FAST_PINIO
+  uint16_t result = 0;
+  if((connection == TFT_PARALLEL) && tft8.wide) {
+    startWrite();
+    SPI_DC_LOW();     // Command mode
+    SPI_WRITE16(addr);
+    SPI_DC_HIGH();    // Data mode
+    TFT_RD_LOW();     // Read line LOW
+ #if defined(HAS_PORT_SET_CLR)
+    *(volatile uint16_t *)tft8.dirClr  = 0xFFFF;  // Input state
+    result = *(volatile uint16_t *)tft8.readPort; // 16-bit read
+    *(volatile uint16_t *)tft8.dirSet  = 0xFFFF;  // Output state
+ #else  // !HAS_PORT_SET_CLR
+    *(volatile uint16_t *)tft8.portDir = 0x0000;  // Input state
+    result = *(volatile uint16_t *)tft8.readPort; // 16-bit read
+    *(volatile uint16_t *)tft8.portDir = 0xFFFF;  // Output state
+ #endif // end !HAS_PORT_SET_CLR
+    TFT_RD_HIGH();    // Read line HIGH
+    endWrite();
+  }
+  return result;
+#else
+  return 0;
+#endif // end !USE_FAST_PINIO
 }
 
 // -------------------------------------------------------------------------
@@ -1995,6 +2043,71 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         }
         return w;
     }
+}
+
+/*!
+    @brief  Issue a single 16-bit value to the display. Chip-select,
+            transaction and data/command selection must have been
+            previously set -- this ONLY issues the word.
+            Thus operates ONLY on 'wide' (16-bit) parallel displays!
+    @param  w  16-bit value to write.
+*/
+void Adafruit_SPITFT::write16(uint16_t w) {
+    if(connection == TFT_PARALLEL) {
+#if defined(USE_FAST_PINIO)
+        if(tft8.wide) *(volatile uint16_t *)tft8.writePort = w;
+#endif
+        TFT_WR_STROBE();
+    }
+}
+
+/*!
+    @brief  Write a single command word to the display. Chip-select and
+            transaction must have been previously set -- this ONLY sets
+            the device to COMMAND mode, issues the byte and then restores
+            DATA mode. This operates ONLY on 'wide' (16-bit) parallel
+            displays!
+    @param  cmd  16-bit command to write.
+*/
+void Adafruit_SPITFT::writeCommand16(uint16_t cmd) {
+    SPI_DC_LOW();
+    write16(cmd);
+    SPI_DC_HIGH();
+}
+
+/*!
+    @brief   Read a single 16-bit value from the display. Chip-select and
+             transaction must have been previously set -- this ONLY reads
+             the byte. This operates ONLY on 'wide' (16-bit) parallel
+             displays!
+    @return  Unsigned 16-bit value read (always zero if USE_FAST_PINIO is
+             not supported by the MCU architecture).
+*/
+uint16_t Adafruit_SPITFT::read16(void) {
+    uint8_t  b = 0;
+    uint16_t w = 0;
+    if(connection == TFT_PARALLEL) {
+        if(tft8._rd >= 0) {
+#if defined(USE_FAST_PINIO)
+            TFT_RD_LOW();                        // Read line LOW
+            if(tft8.wide) {                     // 16-bit TFT connection
+  #if defined(HAS_PORT_SET_CLR)
+                *(volatile uint16_t *)tft8.dirClr  = 0xFFFF; // Input state
+                w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
+                *(volatile uint16_t *)tft8.dirSet  = 0xFFFF; // Output state
+  #else  // !HAS_PORT_SET_CLR
+                *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
+                w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
+                *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
+  #endif // end !HAS_PORT_SET_CLR
+            }
+            TFT_RD_HIGH();                      // Read line HIGH
+#else  // !USE_FAST_PINIO
+            w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
+#endif // end !USE_FAST_PINIO
+        }
+    }
+    return w;
 }
 
 /*!
