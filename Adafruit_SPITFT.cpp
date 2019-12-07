@@ -1853,8 +1853,8 @@ uint8_t Adafruit_SPITFT::readcommand8(uint8_t commandByte, uint8_t index) {
  @return  Unsigned 16-bit data.
  */
 uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
-  uint16_t result = 0;
 #if defined(USE_FAST_PINIO) // NOT SUPPORTED without USE_FAST_PINIO
+  uint16_t result = 0;
   if((connection == TFT_PARALLEL) && tft8.wide) {
     startWrite();
     SPI_DC_LOW();     // Command mode
@@ -1871,10 +1871,12 @@ uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
     *(volatile uint16_t *)tft8.portDir = 0xFFFF;  // Output state
  #endif // end !HAS_PORT_SET_CLR
     TFT_RD_HIGH();    // Read line HIGH
-#endif // end !USE_FAST_PINIO
     endWrite();
   }
   return result;
+#else
+  return 0;
+#endif // end !USE_FAST_PINIO
 }
 
 // -------------------------------------------------------------------------
