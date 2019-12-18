@@ -1780,8 +1780,7 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
         SPI_WRITE16(*(uint16_t *)dataBytes);
         dataBytes += 2;
       } else {
-        spiWrite(*dataBytes); // Send the data bytes
-        dataBytes++;
+        spiWrite(pgm_read_byte(dataBytes++));
       }
     }
   
