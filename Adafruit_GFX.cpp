@@ -1572,10 +1572,13 @@ void Adafruit_GFX_Button::initButtonUL(
   _outlinecolor = outline;
   _fillcolor    = fill;
   _textcolor    = textcolor;
-  _textsize_x   = textsize_x;
+  if(textsize_x == 0) textsize_x = 1;
   _textsize_y   = textsize_y;
   _gfx          = gfx;
-  strcpy(_label, label);
+
+  uint8_t len =  _w / (6 * _textsize_x);
+  _label = new char[len];
+  strlcpy(_label, label, len);
 }
 
 /**************************************************************************/
