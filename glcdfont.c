@@ -277,4 +277,11 @@ static const unsigned char font[] PROGMEM = {
 	0x00, 0x3C, 0x3C, 0x3C, 0x3C,
 	0x00, 0x00, 0x00, 0x00, 0x00  // #255 NBSP
 };
+
+// allow clean compilation with [-Wunused-const-variable=] and [-Wall]
+static inline void avoid_unused_const_variable_compiler_warning(void)
+{
+	(void)font;
+}
+
 #endif // FONT5X7_H
