@@ -243,6 +243,7 @@ class Adafruit_GFX_Button {
 
  public:
   Adafruit_GFX_Button(void);
+  ~Adafruit_GFX_Button(void){delete[] _label;}
   // "Classic" initButton() uses center & size
   void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    uint16_t w, uint16_t h, uint16_t outline, uint16_t fill,
@@ -286,7 +287,7 @@ class Adafruit_GFX_Button {
   uint8_t       _textsize_x;
   uint8_t       _textsize_y;
   uint16_t      _outlinecolor, _fillcolor, _textcolor;
-  char          _label[10];
+  char          *_label;
 
   boolean currstate, laststate;
 };
