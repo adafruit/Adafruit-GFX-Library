@@ -2114,7 +2114,6 @@ void Adafruit_SPITFT::writeCommand16(uint16_t cmd) {
              not supported by the MCU architecture).
 */
 uint16_t Adafruit_SPITFT::read16(void) {
-    uint8_t  b = 0;
     uint16_t w = 0;
     if(connection == TFT_PARALLEL) {
         if(tft8._rd >= 0) {
