@@ -163,6 +163,7 @@ class Adafruit_GFX : public Print {
   /**********************************************************************/
   void cp437(boolean x=true) { _cp437 = x; }
 
+  using Print::write;
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
 #else
