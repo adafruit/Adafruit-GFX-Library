@@ -110,7 +110,6 @@ static const struct {
                    can be tied to MCU reset, default of -1 means unused).
     @param   miso  Arduino pin # for bitbang SPI MISO signal (optional,
                    -1 default, many displays don't support SPI read).
-    @return  Adafruit_SPITFT object.
     @note    Output pins are not initialized; application typically will
              need to call subclass' begin() function, which in turn calls
              this library's initSPI() function to initialize pins.
@@ -231,7 +230,6 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
     @param   dc    Arduino pin # for data/command select (required).
     @param   rst   Arduino pin # for display reset (optional, display reset
                    can be tied to MCU reset, default of -1 means unused).
-    @return  Adafruit_SPITFT object.
     @note    Output pins are not initialized; application typically will
              need to call subclass' begin() function, which in turn calls
              this library's initSPI() function to initialize pins.
@@ -269,7 +267,6 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
     @param   dc        Arduino pin # for data/command select (required).
     @param   rst       Arduino pin # for display reset (optional, display reset
                        can be tied to MCU reset, default of -1 means unused).
-    @return  Adafruit_SPITFT object.
     @note    Output pins are not initialized in constructor; application
              typically will need to call subclass' begin() function, which
              in turn calls this library's initSPI() function to initialize
@@ -370,7 +367,6 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     @param   rst       Arduino pin # for display reset (optional, display reset
                        can be tied to MCU reset, default of -1 means unused).
     @param   rd        Arduino pin # for read strobe (optional, -1 if unused).
-    @return  Adafruit_SPITFT object.
     @note    Output pins are not initialized; application typically will need
              to call subclass' begin() function, which in turn calls this
              library's initSPI() function to initialize pins.

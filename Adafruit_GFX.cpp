@@ -184,8 +184,8 @@ void Adafruit_GFX::startWrite() {}
 /**************************************************************************/
 /*!
    @brief    Write a pixel, overwrite in subclasses if startWrite is defined!
-    @param   x   x coordinate
-    @param   y   y coordinate
+   @param   x   x coordinate
+   @param   y   y coordinate
    @param    color 16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
