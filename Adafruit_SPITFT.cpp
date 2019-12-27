@@ -1265,11 +1265,11 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       dma.trigger();
     while (dma_busy)
       ; // Wait for completion
-// Unfortunately blocking is necessary. An earlier version returned
-// immediately and checked dma_busy on startWrite() instead, but it
-// turns out to be MUCH slower on many graphics operations (as when
-// drawing lines, pixel-by-pixel), perhaps because it's a volatile
-// type and doesn't cache. Working on this.
+        // Unfortunately blocking is necessary. An earlier version returned
+        // immediately and checked dma_busy on startWrite() instead, but it
+        // turns out to be MUCH slower on many graphics operations (as when
+        // drawing lines, pixel-by-pixel), perhaps because it's a volatile
+        // type and doesn't cache. Working on this.
 #if defined(__SAMD51__) || defined(_SAMD21_)
     if (connection == TFT_HARD_SPI) {
       // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
