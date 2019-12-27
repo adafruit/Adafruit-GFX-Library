@@ -626,7 +626,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a95164c088118b25d8e3efe48f9e86dbe" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. </dd></dl>
 
 </div>
@@ -686,7 +685,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a95164c088118b25d8e3efe48f9e86dbe" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. </dd></dl>
 
 </div>
@@ -753,7 +751,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Output pins are not initialized in constructor; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a95164c088118b25d8e3efe48f9e86dbe" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. EXCEPT...if you have built your own SERCOM SPI peripheral (calling the SPIClass constructor) rather than one of the built-in SPI devices (e.g. &amp;SPI, &amp;SPI1 and so forth), you will need to call the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function for your object as well as pinPeripheral() for the MOSI, MISO and SCK pins to configure GPIO manually. Do this BEFORE calling the display-specific begin or init function. Unfortunate but unavoidable. </dd></dl>
 
 </div>
@@ -841,7 +838,6 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___s_p_i_t_f_t.html" title="Adafruit_SPITFT is an intermediary class between Adafruit_GFX and various hardware-specific subclasse...">Adafruit_SPITFT</a> object. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Output pins are not initialized; application typically will need to call subclass' <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a81fb1a7842c52fa1992569880f4ea494" title="Display-specific initialization function. ">begin()</a> function, which in turn calls this library's <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a95164c088118b25d8e3efe48f9e86dbe" title="Configure microcontroller pins for TFT interfacing. Typically called by a subclass&#39; begin() function...">initSPI()</a> function to initialize pins. Yes, the name is a misnomer...this library originally handled only SPI displays, parallel being a recent addition (but not wanting to break existing code). </dd></dl>
 
 </div>
