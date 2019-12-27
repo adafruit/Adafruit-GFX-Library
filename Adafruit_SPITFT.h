@@ -31,8 +31,8 @@
 typedef uint8_t ADAGFX_PORT_t;       ///< PORT values are 8-bit
 #define USE_FAST_PINIO               ///< Use direct PORT register access
 #elif defined(ARDUINO_STM32_FEATHER) // WICED
-typedef class HardwareSPI SPIClass;        ///< SPI is a bit odd on WICED
-typedef uint32_t ADAGFX_PORT_t;            ///< PORT values are 32-bit
+typedef class HardwareSPI SPIClass; ///< SPI is a bit odd on WICED
+typedef uint32_t ADAGFX_PORT_t;     ///< PORT values are 32-bit
 #elif defined(__arm__)
 #if defined(ARDUINO_ARCH_SAMD)
 // Adafruit M0, M4
@@ -76,9 +76,9 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
     defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
 #define USE_SPI_DMA ///< Auto DMA if using PyPortal
 #else
-                                           //#define USE_SPI_DMA ///< If set,
-                                           //use DMA if available
+//#define USE_SPI_DMA ///< If set use DMA if available
 #endif
+
 // Another "oops" name -- this now also handles parallel DMA.
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
 // Estimated RAM usage:
