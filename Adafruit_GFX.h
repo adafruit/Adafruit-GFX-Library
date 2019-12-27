@@ -50,8 +50,8 @@ public:
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void
-      // It's good to implement those, even if using transaction API
-      drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
+  // It's good to implement those, even if using transaction API
+  drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
       drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color),
       fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
       fillScreen(uint16_t color),

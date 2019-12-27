@@ -583,7 +583,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 #if SPI_INTERFACES_COUNT > 5
         || (hwspi._spi == &SPI5)
 #endif
-            ) {
+    ) {
       hwspi._spi->begin();
     }
   } else if (connection == TFT_SOFT_SPI) {
@@ -1015,7 +1015,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 #elif defined(USE_SPI_DMA)
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
     int maxSpan = maxFillLen / 2; // One scanline max
-    uint8_t pixelBufIdx = 0; // Active pixel buffer number
+    uint8_t pixelBufIdx = 0;      // Active pixel buffer number
 #if defined(__SAMD51__)
     if (connection == TFT_PARALLEL) {
       // Switch WR pin to PWM or CCL
@@ -2048,18 +2048,18 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
       *tft8.portDir = 0x00; // Set port to input state
       w = *tft8.readPort;   // Read value from port
       *tft8.portDir = 0xFF; // Restore port to output
-#else // !__AVR__
-      if (!tft8.wide) { // 8-bit TFT connection
+#else                       // !__AVR__
+      if (!tft8.wide) {                             // 8-bit TFT connection
 #if defined(HAS_PORT_SET_CLR)
-        *tft8.dirClr = 0xFF; // Set port to input state
-        w = *tft8.readPort;  // Read value from port
-        *tft8.dirSet = 0xFF; // Restore port to output
+        *tft8.dirClr = 0xFF;                        // Set port to input state
+        w = *tft8.readPort;                         // Read value from port
+        *tft8.dirSet = 0xFF;                        // Restore port to output
 #else  // !HAS_PORT_SET_CLR
         *tft8.portDir = 0x00;                        // Set port to input state
         w = *tft8.readPort;                          // Read value from port
         *tft8.portDir = 0xFF;                        // Restore port to output
 #endif // end HAS_PORT_SET_CLR
-      } else { // 16-bit TFT connection
+      } else {                                      // 16-bit TFT connection
 #if defined(HAS_PORT_SET_CLR)
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
@@ -2134,7 +2134,7 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortSet = 1;
-#else // !KINETISK
+#else                                                // !KINETISK
   *swspi.sckPortSet = swspi.sckPinMask;
 #if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
   for (volatile uint8_t i = 0; i < 1; i++)
@@ -2161,7 +2161,7 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortClr = 1;
-#else // !KINETISK
+#else                                                // !KINETISK
   *swspi.sckPortClr = swspi.sckPinMask;
 #if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
   for (volatile uint8_t i = 0; i < 1; i++)
