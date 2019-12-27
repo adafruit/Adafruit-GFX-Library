@@ -36,68 +36,65 @@
 #include "Adafruit_SPITFT.h"
 
 #if defined(__AVR__)
-#if defined(__AVR_XMEGA__)  //only tested with __AVR_ATmega4809__
-#define AVR_WRITESPI(x) for(SPI0_DATA = (x); (!(SPI0_INTFLAGS & _BV(SPI_IF_bp))); )
+#if defined(__AVR_XMEGA__) // only tested with __AVR_ATmega4809__
+#define AVR_WRITESPI(x)                                                        \
+  for (SPI0_DATA = (x); (!(SPI0_INTFLAGS & _BV(SPI_IF_bp)));)
 #else
-#define AVR_WRITESPI(x) for(SPDR = (x); (!(SPSR & _BV(SPIF))); )
+#define AVR_WRITESPI(x) for (SPDR = (x); (!(SPSR & _BV(SPIF)));)
 #endif
 #endif
 
 #if defined(PORT_IOBUS)
 // On SAMD21, redefine digitalPinToPort() to use the slightly-faster
 // PORT_IOBUS rather than PORT (not needed on SAMD51).
-#undef  digitalPinToPort
+#undef digitalPinToPort
 #define digitalPinToPort(P) (&(PORT_IOBUS->Group[g_APinDescription[P].ulPort]))
 #endif // end PORT_IOBUS
 
 #if defined(USE_SPI_DMA)
- #pragma message ("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
- #include <Adafruit_ZeroDMA.h>
- #include "wiring_private.h"  // pinPeripheral() function
- #include <malloc.h>          // memalign() function
- #define tcNum        2       // Timer/Counter for parallel write strobe PWM
- #define wrPeripheral PIO_CCL // Use CCL to invert write strobe
+#pragma message("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
+#include "wiring_private.h" // pinPeripheral() function
+#include <Adafruit_ZeroDMA.h>
+#include <malloc.h>          // memalign() function
+#define tcNum 2              // Timer/Counter for parallel write strobe PWM
+#define wrPeripheral PIO_CCL // Use CCL to invert write strobe
 
-    // DMA transfer-in-progress indicator and callback
-    static volatile bool dma_busy = false;
-    static void dma_callback(Adafruit_ZeroDMA *dma) {
-        dma_busy = false;
-    }
+// DMA transfer-in-progress indicator and callback
+static volatile bool dma_busy = false;
+static void dma_callback(Adafruit_ZeroDMA *dma) { dma_busy = false; }
 
- #if defined(__SAMD51__)
-    // Timer/counter info by index #
-    static const struct {
-        Tc *tc;   // -> Timer/Counter base address
-        int gclk; // GCLK ID
-        int evu;  // EVSYS user ID
-    } tcList[] = {
-      { TC0, TC0_GCLK_ID, EVSYS_ID_USER_TC0_EVU },
-      { TC1, TC1_GCLK_ID, EVSYS_ID_USER_TC1_EVU },
-      { TC2, TC2_GCLK_ID, EVSYS_ID_USER_TC2_EVU },
-      { TC3, TC3_GCLK_ID, EVSYS_ID_USER_TC3_EVU },
-  #if defined(TC4)
-      { TC4, TC4_GCLK_ID, EVSYS_ID_USER_TC4_EVU },
-  #endif
-  #if defined(TC5)
-      { TC5, TC5_GCLK_ID, EVSYS_ID_USER_TC5_EVU },
-  #endif
-  #if defined(TC6)
-      { TC6, TC6_GCLK_ID, EVSYS_ID_USER_TC6_EVU },
-  #endif
-  #if defined(TC7)
-      { TC7, TC7_GCLK_ID, EVSYS_ID_USER_TC7_EVU }
-  #endif
-     };
-  #define NUM_TIMERS (sizeof tcList / sizeof tcList[0]) ///< # timer/counters
- #endif // end __SAMD51__
+#if defined(__SAMD51__)
+// Timer/counter info by index #
+static const struct {
+  Tc *tc;   // -> Timer/Counter base address
+  int gclk; // GCLK ID
+  int evu;  // EVSYS user ID
+} tcList[] = {{TC0, TC0_GCLK_ID, EVSYS_ID_USER_TC0_EVU},
+              {TC1, TC1_GCLK_ID, EVSYS_ID_USER_TC1_EVU},
+              {TC2, TC2_GCLK_ID, EVSYS_ID_USER_TC2_EVU},
+              {TC3, TC3_GCLK_ID, EVSYS_ID_USER_TC3_EVU},
+#if defined(TC4)
+              {TC4, TC4_GCLK_ID, EVSYS_ID_USER_TC4_EVU},
+#endif
+#if defined(TC5)
+              {TC5, TC5_GCLK_ID, EVSYS_ID_USER_TC5_EVU},
+#endif
+#if defined(TC6)
+              {TC6, TC6_GCLK_ID, EVSYS_ID_USER_TC6_EVU},
+#endif
+#if defined(TC7)
+              {TC7, TC7_GCLK_ID, EVSYS_ID_USER_TC7_EVU}
+#endif
+};
+#define NUM_TIMERS (sizeof tcList / sizeof tcList[0]) ///< # timer/counters
+#endif                                                // end __SAMD51__
 
 #endif // end USE_SPI_DMA
 
 // Possible values for Adafruit_SPITFT.connection:
-#define TFT_HARD_SPI 0  ///< Display interface = hardware SPI
-#define TFT_SOFT_SPI 1  ///< Display interface = software SPI
-#define TFT_PARALLEL 2  ///< Display interface = 8- or 16-bit parallel
-
+#define TFT_HARD_SPI 0 ///< Display interface = hardware SPI
+#define TFT_SOFT_SPI 1 ///< Display interface = software SPI
+#define TFT_PARALLEL 2 ///< Display interface = 8- or 16-bit parallel
 
 // CONSTRUCTORS ------------------------------------------------------------
 
@@ -118,108 +115,110 @@
              need to call subclass' begin() function, which in turn calls
              this library's initSPI() function to initialize pins.
 */
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
-  int8_t cs, int8_t dc, int8_t mosi, int8_t sck, int8_t rst, int8_t miso) :
-  Adafruit_GFX(w, h), connection(TFT_SOFT_SPI), _rst(rst), _cs(cs), _dc(dc) {
-    swspi._sck  = sck;
-    swspi._mosi = mosi;
-    swspi._miso = miso;
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
+                                 int8_t mosi, int8_t sck, int8_t rst,
+                                 int8_t miso)
+    : Adafruit_GFX(w, h), connection(TFT_SOFT_SPI), _rst(rst), _cs(cs),
+      _dc(dc) {
+  swspi._sck = sck;
+  swspi._mosi = mosi;
+  swspi._miso = miso;
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(CORE_TEENSY)
-   #if !defined(KINETISK)
-    dcPinMask          = digitalPinToBitMask(dc);
-    swspi.sckPinMask   = digitalPinToBitMask(sck);
-    swspi.mosiPinMask  = digitalPinToBitMask(mosi);
-   #endif
-    dcPortSet          = portSetRegister(dc);
-    dcPortClr          = portClearRegister(dc);
-    swspi.sckPortSet   = portSetRegister(sck);
-    swspi.sckPortClr   = portClearRegister(sck);
-    swspi.mosiPortSet  = portSetRegister(mosi);
-    swspi.mosiPortClr  = portClearRegister(mosi);
-    if(cs >= 0) {
-   #if !defined(KINETISK)
-        csPinMask      = digitalPinToBitMask(cs);
-   #endif
-        csPortSet      = portSetRegister(cs);
-        csPortClr      = portClearRegister(cs);
-    } else {
-   #if !defined(KINETISK)
-        csPinMask      = 0;
-   #endif
-        csPortSet      = dcPortSet;
-        csPortClr      = dcPortClr;
-    }
-    if(miso >= 0) {
-        swspi.misoPort = portInputRegister(miso);
-        #if !defined(KINETISK)
-        swspi.misoPinMask = digitalPinToBitMask(miso);
-        #endif
-    } else {
-        swspi.misoPort = portInputRegister(dc);
-    }
-  #else  // !CORE_TEENSY
-    dcPinMask        =digitalPinToBitMask(dc);
-    swspi.sckPinMask =digitalPinToBitMask(sck);
-    swspi.mosiPinMask=digitalPinToBitMask(mosi);
-    dcPortSet        =&(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
-    dcPortClr        =&(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
-    swspi.sckPortSet =&(PORT->Group[g_APinDescription[sck].ulPort].OUTSET.reg);
-    swspi.sckPortClr =&(PORT->Group[g_APinDescription[sck].ulPort].OUTCLR.reg);
-    swspi.mosiPortSet=&(PORT->Group[g_APinDescription[mosi].ulPort].OUTSET.reg);
-    swspi.mosiPortClr=&(PORT->Group[g_APinDescription[mosi].ulPort].OUTCLR.reg);
-    if(cs >= 0) {
-        csPinMask = digitalPinToBitMask(cs);
-        csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
-        csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
-    } else {
-        // No chip-select line defined; might be permanently tied to GND.
-        // Assign a valid GPIO register (though not used for CS), and an
-        // empty pin bitmask...the nonsense bit-twiddling might be faster
-        // than checking _cs and possibly branching.
-        csPortSet = dcPortSet;
-        csPortClr = dcPortClr;
-        csPinMask = 0;
-    }
-    if(miso >= 0) {
-        swspi.misoPinMask=digitalPinToBitMask(miso);
-        swspi.misoPort   =(PORTreg_t)portInputRegister(digitalPinToPort(miso));
-    } else {
-        swspi.misoPinMask=0;
-        swspi.misoPort   =(PORTreg_t)portInputRegister(digitalPinToPort(dc));
-    }
-  #endif // end !CORE_TEENSY
- #else  // !HAS_PORT_SET_CLR
-    dcPort              =(PORTreg_t)portOutputRegister(digitalPinToPort(dc));
-    dcPinMaskSet        =digitalPinToBitMask(dc);
-    swspi.sckPort       =(PORTreg_t)portOutputRegister(digitalPinToPort(sck));
-    swspi.sckPinMaskSet =digitalPinToBitMask(sck);
-    swspi.mosiPort      =(PORTreg_t)portOutputRegister(digitalPinToPort(mosi));
-    swspi.mosiPinMaskSet=digitalPinToBitMask(mosi);
-    if(cs >= 0) {
-        csPort       = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
-        csPinMaskSet = digitalPinToBitMask(cs);
-    } else {
-        // No chip-select line defined; might be permanently tied to GND.
-        // Assign a valid GPIO register (though not used for CS), and an
-        // empty pin bitmask...the nonsense bit-twiddling might be faster
-        // than checking _cs and possibly branching.
-        csPort       = dcPort;
-        csPinMaskSet = 0;
-    }
-    if(miso >= 0) {
-        swspi.misoPort   =(PORTreg_t)portInputRegister(digitalPinToPort(miso));
-        swspi.misoPinMask=digitalPinToBitMask(miso);
-    } else {
-        swspi.misoPort   =(PORTreg_t)portInputRegister(digitalPinToPort(dc));
-        swspi.misoPinMask=0;
-    }
-    csPinMaskClr         = ~csPinMaskSet;
-    dcPinMaskClr         = ~dcPinMaskSet;
-    swspi.sckPinMaskClr  = ~swspi.sckPinMaskSet;
-    swspi.mosiPinMaskClr = ~swspi.mosiPinMaskSet;
- #endif // !end HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(CORE_TEENSY)
+#if !defined(KINETISK)
+  dcPinMask = digitalPinToBitMask(dc);
+  swspi.sckPinMask = digitalPinToBitMask(sck);
+  swspi.mosiPinMask = digitalPinToBitMask(mosi);
+#endif
+  dcPortSet = portSetRegister(dc);
+  dcPortClr = portClearRegister(dc);
+  swspi.sckPortSet = portSetRegister(sck);
+  swspi.sckPortClr = portClearRegister(sck);
+  swspi.mosiPortSet = portSetRegister(mosi);
+  swspi.mosiPortClr = portClearRegister(mosi);
+  if (cs >= 0) {
+#if !defined(KINETISK)
+    csPinMask = digitalPinToBitMask(cs);
+#endif
+    csPortSet = portSetRegister(cs);
+    csPortClr = portClearRegister(cs);
+  } else {
+#if !defined(KINETISK)
+    csPinMask = 0;
+#endif
+    csPortSet = dcPortSet;
+    csPortClr = dcPortClr;
+  }
+  if (miso >= 0) {
+    swspi.misoPort = portInputRegister(miso);
+#if !defined(KINETISK)
+    swspi.misoPinMask = digitalPinToBitMask(miso);
+#endif
+  } else {
+    swspi.misoPort = portInputRegister(dc);
+  }
+#else  // !CORE_TEENSY
+  dcPinMask = digitalPinToBitMask(dc);
+  swspi.sckPinMask = digitalPinToBitMask(sck);
+  swspi.mosiPinMask = digitalPinToBitMask(mosi);
+  dcPortSet = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
+  dcPortClr = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
+  swspi.sckPortSet = &(PORT->Group[g_APinDescription[sck].ulPort].OUTSET.reg);
+  swspi.sckPortClr = &(PORT->Group[g_APinDescription[sck].ulPort].OUTCLR.reg);
+  swspi.mosiPortSet = &(PORT->Group[g_APinDescription[mosi].ulPort].OUTSET.reg);
+  swspi.mosiPortClr = &(PORT->Group[g_APinDescription[mosi].ulPort].OUTCLR.reg);
+  if (cs >= 0) {
+    csPinMask = digitalPinToBitMask(cs);
+    csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
+    csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
+  } else {
+    // No chip-select line defined; might be permanently tied to GND.
+    // Assign a valid GPIO register (though not used for CS), and an
+    // empty pin bitmask...the nonsense bit-twiddling might be faster
+    // than checking _cs and possibly branching.
+    csPortSet = dcPortSet;
+    csPortClr = dcPortClr;
+    csPinMask = 0;
+  }
+  if (miso >= 0) {
+    swspi.misoPinMask = digitalPinToBitMask(miso);
+    swspi.misoPort = (PORTreg_t)portInputRegister(digitalPinToPort(miso));
+  } else {
+    swspi.misoPinMask = 0;
+    swspi.misoPort = (PORTreg_t)portInputRegister(digitalPinToPort(dc));
+  }
+#endif // end !CORE_TEENSY
+#else  // !HAS_PORT_SET_CLR
+  dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
+  dcPinMaskSet = digitalPinToBitMask(dc);
+  swspi.sckPort = (PORTreg_t)portOutputRegister(digitalPinToPort(sck));
+  swspi.sckPinMaskSet = digitalPinToBitMask(sck);
+  swspi.mosiPort = (PORTreg_t)portOutputRegister(digitalPinToPort(mosi));
+  swspi.mosiPinMaskSet = digitalPinToBitMask(mosi);
+  if (cs >= 0) {
+    csPort = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
+    csPinMaskSet = digitalPinToBitMask(cs);
+  } else {
+    // No chip-select line defined; might be permanently tied to GND.
+    // Assign a valid GPIO register (though not used for CS), and an
+    // empty pin bitmask...the nonsense bit-twiddling might be faster
+    // than checking _cs and possibly branching.
+    csPort = dcPort;
+    csPinMaskSet = 0;
+  }
+  if (miso >= 0) {
+    swspi.misoPort = (PORTreg_t)portInputRegister(digitalPinToPort(miso));
+    swspi.misoPinMask = digitalPinToBitMask(miso);
+  } else {
+    swspi.misoPort = (PORTreg_t)portInputRegister(digitalPinToPort(dc));
+    swspi.misoPinMask = 0;
+  }
+  csPinMaskClr = ~csPinMaskSet;
+  dcPinMaskClr = ~dcPinMaskSet;
+  swspi.sckPinMaskClr = ~swspi.sckPinMaskSet;
+  swspi.mosiPinMaskClr = ~swspi.mosiPinMaskSet;
+#endif // !end HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
 }
 
@@ -238,16 +237,18 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h,
              this library's initSPI() function to initialize pins.
 */
 #if defined(ESP8266) // See notes below
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
-  int8_t dc, int8_t rst) : Adafruit_GFX(w, h),
-  connection(TFT_HARD_SPI), _rst(rst), _cs(cs), _dc(dc) {
-    hwspi._spi = &SPI;
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
+                                 int8_t rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
+      _dc(dc) {
+  hwspi._spi = &SPI;
 }
 #else  // !ESP8266
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
-  int8_t dc, int8_t rst) : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) {
-    // This just invokes the hardware SPI constructor below,
-    // passing the default SPI device (&SPI).
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
+                                 int8_t rst)
+    : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) {
+  // This just invokes the hardware SPI constructor below,
+  // passing the default SPI device (&SPI).
 }
 #endif // end !ESP8266
 
@@ -281,65 +282,66 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
              begin or init function. Unfortunate but unavoidable.
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
-  int8_t cs, int8_t dc, int8_t rst) : Adafruit_GFX(w, h),
-  connection(TFT_HARD_SPI), _rst(rst), _cs(cs), _dc(dc) {
-    hwspi._spi = spiClass;
+                                 int8_t cs, int8_t dc, int8_t rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
+      _dc(dc) {
+  hwspi._spi = spiClass;
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(CORE_TEENSY)
-   #if !defined(KINETISK)
-    dcPinMask     = digitalPinToBitMask(dc);
-   #endif
-    dcPortSet     = portSetRegister(dc);
-    dcPortClr     = portClearRegister(dc);
-    if(cs >= 0) {
-   #if !defined(KINETISK)
-        csPinMask = digitalPinToBitMask(cs);
-   #endif
-        csPortSet = portSetRegister(cs);
-        csPortClr = portClearRegister(cs);
-    } else { // see comments below
-   #if !defined(KINETISK)
-        csPinMask = 0;
-   #endif
-        csPortSet = dcPortSet;
-        csPortClr = dcPortClr;
-    }
-  #else  // !CORE_TEENSY
-    dcPinMask     = digitalPinToBitMask(dc);
-    dcPortSet     = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
-    dcPortClr     = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
-    if(cs >= 0) {
-        csPinMask = digitalPinToBitMask(cs);
-        csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
-        csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
-    } else {
-        // No chip-select line defined; might be permanently tied to GND.
-        // Assign a valid GPIO register (though not used for CS), and an
-        // empty pin bitmask...the nonsense bit-twiddling might be faster
-        // than checking _cs and possibly branching.
-        csPortSet = dcPortSet;
-        csPortClr = dcPortClr;
-        csPinMask = 0;
-    }
-  #endif // end !CORE_TEENSY
- #else  // !HAS_PORT_SET_CLR
-    dcPort           = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
-    dcPinMaskSet     = digitalPinToBitMask(dc);
-    if(cs >= 0) {
-        csPort       = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
-        csPinMaskSet = digitalPinToBitMask(cs);
-    } else {
-        // No chip-select line defined; might be permanently tied to GND.
-        // Assign a valid GPIO register (though not used for CS), and an
-        // empty pin bitmask...the nonsense bit-twiddling might be faster
-        // than checking _cs and possibly branching.
-        csPort       = dcPort;
-        csPinMaskSet = 0;
-    }
-    csPinMaskClr = ~csPinMaskSet;
-    dcPinMaskClr = ~dcPinMaskSet;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(CORE_TEENSY)
+#if !defined(KINETISK)
+  dcPinMask = digitalPinToBitMask(dc);
+#endif
+  dcPortSet = portSetRegister(dc);
+  dcPortClr = portClearRegister(dc);
+  if (cs >= 0) {
+#if !defined(KINETISK)
+    csPinMask = digitalPinToBitMask(cs);
+#endif
+    csPortSet = portSetRegister(cs);
+    csPortClr = portClearRegister(cs);
+  } else { // see comments below
+#if !defined(KINETISK)
+    csPinMask = 0;
+#endif
+    csPortSet = dcPortSet;
+    csPortClr = dcPortClr;
+  }
+#else  // !CORE_TEENSY
+  dcPinMask = digitalPinToBitMask(dc);
+  dcPortSet = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
+  dcPortClr = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
+  if (cs >= 0) {
+    csPinMask = digitalPinToBitMask(cs);
+    csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
+    csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
+  } else {
+    // No chip-select line defined; might be permanently tied to GND.
+    // Assign a valid GPIO register (though not used for CS), and an
+    // empty pin bitmask...the nonsense bit-twiddling might be faster
+    // than checking _cs and possibly branching.
+    csPortSet = dcPortSet;
+    csPortClr = dcPortClr;
+    csPinMask = 0;
+  }
+#endif // end !CORE_TEENSY
+#else  // !HAS_PORT_SET_CLR
+  dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
+  dcPinMaskSet = digitalPinToBitMask(dc);
+  if (cs >= 0) {
+    csPort = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
+    csPinMaskSet = digitalPinToBitMask(cs);
+  } else {
+    // No chip-select line defined; might be permanently tied to GND.
+    // Assign a valid GPIO register (though not used for CS), and an
+    // empty pin bitmask...the nonsense bit-twiddling might be faster
+    // than checking _cs and possibly branching.
+    csPort = dcPort;
+    csPinMaskSet = 0;
+  }
+  csPinMaskClr = ~csPinMaskSet;
+  dcPinMaskClr = ~dcPinMaskSet;
+#endif // end !HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
 }
 #endif // end !ESP8266
@@ -377,131 +379,133 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
              wanting to break existing code).
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
-  int8_t d0, int8_t wr, int8_t dc, int8_t cs, int8_t rst, int8_t rd) :
-  Adafruit_GFX(w, h), connection(TFT_PARALLEL), _rst(rst), _cs(cs), _dc(dc) {
-    tft8._d0  = d0;
-    tft8._wr  = wr;
-    tft8._rd  = rd;
-    tft8.wide = (busWidth == tft16bitbus);
+                                 int8_t d0, int8_t wr, int8_t dc, int8_t cs,
+                                 int8_t rst, int8_t rd)
+    : Adafruit_GFX(w, h), connection(TFT_PARALLEL), _rst(rst), _cs(cs),
+      _dc(dc) {
+  tft8._d0 = d0;
+  tft8._wr = wr;
+  tft8._rd = rd;
+  tft8.wide = (busWidth == tft16bitbus);
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(CORE_TEENSY)
-    tft8.wrPortSet = portSetRegister(wr);
-    tft8.wrPortClr = portClearRegister(wr);
-   #if !defined(KINETISK)
-    dcPinMask      = digitalPinToBitMask(dc);
-   #endif
-    dcPortSet      = portSetRegister(dc);
-    dcPortClr      = portClearRegister(dc);
-    if(cs >= 0) {
-   #if !defined(KINETISK)
-        csPinMask  = digitalPinToBitMask(cs);
-   #endif
-        csPortSet  = portSetRegister(cs);
-        csPortClr  = portClearRegister(cs);
-    } else { // see comments below
-   #if !defined(KINETISK)
-        csPinMask  = 0;
-   #endif
-        csPortSet  = dcPortSet;
-        csPortClr  = dcPortClr;
-    }
-    if(rd >= 0) { // if read-strobe pin specified...
-   #if defined(KINETISK)
-        tft8.rdPinMask = 1;
-   #else  // !KINETISK
-        tft8.rdPinMask = digitalPinToBitMask(rd);
-   #endif
-        tft8.rdPortSet = portSetRegister(rd);
-        tft8.rdPortClr = portClearRegister(rd);
-    } else {
-        tft8.rdPinMask = 0;
-        tft8.rdPortSet = dcPortSet;
-        tft8.rdPortClr = dcPortClr;
-    }
-    // These are all uint8_t* pointers -- elsewhere they're recast
-    // as necessary if a 'wide' 16-bit interface is in use.
-    tft8.writePort = portOutputRegister(d0);
-    tft8.readPort  = portInputRegister(d0);
-    tft8.dirSet    = portModeRegister(d0);
-    tft8.dirClr    = portModeRegister(d0);
-  #else  // !CORE_TEENSY
-    tft8.wrPinMask = digitalPinToBitMask(wr);
-    tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
-    tft8.wrPortClr = &(PORT->Group[g_APinDescription[wr].ulPort].OUTCLR.reg);
-    dcPinMask      = digitalPinToBitMask(dc);
-    dcPortSet      = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
-    dcPortClr      = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
-    if(cs >= 0) {
-        csPinMask  = digitalPinToBitMask(cs);
-        csPortSet  = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
-        csPortClr  = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
-    } else {
-        // No chip-select line defined; might be permanently tied to GND.
-        // Assign a valid GPIO register (though not used for CS), and an
-        // empty pin bitmask...the nonsense bit-twiddling might be faster
-        // than checking _cs and possibly branching.
-        csPortSet  = dcPortSet;
-        csPortClr  = dcPortClr;
-        csPinMask  = 0;
-    }
-    if(rd >= 0) { // if read-strobe pin specified...
-        tft8.rdPinMask =digitalPinToBitMask(rd);
-        tft8.rdPortSet =&(PORT->Group[g_APinDescription[rd].ulPort].OUTSET.reg);
-        tft8.rdPortClr =&(PORT->Group[g_APinDescription[rd].ulPort].OUTCLR.reg);
-    } else {
-        tft8.rdPinMask = 0;
-        tft8.rdPortSet = dcPortSet;
-        tft8.rdPortClr = dcPortClr;
-    }
-    // Get pointers to PORT write/read/dir bytes within 32-bit PORT
-    uint8_t       dBit    = g_APinDescription[d0].ulPin; // d0 bit # in PORT
-    PortGroup    *p       = (&(PORT->Group[g_APinDescription[d0].ulPort]));
-    uint8_t       offset  = dBit / 8; // d[7:0] byte # within PORT
-    if(tft8.wide) offset &= ~1; // d[15:8] byte # within PORT
-    // These are all uint8_t* pointers -- elsewhere they're recast
-    // as necessary if a 'wide' 16-bit interface is in use.
-    tft8.writePort    = (volatile uint8_t *)&(p->OUT.reg)    + offset;
-    tft8.readPort     = (volatile uint8_t *)&(p->IN.reg)     + offset;
-    tft8.dirSet       = (volatile uint8_t *)&(p->DIRSET.reg) + offset;
-    tft8.dirClr       = (volatile uint8_t *)&(p->DIRCLR.reg) + offset;
-  #endif // end !CORE_TEENSY
- #else  // !HAS_PORT_SET_CLR
-    tft8.wrPort       = (PORTreg_t)portOutputRegister(digitalPinToPort(wr));
-    tft8.wrPinMaskSet = digitalPinToBitMask(wr);
-    dcPort            = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
-    dcPinMaskSet      = digitalPinToBitMask(dc);
-    if(cs >= 0) {
-        csPort        = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
-        csPinMaskSet  = digitalPinToBitMask(cs);
-    } else {
-        // No chip-select line defined; might be permanently tied to GND.
-        // Assign a valid GPIO register (though not used for CS), and an
-        // empty pin bitmask...the nonsense bit-twiddling might be faster
-        // than checking _cs and possibly branching.
-        csPort        = dcPort;
-        csPinMaskSet  = 0;
-    }
-    if(rd >= 0) { // if read-strobe pin specified...
-        tft8.rdPort       =(PORTreg_t)portOutputRegister(digitalPinToPort(rd));
-        tft8.rdPinMaskSet =digitalPinToBitMask(rd);
-    } else {
-        tft8.rdPort       = dcPort;
-        tft8.rdPinMaskSet = 0;
-    }
-    csPinMaskClr      = ~csPinMaskSet;
-    dcPinMaskClr      = ~dcPinMaskSet;
-    tft8.wrPinMaskClr = ~tft8.wrPinMaskSet;
-    tft8.rdPinMaskClr = ~tft8.rdPinMaskSet;
-    tft8.writePort    = (PORTreg_t)portOutputRegister(digitalPinToPort(d0));
-    tft8.readPort     = (PORTreg_t)portInputRegister(digitalPinToPort(d0));
-    tft8.portDir      = (PORTreg_t)portModeRegister(digitalPinToPort(d0));
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(CORE_TEENSY)
+  tft8.wrPortSet = portSetRegister(wr);
+  tft8.wrPortClr = portClearRegister(wr);
+#if !defined(KINETISK)
+  dcPinMask = digitalPinToBitMask(dc);
+#endif
+  dcPortSet = portSetRegister(dc);
+  dcPortClr = portClearRegister(dc);
+  if (cs >= 0) {
+#if !defined(KINETISK)
+    csPinMask = digitalPinToBitMask(cs);
+#endif
+    csPortSet = portSetRegister(cs);
+    csPortClr = portClearRegister(cs);
+  } else { // see comments below
+#if !defined(KINETISK)
+    csPinMask = 0;
+#endif
+    csPortSet = dcPortSet;
+    csPortClr = dcPortClr;
+  }
+  if (rd >= 0) { // if read-strobe pin specified...
+#if defined(KINETISK)
+    tft8.rdPinMask = 1;
+#else // !KINETISK
+    tft8.rdPinMask = digitalPinToBitMask(rd);
+#endif
+    tft8.rdPortSet = portSetRegister(rd);
+    tft8.rdPortClr = portClearRegister(rd);
+  } else {
+    tft8.rdPinMask = 0;
+    tft8.rdPortSet = dcPortSet;
+    tft8.rdPortClr = dcPortClr;
+  }
+  // These are all uint8_t* pointers -- elsewhere they're recast
+  // as necessary if a 'wide' 16-bit interface is in use.
+  tft8.writePort = portOutputRegister(d0);
+  tft8.readPort = portInputRegister(d0);
+  tft8.dirSet = portModeRegister(d0);
+  tft8.dirClr = portModeRegister(d0);
+#else  // !CORE_TEENSY
+  tft8.wrPinMask = digitalPinToBitMask(wr);
+  tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
+  tft8.wrPortClr = &(PORT->Group[g_APinDescription[wr].ulPort].OUTCLR.reg);
+  dcPinMask = digitalPinToBitMask(dc);
+  dcPortSet = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
+  dcPortClr = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
+  if (cs >= 0) {
+    csPinMask = digitalPinToBitMask(cs);
+    csPortSet = &(PORT->Group[g_APinDescription[cs].ulPort].OUTSET.reg);
+    csPortClr = &(PORT->Group[g_APinDescription[cs].ulPort].OUTCLR.reg);
+  } else {
+    // No chip-select line defined; might be permanently tied to GND.
+    // Assign a valid GPIO register (though not used for CS), and an
+    // empty pin bitmask...the nonsense bit-twiddling might be faster
+    // than checking _cs and possibly branching.
+    csPortSet = dcPortSet;
+    csPortClr = dcPortClr;
+    csPinMask = 0;
+  }
+  if (rd >= 0) { // if read-strobe pin specified...
+    tft8.rdPinMask = digitalPinToBitMask(rd);
+    tft8.rdPortSet = &(PORT->Group[g_APinDescription[rd].ulPort].OUTSET.reg);
+    tft8.rdPortClr = &(PORT->Group[g_APinDescription[rd].ulPort].OUTCLR.reg);
+  } else {
+    tft8.rdPinMask = 0;
+    tft8.rdPortSet = dcPortSet;
+    tft8.rdPortClr = dcPortClr;
+  }
+  // Get pointers to PORT write/read/dir bytes within 32-bit PORT
+  uint8_t dBit = g_APinDescription[d0].ulPin; // d0 bit # in PORT
+  PortGroup *p = (&(PORT->Group[g_APinDescription[d0].ulPort]));
+  uint8_t offset = dBit / 8; // d[7:0] byte # within PORT
+  if (tft8.wide)
+    offset &= ~1; // d[15:8] byte # within PORT
+  // These are all uint8_t* pointers -- elsewhere they're recast
+  // as necessary if a 'wide' 16-bit interface is in use.
+  tft8.writePort = (volatile uint8_t *)&(p->OUT.reg) + offset;
+  tft8.readPort = (volatile uint8_t *)&(p->IN.reg) + offset;
+  tft8.dirSet = (volatile uint8_t *)&(p->DIRSET.reg) + offset;
+  tft8.dirClr = (volatile uint8_t *)&(p->DIRCLR.reg) + offset;
+#endif // end !CORE_TEENSY
+#else  // !HAS_PORT_SET_CLR
+  tft8.wrPort = (PORTreg_t)portOutputRegister(digitalPinToPort(wr));
+  tft8.wrPinMaskSet = digitalPinToBitMask(wr);
+  dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
+  dcPinMaskSet = digitalPinToBitMask(dc);
+  if (cs >= 0) {
+    csPort = (PORTreg_t)portOutputRegister(digitalPinToPort(cs));
+    csPinMaskSet = digitalPinToBitMask(cs);
+  } else {
+    // No chip-select line defined; might be permanently tied to GND.
+    // Assign a valid GPIO register (though not used for CS), and an
+    // empty pin bitmask...the nonsense bit-twiddling might be faster
+    // than checking _cs and possibly branching.
+    csPort = dcPort;
+    csPinMaskSet = 0;
+  }
+  if (rd >= 0) { // if read-strobe pin specified...
+    tft8.rdPort = (PORTreg_t)portOutputRegister(digitalPinToPort(rd));
+    tft8.rdPinMaskSet = digitalPinToBitMask(rd);
+  } else {
+    tft8.rdPort = dcPort;
+    tft8.rdPinMaskSet = 0;
+  }
+  csPinMaskClr = ~csPinMaskSet;
+  dcPinMaskClr = ~dcPinMaskSet;
+  tft8.wrPinMaskClr = ~tft8.wrPinMaskSet;
+  tft8.rdPinMaskClr = ~tft8.rdPinMaskSet;
+  tft8.writePort = (PORTreg_t)portOutputRegister(digitalPinToPort(d0));
+  tft8.readPort = (PORTreg_t)portInputRegister(digitalPinToPort(d0));
+  tft8.portDir = (PORTreg_t)portModeRegister(digitalPinToPort(d0));
+#endif // end !HAS_PORT_SET_CLR
 #endif // end USE_FAST_PINIO
 }
 
 // end constructors -------
-
 
 // CLASS MEMBER FUNCTIONS --------------------------------------------------
 
@@ -526,365 +530,367 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 */
 void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 
-    if(!freq) freq = DEFAULT_SPI_FREQ; // If no freq specified, use default
+  if (!freq)
+    freq = DEFAULT_SPI_FREQ; // If no freq specified, use default
 
-    // Init basic control pins common to all connection types
-    if(_cs >= 0) {
-        pinMode(_cs, OUTPUT);
-        digitalWrite(_cs, HIGH); // Deselect
-    }
-    pinMode(_dc, OUTPUT);
-    digitalWrite(_dc, HIGH); // Data mode
+  // Init basic control pins common to all connection types
+  if (_cs >= 0) {
+    pinMode(_cs, OUTPUT);
+    digitalWrite(_cs, HIGH); // Deselect
+  }
+  pinMode(_dc, OUTPUT);
+  digitalWrite(_dc, HIGH); // Data mode
 
-    if(connection == TFT_HARD_SPI) {
+  if (connection == TFT_HARD_SPI) {
 
 #if defined(SPI_HAS_TRANSACTION)
-        hwspi.settings = SPISettings(freq, MSBFIRST, spiMode);
+    hwspi.settings = SPISettings(freq, MSBFIRST, spiMode);
 #else
-        hwspi._freq    = freq;    // Save freq value for later
+    hwspi._freq = freq; // Save freq value for later
 #endif
-        hwspi._mode    = spiMode; // Save spiMode value for later
-        // Call hwspi._spi->begin() ONLY if this is among the 'established'
-        // SPI interfaces in variant.h. For DIY roll-your-own SERCOM SPIs,
-        // begin() and pinPeripheral() calls MUST be made in one's calling
-        // code, BEFORE the screen-specific begin/init function is called.
-        // Reason for this is that SPI::begin() makes its own calls to
-        // pinPeripheral() based on g_APinDescription[n].ulPinType, which
-        // on non-established SPI interface pins will always be PIO_DIGITAL
-        // or similar, while we need PIO_SERCOM or PIO_SERCOM_ALT...it's
-        // highly unique between devices and variants for each pin or
-        // SERCOM so we can't make those calls ourselves here. And the SPI
-        // device needs to be set up before calling this because it's
-        // immediately followed with initialization commands. Blargh.
-        if(
+    hwspi._mode = spiMode; // Save spiMode value for later
+    // Call hwspi._spi->begin() ONLY if this is among the 'established'
+    // SPI interfaces in variant.h. For DIY roll-your-own SERCOM SPIs,
+    // begin() and pinPeripheral() calls MUST be made in one's calling
+    // code, BEFORE the screen-specific begin/init function is called.
+    // Reason for this is that SPI::begin() makes its own calls to
+    // pinPeripheral() based on g_APinDescription[n].ulPinType, which
+    // on non-established SPI interface pins will always be PIO_DIGITAL
+    // or similar, while we need PIO_SERCOM or PIO_SERCOM_ALT...it's
+    // highly unique between devices and variants for each pin or
+    // SERCOM so we can't make those calls ourselves here. And the SPI
+    // device needs to be set up before calling this because it's
+    // immediately followed with initialization commands. Blargh.
+    if (
 #if !defined(SPI_INTERFACES_COUNT)
-            1
+        1
 #endif
 #if SPI_INTERFACES_COUNT > 0
-             (hwspi._spi == &SPI)
+        (hwspi._spi == &SPI)
 #endif
 #if SPI_INTERFACES_COUNT > 1
-          || (hwspi._spi == &SPI1)
+        || (hwspi._spi == &SPI1)
 #endif
 #if SPI_INTERFACES_COUNT > 2
-          || (hwspi._spi == &SPI2)
+        || (hwspi._spi == &SPI2)
 #endif
 #if SPI_INTERFACES_COUNT > 3
-          || (hwspi._spi == &SPI3)
+        || (hwspi._spi == &SPI3)
 #endif
 #if SPI_INTERFACES_COUNT > 4
-          || (hwspi._spi == &SPI4)
+        || (hwspi._spi == &SPI4)
 #endif
 #if SPI_INTERFACES_COUNT > 5
-          || (hwspi._spi == &SPI5)
+        || (hwspi._spi == &SPI5)
 #endif
-        ) {
-            hwspi._spi->begin();
-        }
-    } else if(connection == TFT_SOFT_SPI) {
+            ) {
+      hwspi._spi->begin();
+    }
+  } else if (connection == TFT_SOFT_SPI) {
 
-        pinMode(swspi._mosi, OUTPUT);
-        digitalWrite(swspi._mosi, LOW);
-        pinMode(swspi._sck, OUTPUT);
-        digitalWrite(swspi._sck, LOW);
-        if(swspi._miso >= 0) {
-            pinMode(swspi._miso, INPUT);
-        }
+    pinMode(swspi._mosi, OUTPUT);
+    digitalWrite(swspi._mosi, LOW);
+    pinMode(swspi._sck, OUTPUT);
+    digitalWrite(swspi._sck, LOW);
+    if (swspi._miso >= 0) {
+      pinMode(swspi._miso, INPUT);
+    }
 
-    } else { // TFT_PARALLEL
+  } else { // TFT_PARALLEL
 
-        // Initialize data pins.  We were only passed d0, so scan
-        // the pin description list looking for the other pins.
-        // They'll be on the same PORT, and within the next 7 (or 15) bits
-        // (because we need to write to a contiguous PORT byte or word).
+// Initialize data pins.  We were only passed d0, so scan
+// the pin description list looking for the other pins.
+// They'll be on the same PORT, and within the next 7 (or 15) bits
+// (because we need to write to a contiguous PORT byte or word).
 #if defined(__AVR__)
-        // PORT registers are 8 bits wide, so just need a register match...
-        for(uint8_t i=0; i<NUM_DIGITAL_PINS; i++) {
-            if((PORTreg_t)portOutputRegister(digitalPinToPort(i)) ==
-              tft8.writePort) {
-                pinMode(i, OUTPUT);
-                digitalWrite(i, LOW);
-            }
-        }
+    // PORT registers are 8 bits wide, so just need a register match...
+    for (uint8_t i = 0; i < NUM_DIGITAL_PINS; i++) {
+      if ((PORTreg_t)portOutputRegister(digitalPinToPort(i)) ==
+          tft8.writePort) {
+        pinMode(i, OUTPUT);
+        digitalWrite(i, LOW);
+      }
+    }
 #elif defined(USE_FAST_PINIO)
- #if defined(CORE_TEENSY)
-        if(!tft8.wide) {
-            *tft8.dirSet    = 0xFF; // Set port to output
-            *tft8.writePort = 0x00; // Write all 0s
-        } else {
-            *(volatile uint16_t *)tft8.dirSet    = 0xFFFF;
-            *(volatile uint16_t *)tft8.writePort = 0x0000;
-        }
- #else  // !CORE_TEENSY
-        uint8_t portNum = g_APinDescription[tft8._d0].ulPort, // d0 PORT #
-                dBit    = g_APinDescription[tft8._d0].ulPin,  // d0 bit in PORT
-                lastBit = dBit + (tft8.wide ? 15 : 7);
-        for(uint8_t i=0; i<PINS_COUNT; i++) {
-            if((g_APinDescription[i].ulPort == portNum ) &&
-               (g_APinDescription[i].ulPin  >= dBit    ) &&
-               (g_APinDescription[i].ulPin  <= (uint32_t)lastBit)) {
-                pinMode(i, OUTPUT);
-                digitalWrite(i, LOW);
-            }
-        }
- #endif // end !CORE_TEENSY
+#if defined(CORE_TEENSY)
+    if (!tft8.wide) {
+      *tft8.dirSet = 0xFF;    // Set port to output
+      *tft8.writePort = 0x00; // Write all 0s
+    } else {
+      *(volatile uint16_t *)tft8.dirSet = 0xFFFF;
+      *(volatile uint16_t *)tft8.writePort = 0x0000;
+    }
+#else  // !CORE_TEENSY
+    uint8_t portNum = g_APinDescription[tft8._d0].ulPort, // d0 PORT #
+        dBit = g_APinDescription[tft8._d0].ulPin,         // d0 bit in PORT
+        lastBit = dBit + (tft8.wide ? 15 : 7);
+    for (uint8_t i = 0; i < PINS_COUNT; i++) {
+      if ((g_APinDescription[i].ulPort == portNum) &&
+          (g_APinDescription[i].ulPin >= dBit) &&
+          (g_APinDescription[i].ulPin <= (uint32_t)lastBit)) {
+        pinMode(i, OUTPUT);
+        digitalWrite(i, LOW);
+      }
+    }
+#endif // end !CORE_TEENSY
 #endif
-        pinMode(tft8._wr, OUTPUT);
-        digitalWrite(tft8._wr, HIGH);
-        if(tft8._rd >= 0) {
-            pinMode(tft8._rd, OUTPUT);
-            digitalWrite(tft8._rd, HIGH);
-        }
+    pinMode(tft8._wr, OUTPUT);
+    digitalWrite(tft8._wr, HIGH);
+    if (tft8._rd >= 0) {
+      pinMode(tft8._rd, OUTPUT);
+      digitalWrite(tft8._rd, HIGH);
     }
+  }
 
-    if(_rst >= 0) {
-        // Toggle _rst low to reset
-        pinMode(_rst, OUTPUT);
-        digitalWrite(_rst, HIGH);
-        delay(100);
-        digitalWrite(_rst, LOW);
-        delay(100);
-        digitalWrite(_rst, HIGH);
-        delay(200);
-    }
+  if (_rst >= 0) {
+    // Toggle _rst low to reset
+    pinMode(_rst, OUTPUT);
+    digitalWrite(_rst, HIGH);
+    delay(100);
+    digitalWrite(_rst, LOW);
+    delay(100);
+    digitalWrite(_rst, HIGH);
+    delay(200);
+  }
 
 #if defined(USE_SPI_DMA)
-    if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
-       (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
-        // The DMA library needs to alloc at least one valid descriptor,
-        // so we do that here. It's not used in the usual sense though,
-        // just before a transfer we copy descriptor[0] to this address.
-        if(dptr = dma.addDescriptor(NULL, NULL, 42, DMA_BEAT_SIZE_BYTE,
-              false, false)) {
-            // Alloc 2 scanlines worth of pixels on display's major axis,
-            // whichever that is, rounding each up to 2-pixel boundary.
-            int  major = (WIDTH > HEIGHT) ? WIDTH : HEIGHT;
-            major     += (major & 1); // -> next 2-pixel bound, if needed.
-            maxFillLen = major * 2;   // 2 scanlines
-            // Note to future self: if you decide to make the pixel buffer
-            // much larger, remember that DMA transfer descriptors can't
-            // exceed 65,535 bytes (not 65,536), meaning 32,767 pixels max.
-            // Not that we have that kind of RAM to throw around right now.
-            if((pixelBuf[0] =
-              (uint16_t *)malloc(maxFillLen * sizeof(uint16_t)))) {
-                // Alloc OK. Get pointer to start of second scanline.
-                pixelBuf[1] = &pixelBuf[0][major];
-                // Determine number of DMA descriptors needed to cover
-                // entire screen when entire 2-line pixelBuf is used
-                // (round up for fractional last descriptor).
-                int numDescriptors = (WIDTH * HEIGHT + (maxFillLen - 1)) /
-                      maxFillLen;
-                // DMA descriptors MUST be 128-bit (16 byte) aligned.
-                // memalign() is considered obsolete but it's replacements
-                // (aligned_alloc() or posix_memalign()) are not currently
-                // available in the version of ARM GCC in use, but this
-                // is, so here we are.
-                if((descriptor = (DmacDescriptor *)memalign(16,
-                  numDescriptors * sizeof(DmacDescriptor)))) {
-                    int                dmac_id;
-                    volatile uint32_t *data_reg;
+  if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
+      (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
+    // The DMA library needs to alloc at least one valid descriptor,
+    // so we do that here. It's not used in the usual sense though,
+    // just before a transfer we copy descriptor[0] to this address.
+    if (dptr = dma.addDescriptor(NULL, NULL, 42, DMA_BEAT_SIZE_BYTE, false,
+                                 false)) {
+      // Alloc 2 scanlines worth of pixels on display's major axis,
+      // whichever that is, rounding each up to 2-pixel boundary.
+      int major = (WIDTH > HEIGHT) ? WIDTH : HEIGHT;
+      major += (major & 1);   // -> next 2-pixel bound, if needed.
+      maxFillLen = major * 2; // 2 scanlines
+      // Note to future self: if you decide to make the pixel buffer
+      // much larger, remember that DMA transfer descriptors can't
+      // exceed 65,535 bytes (not 65,536), meaning 32,767 pixels max.
+      // Not that we have that kind of RAM to throw around right now.
+      if ((pixelBuf[0] = (uint16_t *)malloc(maxFillLen * sizeof(uint16_t)))) {
+        // Alloc OK. Get pointer to start of second scanline.
+        pixelBuf[1] = &pixelBuf[0][major];
+        // Determine number of DMA descriptors needed to cover
+        // entire screen when entire 2-line pixelBuf is used
+        // (round up for fractional last descriptor).
+        int numDescriptors = (WIDTH * HEIGHT + (maxFillLen - 1)) / maxFillLen;
+        // DMA descriptors MUST be 128-bit (16 byte) aligned.
+        // memalign() is considered obsolete but it's replacements
+        // (aligned_alloc() or posix_memalign()) are not currently
+        // available in the version of ARM GCC in use, but this
+        // is, so here we are.
+        if ((descriptor = (DmacDescriptor *)memalign(
+                 16, numDescriptors * sizeof(DmacDescriptor)))) {
+          int dmac_id;
+          volatile uint32_t *data_reg;
 
-                    if(connection == TFT_HARD_SPI) {
-                        // THIS IS AN AFFRONT TO NATURE, but I don't know
-                        // any "clean" way to get the sercom number from the
-                        // the SPIClass pointer (e.g. &SPI or &SPI1), which
-                        // is all we have to work with. SPIClass does contain
-                        // a SERCOM pointer but it is a PRIVATE member!
-                        // Doing an UNSPEAKABLY HORRIBLE THING here, directly
-                        // accessing the first 32-bit value in the SPIClass
-                        // structure, knowing that's (currently) where the
-                        // SERCOM pointer lives, but this ENTIRELY DEPENDS on
-                        // that structure not changing nor the compiler
-                        // rearranging things. Oh the humanity!
+          if (connection == TFT_HARD_SPI) {
+            // THIS IS AN AFFRONT TO NATURE, but I don't know
+            // any "clean" way to get the sercom number from the
+            // the SPIClass pointer (e.g. &SPI or &SPI1), which
+            // is all we have to work with. SPIClass does contain
+            // a SERCOM pointer but it is a PRIVATE member!
+            // Doing an UNSPEAKABLY HORRIBLE THING here, directly
+            // accessing the first 32-bit value in the SPIClass
+            // structure, knowing that's (currently) where the
+            // SERCOM pointer lives, but this ENTIRELY DEPENDS on
+            // that structure not changing nor the compiler
+            // rearranging things. Oh the humanity!
 
-                        if(*(SERCOM **)hwspi._spi == &sercom0) {
-                            dmac_id  = SERCOM0_DMAC_ID_TX;
-                            data_reg = &SERCOM0->SPI.DATA.reg;
+            if (*(SERCOM **)hwspi._spi == &sercom0) {
+              dmac_id = SERCOM0_DMAC_ID_TX;
+              data_reg = &SERCOM0->SPI.DATA.reg;
 #if defined SERCOM1
-                        } else if(*(SERCOM **)hwspi._spi == &sercom1) {
-                            dmac_id  = SERCOM1_DMAC_ID_TX;
-                            data_reg = &SERCOM1->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom1) {
+              dmac_id = SERCOM1_DMAC_ID_TX;
+              data_reg = &SERCOM1->SPI.DATA.reg;
 #endif
 #if defined SERCOM2
-                        } else if(*(SERCOM **)hwspi._spi == &sercom2) {
-                            dmac_id  = SERCOM2_DMAC_ID_TX;
-                            data_reg = &SERCOM2->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom2) {
+              dmac_id = SERCOM2_DMAC_ID_TX;
+              data_reg = &SERCOM2->SPI.DATA.reg;
 #endif
 #if defined SERCOM3
-                        } else if(*(SERCOM **)hwspi._spi == &sercom3) {
-                            dmac_id  = SERCOM3_DMAC_ID_TX;
-                            data_reg = &SERCOM3->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom3) {
+              dmac_id = SERCOM3_DMAC_ID_TX;
+              data_reg = &SERCOM3->SPI.DATA.reg;
 #endif
 #if defined SERCOM4
-                        } else if(*(SERCOM **)hwspi._spi == &sercom4) {
-                            dmac_id  = SERCOM4_DMAC_ID_TX;
-                            data_reg = &SERCOM4->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom4) {
+              dmac_id = SERCOM4_DMAC_ID_TX;
+              data_reg = &SERCOM4->SPI.DATA.reg;
 #endif
 #if defined SERCOM5
-                        } else if(*(SERCOM **)hwspi._spi == &sercom5) {
-                            dmac_id  = SERCOM5_DMAC_ID_TX;
-                            data_reg = &SERCOM5->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom5) {
+              dmac_id = SERCOM5_DMAC_ID_TX;
+              data_reg = &SERCOM5->SPI.DATA.reg;
 #endif
 #if defined SERCOM6
-                        } else if(*(SERCOM **)hwspi._spi == &sercom6) {
-                            dmac_id  = SERCOM6_DMAC_ID_TX;
-                            data_reg = &SERCOM6->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom6) {
+              dmac_id = SERCOM6_DMAC_ID_TX;
+              data_reg = &SERCOM6->SPI.DATA.reg;
 #endif
 #if defined SERCOM7
-                        } else if(*(SERCOM **)hwspi._spi == &sercom7) {
-                            dmac_id  = SERCOM7_DMAC_ID_TX;
-                            data_reg = &SERCOM7->SPI.DATA.reg;
+            } else if (*(SERCOM **)hwspi._spi == &sercom7) {
+              dmac_id = SERCOM7_DMAC_ID_TX;
+              data_reg = &SERCOM7->SPI.DATA.reg;
 #endif
-                        }
-                        dma.setPriority(DMA_PRIORITY_3);
-                        dma.setTrigger(dmac_id);
-                        dma.setAction(DMA_TRIGGER_ACTON_BEAT);
+            }
+            dma.setPriority(DMA_PRIORITY_3);
+            dma.setTrigger(dmac_id);
+            dma.setAction(DMA_TRIGGER_ACTON_BEAT);
 
-                        // Initialize descriptor list.
-                        for(int d=0; d<numDescriptors; d++) {
-                            // No need to set SRCADDR, DESCADDR or BTCNT --
-                            // those are done in the pixel-writing functions.
-                            descriptor[d].BTCTRL.bit.VALID    = true;
-                            descriptor[d].BTCTRL.bit.EVOSEL   =
-                              DMA_EVENT_OUTPUT_DISABLE;
-                            descriptor[d].BTCTRL.bit.BLOCKACT =
-                               DMA_BLOCK_ACTION_NOACT;
-                            descriptor[d].BTCTRL.bit.BEATSIZE =
-                              DMA_BEAT_SIZE_BYTE;
-                            descriptor[d].BTCTRL.bit.DSTINC   = 0;
-                            descriptor[d].BTCTRL.bit.STEPSEL  =
-                              DMA_STEPSEL_SRC;
-                            descriptor[d].BTCTRL.bit.STEPSIZE =
-                              DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
-                            descriptor[d].DSTADDR.reg         =
-                              (uint32_t)data_reg;
-                        }
+            // Initialize descriptor list.
+            for (int d = 0; d < numDescriptors; d++) {
+              // No need to set SRCADDR, DESCADDR or BTCNT --
+              // those are done in the pixel-writing functions.
+              descriptor[d].BTCTRL.bit.VALID = true;
+              descriptor[d].BTCTRL.bit.EVOSEL = DMA_EVENT_OUTPUT_DISABLE;
+              descriptor[d].BTCTRL.bit.BLOCKACT = DMA_BLOCK_ACTION_NOACT;
+              descriptor[d].BTCTRL.bit.BEATSIZE = DMA_BEAT_SIZE_BYTE;
+              descriptor[d].BTCTRL.bit.DSTINC = 0;
+              descriptor[d].BTCTRL.bit.STEPSEL = DMA_STEPSEL_SRC;
+              descriptor[d].BTCTRL.bit.STEPSIZE =
+                  DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
+              descriptor[d].DSTADDR.reg = (uint32_t)data_reg;
+            }
 
-                    } else { // Parallel connection
+          } else { // Parallel connection
 
- #if defined(__SAMD51__)
-                        int dmaChannel = dma.getChannel();
-                        // Enable event output, use EVOSEL output
-                        DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOE    = 1;
-                        DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOMODE = 0;
+#if defined(__SAMD51__)
+            int dmaChannel = dma.getChannel();
+            // Enable event output, use EVOSEL output
+            DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOE = 1;
+            DMAC->Channel[dmaChannel].CHEVCTRL.bit.EVOMODE = 0;
 
-                        // CONFIGURE TIMER/COUNTER (for write strobe)
+            // CONFIGURE TIMER/COUNTER (for write strobe)
 
-                        Tc  *timer = tcList[tcNum].tc;   // -> Timer struct
-                        int  id    = tcList[tcNum].gclk; // Timer GCLK ID
-                        GCLK_PCHCTRL_Type pchctrl;
+            Tc *timer = tcList[tcNum].tc; // -> Timer struct
+            int id = tcList[tcNum].gclk;  // Timer GCLK ID
+            GCLK_PCHCTRL_Type pchctrl;
 
-                        // Set up timer clock source from GCLK
-                        GCLK->PCHCTRL[id].bit.CHEN = 0;     // Stop timer
-                        while(GCLK->PCHCTRL[id].bit.CHEN);  // Wait for it
-                        pchctrl.bit.GEN  = GCLK_PCHCTRL_GEN_GCLK0_Val;
-                        pchctrl.bit.CHEN = 1;               // Enable
-                        GCLK->PCHCTRL[id].reg = pchctrl.reg;
-                        while(!GCLK->PCHCTRL[id].bit.CHEN); // Wait for it
+            // Set up timer clock source from GCLK
+            GCLK->PCHCTRL[id].bit.CHEN = 0; // Stop timer
+            while (GCLK->PCHCTRL[id].bit.CHEN)
+              ; // Wait for it
+            pchctrl.bit.GEN = GCLK_PCHCTRL_GEN_GCLK0_Val;
+            pchctrl.bit.CHEN = 1; // Enable
+            GCLK->PCHCTRL[id].reg = pchctrl.reg;
+            while (!GCLK->PCHCTRL[id].bit.CHEN)
+              ; // Wait for it
 
-                        // Disable timer/counter before configuring it
-                        timer->COUNT8.CTRLA.bit.ENABLE     = 0;
-                        while(timer->COUNT8.SYNCBUSY.bit.STATUS);
+            // Disable timer/counter before configuring it
+            timer->COUNT8.CTRLA.bit.ENABLE = 0;
+            while (timer->COUNT8.SYNCBUSY.bit.STATUS)
+              ;
 
-                        timer->COUNT8.WAVE.bit.WAVEGEN     = 2; // NPWM
-                        timer->COUNT8.CTRLA.bit.MODE       = 1; // 8-bit
-                        timer->COUNT8.CTRLA.bit.PRESCALER  = 0; // 1:1
-                        while(timer->COUNT8.SYNCBUSY.bit.STATUS);
+            timer->COUNT8.WAVE.bit.WAVEGEN = 2;    // NPWM
+            timer->COUNT8.CTRLA.bit.MODE = 1;      // 8-bit
+            timer->COUNT8.CTRLA.bit.PRESCALER = 0; // 1:1
+            while (timer->COUNT8.SYNCBUSY.bit.STATUS)
+              ;
 
-                        timer->COUNT8.CTRLBCLR.bit.DIR     = 1; // Count UP
-                        while(timer->COUNT8.SYNCBUSY.bit.CTRLB);
-                        timer->COUNT8.CTRLBSET.bit.ONESHOT = 1; // One-shot
-                        while(timer->COUNT8.SYNCBUSY.bit.CTRLB);
-                        timer->COUNT8.PER.reg              = 6; // PWM top
-                        while(timer->COUNT8.SYNCBUSY.bit.PER);
-                        timer->COUNT8.CC[0].reg            = 2; // Compare
-                        while(timer->COUNT8.SYNCBUSY.bit.CC0);
-                        // Enable async input events,
-                        // event action = restart.
-                        timer->COUNT8.EVCTRL.bit.TCEI      = 1;
-                        timer->COUNT8.EVCTRL.bit.EVACT     = 1;
+            timer->COUNT8.CTRLBCLR.bit.DIR = 1; // Count UP
+            while (timer->COUNT8.SYNCBUSY.bit.CTRLB)
+              ;
+            timer->COUNT8.CTRLBSET.bit.ONESHOT = 1; // One-shot
+            while (timer->COUNT8.SYNCBUSY.bit.CTRLB)
+              ;
+            timer->COUNT8.PER.reg = 6; // PWM top
+            while (timer->COUNT8.SYNCBUSY.bit.PER)
+              ;
+            timer->COUNT8.CC[0].reg = 2; // Compare
+            while (timer->COUNT8.SYNCBUSY.bit.CC0)
+              ;
+            // Enable async input events,
+            // event action = restart.
+            timer->COUNT8.EVCTRL.bit.TCEI = 1;
+            timer->COUNT8.EVCTRL.bit.EVACT = 1;
 
-                        // Enable timer
-                        timer->COUNT8.CTRLA.reg |= TC_CTRLA_ENABLE;
-                        while(timer->COUNT8.SYNCBUSY.bit.STATUS);
+            // Enable timer
+            timer->COUNT8.CTRLA.reg |= TC_CTRLA_ENABLE;
+            while (timer->COUNT8.SYNCBUSY.bit.STATUS)
+              ;
 
-#if(wrPeripheral == PIO_CCL)
-                        // CONFIGURE CCL (inverts timer/counter output)
+#if (wrPeripheral == PIO_CCL)
+            // CONFIGURE CCL (inverts timer/counter output)
 
-                        MCLK->APBCMASK.bit.CCL_ = 1; // Enable CCL clock
-                        CCL->CTRL.bit.ENABLE    = 0; // Disable to config
-                        CCL->CTRL.bit.SWRST     = 1; // Reset CCL registers
-                        CCL->LUTCTRL[tcNum].bit.ENABLE  = 0; // Disable LUT
-                        CCL->LUTCTRL[tcNum].bit.FILTSEL = 0; // No filter
-                        CCL->LUTCTRL[tcNum].bit.INSEL0  = 6; // TC input
-                        CCL->LUTCTRL[tcNum].bit.INSEL1  = 0; // MASK
-                        CCL->LUTCTRL[tcNum].bit.INSEL2  = 0; // MASK
-                        CCL->LUTCTRL[tcNum].bit.TRUTH   = 1; // Invert in 0
-                        CCL->LUTCTRL[tcNum].bit.ENABLE  = 1; // Enable LUT
-                        CCL->CTRL.bit.ENABLE    = 1; // Enable CCL
+            MCLK->APBCMASK.bit.CCL_ = 1;         // Enable CCL clock
+            CCL->CTRL.bit.ENABLE = 0;            // Disable to config
+            CCL->CTRL.bit.SWRST = 1;             // Reset CCL registers
+            CCL->LUTCTRL[tcNum].bit.ENABLE = 0;  // Disable LUT
+            CCL->LUTCTRL[tcNum].bit.FILTSEL = 0; // No filter
+            CCL->LUTCTRL[tcNum].bit.INSEL0 = 6;  // TC input
+            CCL->LUTCTRL[tcNum].bit.INSEL1 = 0;  // MASK
+            CCL->LUTCTRL[tcNum].bit.INSEL2 = 0;  // MASK
+            CCL->LUTCTRL[tcNum].bit.TRUTH = 1;   // Invert in 0
+            CCL->LUTCTRL[tcNum].bit.ENABLE = 1;  // Enable LUT
+            CCL->CTRL.bit.ENABLE = 1;            // Enable CCL
 #endif
 
-                        // CONFIGURE EVENT SYSTEM
+            // CONFIGURE EVENT SYSTEM
 
-                        // Set up event system clock source from GCLK...
-                        // Disable EVSYS, wait for disable
-                        GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN = 0;
-                        while(GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN);
-                        pchctrl.bit.GEN  = GCLK_PCHCTRL_GEN_GCLK0_Val;
-                        pchctrl.bit.CHEN = 1; // Re-enable
-                        GCLK->PCHCTRL[EVSYS_GCLK_ID_0].reg = pchctrl.reg;
-                        // Wait for it, then enable EVSYS clock
-                        while(!GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN);
-                        MCLK->APBBMASK.bit.EVSYS_ = 1;
+            // Set up event system clock source from GCLK...
+            // Disable EVSYS, wait for disable
+            GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN = 0;
+            while (GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN)
+              ;
+            pchctrl.bit.GEN = GCLK_PCHCTRL_GEN_GCLK0_Val;
+            pchctrl.bit.CHEN = 1; // Re-enable
+            GCLK->PCHCTRL[EVSYS_GCLK_ID_0].reg = pchctrl.reg;
+            // Wait for it, then enable EVSYS clock
+            while (!GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN)
+              ;
+            MCLK->APBBMASK.bit.EVSYS_ = 1;
 
-                        // Connect Timer EVU to ch 0
-                        EVSYS->USER[tcList[tcNum].evu].reg = 1;
-                        // Datasheet recommends single write operation;
-                        // reg instead of bit. Also datasheet: PATH bits
-                        // must be zero when using async!
-                        EVSYS_CHANNEL_Type ev;
-                        ev.reg       = 0;
-                        ev.bit.PATH  = 2;                 // Asynchronous
-                        ev.bit.EVGEN = 0x22 + dmaChannel; // DMA channel 0+
-                        EVSYS->Channel[0].CHANNEL.reg = ev.reg;
+            // Connect Timer EVU to ch 0
+            EVSYS->USER[tcList[tcNum].evu].reg = 1;
+            // Datasheet recommends single write operation;
+            // reg instead of bit. Also datasheet: PATH bits
+            // must be zero when using async!
+            EVSYS_CHANNEL_Type ev;
+            ev.reg = 0;
+            ev.bit.PATH = 2;                  // Asynchronous
+            ev.bit.EVGEN = 0x22 + dmaChannel; // DMA channel 0+
+            EVSYS->Channel[0].CHANNEL.reg = ev.reg;
 
-                        // Initialize descriptor list.
-                        for(int d=0; d<numDescriptors; d++) {
-                            // No need to set SRCADDR, DESCADDR or BTCNT --
-                            // those are done in the pixel-writing functions.
-                            descriptor[d].BTCTRL.bit.VALID    = true;
-                            // Event strobe on beat xfer:
-                            descriptor[d].BTCTRL.bit.EVOSEL   = 0x3;
-                            descriptor[d].BTCTRL.bit.BLOCKACT =
-                              DMA_BLOCK_ACTION_NOACT;
-                            descriptor[d].BTCTRL.bit.BEATSIZE = tft8.wide ?
-                              DMA_BEAT_SIZE_HWORD : DMA_BEAT_SIZE_BYTE;
-                            descriptor[d].BTCTRL.bit.SRCINC   = 1;
-                            descriptor[d].BTCTRL.bit.DSTINC   = 0;
-                            descriptor[d].BTCTRL.bit.STEPSEL  =
-                              DMA_STEPSEL_SRC;
-                            descriptor[d].BTCTRL.bit.STEPSIZE =
-                               DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
-                            descriptor[d].DSTADDR.reg         =
-                               (uint32_t)tft8.writePort;
-                        }
- #endif // __SAMD51
-                    } // end parallel-specific DMA setup
+            // Initialize descriptor list.
+            for (int d = 0; d < numDescriptors; d++) {
+              // No need to set SRCADDR, DESCADDR or BTCNT --
+              // those are done in the pixel-writing functions.
+              descriptor[d].BTCTRL.bit.VALID = true;
+              // Event strobe on beat xfer:
+              descriptor[d].BTCTRL.bit.EVOSEL = 0x3;
+              descriptor[d].BTCTRL.bit.BLOCKACT = DMA_BLOCK_ACTION_NOACT;
+              descriptor[d].BTCTRL.bit.BEATSIZE =
+                  tft8.wide ? DMA_BEAT_SIZE_HWORD : DMA_BEAT_SIZE_BYTE;
+              descriptor[d].BTCTRL.bit.SRCINC = 1;
+              descriptor[d].BTCTRL.bit.DSTINC = 0;
+              descriptor[d].BTCTRL.bit.STEPSEL = DMA_STEPSEL_SRC;
+              descriptor[d].BTCTRL.bit.STEPSIZE =
+                  DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
+              descriptor[d].DSTADDR.reg = (uint32_t)tft8.writePort;
+            }
+#endif      // __SAMD51
+          } // end parallel-specific DMA setup
 
-                    lastFillColor = 0x0000;
-                    lastFillLen   = 0;
-                    dma.setCallback(dma_callback);
-                    return; // Success!
-                    // else clean up any partial allocation...
-                } // end descriptor memalign()
-                free(pixelBuf[0]);
-                pixelBuf[0] = pixelBuf[1] = NULL;
-            } // end pixelBuf malloc()
-            // Don't currently have a descriptor delete function in
-            // ZeroDMA lib, but if we did, it would be called here.
-        } // end addDescriptor()
-        dma.free(); // Deallocate DMA channel
-    }
+          lastFillColor = 0x0000;
+          lastFillLen = 0;
+          dma.setCallback(dma_callback);
+          return; // Success!
+                  // else clean up any partial allocation...
+        }         // end descriptor memalign()
+        free(pixelBuf[0]);
+        pixelBuf[0] = pixelBuf[1] = NULL;
+      }         // end pixelBuf malloc()
+                // Don't currently have a descriptor delete function in
+                // ZeroDMA lib, but if we did, it would be called here.
+    }           // end addDescriptor()
+    dma.free(); // Deallocate DMA channel
+  }
 #endif // end USE_SPI_DMA
 }
 
@@ -897,7 +903,7 @@ void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
 #if defined(SPI_HAS_TRANSACTION)
   hwspi.settings = SPISettings(freq, MSBFIRST, hwspi._mode);
 #else
-  hwspi._freq    = freq;    // Save freq value for later
+  hwspi._freq = freq; // Save freq value for later
 #endif
 }
 
@@ -908,8 +914,9 @@ void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::startWrite(void) {
-    SPI_BEGIN_TRANSACTION();
-    if(_cs >= 0) SPI_CS_LOW();
+  SPI_BEGIN_TRANSACTION();
+  if (_cs >= 0)
+    SPI_CS_LOW();
 }
 
 /*!
@@ -919,10 +926,10 @@ void Adafruit_SPITFT::startWrite(void) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::endWrite(void) {
-    if(_cs >= 0) SPI_CS_HIGH();
-    SPI_END_TRANSACTION();
+  if (_cs >= 0)
+    SPI_CS_HIGH();
+  SPI_END_TRANSACTION();
 }
-
 
 // -------------------------------------------------------------------------
 // Lower-level graphics operations. These functions require a chip-select
@@ -940,10 +947,10 @@ void Adafruit_SPITFT::endWrite(void) {
     @param  color  16-bit pixel color in '565' RGB format.
 */
 void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
-    if((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-        setAddrWindow(x, y, 1, 1);
-        SPI_WRITE16(color);
-    }
+  if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    setAddrWindow(x, y, 1, 1);
+    SPI_WRITE16(color);
+  }
 }
 
 /*!
@@ -974,126 +981,133 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
                        covered...this is really here only for SAMD DMA and
                        much forethought on the application side.
 */
-void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
-  bool block, bool bigEndian) {
+void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
+                                  bool bigEndian) {
 
-    if(!len) return; // Avoid 0-byte transfers
+  if (!len)
+    return; // Avoid 0-byte transfers
 
 #if defined(ESP32) // ESP32 has a special SPI pixel-writing function...
-    if(connection == TFT_HARD_SPI) {
-        hwspi._spi->writePixels(colors, len * 2);
-        return;
-    }
-#elif defined(ARDUINO_NRF52_ADAFRUIT) &&  defined(NRF52840_XXAA)// Adafruit nRF52 use SPIM3 DMA at 32Mhz
-    // TFT and SPI DMA endian is different we need to swap bytes
-    if (!bigEndian) {
-      for(uint32_t i=0; i<len; i++) {
-        colors[i] = __builtin_bswap16(colors[i]);
-      }
-    }
-
-    // use the separate tx, rx buf variant to prevent overwrite the buffer
-    hwspi._spi->transfer(colors, NULL, 2*len);
-
-    // swap back color buffer
-    if (!bigEndian) {
-      for(uint32_t i=0; i<len; i++) {
-        colors[i] = __builtin_bswap16(colors[i]);
-      }
-    }
-
+  if (connection == TFT_HARD_SPI) {
+    hwspi._spi->writePixels(colors, len * 2);
     return;
-#elif defined(USE_SPI_DMA)
-    if((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
-        int     maxSpan     = maxFillLen / 2; // One scanline max
-        uint8_t pixelBufIdx = 0;              // Active pixel buffer number
- #if defined(__SAMD51__)
-        if(connection == TFT_PARALLEL) {
-            // Switch WR pin to PWM or CCL
-            pinPeripheral(tft8._wr, wrPeripheral);
-        }
- #endif // end __SAMD51__
-        if(!bigEndian) { // Normal little-endian situation...
-            while(len) {
-                int count = (len < maxSpan) ? len : maxSpan;
-
-                // Because TFT and SAMD endianisms are different, must swap
-                // bytes from the 'colors' array passed into a DMA working
-                // buffer. This can take place while the prior DMA transfer
-                // is in progress, hence the need for two pixelBufs.
-                for(int i=0; i<count; i++) {
-                    pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
-                }
-                // The transfers themselves are relatively small, so we don't
-                // need a long descriptor list. We just alternate between the
-                // first two, sharing pixelBufIdx for that purpose.
-                descriptor[pixelBufIdx].SRCADDR.reg       =
-                  (uint32_t)pixelBuf[pixelBufIdx] + count * 2;
-                descriptor[pixelBufIdx].BTCTRL.bit.SRCINC = 1;
-                descriptor[pixelBufIdx].BTCNT.reg         = count * 2;
-                descriptor[pixelBufIdx].DESCADDR.reg      = 0;
-
-                while(dma_busy); // Wait for prior line to finish
-
-                // Move new descriptor into place...
-                memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
-                dma_busy = true;
-                dma.startJob();                // Trigger SPI DMA transfer
-                if(connection == TFT_PARALLEL) dma.trigger();
-                pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
-
-                len -= count;
-            }
-        } else { // bigEndian == true
-            // With big-endian pixel data, this can be handled as a single
-            // DMA transfer using chained descriptors. Even full screen, this
-            // needs only a relatively short descriptor list, each
-            // transferring a max of 32,767 (not 32,768) pixels. The list
-            // was allocated large enough to accommodate a full screen's
-            // worth of data, so this won't run past the end of the list.
-            int d, numDescriptors = (len + 32766) / 32767;
-            for(d=0; d<numDescriptors; d++) {
-                int count = (len < 32767) ? len : 32767;
-                descriptor[d].SRCADDR.reg       = (uint32_t)colors + count * 2;
-                descriptor[d].BTCTRL.bit.SRCINC = 1;
-                descriptor[d].BTCNT.reg         = count * 2;
-                descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
-                len    -= count;
-                colors += count;
-            }
-            descriptor[d-1].DESCADDR.reg        = 0;
-
-            while(dma_busy); // Wait for prior transfer (if any) to finish
-
-            // Move first descriptor into place and start transfer...
-            memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
-            dma_busy = true;
-            dma.startJob();                // Trigger SPI DMA transfer
-            if(connection == TFT_PARALLEL) dma.trigger();
-        } // end bigEndian
-
-        lastFillColor = 0x0000; // pixelBuf has been sullied
-        lastFillLen   = 0;
-        if(block) {
-            while(dma_busy);    // Wait for last line to complete
- #if defined(__SAMD51__) || defined(_SAMD21_)
-            if(connection == TFT_HARD_SPI) {
-                // See SAMD51/21 note in writeColor()
-                hwspi._spi->setDataMode(hwspi._mode);
-            } else {
-                pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
-            }
- #endif // end __SAMD51__ || _SAMD21_
-        }
-        return;
+  }
+#elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
+    defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
+  // TFT and SPI DMA endian is different we need to swap bytes
+  if (!bigEndian) {
+    for (uint32_t i = 0; i < len; i++) {
+      colors[i] = __builtin_bswap16(colors[i]);
     }
+  }
+
+  // use the separate tx, rx buf variant to prevent overwrite the buffer
+  hwspi._spi->transfer(colors, NULL, 2 * len);
+
+  // swap back color buffer
+  if (!bigEndian) {
+    for (uint32_t i = 0; i < len; i++) {
+      colors[i] = __builtin_bswap16(colors[i]);
+    }
+  }
+
+  return;
+#elif defined(USE_SPI_DMA)
+  if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
+    int maxSpan = maxFillLen / 2; // One scanline max
+    uint8_t pixelBufIdx = 0; // Active pixel buffer number
+#if defined(__SAMD51__)
+    if (connection == TFT_PARALLEL) {
+      // Switch WR pin to PWM or CCL
+      pinPeripheral(tft8._wr, wrPeripheral);
+    }
+#endif // end __SAMD51__
+    if (!bigEndian) { // Normal little-endian situation...
+      while (len) {
+        int count = (len < maxSpan) ? len : maxSpan;
+
+        // Because TFT and SAMD endianisms are different, must swap
+        // bytes from the 'colors' array passed into a DMA working
+        // buffer. This can take place while the prior DMA transfer
+        // is in progress, hence the need for two pixelBufs.
+        for (int i = 0; i < count; i++) {
+          pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
+        }
+        // The transfers themselves are relatively small, so we don't
+        // need a long descriptor list. We just alternate between the
+        // first two, sharing pixelBufIdx for that purpose.
+        descriptor[pixelBufIdx].SRCADDR.reg =
+            (uint32_t)pixelBuf[pixelBufIdx] + count * 2;
+        descriptor[pixelBufIdx].BTCTRL.bit.SRCINC = 1;
+        descriptor[pixelBufIdx].BTCNT.reg = count * 2;
+        descriptor[pixelBufIdx].DESCADDR.reg = 0;
+
+        while (dma_busy)
+          ; // Wait for prior line to finish
+
+        // Move new descriptor into place...
+        memcpy(dptr, &descriptor[pixelBufIdx], sizeof(DmacDescriptor));
+        dma_busy = true;
+        dma.startJob(); // Trigger SPI DMA transfer
+        if (connection == TFT_PARALLEL)
+          dma.trigger();
+        pixelBufIdx = 1 - pixelBufIdx; // Swap DMA pixel buffers
+
+        len -= count;
+      }
+    } else { // bigEndian == true
+      // With big-endian pixel data, this can be handled as a single
+      // DMA transfer using chained descriptors. Even full screen, this
+      // needs only a relatively short descriptor list, each
+      // transferring a max of 32,767 (not 32,768) pixels. The list
+      // was allocated large enough to accommodate a full screen's
+      // worth of data, so this won't run past the end of the list.
+      int d, numDescriptors = (len + 32766) / 32767;
+      for (d = 0; d < numDescriptors; d++) {
+        int count = (len < 32767) ? len : 32767;
+        descriptor[d].SRCADDR.reg = (uint32_t)colors + count * 2;
+        descriptor[d].BTCTRL.bit.SRCINC = 1;
+        descriptor[d].BTCNT.reg = count * 2;
+        descriptor[d].DESCADDR.reg = (uint32_t)&descriptor[d + 1];
+        len -= count;
+        colors += count;
+      }
+      descriptor[d - 1].DESCADDR.reg = 0;
+
+      while (dma_busy)
+        ; // Wait for prior transfer (if any) to finish
+
+      // Move first descriptor into place and start transfer...
+      memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
+      dma_busy = true;
+      dma.startJob(); // Trigger SPI DMA transfer
+      if (connection == TFT_PARALLEL)
+        dma.trigger();
+    } // end bigEndian
+
+    lastFillColor = 0x0000; // pixelBuf has been sullied
+    lastFillLen = 0;
+    if (block) {
+      while (dma_busy)
+        ; // Wait for last line to complete
+#if defined(__SAMD51__) || defined(_SAMD21_)
+      if (connection == TFT_HARD_SPI) {
+        // See SAMD51/21 note in writeColor()
+        hwspi._spi->setDataMode(hwspi._mode);
+      } else {
+        pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+      }
+#endif // end __SAMD51__ || _SAMD21_
+    }
+    return;
+  }
 #endif // end USE_SPI_DMA
 
-    // All other cases (bitbang SPI or non-DMA hard SPI or parallel),
-    // use a loop with the normal 16-bit data write function:
-    while(len--) {
-        SPI_WRITE16(*colors++);
-    }
+  // All other cases (bitbang SPI or non-DMA hard SPI or parallel),
+  // use a loop with the normal 16-bit data write function:
+  while (len--) {
+    SPI_WRITE16(*colors++);
+  }
 }
 
 /*!
@@ -1104,15 +1118,16 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len,
 */
 void Adafruit_SPITFT::dmaWait(void) {
 #if defined(USE_SPI_DMA)
-    while(dma_busy);
- #if defined(__SAMD51__) || defined(_SAMD21_)
-    if(connection == TFT_HARD_SPI) {
-        // See SAMD51/21 note in writeColor()
-        hwspi._spi->setDataMode(hwspi._mode);
-    } else {
-        pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
-    }
- #endif // end __SAMD51__ || _SAMD21_
+  while (dma_busy)
+    ;
+#if defined(__SAMD51__) || defined(_SAMD21_)
+  if (connection == TFT_HARD_SPI) {
+    // See SAMD51/21 note in writeColor()
+    hwspi._spi->setDataMode(hwspi._mode);
+  } else {
+    pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+  }
+#endif // end __SAMD51__ || _SAMD21_
 #endif
 }
 
@@ -1124,261 +1139,274 @@ void Adafruit_SPITFT::dmaWait(void) {
 */
 void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
-    if(!len) return; // Avoid 0-byte transfers
+  if (!len)
+    return; // Avoid 0-byte transfers
 
-    uint8_t hi = color >> 8, lo = color;
+  uint8_t hi = color >> 8, lo = color;
 
 #if defined(ESP32) // ESP32 has a special SPI pixel-writing function...
-    if(connection == TFT_HARD_SPI) {
-        #define SPI_MAX_PIXELS_AT_ONCE 32
-        #define TMPBUF_LONGWORDS       (SPI_MAX_PIXELS_AT_ONCE + 1) / 2
-        #define TMPBUF_PIXELS          (TMPBUF_LONGWORDS * 2)
-        static uint32_t temp[TMPBUF_LONGWORDS];
-        uint32_t        c32    = color * 0x00010001;
-        uint16_t        bufLen = (len < TMPBUF_PIXELS) ? len : TMPBUF_PIXELS,
-                        xferLen, fillLen;
-        // Fill temp buffer 32 bits at a time
-        fillLen = (bufLen + 1) / 2; // Round up to next 32-bit boundary
-        for(uint32_t t=0; t<fillLen; t++) {
-            temp[t] = c32;
-        }
-        // Issue pixels in blocks from temp buffer
-        while(len) {                                 // While pixels remain
-            xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
-            writePixels((uint16_t *)temp, xferLen);
-            len -= xferLen;
-        }
-        return;
+  if (connection == TFT_HARD_SPI) {
+#define SPI_MAX_PIXELS_AT_ONCE 32
+#define TMPBUF_LONGWORDS (SPI_MAX_PIXELS_AT_ONCE + 1) / 2
+#define TMPBUF_PIXELS (TMPBUF_LONGWORDS * 2)
+    static uint32_t temp[TMPBUF_LONGWORDS];
+    uint32_t c32 = color * 0x00010001;
+    uint16_t bufLen = (len < TMPBUF_PIXELS) ? len : TMPBUF_PIXELS, xferLen,
+             fillLen;
+    // Fill temp buffer 32 bits at a time
+    fillLen = (bufLen + 1) / 2; // Round up to next 32-bit boundary
+    for (uint32_t t = 0; t < fillLen; t++) {
+      temp[t] = c32;
     }
-#elif defined(ARDUINO_NRF52_ADAFRUIT) && defined(NRF52840_XXAA) // Adafruit nRF52840 use SPIM3 DMA at 32Mhz
-    // at most 2 scan lines
-    uint32_t const pixbufcount = min(len, ((uint32_t) 2*width()));
-    uint16_t* pixbuf = (uint16_t*) rtos_malloc(2*pixbufcount);
+    // Issue pixels in blocks from temp buffer
+    while (len) {                              // While pixels remain
+      xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
+      writePixels((uint16_t *)temp, xferLen);
+      len -= xferLen;
+    }
+    return;
+  }
+#elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
+    defined(NRF52840_XXAA) // Adafruit nRF52840 use SPIM3 DMA at 32Mhz
+  // at most 2 scan lines
+  uint32_t const pixbufcount = min(len, ((uint32_t)2 * width()));
+  uint16_t *pixbuf = (uint16_t *)rtos_malloc(2 * pixbufcount);
 
-    // use SPI3 DMA if we could allocate buffer, else fall back to writing each pixel loop below
-    if (pixbuf)
-    {
-      uint16_t const swap_color = __builtin_bswap16(color);
+  // use SPI3 DMA if we could allocate buffer, else fall back to writing each
+  // pixel loop below
+  if (pixbuf) {
+    uint16_t const swap_color = __builtin_bswap16(color);
 
-      // fill buffer with color
-      for(uint32_t i=0; i<pixbufcount; i++) {
-        pixbuf[i] = swap_color;
-      }
+    // fill buffer with color
+    for (uint32_t i = 0; i < pixbufcount; i++) {
+      pixbuf[i] = swap_color;
+    }
 
-      while(len) {
-        uint32_t const count = min(len, pixbufcount);
-        writePixels(pixbuf, count, true, true);
+    while (len) {
+      uint32_t const count = min(len, pixbufcount);
+      writePixels(pixbuf, count, true, true);
+      len -= count;
+    }
+
+    rtos_free(pixbuf);
+    return;
+  }
+#else                      // !ESP32
+#if defined(USE_SPI_DMA)
+  if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
+      (len >= 16)) { // Don't bother with DMA on short pixel runs
+    int i, d, numDescriptors;
+    if (hi == lo) { // If high & low bytes are same...
+      onePixelBuf = color;
+      // Can do this with a relatively short descriptor list,
+      // each transferring a max of 32,767 (not 32,768) pixels.
+      // This won't run off the end of the allocated descriptor list,
+      // since we're using much larger chunks per descriptor here.
+      numDescriptors = (len + 32766) / 32767;
+      for (d = 0; d < numDescriptors; d++) {
+        int count = (len < 32767) ? len : 32767;
+        descriptor[d].SRCADDR.reg = (uint32_t)&onePixelBuf;
+        descriptor[d].BTCTRL.bit.SRCINC = 0;
+        descriptor[d].BTCNT.reg = count * 2;
+        descriptor[d].DESCADDR.reg = (uint32_t)&descriptor[d + 1];
         len -= count;
       }
+      descriptor[d - 1].DESCADDR.reg = 0;
+    } else {
+      // If high and low bytes are distinct, it's necessary to fill
+      // a buffer with pixel data (swapping high and low bytes because
+      // TFT and SAMD are different endianisms) and create a longer
+      // descriptor list pointing repeatedly to this data. We can do
+      // this slightly faster working 2 pixels (32 bits) at a time.
+      uint32_t *pixelPtr = (uint32_t *)pixelBuf[0],
+               twoPixels = __builtin_bswap16(color) * 0x00010001;
+      // We can avoid some or all of the buffer-filling if the color
+      // is the same as last time...
+      if (color == lastFillColor) {
+        // If length is longer than prior instance, fill only the
+        // additional pixels in the buffer and update lastFillLen.
+        if (len > lastFillLen) {
+          int fillStart = lastFillLen / 2,
+              fillEnd = (((len < maxFillLen) ? len : maxFillLen) + 1) / 2;
+          for (i = fillStart; i < fillEnd; i++)
+            pixelPtr[i] = twoPixels;
+          lastFillLen = fillEnd * 2;
+        } // else do nothing, don't set pixels or change lastFillLen
+      } else {
+        int fillEnd = (((len < maxFillLen) ? len : maxFillLen) + 1) / 2;
+        for (i = 0; i < fillEnd; i++)
+          pixelPtr[i] = twoPixels;
+        lastFillLen = fillEnd * 2;
+        lastFillColor = color;
+      }
 
-      rtos_free(pixbuf);
-      return;
+      numDescriptors = (len + maxFillLen - 1) / maxFillLen;
+      for (d = 0; d < numDescriptors; d++) {
+        int pixels = (len < maxFillLen) ? len : maxFillLen, bytes = pixels * 2;
+        descriptor[d].SRCADDR.reg = (uint32_t)pixelPtr + bytes;
+        descriptor[d].BTCTRL.bit.SRCINC = 1;
+        descriptor[d].BTCNT.reg = bytes;
+        descriptor[d].DESCADDR.reg = (uint32_t)&descriptor[d + 1];
+        len -= pixels;
+      }
+      descriptor[d - 1].DESCADDR.reg = 0;
     }
-#else  // !ESP32
- #if defined(USE_SPI_DMA)
-    if(((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
-       (len >= 16)) { // Don't bother with DMA on short pixel runs
-        int i, d, numDescriptors;
-        if(hi == lo) { // If high & low bytes are same...
-            onePixelBuf = color;
-            // Can do this with a relatively short descriptor list,
-            // each transferring a max of 32,767 (not 32,768) pixels.
-            // This won't run off the end of the allocated descriptor list,
-            // since we're using much larger chunks per descriptor here.
-            numDescriptors = (len + 32766) / 32767;
-            for(d=0; d<numDescriptors; d++) {
-                int count = (len < 32767) ? len : 32767;
-                descriptor[d].SRCADDR.reg       = (uint32_t)&onePixelBuf;
-                descriptor[d].BTCTRL.bit.SRCINC = 0;
-                descriptor[d].BTCNT.reg         = count * 2;
-                descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
-                len -= count;
-            }
-            descriptor[d-1].DESCADDR.reg        = 0;
-        } else {
-            // If high and low bytes are distinct, it's necessary to fill
-            // a buffer with pixel data (swapping high and low bytes because
-            // TFT and SAMD are different endianisms) and create a longer
-            // descriptor list pointing repeatedly to this data. We can do
-            // this slightly faster working 2 pixels (32 bits) at a time.
-            uint32_t *pixelPtr  = (uint32_t *)pixelBuf[0],
-                      twoPixels = __builtin_bswap16(color) * 0x00010001;
-            // We can avoid some or all of the buffer-filling if the color
-            // is the same as last time...
-            if(color == lastFillColor) {
-                // If length is longer than prior instance, fill only the
-                // additional pixels in the buffer and update lastFillLen.
-                if(len > lastFillLen) {
-                    int fillStart = lastFillLen / 2,
-                        fillEnd   = (((len < maxFillLen) ?
-                                       len : maxFillLen) + 1) / 2;
-                    for(i=fillStart; i<fillEnd; i++) pixelPtr[i] = twoPixels;
-                    lastFillLen = fillEnd * 2;
-                } // else do nothing, don't set pixels or change lastFillLen
-            } else {
-                int fillEnd = (((len < maxFillLen) ?
-                                 len : maxFillLen) + 1) / 2;
-                for(i=0; i<fillEnd; i++) pixelPtr[i] = twoPixels;
-                lastFillLen   = fillEnd * 2;
-                lastFillColor = color;
-            }
-
-            numDescriptors = (len + maxFillLen - 1) / maxFillLen;
-            for(d=0; d<numDescriptors; d++) {
-                int pixels = (len < maxFillLen) ? len : maxFillLen,
-                    bytes  = pixels * 2;
-                descriptor[d].SRCADDR.reg       = (uint32_t)pixelPtr + bytes;
-                descriptor[d].BTCTRL.bit.SRCINC = 1;
-                descriptor[d].BTCNT.reg         = bytes;
-                descriptor[d].DESCADDR.reg      = (uint32_t)&descriptor[d+1];
-                len -= pixels;
-            }
-            descriptor[d-1].DESCADDR.reg        = 0;
-        }
-        memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
- #if defined(__SAMD51__)
-        if(connection == TFT_PARALLEL) {
-            // Switch WR pin to PWM or CCL
-            pinPeripheral(tft8._wr, wrPeripheral);
-        }
- #endif // end __SAMD51__
-
-        dma_busy = true;
-        dma.startJob();
-        if(connection == TFT_PARALLEL) dma.trigger();
-        while(dma_busy); // Wait for completion
-        // Unfortunately blocking is necessary. An earlier version returned
-        // immediately and checked dma_busy on startWrite() instead, but it
-        // turns out to be MUCH slower on many graphics operations (as when
-        // drawing lines, pixel-by-pixel), perhaps because it's a volatile
-        // type and doesn't cache. Working on this.
-  #if defined(__SAMD51__) || defined(_SAMD21_)
-        if(connection == TFT_HARD_SPI) {
-            // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
-            // state on completion. Workaround is to explicitly set it back...
-            // (5/17/2019: apparently SAMD21 too, in certain cases, observed
-            // with ST7789 display.)
-            hwspi._spi->setDataMode(hwspi._mode);
-        } else {
-            pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
-        }
-  #endif // end __SAMD51__
-        return;
+    memcpy(dptr, &descriptor[0], sizeof(DmacDescriptor));
+#if defined(__SAMD51__)
+    if (connection == TFT_PARALLEL) {
+      // Switch WR pin to PWM or CCL
+      pinPeripheral(tft8._wr, wrPeripheral);
     }
- #endif // end USE_SPI_DMA
+#endif // end __SAMD51__
+
+    dma_busy = true;
+    dma.startJob();
+    if (connection == TFT_PARALLEL)
+      dma.trigger();
+    while (dma_busy)
+      ; // Wait for completion
+// Unfortunately blocking is necessary. An earlier version returned
+// immediately and checked dma_busy on startWrite() instead, but it
+// turns out to be MUCH slower on many graphics operations (as when
+// drawing lines, pixel-by-pixel), perhaps because it's a volatile
+// type and doesn't cache. Working on this.
+#if defined(__SAMD51__) || defined(_SAMD21_)
+    if (connection == TFT_HARD_SPI) {
+      // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
+      // state on completion. Workaround is to explicitly set it back...
+      // (5/17/2019: apparently SAMD21 too, in certain cases, observed
+      // with ST7789 display.)
+      hwspi._spi->setDataMode(hwspi._mode);
+    } else {
+      pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
+    }
+#endif // end __SAMD51__
+    return;
+  }
+#endif // end USE_SPI_DMA
 #endif // end !ESP32
 
-    // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
+  // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
 
-    if(connection == TFT_HARD_SPI) {
+  if (connection == TFT_HARD_SPI) {
 #if defined(ESP8266)
-        do {
-            uint32_t pixelsThisPass = len;
-            if(pixelsThisPass > 50000) pixelsThisPass = 50000;
-            len -= pixelsThisPass;
-            yield(); // Periodic yield() on long fills
-            while(pixelsThisPass--) {
-                hwspi._spi->write(hi);
-                hwspi._spi->write(lo);
-            }
-        } while(len);
-#else  // !ESP8266
-        while(len--) {
- #if defined(__AVR__)
-            AVR_WRITESPI(hi);
-            AVR_WRITESPI(lo);
- #elif defined(ESP32)
-            hwspi._spi->write(hi);
-            hwspi._spi->write(lo);
- #else
-            hwspi._spi->transfer(hi);
-            hwspi._spi->transfer(lo);
- #endif
-        }
-#endif // end !ESP8266
-    } else if(connection == TFT_SOFT_SPI) {
-#if defined(ESP8266)
-        do {
-            uint32_t pixelsThisPass = len;
-            if(pixelsThisPass > 20000) pixelsThisPass = 20000;
-            len -= pixelsThisPass;
-            yield(); // Periodic yield() on long fills
-            while(pixelsThisPass--) {
-                for(uint16_t bit=0, x=color; bit<16; bit++) {
-                    if(x & 0x8000) SPI_MOSI_HIGH();
-                    else           SPI_MOSI_LOW();
-                    SPI_SCK_HIGH();
-                    SPI_SCK_LOW();
-                    x <<= 1;
-                }
-            }
-        } while(len);
-#else  // !ESP8266
-        while(len--) {
- #if defined(__AVR__)
-            for(uint8_t bit=0, x=hi; bit<8; bit++) {
-                if(x & 0x80) SPI_MOSI_HIGH();
-                else         SPI_MOSI_LOW();
-                SPI_SCK_HIGH();
-                SPI_SCK_LOW();
-                x <<= 1;
-            }
-            for(uint8_t bit=0, x=lo; bit<8; bit++) {
-                if(x & 0x80) SPI_MOSI_HIGH();
-                else         SPI_MOSI_LOW();
-                SPI_SCK_HIGH();
-                SPI_SCK_LOW();
-                x <<= 1;
-            }
- #else  // !__AVR__
-            for(uint16_t bit=0, x=color; bit<16; bit++) {
-                if(x & 0x8000) SPI_MOSI_HIGH();
-                else           SPI_MOSI_LOW();
-                SPI_SCK_HIGH();
-                x <<= 1;
-                SPI_SCK_LOW();
-            }
- #endif // end !__AVR__
-        }
-#endif // end !ESP8266
-    } else { // PARALLEL
-        if(hi == lo) {
+    do {
+      uint32_t pixelsThisPass = len;
+      if (pixelsThisPass > 50000)
+        pixelsThisPass = 50000;
+      len -= pixelsThisPass;
+      yield(); // Periodic yield() on long fills
+      while (pixelsThisPass--) {
+        hwspi._spi->write(hi);
+        hwspi._spi->write(lo);
+      }
+    } while (len);
+#else // !ESP8266
+    while (len--) {
 #if defined(__AVR__)
-            len            *= 2;
-            *tft8.writePort = hi;
-            while(len--) {
-                TFT_WR_STROBE();
-            }
-#elif defined(USE_FAST_PINIO)
-            if(!tft8.wide) {
-                len            *= 2;
-                *tft8.writePort = hi;
-            } else {
-                *(volatile uint16_t *)tft8.writePort = color;
-            }
-            while(len--) {
-                TFT_WR_STROBE();
-            }
+      AVR_WRITESPI(hi);
+      AVR_WRITESPI(lo);
+#elif defined(ESP32)
+      hwspi._spi->write(hi);
+      hwspi._spi->write(lo);
+#else
+      hwspi._spi->transfer(hi);
+      hwspi._spi->transfer(lo);
 #endif
-        } else {
-            while(len--) {
-#if defined(__AVR__)
-                *tft8.writePort = hi;
-                TFT_WR_STROBE();
-                *tft8.writePort = lo;
-#elif defined(USE_FAST_PINIO)
-                if(!tft8.wide) {
-                    *tft8.writePort = hi;
-                    TFT_WR_STROBE();
-                    *tft8.writePort = lo;
-                } else {
-                    *(volatile uint16_t *)tft8.writePort = color;
-                }
-#endif
-                TFT_WR_STROBE();
-            }
-        }
     }
+#endif // end !ESP8266
+  } else if (connection == TFT_SOFT_SPI) {
+#if defined(ESP8266)
+    do {
+      uint32_t pixelsThisPass = len;
+      if (pixelsThisPass > 20000)
+        pixelsThisPass = 20000;
+      len -= pixelsThisPass;
+      yield(); // Periodic yield() on long fills
+      while (pixelsThisPass--) {
+        for (uint16_t bit = 0, x = color; bit < 16; bit++) {
+          if (x & 0x8000)
+            SPI_MOSI_HIGH();
+          else
+            SPI_MOSI_LOW();
+          SPI_SCK_HIGH();
+          SPI_SCK_LOW();
+          x <<= 1;
+        }
+      }
+    } while (len);
+#else // !ESP8266
+    while (len--) {
+#if defined(__AVR__)
+      for (uint8_t bit = 0, x = hi; bit < 8; bit++) {
+        if (x & 0x80)
+          SPI_MOSI_HIGH();
+        else
+          SPI_MOSI_LOW();
+        SPI_SCK_HIGH();
+        SPI_SCK_LOW();
+        x <<= 1;
+      }
+      for (uint8_t bit = 0, x = lo; bit < 8; bit++) {
+        if (x & 0x80)
+          SPI_MOSI_HIGH();
+        else
+          SPI_MOSI_LOW();
+        SPI_SCK_HIGH();
+        SPI_SCK_LOW();
+        x <<= 1;
+      }
+#else      // !__AVR__
+      for (uint16_t bit = 0, x = color; bit < 16; bit++) {
+        if (x & 0x8000)
+          SPI_MOSI_HIGH();
+        else
+          SPI_MOSI_LOW();
+        SPI_SCK_HIGH();
+        x <<= 1;
+        SPI_SCK_LOW();
+      }
+#endif     // end !__AVR__
+    }
+#endif     // end !ESP8266
+  } else { // PARALLEL
+    if (hi == lo) {
+#if defined(__AVR__)
+      len *= 2;
+      *tft8.writePort = hi;
+      while (len--) {
+        TFT_WR_STROBE();
+      }
+#elif defined(USE_FAST_PINIO)
+      if (!tft8.wide) {
+        len *= 2;
+        *tft8.writePort = hi;
+      } else {
+        *(volatile uint16_t *)tft8.writePort = color;
+      }
+      while (len--) {
+        TFT_WR_STROBE();
+      }
+#endif
+    } else {
+      while (len--) {
+#if defined(__AVR__)
+        *tft8.writePort = hi;
+        TFT_WR_STROBE();
+        *tft8.writePort = lo;
+#elif defined(USE_FAST_PINIO)
+        if (!tft8.wide) {
+          *tft8.writePort = hi;
+          TFT_WR_STROBE();
+          *tft8.writePort = lo;
+        } else {
+          *(volatile uint16_t *)tft8.writePort = color;
+        }
+#endif
+        TFT_WR_STROBE();
+      }
+    }
+  }
 }
 
 /*!
@@ -1399,34 +1427,44 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
             optimize for the 'if' case, not the 'else' -- avoids branches
             and rejects clipped rectangles at the least-work possibility.
 */
-void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y,
-  int16_t w, int16_t h, uint16_t color) {
-    if(w && h) {                            // Nonzero width and height?
-        if(w < 0) {                         // If negative width...
-            x +=  w + 1;                    //   Move X to left edge
-            w  = -w;                        //   Use positive width
-        }
-        if(x < _width) {                    // Not off right
-            if(h < 0) {                     // If negative height...
-                y +=  h + 1;                //   Move Y to top edge
-                h  = -h;                    //   Use positive height
-            }
-            if(y < _height) {               // Not off bottom
-                int16_t x2 = x + w - 1;
-                if(x2 >= 0) {               // Not off left
-                    int16_t y2 = y + h - 1;
-                    if(y2 >= 0) {           // Not off top
-                        // Rectangle partly or fully overlaps screen
-                        if(x  <  0)       { x = 0; w = x2 + 1; } // Clip left
-                        if(y  <  0)       { y = 0; h = y2 + 1; } // Clip top
-                        if(x2 >= _width)  { w = _width  - x;   } // Clip right
-                        if(y2 >= _height) { h = _height - y;   } // Clip bottom
-                        writeFillRectPreclipped(x, y, w, h, color);
-                    }
-                }
-            }
-        }
+void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
+                                    uint16_t color) {
+  if (w && h) {   // Nonzero width and height?
+    if (w < 0) {  // If negative width...
+      x += w + 1; //   Move X to left edge
+      w = -w;     //   Use positive width
     }
+    if (x < _width) { // Not off right
+      if (h < 0) {    // If negative height...
+        y += h + 1;   //   Move Y to top edge
+        h = -h;       //   Use positive height
+      }
+      if (y < _height) { // Not off bottom
+        int16_t x2 = x + w - 1;
+        if (x2 >= 0) { // Not off left
+          int16_t y2 = y + h - 1;
+          if (y2 >= 0) { // Not off top
+            // Rectangle partly or fully overlaps screen
+            if (x < 0) {
+              x = 0;
+              w = x2 + 1;
+            } // Clip left
+            if (y < 0) {
+              y = 0;
+              h = y2 + 1;
+            } // Clip top
+            if (x2 >= _width) {
+              w = _width - x;
+            } // Clip right
+            if (y2 >= _height) {
+              h = _height - y;
+            } // Clip bottom
+            writeFillRectPreclipped(x, y, w, h, color);
+          }
+        }
+      }
+    }
+  }
 }
 
 /*!
@@ -1442,22 +1480,27 @@ void Adafruit_SPITFT::writeFillRect(int16_t x, int16_t y,
     @param  color  16-bit line color in '565' RGB format.
 */
 void inline Adafruit_SPITFT::writeFastHLine(int16_t x, int16_t y, int16_t w,
-  uint16_t color) {
-    if((y >= 0) && (y < _height) && w) { // Y on screen, nonzero width
-        if(w < 0) {                      // If negative width...
-            x +=  w + 1;                 //   Move X to left edge
-            w  = -w;                     //   Use positive width
-        }
-        if(x < _width) {                 // Not off right
-            int16_t x2 = x + w - 1;
-            if(x2 >= 0) {                // Not off left
-                // Line partly or fully overlaps screen
-                if(x  <  0)       { x = 0; w = x2 + 1; } // Clip left
-                if(x2 >= _width)  { w = _width  - x;   } // Clip right
-                writeFillRectPreclipped(x, y, w, 1, color);
-            }
-        }
+                                            uint16_t color) {
+  if ((y >= 0) && (y < _height) && w) { // Y on screen, nonzero width
+    if (w < 0) {                        // If negative width...
+      x += w + 1;                       //   Move X to left edge
+      w = -w;                           //   Use positive width
     }
+    if (x < _width) { // Not off right
+      int16_t x2 = x + w - 1;
+      if (x2 >= 0) { // Not off left
+        // Line partly or fully overlaps screen
+        if (x < 0) {
+          x = 0;
+          w = x2 + 1;
+        } // Clip left
+        if (x2 >= _width) {
+          w = _width - x;
+        } // Clip right
+        writeFillRectPreclipped(x, y, w, 1, color);
+      }
+    }
+  }
 }
 
 /*!
@@ -1473,22 +1516,27 @@ void inline Adafruit_SPITFT::writeFastHLine(int16_t x, int16_t y, int16_t w,
     @param  color  16-bit line color in '565' RGB format.
 */
 void inline Adafruit_SPITFT::writeFastVLine(int16_t x, int16_t y, int16_t h,
-  uint16_t color) {
-    if((x >= 0) && (x < _width) && h) { // X on screen, nonzero height
-        if(h < 0) {                     // If negative height...
-            y +=  h + 1;                //   Move Y to top edge
-            h  = -h;                    //   Use positive height
-        }
-        if(y < _height) {               // Not off bottom
-            int16_t y2 = y + h - 1;
-            if(y2 >= 0) {               // Not off top
-                // Line partly or fully overlaps screen
-                if(y  <  0)       { y = 0; h = y2 + 1; } // Clip top
-                if(y2 >= _height) { h = _height - y;   } // Clip bottom
-                writeFillRectPreclipped(x, y, 1, h, color);
-            }
-        }
+                                            uint16_t color) {
+  if ((x >= 0) && (x < _width) && h) { // X on screen, nonzero height
+    if (h < 0) {                       // If negative height...
+      y += h + 1;                      //   Move Y to top edge
+      h = -h;                          //   Use positive height
     }
+    if (y < _height) { // Not off bottom
+      int16_t y2 = y + h - 1;
+      if (y2 >= 0) { // Not off top
+        // Line partly or fully overlaps screen
+        if (y < 0) {
+          y = 0;
+          h = y2 + 1;
+        } // Clip top
+        if (y2 >= _height) {
+          h = _height - y;
+        } // Clip bottom
+        writeFillRectPreclipped(x, y, 1, h, color);
+      }
+    }
+  }
 }
 
 /*!
@@ -1512,11 +1560,11 @@ void inline Adafruit_SPITFT::writeFastVLine(int16_t x, int16_t y, int16_t h,
             and horizontal/vertical lines are written to best use this yet.
 */
 inline void Adafruit_SPITFT::writeFillRectPreclipped(int16_t x, int16_t y,
-  int16_t w, int16_t h, uint16_t color) {
-    setAddrWindow(x, y, w, h);
-    writeColor(color, (uint32_t)w * h);
+                                                     int16_t w, int16_t h,
+                                                     uint16_t color) {
+  setAddrWindow(x, y, w, h);
+  writeColor(color, (uint32_t)w * h);
 }
-
 
 // -------------------------------------------------------------------------
 // Ever-so-slightly higher-level graphics operations. Similar to the 'write'
@@ -1536,14 +1584,14 @@ inline void Adafruit_SPITFT::writeFillRectPreclipped(int16_t x, int16_t y,
     @param  color  16-bit pixel color in '565' RGB format.
 */
 void Adafruit_SPITFT::drawPixel(int16_t x, int16_t y, uint16_t color) {
-    // Clip first...
-    if((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-        // THEN set up transaction (if needed) and draw...
-        startWrite();
-        setAddrWindow(x, y, 1, 1);
-        SPI_WRITE16(color);
-        endWrite();
-    }
+  // Clip first...
+  if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    // THEN set up transaction (if needed) and draw...
+    startWrite();
+    setAddrWindow(x, y, 1, 1);
+    SPI_WRITE16(color);
+    endWrite();
+  }
 }
 
 /*!
@@ -1566,35 +1614,45 @@ void Adafruit_SPITFT::drawPixel(int16_t x, int16_t y, uint16_t color) {
             that much code.
 */
 void Adafruit_SPITFT::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
-  uint16_t color) {
-    if(w && h) {                            // Nonzero width and height?
-        if(w < 0) {                         // If negative width...
-            x +=  w + 1;                    //   Move X to left edge
-            w  = -w;                        //   Use positive width
-        }
-        if(x < _width) {                    // Not off right
-            if(h < 0) {                     // If negative height...
-                y +=  h + 1;                //   Move Y to top edge
-                h  = -h;                    //   Use positive height
-            }
-            if(y < _height) {               // Not off bottom
-                int16_t x2 = x + w - 1;
-                if(x2 >= 0) {               // Not off left
-                    int16_t y2 = y + h - 1;
-                    if(y2 >= 0) {           // Not off top
-                        // Rectangle partly or fully overlaps screen
-                        if(x  <  0)       { x = 0; w = x2 + 1; } // Clip left
-                        if(y  <  0)       { y = 0; h = y2 + 1; } // Clip top
-                        if(x2 >= _width)  { w = _width  - x;   } // Clip right
-                        if(y2 >= _height) { h = _height - y;   } // Clip bottom
-                        startWrite();
-                        writeFillRectPreclipped(x, y, w, h, color);
-                        endWrite();
-                    }
-                }
-            }
-        }
+                               uint16_t color) {
+  if (w && h) {   // Nonzero width and height?
+    if (w < 0) {  // If negative width...
+      x += w + 1; //   Move X to left edge
+      w = -w;     //   Use positive width
     }
+    if (x < _width) { // Not off right
+      if (h < 0) {    // If negative height...
+        y += h + 1;   //   Move Y to top edge
+        h = -h;       //   Use positive height
+      }
+      if (y < _height) { // Not off bottom
+        int16_t x2 = x + w - 1;
+        if (x2 >= 0) { // Not off left
+          int16_t y2 = y + h - 1;
+          if (y2 >= 0) { // Not off top
+            // Rectangle partly or fully overlaps screen
+            if (x < 0) {
+              x = 0;
+              w = x2 + 1;
+            } // Clip left
+            if (y < 0) {
+              y = 0;
+              h = y2 + 1;
+            } // Clip top
+            if (x2 >= _width) {
+              w = _width - x;
+            } // Clip right
+            if (y2 >= _height) {
+              h = _height - y;
+            } // Clip bottom
+            startWrite();
+            writeFillRectPreclipped(x, y, w, h, color);
+            endWrite();
+          }
+        }
+      }
+    }
+  }
 }
 
 /*!
@@ -1614,24 +1672,29 @@ void Adafruit_SPITFT::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
             transaction isn't performed at all if the line is rejected.
 */
 void Adafruit_SPITFT::drawFastHLine(int16_t x, int16_t y, int16_t w,
-  uint16_t color) {
-    if((y >= 0) && (y < _height) && w) { // Y on screen, nonzero width
-        if(w < 0) {                      // If negative width...
-            x +=  w + 1;                 //   Move X to left edge
-            w  = -w;                     //   Use positive width
-        }
-        if(x < _width) {                 // Not off right
-            int16_t x2 = x + w - 1;
-            if(x2 >= 0) {                // Not off left
-                // Line partly or fully overlaps screen
-                if(x  <  0)       { x = 0; w = x2 + 1; } // Clip left
-                if(x2 >= _width)  { w = _width  - x;   } // Clip right
-                startWrite();
-                writeFillRectPreclipped(x, y, w, 1, color);
-                endWrite();
-            }
-        }
+                                    uint16_t color) {
+  if ((y >= 0) && (y < _height) && w) { // Y on screen, nonzero width
+    if (w < 0) {                        // If negative width...
+      x += w + 1;                       //   Move X to left edge
+      w = -w;                           //   Use positive width
     }
+    if (x < _width) { // Not off right
+      int16_t x2 = x + w - 1;
+      if (x2 >= 0) { // Not off left
+        // Line partly or fully overlaps screen
+        if (x < 0) {
+          x = 0;
+          w = x2 + 1;
+        } // Clip left
+        if (x2 >= _width) {
+          w = _width - x;
+        } // Clip right
+        startWrite();
+        writeFillRectPreclipped(x, y, w, 1, color);
+        endWrite();
+      }
+    }
+  }
 }
 
 /*!
@@ -1650,24 +1713,29 @@ void Adafruit_SPITFT::drawFastHLine(int16_t x, int16_t y, int16_t w,
             transaction isn't performed at all if the line is rejected.
 */
 void Adafruit_SPITFT::drawFastVLine(int16_t x, int16_t y, int16_t h,
-  uint16_t color) {
-    if((x >= 0) && (x < _width) && h) { // X on screen, nonzero height
-        if(h < 0) {                     // If negative height...
-            y +=  h + 1;                //   Move Y to top edge
-            h  = -h;                    //   Use positive height
-        }
-        if(y < _height) {               // Not off bottom
-            int16_t y2 = y + h - 1;
-            if(y2 >= 0) {               // Not off top
-                // Line partly or fully overlaps screen
-                if(y  <  0)       { y = 0; h = y2 + 1; } // Clip top
-                if(y2 >= _height) { h = _height - y;   } // Clip bottom
-                startWrite();
-                writeFillRectPreclipped(x, y, 1, h, color);
-                endWrite();
-            }
-        }
+                                    uint16_t color) {
+  if ((x >= 0) && (x < _width) && h) { // X on screen, nonzero height
+    if (h < 0) {                       // If negative height...
+      y += h + 1;                      //   Move Y to top edge
+      h = -h;                          //   Use positive height
     }
+    if (y < _height) { // Not off bottom
+      int16_t y2 = y + h - 1;
+      if (y2 >= 0) { // Not off top
+        // Line partly or fully overlaps screen
+        if (y < 0) {
+          y = 0;
+          h = y2 + 1;
+        } // Clip top
+        if (y2 >= _height) {
+          h = _height - y;
+        } // Clip bottom
+        startWrite();
+        writeFillRectPreclipped(x, y, 1, h, color);
+        endWrite();
+      }
+    }
+  }
 }
 
 /*!
@@ -1678,9 +1746,9 @@ void Adafruit_SPITFT::drawFastVLine(int16_t x, int16_t y, int16_t h,
     @param  color  16-bit pixel color in '565' RGB format.
 */
 void Adafruit_SPITFT::pushColor(uint16_t color) {
-    startWrite();
-    SPI_WRITE16(color);
-    endWrite();
+  startWrite();
+  SPI_WRITE16(color);
+  endWrite();
 }
 
 /*!
@@ -1699,40 +1767,42 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
     @param  w        Width of bitmap in pixels.
     @param  h        Height of bitmap in pixels.
 */
-void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
-  uint16_t *pcolors, int16_t w, int16_t h) {
+void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
+                                    int16_t w, int16_t h) {
 
-    int16_t x2, y2; // Lower-right coord
-    if(( x             >= _width ) ||      // Off-edge right
-       ( y             >= _height) ||      // " top
-       ((x2 = (x+w-1)) <  0      ) ||      // " left
-       ((y2 = (y+h-1)) <  0)     ) return; // " bottom
+  int16_t x2, y2;                 // Lower-right coord
+  if ((x >= _width) ||            // Off-edge right
+      (y >= _height) ||           // " top
+      ((x2 = (x + w - 1)) < 0) || // " left
+      ((y2 = (y + h - 1)) < 0))
+    return; // " bottom
 
-    int16_t bx1=0, by1=0, // Clipped top-left within bitmap
-            saveW=w;      // Save original bitmap width value
-    if(x < 0) { // Clip left
-        w  +=  x;
-        bx1 = -x;
-        x   =  0;
-    }
-    if(y < 0) { // Clip top
-        h  +=  y;
-        by1 = -y;
-        y   =  0;
-    }
-    if(x2 >= _width ) w = _width  - x; // Clip right
-    if(y2 >= _height) h = _height - y; // Clip bottom
+  int16_t bx1 = 0, by1 = 0, // Clipped top-left within bitmap
+      saveW = w;            // Save original bitmap width value
+  if (x < 0) {              // Clip left
+    w += x;
+    bx1 = -x;
+    x = 0;
+  }
+  if (y < 0) { // Clip top
+    h += y;
+    by1 = -y;
+    y = 0;
+  }
+  if (x2 >= _width)
+    w = _width - x; // Clip right
+  if (y2 >= _height)
+    h = _height - y; // Clip bottom
 
-    pcolors += by1 * saveW + bx1; // Offset bitmap ptr to clipped top-left
-    startWrite();
-    setAddrWindow(x, y, w, h); // Clipped area
-    while(h--) { // For each (clipped) scanline...
-      writePixels(pcolors, w); // Push one (clipped) row
-      pcolors += saveW; // Advance pointer by one full (unclipped) line
-    }
-    endWrite();
+  pcolors += by1 * saveW + bx1; // Offset bitmap ptr to clipped top-left
+  startWrite();
+  setAddrWindow(x, y, w, h); // Clipped area
+  while (h--) {              // For each (clipped) scanline...
+    writePixels(pcolors, w); // Push one (clipped) row
+    pcolors += saveW;        // Advance pointer by one full (unclipped) line
+  }
+  endWrite();
 }
-
 
 // -------------------------------------------------------------------------
 // Miscellaneous class member functions that don't draw anything.
@@ -1743,9 +1813,9 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y,
     @param  i  true = inverted display, false = normal display.
 */
 void Adafruit_SPITFT::invertDisplay(bool i) {
-    startWrite();
-    writeCommand(i ? invertOnCommand : invertOffCommand);
-    endWrite();
+  startWrite();
+  writeCommand(i ? invertOnCommand : invertOffCommand);
+  endWrite();
 }
 
 /*!
@@ -1759,52 +1829,60 @@ void Adafruit_SPITFT::invertDisplay(bool i) {
     @return  'Packed' 16-bit color value (565 format).
 */
 uint16_t Adafruit_SPITFT::color565(uint8_t red, uint8_t green, uint8_t blue) {
-    return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
+  return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
 }
 
 /*!
- @brief   Adafruit_SPITFT Send Command handles complete sending of commands and data
+ @brief   Adafruit_SPITFT Send Command handles complete sending of commands and
+ data
  @param   commandByte       The Command Byte
  @param   dataBytes         A pointer to the Data bytes to send
  @param   numDataBytes      The number of bytes we should send
  */
-void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8_t numDataBytes) {
-    SPI_BEGIN_TRANSACTION();
-    if(_cs >= 0) SPI_CS_LOW();
-  
-    SPI_DC_LOW(); // Command mode
-    spiWrite(commandByte); // Send the command byte
-  
-    SPI_DC_HIGH();
-    for (int i=0; i<numDataBytes; i++) {
-      spiWrite(*dataBytes); // Send the data bytes
-      dataBytes++;
-    }
-  
-    if(_cs >= 0) SPI_CS_HIGH();
-    SPI_END_TRANSACTION();
+void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
+                                  uint8_t numDataBytes) {
+  SPI_BEGIN_TRANSACTION();
+  if (_cs >= 0)
+    SPI_CS_LOW();
+
+  SPI_DC_LOW();          // Command mode
+  spiWrite(commandByte); // Send the command byte
+
+  SPI_DC_HIGH();
+  for (int i = 0; i < numDataBytes; i++) {
+    spiWrite(*dataBytes); // Send the data bytes
+    dataBytes++;
+  }
+
+  if (_cs >= 0)
+    SPI_CS_HIGH();
+  SPI_END_TRANSACTION();
 }
 
 /*!
- @brief   Adafruit_SPITFT Send Command handles complete sending of commands and const data
+ @brief   Adafruit_SPITFT Send Command handles complete sending of commands and
+ const data
  @param   commandByte       The Command Byte
  @param   dataBytes         A pointer to the Data bytes to send
  @param   numDataBytes      The number of bytes we should send
  */
-void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes, uint8_t numDataBytes) {
-    SPI_BEGIN_TRANSACTION();
-    if(_cs >= 0) SPI_CS_LOW();
-  
-    SPI_DC_LOW(); // Command mode
-    spiWrite(commandByte); // Send the command byte
-  
-    SPI_DC_HIGH();
-    for (int i=0; i<numDataBytes; i++) {
-      spiWrite(pgm_read_byte(dataBytes++)); // Send the data bytes
-    }
-  
-    if(_cs >= 0) SPI_CS_HIGH();
-    SPI_END_TRANSACTION();
+void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
+                                  uint8_t numDataBytes) {
+  SPI_BEGIN_TRANSACTION();
+  if (_cs >= 0)
+    SPI_CS_LOW();
+
+  SPI_DC_LOW();          // Command mode
+  spiWrite(commandByte); // Send the command byte
+
+  SPI_DC_HIGH();
+  for (int i = 0; i < numDataBytes; i++) {
+    spiWrite(pgm_read_byte(dataBytes++)); // Send the data bytes
+  }
+
+  if (_cs >= 0)
+    SPI_CS_HIGH();
+  SPI_END_TRANSACTION();
 }
 
 /*!
@@ -1821,12 +1899,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
 uint8_t Adafruit_SPITFT::readcommand8(uint8_t commandByte, uint8_t index) {
   uint8_t result;
   startWrite();
-  SPI_DC_LOW();     // Command mode
+  SPI_DC_LOW(); // Command mode
   spiWrite(commandByte);
-  SPI_DC_HIGH();    // Data mode
+  SPI_DC_HIGH(); // Data mode
   do {
     result = spiRead();
-  } while(index--); // Discard bytes up to index'th
+  } while (index--); // Discard bytes up to index'th
   endWrite();
   return result;
 }
@@ -1846,23 +1924,23 @@ uint8_t Adafruit_SPITFT::readcommand8(uint8_t commandByte, uint8_t index) {
             encapsulated both actions.
 */
 inline void Adafruit_SPITFT::SPI_BEGIN_TRANSACTION(void) {
-    if(connection == TFT_HARD_SPI) {
+  if (connection == TFT_HARD_SPI) {
 #if defined(SPI_HAS_TRANSACTION)
-        hwspi._spi->beginTransaction(hwspi.settings);
+    hwspi._spi->beginTransaction(hwspi.settings);
 #else // No transactions, configure SPI manually...
- #if defined(__AVR__) || defined(TEENSYDUINO) || defined(ARDUINO_ARCH_STM32F1)
-        hwspi._spi->setClockDivider(SPI_CLOCK_DIV2);
- #elif defined(__arm__)
-        hwspi._spi->setClockDivider(11);
- #elif defined(ESP8266) || defined(ESP32)
-        hwspi._spi->setFrequency(hwspi._freq);
- #elif defined(RASPI) || defined(ARDUINO_ARCH_STM32F1)
-        hwspi._spi->setClock(hwspi._freq);
- #endif
-        hwspi._spi->setBitOrder(MSBFIRST);
-        hwspi._spi->setDataMode(hwspi._mode);
+#if defined(__AVR__) || defined(TEENSYDUINO) || defined(ARDUINO_ARCH_STM32F1)
+    hwspi._spi->setClockDivider(SPI_CLOCK_DIV2);
+#elif defined(__arm__)
+    hwspi._spi->setClockDivider(11);
+#elif defined(ESP8266) || defined(ESP32)
+    hwspi._spi->setFrequency(hwspi._freq);
+#elif defined(RASPI) || defined(ARDUINO_ARCH_STM32F1)
+    hwspi._spi->setClock(hwspi._freq);
+#endif
+    hwspi._spi->setBitOrder(MSBFIRST);
+    hwspi._spi->setDataMode(hwspi._mode);
 #endif // end !SPI_HAS_TRANSACTION
-    }
+  }
 }
 
 /*!
@@ -1875,9 +1953,9 @@ inline void Adafruit_SPITFT::SPI_BEGIN_TRANSACTION(void) {
 */
 inline void Adafruit_SPITFT::SPI_END_TRANSACTION(void) {
 #if defined(SPI_HAS_TRANSACTION)
-    if(connection == TFT_HARD_SPI) {
-        hwspi._spi->endTransaction();
-    }
+  if (connection == TFT_HARD_SPI) {
+    hwspi._spi->endTransaction();
+  }
 #endif
 }
 
@@ -1891,31 +1969,35 @@ inline void Adafruit_SPITFT::SPI_END_TRANSACTION(void) {
     @param  b  8-bit value to write.
 */
 void Adafruit_SPITFT::spiWrite(uint8_t b) {
-    if(connection == TFT_HARD_SPI) {
+  if (connection == TFT_HARD_SPI) {
 #if defined(__AVR__)
-        AVR_WRITESPI(b);
+    AVR_WRITESPI(b);
 #elif defined(ESP8266) || defined(ESP32)
-        hwspi._spi->write(b);
+    hwspi._spi->write(b);
 #else
-        hwspi._spi->transfer(b);
+    hwspi._spi->transfer(b);
 #endif
-    } else if(connection == TFT_SOFT_SPI) {
-        for(uint8_t bit=0; bit<8; bit++) {
-            if(b & 0x80) SPI_MOSI_HIGH();
-            else         SPI_MOSI_LOW();
-            SPI_SCK_HIGH();
-            b <<= 1;
-            SPI_SCK_LOW();
-        }
-    } else { // TFT_PARALLEL
-#if defined(__AVR__)
-        *tft8.writePort = b;
-#elif defined(USE_FAST_PINIO)
-        if(!tft8.wide) *tft8.writePort = b;
-        else           *(volatile uint16_t *)tft8.writePort = b;
-#endif
-        TFT_WR_STROBE();
+  } else if (connection == TFT_SOFT_SPI) {
+    for (uint8_t bit = 0; bit < 8; bit++) {
+      if (b & 0x80)
+        SPI_MOSI_HIGH();
+      else
+        SPI_MOSI_LOW();
+      SPI_SCK_HIGH();
+      b <<= 1;
+      SPI_SCK_LOW();
     }
+  } else { // TFT_PARALLEL
+#if defined(__AVR__)
+    *tft8.writePort = b;
+#elif defined(USE_FAST_PINIO)
+    if (!tft8.wide)
+      *tft8.writePort = b;
+    else
+      *(volatile uint16_t *)tft8.writePort = b;
+#endif
+    TFT_WR_STROBE();
+  }
 }
 
 /*!
@@ -1927,9 +2009,9 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
     @param  cmd  8-bit command to write.
 */
 void Adafruit_SPITFT::writeCommand(uint8_t cmd) {
-    SPI_DC_LOW();
-    spiWrite(cmd);
-    SPI_DC_HIGH();
+  SPI_DC_LOW();
+  spiWrite(cmd);
+  SPI_DC_HIGH();
 }
 
 /*!
@@ -1943,58 +2025,59 @@ void Adafruit_SPITFT::writeCommand(uint8_t cmd) {
              not supported by the MCU architecture).
 */
 uint8_t Adafruit_SPITFT::spiRead(void) {
-    uint8_t  b = 0;
-    uint16_t w = 0;
-    if(connection == TFT_HARD_SPI) {
-        return hwspi._spi->transfer((uint8_t)0);
-    } else if(connection == TFT_SOFT_SPI) {
-        if(swspi._miso >= 0) {
-            for(uint8_t i=0; i<8; i++) {
-                SPI_SCK_HIGH();
-                b <<= 1;
-                if(SPI_MISO_READ()) b++;
-                SPI_SCK_LOW();
-            }
-        }
-        return b;
-    } else { // TFT_PARALLEL
-        if(tft8._rd >= 0) {
-#if defined(USE_FAST_PINIO)
-            TFT_RD_LOW();                       // Read line LOW
- #if defined(__AVR__)
-            *tft8.portDir = 0x00;               // Set port to input state
-            w             = *tft8.readPort;     // Read value from port
-            *tft8.portDir = 0xFF;               // Restore port to output
- #else // !__AVR__
-            if(!tft8.wide) { // 8-bit TFT connection
-  #if defined(HAS_PORT_SET_CLR)
-                *tft8.dirClr  = 0xFF;           // Set port to input state
-                w             = *tft8.readPort; // Read value from port
-                *tft8.dirSet  = 0xFF;           // Restore port to output
-  #else  // !HAS_PORT_SET_CLR
-                *tft8.portDir = 0x00;           // Set port to input state
-                w             = *tft8.readPort; // Read value from port
-                *tft8.portDir = 0xFF;           // Restore port to output
-  #endif // end HAS_PORT_SET_CLR
-            } else { // 16-bit TFT connection
-  #if defined(HAS_PORT_SET_CLR)
-                *(volatile uint16_t *)tft8.dirClr  = 0xFFFF; // Input state
-                w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
-                *(volatile uint16_t *)tft8.dirSet  = 0xFFFF; // Output state
-  #else  // !HAS_PORT_SET_CLR
-                *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
-                w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
-                *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
-  #endif // end !HAS_PORT_SET_CLR
-            }
-            TFT_RD_HIGH();                      // Read line HIGH
- #endif // end !__AVR__
-#else  // !USE_FAST_PINIO
-            w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
-#endif // end !USE_FAST_PINIO
-        }
-        return w;
+  uint8_t b = 0;
+  uint16_t w = 0;
+  if (connection == TFT_HARD_SPI) {
+    return hwspi._spi->transfer((uint8_t)0);
+  } else if (connection == TFT_SOFT_SPI) {
+    if (swspi._miso >= 0) {
+      for (uint8_t i = 0; i < 8; i++) {
+        SPI_SCK_HIGH();
+        b <<= 1;
+        if (SPI_MISO_READ())
+          b++;
+        SPI_SCK_LOW();
+      }
     }
+    return b;
+  } else { // TFT_PARALLEL
+    if (tft8._rd >= 0) {
+#if defined(USE_FAST_PINIO)
+      TFT_RD_LOW(); // Read line LOW
+#if defined(__AVR__)
+      *tft8.portDir = 0x00; // Set port to input state
+      w = *tft8.readPort;   // Read value from port
+      *tft8.portDir = 0xFF; // Restore port to output
+#else // !__AVR__
+      if (!tft8.wide) { // 8-bit TFT connection
+#if defined(HAS_PORT_SET_CLR)
+        *tft8.dirClr = 0xFF; // Set port to input state
+        w = *tft8.readPort;  // Read value from port
+        *tft8.dirSet = 0xFF; // Restore port to output
+#else  // !HAS_PORT_SET_CLR
+        *tft8.portDir = 0x00;                        // Set port to input state
+        w = *tft8.readPort;                          // Read value from port
+        *tft8.portDir = 0xFF;                        // Restore port to output
+#endif // end HAS_PORT_SET_CLR
+      } else { // 16-bit TFT connection
+#if defined(HAS_PORT_SET_CLR)
+        *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
+        w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
+        *(volatile uint16_t *)tft8.dirSet = 0xFFFF; // Output state
+#else  // !HAS_PORT_SET_CLR
+        *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
+        w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
+        *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
+#endif // end !HAS_PORT_SET_CLR
+      }
+      TFT_RD_HIGH(); // Read line HIGH
+#endif // end !__AVR__
+#else  // !USE_FAST_PINIO
+      w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
+#endif // end !USE_FAST_PINIO
+    }
+    return w;
+  }
 }
 
 /*!
@@ -2002,20 +2085,21 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
 */
 inline void Adafruit_SPITFT::SPI_MOSI_HIGH(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(KINETISK)
-    *swspi.mosiPortSet = 1;
-  #else  // !KINETISK
-    *swspi.mosiPortSet = swspi.mosiPinMask;
-  #endif
- #else  // !HAS_PORT_SET_CLR
-    *swspi.mosiPort   |= swspi.mosiPinMaskSet;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(KINETISK)
+  *swspi.mosiPortSet = 1;
+#else // !KINETISK
+  *swspi.mosiPortSet = swspi.mosiPinMask;
+#endif
+#else  // !HAS_PORT_SET_CLR
+  *swspi.mosiPort |= swspi.mosiPinMaskSet;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(swspi._mosi, HIGH);
- #if defined(ESP32)
-    for(volatile uint8_t i=0; i<1; i++);
- #endif // end ESP32
+  digitalWrite(swspi._mosi, HIGH);
+#if defined(ESP32)
+  for (volatile uint8_t i = 0; i < 1; i++)
+    ;
+#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2024,20 +2108,21 @@ inline void Adafruit_SPITFT::SPI_MOSI_HIGH(void) {
 */
 inline void Adafruit_SPITFT::SPI_MOSI_LOW(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(KINETISK)
-    *swspi.mosiPortClr = 1;
-  #else  // !KINETISK
-    *swspi.mosiPortClr = swspi.mosiPinMask;
-  #endif
- #else  // !HAS_PORT_SET_CLR
-    *swspi.mosiPort   &= swspi.mosiPinMaskClr;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(KINETISK)
+  *swspi.mosiPortClr = 1;
+#else // !KINETISK
+  *swspi.mosiPortClr = swspi.mosiPinMask;
+#endif
+#else  // !HAS_PORT_SET_CLR
+  *swspi.mosiPort &= swspi.mosiPinMaskClr;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(swspi._mosi, LOW);
- #if defined(ESP32)
-    for(volatile uint8_t i=0; i<1; i++);
- #endif // end ESP32
+  digitalWrite(swspi._mosi, LOW);
+#if defined(ESP32)
+  for (volatile uint8_t i = 0; i < 1; i++)
+    ;
+#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2046,23 +2131,25 @@ inline void Adafruit_SPITFT::SPI_MOSI_LOW(void) {
 */
 inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(KINETISK)
-    *swspi.sckPortSet = 1;
-  #else  // !KINETISK
-    *swspi.sckPortSet = swspi.sckPinMask;
-    #if defined(__IMXRT1052__) || defined(__IMXRT1062__)  // Teensy 4.x
-    for(volatile uint8_t i=0; i<1; i++);
-    #endif  
-  #endif
- #else  // !HAS_PORT_SET_CLR
-    *swspi.sckPort   |= swspi.sckPinMaskSet;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(KINETISK)
+  *swspi.sckPortSet = 1;
+#else // !KINETISK
+  *swspi.sckPortSet = swspi.sckPinMask;
+#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
+  for (volatile uint8_t i = 0; i < 1; i++)
+    ;
+#endif
+#endif
+#else  // !HAS_PORT_SET_CLR
+  *swspi.sckPort |= swspi.sckPinMaskSet;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(swspi._sck, HIGH);
- #if defined(ESP32)
-    for(volatile uint8_t i=0; i<1; i++);
- #endif // end ESP32
+  digitalWrite(swspi._sck, HIGH);
+#if defined(ESP32)
+  for (volatile uint8_t i = 0; i < 1; i++)
+    ;
+#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2071,23 +2158,25 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
 */
 inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(KINETISK)
-    *swspi.sckPortClr = 1;
-  #else  // !KINETISK
-    *swspi.sckPortClr = swspi.sckPinMask;
-    #if defined(__IMXRT1052__) || defined(__IMXRT1062__)  // Teensy 4.x
-    for(volatile uint8_t i=0; i<1; i++);
-    #endif  
-  #endif
- #else  // !HAS_PORT_SET_CLR
-    *swspi.sckPort   &= swspi.sckPinMaskClr;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(KINETISK)
+  *swspi.sckPortClr = 1;
+#else // !KINETISK
+  *swspi.sckPortClr = swspi.sckPinMask;
+#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
+  for (volatile uint8_t i = 0; i < 1; i++)
+    ;
+#endif
+#endif
+#else  // !HAS_PORT_SET_CLR
+  *swspi.sckPort &= swspi.sckPinMaskClr;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(swspi._sck, LOW);
- #if defined(ESP32)
-    for(volatile uint8_t i=0; i<1; i++);
- #endif // end ESP32
+  digitalWrite(swspi._sck, LOW);
+#if defined(ESP32)
+  for (volatile uint8_t i = 0; i < 1; i++)
+    ;
+#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2097,13 +2186,13 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
 */
 inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(KINETISK)
-    return *swspi.misoPort;
- #else  // !KINETISK
-    return *swspi.misoPort & swspi.misoPinMask;
- #endif // end !KINETISK
+#if defined(KINETISK)
+  return *swspi.misoPort;
+#else  // !KINETISK
+  return *swspi.misoPort & swspi.misoPinMask;
+#endif // end !KINETISK
 #else  // !USE_FAST_PINIO
-    return digitalRead(swspi._miso);
+  return digitalRead(swspi._miso);
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2118,40 +2207,42 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
     @param  w  16-bit value to write.
 */
 void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
-    if(connection == TFT_HARD_SPI) {
+  if (connection == TFT_HARD_SPI) {
 #if defined(__AVR__)
-        AVR_WRITESPI(w >> 8);
-        AVR_WRITESPI(w);
+    AVR_WRITESPI(w >> 8);
+    AVR_WRITESPI(w);
 #elif defined(ESP8266) || defined(ESP32)
-        hwspi._spi->write16(w);
+    hwspi._spi->write16(w);
 #else
-        hwspi._spi->transfer(w >> 8);
-        hwspi._spi->transfer(w);
+    hwspi._spi->transfer(w >> 8);
+    hwspi._spi->transfer(w);
 #endif
-    } else if(connection == TFT_SOFT_SPI) {
-        for(uint8_t bit=0; bit<16; bit++) {
-            if(w & 0x8000) SPI_MOSI_HIGH();
-            else           SPI_MOSI_LOW();
-            SPI_SCK_HIGH();
-            SPI_SCK_LOW();
-            w <<= 1;
-        }
-    } else { // TFT_PARALLEL
-#if defined(__AVR__)
-        *tft8.writePort = w >> 8;
-        TFT_WR_STROBE();
-        *tft8.writePort = w;
-#elif defined(USE_FAST_PINIO)
-        if(!tft8.wide) {
-            *tft8.writePort = w >> 8;
-            TFT_WR_STROBE();
-            *tft8.writePort = w;
-        } else {
-            *(volatile uint16_t *)tft8.writePort = w;
-        }
-#endif
-        TFT_WR_STROBE();
+  } else if (connection == TFT_SOFT_SPI) {
+    for (uint8_t bit = 0; bit < 16; bit++) {
+      if (w & 0x8000)
+        SPI_MOSI_HIGH();
+      else
+        SPI_MOSI_LOW();
+      SPI_SCK_HIGH();
+      SPI_SCK_LOW();
+      w <<= 1;
     }
+  } else { // TFT_PARALLEL
+#if defined(__AVR__)
+    *tft8.writePort = w >> 8;
+    TFT_WR_STROBE();
+    *tft8.writePort = w;
+#elif defined(USE_FAST_PINIO)
+    if (!tft8.wide) {
+      *tft8.writePort = w >> 8;
+      TFT_WR_STROBE();
+      *tft8.writePort = w;
+    } else {
+      *(volatile uint16_t *)tft8.writePort = w;
+    }
+#endif
+    TFT_WR_STROBE();
+  }
 }
 
 /*!
@@ -2165,54 +2256,56 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     @param  l  32-bit value to write.
 */
 void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
-    if(connection == TFT_HARD_SPI) {
+  if (connection == TFT_HARD_SPI) {
 #if defined(__AVR__)
-        AVR_WRITESPI(l >> 24);
-        AVR_WRITESPI(l >> 16);
-        AVR_WRITESPI(l >>  8);
-        AVR_WRITESPI(l      );
+    AVR_WRITESPI(l >> 24);
+    AVR_WRITESPI(l >> 16);
+    AVR_WRITESPI(l >> 8);
+    AVR_WRITESPI(l);
 #elif defined(ESP8266) || defined(ESP32)
-        hwspi._spi->write32(l);
+    hwspi._spi->write32(l);
 #else
-        hwspi._spi->transfer(l >> 24);
-        hwspi._spi->transfer(l >> 16);
-        hwspi._spi->transfer(l >> 8);
-        hwspi._spi->transfer(l);
+    hwspi._spi->transfer(l >> 24);
+    hwspi._spi->transfer(l >> 16);
+    hwspi._spi->transfer(l >> 8);
+    hwspi._spi->transfer(l);
 #endif
-    } else if(connection == TFT_SOFT_SPI) {
-        for(uint8_t bit=0; bit<32; bit++) {
-            if(l & 0x80000000) SPI_MOSI_HIGH();
-            else               SPI_MOSI_LOW();
-            SPI_SCK_HIGH();
-            SPI_SCK_LOW();
-            l <<= 1;
-        }
-    } else { // TFT_PARALLEL
-#if defined(__AVR__)
-        *tft8.writePort = l >> 24;
-        TFT_WR_STROBE();
-        *tft8.writePort = l >> 16;
-        TFT_WR_STROBE();
-        *tft8.writePort = l >> 8;
-        TFT_WR_STROBE();
-        *tft8.writePort = l;
-#elif defined(USE_FAST_PINIO)
-        if(!tft8.wide) {
-            *tft8.writePort = l >> 24;
-            TFT_WR_STROBE();
-            *tft8.writePort = l >> 16;
-            TFT_WR_STROBE();
-            *tft8.writePort = l >> 8;
-            TFT_WR_STROBE();
-            *tft8.writePort = l;
-        } else {
-            *(volatile uint16_t *)tft8.writePort = l >> 16;
-            TFT_WR_STROBE();
-            *(volatile uint16_t *)tft8.writePort = l;
-        }
-#endif
-        TFT_WR_STROBE();
+  } else if (connection == TFT_SOFT_SPI) {
+    for (uint8_t bit = 0; bit < 32; bit++) {
+      if (l & 0x80000000)
+        SPI_MOSI_HIGH();
+      else
+        SPI_MOSI_LOW();
+      SPI_SCK_HIGH();
+      SPI_SCK_LOW();
+      l <<= 1;
     }
+  } else { // TFT_PARALLEL
+#if defined(__AVR__)
+    *tft8.writePort = l >> 24;
+    TFT_WR_STROBE();
+    *tft8.writePort = l >> 16;
+    TFT_WR_STROBE();
+    *tft8.writePort = l >> 8;
+    TFT_WR_STROBE();
+    *tft8.writePort = l;
+#elif defined(USE_FAST_PINIO)
+    if (!tft8.wide) {
+      *tft8.writePort = l >> 24;
+      TFT_WR_STROBE();
+      *tft8.writePort = l >> 16;
+      TFT_WR_STROBE();
+      *tft8.writePort = l >> 8;
+      TFT_WR_STROBE();
+      *tft8.writePort = l;
+    } else {
+      *(volatile uint16_t *)tft8.writePort = l >> 16;
+      TFT_WR_STROBE();
+      *(volatile uint16_t *)tft8.writePort = l;
+    }
+#endif
+    TFT_WR_STROBE();
+  }
 }
 
 /*!
@@ -2221,21 +2314,21 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
 */
 inline void Adafruit_SPITFT::TFT_WR_STROBE(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-  #if defined(KINETISK)
-    *tft8.wrPortClr = 1;
-    *tft8.wrPortSet = 1;
-  #else  // !KINETISK
-    *tft8.wrPortClr = tft8.wrPinMask;
-    *tft8.wrPortSet = tft8.wrPinMask;
-  #endif // end !KINETISK
- #else  // !HAS_PORT_SET_CLR
-    *tft8.wrPort   &= tft8.wrPinMaskClr;
-    *tft8.wrPort   |= tft8.wrPinMaskSet;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+#if defined(KINETISK)
+  *tft8.wrPortClr = 1;
+  *tft8.wrPortSet = 1;
+#else  // !KINETISK
+  *tft8.wrPortClr = tft8.wrPinMask;
+  *tft8.wrPortSet = tft8.wrPinMask;
+#endif // end !KINETISK
+#else  // !HAS_PORT_SET_CLR
+  *tft8.wrPort &= tft8.wrPinMaskClr;
+  *tft8.wrPort |= tft8.wrPinMaskSet;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(tft8._wr, LOW);
-    digitalWrite(tft8._wr, HIGH);
+  digitalWrite(tft8._wr, LOW);
+  digitalWrite(tft8._wr, HIGH);
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2245,13 +2338,13 @@ inline void Adafruit_SPITFT::TFT_WR_STROBE(void) {
 */
 inline void Adafruit_SPITFT::TFT_RD_HIGH(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-    *tft8.rdPortSet = tft8.rdPinMask;
- #else  // !HAS_PORT_SET_CLR
-    *tft8.rdPort   |= tft8.rdPinMaskSet;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+  *tft8.rdPortSet = tft8.rdPinMask;
+#else  // !HAS_PORT_SET_CLR
+  *tft8.rdPort |= tft8.rdPinMaskSet;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(tft8._rd, HIGH);
+  digitalWrite(tft8._rd, HIGH);
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2261,13 +2354,13 @@ inline void Adafruit_SPITFT::TFT_RD_HIGH(void) {
 */
 inline void Adafruit_SPITFT::TFT_RD_LOW(void) {
 #if defined(USE_FAST_PINIO)
- #if defined(HAS_PORT_SET_CLR)
-    *tft8.rdPortClr = tft8.rdPinMask;
- #else  // !HAS_PORT_SET_CLR
-    *tft8.rdPort   &= tft8.rdPinMaskClr;
- #endif // end !HAS_PORT_SET_CLR
+#if defined(HAS_PORT_SET_CLR)
+  *tft8.rdPortClr = tft8.rdPinMask;
+#else  // !HAS_PORT_SET_CLR
+  *tft8.rdPort &= tft8.rdPinMaskClr;
+#endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
-    digitalWrite(tft8._rd, LOW);
+  digitalWrite(tft8._rd, LOW);
 #endif // end !USE_FAST_PINIO
 }
 
