@@ -78,7 +78,7 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 #define USE_SPI_DMA ///< Auto DMA
 #else
                                            //#define USE_SPI_DMA ///< If set,
-                                           //use DMA if available
+                                           // use DMA if available
 #endif
 // Another "oops" name -- this now also handles parallel DMA.
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
@@ -462,20 +462,20 @@ protected:
 #else                          // !HAS_PORT_SET_CLR
       // Port direction register pointer is always 8-bit regardless of
       // PORTreg_t -- even if 32-bit port, we modify a byte-aligned 8 bits.
-      volatile uint8_t *portDir;    ///< PORT direction register
-      PORTreg_t wrPort;             ///< PORT register for write strobe
-      PORTreg_t rdPort;             ///< PORT register for read strobe
-      ADAGFX_PORT_t wrPinMaskSet;   ///< Bitmask for write strobe SET (OR)
-      ADAGFX_PORT_t wrPinMaskClr;   ///< Bitmask for write strobe CLEAR (AND)
-      ADAGFX_PORT_t rdPinMaskSet;   ///< Bitmask for read strobe SET (OR)
-      ADAGFX_PORT_t rdPinMaskClr;   ///< Bitmask for read strobe CLEAR (AND)
-#endif               // end HAS_PORT_SET_CLR
-#endif               // end USE_FAST_PINIO
-      int8_t _d0;    ///< Data pin 0 #
-      int8_t _wr;    ///< Write strobe pin #
-      int8_t _rd;    ///< Read strobe pin # (or -1)
-      bool wide = 0; ///< If true, is 16-bit interface
-    } tft8;          ///< Parallel interface settings
+      volatile uint8_t *portDir;  ///< PORT direction register
+      PORTreg_t wrPort;           ///< PORT register for write strobe
+      PORTreg_t rdPort;           ///< PORT register for read strobe
+      ADAGFX_PORT_t wrPinMaskSet; ///< Bitmask for write strobe SET (OR)
+      ADAGFX_PORT_t wrPinMaskClr; ///< Bitmask for write strobe CLEAR (AND)
+      ADAGFX_PORT_t rdPinMaskSet; ///< Bitmask for read strobe SET (OR)
+      ADAGFX_PORT_t rdPinMaskClr; ///< Bitmask for read strobe CLEAR (AND)
+#endif                         // end HAS_PORT_SET_CLR
+#endif                         // end USE_FAST_PINIO
+      int8_t _d0;              ///< Data pin 0 #
+      int8_t _wr;              ///< Write strobe pin #
+      int8_t _rd;              ///< Read strobe pin # (or -1)
+      bool wide = 0;           ///< If true, is 16-bit interface
+    } tft8;                    ///< Parallel interface settings
 #if defined(__cplusplus) && (__cplusplus >= 201100)
   }; ///< Only one interface is active
 #endif
@@ -498,10 +498,10 @@ protected:
   ADAGFX_PORT_t dcPinMask; ///< Bitmask for data/command
 #endif                     // end !KINETISK
 #else                      // !HAS_PORT_SET_CLR
-  ADAGFX_PORT_t csPinMaskSet;       ///< Bitmask for chip select SET (OR)
-  ADAGFX_PORT_t csPinMaskClr;       ///< Bitmask for chip select CLEAR (AND)
-  ADAGFX_PORT_t dcPinMaskSet;       ///< Bitmask for data/command SET (OR)
-  ADAGFX_PORT_t dcPinMaskClr;       ///< Bitmask for data/command CLEAR (AND)
+  ADAGFX_PORT_t csPinMaskSet;     ///< Bitmask for chip select SET (OR)
+  ADAGFX_PORT_t csPinMaskClr;     ///< Bitmask for chip select CLEAR (AND)
+  ADAGFX_PORT_t dcPinMaskSet;     ///< Bitmask for data/command SET (OR)
+  ADAGFX_PORT_t dcPinMaskClr;     ///< Bitmask for data/command CLEAR (AND)
 #endif                     // end HAS_PORT_SET_CLR
 #endif                     // end USE_FAST_PINIO
   uint8_t connection;      ///< TFT_HARD_SPI, TFT_SOFT_SPI, etc.
