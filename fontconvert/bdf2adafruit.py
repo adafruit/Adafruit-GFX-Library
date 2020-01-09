@@ -3,23 +3,23 @@
 # MIT License.
 
 # Copyright (c) 2016 William Skellenger
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a 
-# copy of this software and associated documentation files (the "Software"), 
-# to deal in the Software without restriction, including without limitation 
-# the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-# and/or sell copies of the Software, and to permit persons to whom the 
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included 
+#
+# The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
 # This small script is designed to mostly take a BDF file and convert it to a
@@ -32,7 +32,7 @@
 #
 # Usage: bdf2adafruit.py <somefont.bdf> > out.txt
 #
-# Once you have out.txt you can cut/paste the contents into a new font 
+# Once you have out.txt you can cut/paste the contents into a new font
 # header file as part of the Adafruit GFX library.
 
 import sys
@@ -54,7 +54,7 @@ class Glyph:
     height = 0
     advance = 0
     xoffs = 0
-    yoffs = 0 
+    yoffs = 0
     def __init__(self, comment):
         self.comment = comment
         self.rows = []
@@ -107,7 +107,7 @@ for line in myfile.readlines():
             #g.rows.append(int(line, 16))  #append pixel rows into glyph's list of rows
             bitmapData.append(int(line, 16))
 
-print 
+print
 
 i=0
 for char in chars:
@@ -128,8 +128,8 @@ for char in chars:
     print("\t/* 0x%02X %s */" %(char.encoding, char.comment))
 
 for char in chars:
-    # offset, bit-width, bit-height, advance cursor, x offset, y offset 
+    # offset, bit-width, bit-height, advance cursor, x offset, y offset
     print("\t{ %d, %d, %d, %d, %d, %d }, /* 0x%02X %s */" %(
-            char.offset, char.width, char.height, 
-            char.advance, char.xoffs, char.yoffs, 
+            char.offset, char.width, char.height,
+            char.advance, char.xoffs, char.yoffs,
             char.encoding, char.comment))
