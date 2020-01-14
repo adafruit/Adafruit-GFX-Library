@@ -258,7 +258,7 @@ const uint8_t TomThumbBitmaps[] PROGMEM = {
     0x7F, 0xE6,       /* 0x20AC Euro */
     0xEA, 0xAA, 0xE0, /* 0xFFFD uniFFFD */
 #endif                /* (TOMTHUMB_USE_EXTENDED)  */
- };
+};
 
 /* {offset, width, height, advance cursor, x offset, y offset} */
 const GFXglyph TomThumbGlyphs[] PROGMEM = {
