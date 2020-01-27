@@ -222,7 +222,7 @@ public:
 protected:
   void charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny,
                   int16_t *maxx, int16_t *maxy);
-  int16_t WIDTH,      ///< This is the 'raw' display width - never changes
+  int16_t const WIDTH,///< This is the 'raw' display width - never changes
       HEIGHT;         ///< This is the 'raw' display height - never changes
   int16_t _width,     ///< Display width as modified by current rotation
       _height,        ///< Display height as modified by current rotation
