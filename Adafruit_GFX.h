@@ -222,20 +222,20 @@ public:
 protected:
   void charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny,
                   int16_t *maxx, int16_t *maxy);
-  int16_t const WIDTH,///< This is the 'raw' display width - never changes
-      HEIGHT;         ///< This is the 'raw' display height - never changes
-  int16_t _width,     ///< Display width as modified by current rotation
-      _height,        ///< Display height as modified by current rotation
-      cursor_x,       ///< x location to start print()ing text
-      cursor_y;       ///< y location to start print()ing text
-  uint16_t textcolor, ///< 16-bit background color for print()
-      textbgcolor;    ///< 16-bit text color for print()
-  uint8_t textsize_x, ///< Desired magnification in X-axis of text to print()
-      textsize_y,     ///< Desired magnification in Y-axis of text to print()
-      rotation;       ///< Display rotation (0 thru 3)
-  boolean wrap,       ///< If set, 'wrap' text at right edge of display
-      _cp437;         ///< If set, use correct CP437 charset (default is off)
-  GFXfont *gfxFont;   ///< Pointer to special font
+  const int16_t WIDTH, ///< This is the 'raw' display width - never changes
+      HEIGHT;          ///< This is the 'raw' display height - never changes
+  int16_t _width,      ///< Display width as modified by current rotation
+      _height,         ///< Display height as modified by current rotation
+      cursor_x,        ///< x location to start print()ing text
+      cursor_y;        ///< y location to start print()ing text
+  uint16_t textcolor,  ///< 16-bit background color for print()
+      textbgcolor;     ///< 16-bit text color for print()
+  uint8_t textsize_x,  ///< Desired magnification in X-axis of text to print()
+      textsize_y,      ///< Desired magnification in Y-axis of text to print()
+      rotation;        ///< Display rotation (0 thru 3)
+  boolean wrap,        ///< If set, 'wrap' text at right edge of display
+      _cp437;          ///< If set, use correct CP437 charset (default is off)
+  GFXfont *gfxFont;    ///< Pointer to special font
 };
 
 /// A simple drawn button UI element
