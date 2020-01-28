@@ -104,6 +104,8 @@ public:
                uint16_t bg, uint8_t size_x, uint8_t size_y),
       getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1,
                     int16_t *y1, uint16_t *w, uint16_t *h),
+      getTextBounds(const char *str, int16_t *x1, int16_t *y1, uint16_t *w,
+                    uint16_t *h),
       getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
                     int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h),
       getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1,

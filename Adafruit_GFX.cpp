@@ -1467,6 +1467,22 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
 /**************************************************************************/
 /*!
     @brief    Helper to determine size of a string with current font/size. Pass
+   string, uses current cursor positions, returns UL corner and W,H.
+    @param    str     The ascii string to measure
+    @param    x1      The boundary X coordinate, set by function
+    @param    y1      The boundary Y coordinate, set by function
+    @param    w      The boundary width, set by function
+    @param    h      The boundary height, set by function
+*/
+/**************************************************************************/
+void Adafruit_GFX::getTextBounds(const char *str, int16_t *x1, int16_t *y1, 
+                                 uint16_t *w, uint16_t *h) {
+    getTextBounds(str, cursor_x, cursor_y, x1, y1, w, h);
+}
+
+/**************************************************************************/
+/*!
+    @brief    Helper to determine size of a string with current font/size. Pass
    string and a cursor position, returns UL corner and W,H.
     @param    str    The ascii string to measure (as an arduino String() class)
     @param    x      The current cursor X
