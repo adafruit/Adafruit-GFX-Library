@@ -1846,8 +1846,6 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
 
   SPI_DC_HIGH();
   for (int i = 0; i < numDataBytes; i++) {
-    spiWrite(*dataBytes); // Send the data bytes
-    dataBytes++;
     if ((connection == TFT_PARALLEL) && tft8.wide) {
       SPI_WRITE16(*(uint16_t *)dataBytes);
       dataBytes += 2;
