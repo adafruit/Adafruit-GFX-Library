@@ -978,8 +978,8 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 */
 void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
                                   bool bigEndian) {
- (void) block;
- (void) bigEndian; 
+ (void)block;
+ (void)bigEndian; 
   if (!len)
     return; // Avoid 0-byte transfers
 
