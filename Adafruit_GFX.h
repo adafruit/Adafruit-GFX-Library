@@ -195,7 +195,7 @@ public:
   
   /************************************************************************/
   /*!
-    @brief      Get the X text size
+    @brief      Get the x text size
     @returns    get X text size. 1 is default 6x8, 2 is 12x16, 3 is 18x24, etc
   */
   /************************************************************************/
