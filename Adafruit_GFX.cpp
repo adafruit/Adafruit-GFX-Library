@@ -1364,7 +1364,7 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     @param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-void Adafruit_GFX::charBounds(char c, int16_t *x, int16_t *y, int16_t *minx,
+void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y, int16_t *minx,
                               int16_t *miny, int16_t *maxx, int16_t *maxy) {
 
   if (gfxFont) {
