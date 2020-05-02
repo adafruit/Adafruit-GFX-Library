@@ -163,6 +163,7 @@ public:
       @param  freq  SPI frequency, in hz (or 0 for default or unused).
   */
   virtual void begin(uint32_t freq) = 0;
+  virtual boolean begin() { begin(0); return true; }
 
   /*!
       @brief  Set up the specific display hardware's "address window"
