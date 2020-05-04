@@ -17,6 +17,12 @@ class Adafruit_GFX : public Print {
 public:
   Adafruit_GFX(int16_t w, int16_t h); // Constructor
 
+  // some subclass need following functions, and it make it easer to port applications to other hardware platforms.
+  virtual boolean begin() {return true;}
+  virtual void end() {}
+  virtual void display() {}
+  virtual void clear() { fillRect(0,0, _width,_height, 0); }
+
   // This MUST be defined by the subclass:
   virtual void drawPixel(
       int16_t x, int16_t y,
