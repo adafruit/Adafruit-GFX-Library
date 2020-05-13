@@ -114,7 +114,8 @@ public:
                      int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
   void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1,
                      int16_t *y1, uint16_t *w, uint16_t *h);
-  void setTextSize(uint8_t s), setTextSize(uint8_t sx, uint8_t sy);
+  void setTextSize(uint8_t s);
+  void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
 
   /**********************************************************************/
@@ -347,7 +348,8 @@ public:
   GFXcanvas16(uint16_t w, uint16_t h);
   ~GFXcanvas16(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
-  void fillScreen(uint16_t color), byteSwap(void);
+  void fillScreen(uint16_t color);
+  void byteSwap(void);
   /**********************************************************************/
   /*!
     @brief    Get a pointer to the internal buffer memory
