@@ -233,12 +233,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a2fa315803f39a5e73b1841874daf0483 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a2fa315803f39a5e73b1841874daf0483">invertDisplay</a> (boolean i)</td></tr>
 <tr class="memdesc:a2fa315803f39a5e73b1841874daf0483 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the display (ideally using built-in hardware command)  <a href="class_adafruit___g_f_x.html#a2fa315803f39a5e73b1841874daf0483">More...</a><br /></td></tr>
 <tr class="separator:a2fa315803f39a5e73b1841874daf0483 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">drawFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
-<tr class="memdesc:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a perfectly horizontal line (this is often optimized in a subclass!)  <a href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">More...</a><br /></td></tr>
-<tr class="separator:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa43cf1dfe6c17d040a0f1fd5ffbe9d69 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69">fillRect</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
-<tr class="memdesc:aa43cf1dfe6c17d040a0f1fd5ffbe9d69 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill a rectangle completely with one color. Update in subclasses if desired!  <a href="class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69">More...</a><br /></td></tr>
-<tr class="separator:aa43cf1dfe6c17d040a0f1fd5ffbe9d69 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b2730aaf2208990928f9c0f85558527 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a2b2730aaf2208990928f9c0f85558527">fillScreen</a> (uint16_t color)</td></tr>
 <tr class="memdesc:a2b2730aaf2208990928f9c0f85558527 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the screen completely with one color. Update in subclasses if desired!  <a href="class_adafruit___g_f_x.html#a2b2730aaf2208990928f9c0f85558527">More...</a><br /></td></tr>
 <tr class="separator:a2b2730aaf2208990928f9c0f85558527 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1671,6 +1665,9 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Adafruit_SPITFT::fillRect </td>
@@ -1708,6 +1705,11 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Draw a filled rectangle to the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> or <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a6ef20b186a133d416f9ba71fb884d275" title="A lower-level version of writeFillRect(). This version requires all inputs are in-bounds, that width and height are positive, and no part extends offscreen. NO EDGE CLIPPING OR REJECTION IS PERFORMED. If higher-level graphics primitives are written to handle their own clipping earlier in the drawing process, this can avoid unnecessary function calls and repeated clipping operations in the lower-level functions. ">writeFillRectPreclipped()</a> for lower-level variants). Edge clipping and rejection is performed here. </p>
@@ -1723,6 +1725,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </dl>
 <dl class="section note"><dt>Note</dt><dd>This repeats the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> function almost in its entirety, with the addition of a transaction start/end. It's done this way (rather than starting the transaction and calling <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8df7d60b7c8500b31d0a8f59999c3df1" title="Draw a filled rectangle to the display. Not self-contained; should follow startWrite(). Typically used by higher-level graphics primitives; user code shouldn&#39;t need to call this and is likely to use the self-contained fillRect() instead. writeFillRect() performs its own edge clipping and rejection; see writeFillRectPreclipped() for a more &#39;raw&#39; implementation. ">writeFillRect()</a> to handle clipping and so forth) so that the transaction isn't performed at all if the rectangle is rejected. It's really not that much code. </dd></dl>
 
+<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69">Adafruit_GFX</a>.</p>
+
 </div>
 </div>
 <a id="aef1099605952f87fbdf59bc480a7a894"></a>
@@ -1730,6 +1734,9 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Adafruit_SPITFT::drawFastHLine </td>
@@ -1761,6 +1768,11 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Draw a horizontal line on the display. Self-contained and provides its own transaction as needed (see <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> for a lower-level variant). Edge clipping and rejection is performed here. </p>
@@ -1774,6 +1786,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>This repeats the <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> function almost in its entirety, with the addition of a transaction start/end. It's done this way (rather than starting the transaction and calling <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a06312f906256fd7e72efb21df85d2b96" title="Draw a horizontal line on the display. Performs edge clipping and rejection. Not self-contained; shou...">writeFastHLine()</a> to handle clipping and so forth) so that the transaction isn't performed at all if the line is rejected. </dd></dl>
+
+<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
