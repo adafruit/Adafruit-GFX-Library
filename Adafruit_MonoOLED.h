@@ -57,11 +57,15 @@ public:
                     uint32_t bitrate = 8000000UL);
 
   ~Adafruit_MonoOLED(void);
+
+  /**
+   @brief The function that sub-classes define that writes out the buffer to
+   the display over I2C or SPI
+   **/
   virtual void display(void) = 0;
   void clearDisplay(void);
   void invertDisplay(boolean i);
   void setContrast(uint8_t contrastlevel);
-  uint8_t getContrast(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   boolean getPixel(int16_t x, int16_t y);
   uint8_t *getBuffer(void);
@@ -72,15 +76,14 @@ public:
 protected:
   bool _init(uint8_t i2caddr = 0x3C, boolean reset = true);
 
-  Adafruit_SPIDevice *spi_dev = NULL;
-  Adafruit_I2CDevice *i2c_dev = NULL;
-  TwoWire *_theWire = NULL;
-  int32_t i2c_preclk = 400000, i2c_postclk = 100000;
+  Adafruit_SPIDevice *spi_dev = NULL; ///< The SPI interface BusIO device
+  Adafruit_I2CDevice *i2c_dev = NULL; ///< The I2C interface BusIO device
+  int32_t i2c_preclk = 400000,        ///< Configurable 'high speed' I2C rate
+      i2c_postclk = 100000;           ///< Configurable 'low speed' I2C rate
+  uint8_t *buffer = NULL; ///< Internal 1:1 framebuffer of display mem
+private:
   int dcPin, csPin, rstPin;
-  uint8_t *buffer = NULL;
-  int8_t i2caddr;
-
-  uint8_t contrast; // normal contrast setting for this device
+  TwoWire *_theWire = NULL; ///< The underlying hardware I2C
 };
 
 #endif // _Adafruit_MonoOLED_H_

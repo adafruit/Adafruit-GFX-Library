@@ -1,10 +1,6 @@
 /*!
  * @file Adafruit_MonoOLED.cpp
  *
- * @mainpage Arduino library for generic monochrome OLEDs.
- *
- * @section intro_sec Introduction
- *
  * This is documentation for Adafruit's generic library for monochrome
  * OLED displays: http://www.adafruit.com/category/63_98
  *
@@ -16,24 +12,6 @@
  * Adafruit invests time and resources providing this open source code,
  * please support Adafruit and open-source hardware by purchasing
  * products from Adafruit!
- *
- * @section dependencies Dependencies
- *
- * This library depends on <a
- * href="https://github.com/adafruit/Adafruit-GFX-Library"> Adafruit_GFX</a> and
- * <a href="https://github.com/adafruit/Adafruit_BusIO"> Adafruit_BusIO</a>
- * being present on your system. Please make sure you have installed the latest
- * version before using this library.
- *
- * @section author Author
- *
- * Written by Limor Fried/Ladyada for Adafruit Industries, with
- * contributions from the open source community.
- *
- * @section license License
- *
- * BSD license, all text above, and the splash screen included below,
- * must be included in any redistribution.
  *
  */
 
@@ -172,7 +150,11 @@ Adafruit_MonoOLED::~Adafruit_MonoOLED(void) {
 
 // LOW-LEVEL UTILS ---------------------------------------------------------
 
-// Issue single command byte to OLED, using I2C or hard/soft SPI as needed.
+/*!
+    @brief Issue single command byte to OLED, using I2C or hard/soft SPI as
+   needed.
+    @param c The single byte command
+*/
 void Adafruit_MonoOLED::oled_command(uint8_t c) {
   if (i2c_dev) {                // I2C
     uint8_t buf[2] = {0x00, c}; // Co = 0, D/C = 0
@@ -184,6 +166,14 @@ void Adafruit_MonoOLED::oled_command(uint8_t c) {
 }
 
 // Issue list of commands to MonoOLED
+/*!
+    @brief Issue multiple bytes of commands OLED, using I2C or hard/soft SPI as
+   needed.
+    @param c Pointer to the command array
+    @param n The number of bytes in the command array
+    @returns True for success on ability to write the data in I2C.
+*/
+
 bool Adafruit_MonoOLED::oled_commandList(const uint8_t *c, uint8_t n) {
   if (i2c_dev) {            // I2C
     uint8_t dc_byte = 0x00; // Co = 0, D/C = 0
@@ -379,9 +369,8 @@ void Adafruit_MonoOLED::invertDisplay(boolean i) {
 }
 
 /*!
-    @brief  Dim the display.
-    @param  dim
-            true to enable lower brightness mode, false for full brightness.
+    @brief  Adjust the display contrast.
+    @param  level The contrast level from 0 to 0x7F
     @return None (void).
     @note   This has an immediate effect on the display, no need to call the
             display() function -- buffer contents are not changed.
