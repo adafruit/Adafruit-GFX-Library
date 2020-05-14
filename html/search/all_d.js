@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['read16',['read16',['../class_adafruit___s_p_i_t_f_t.html#ae5ded96bb6051c6f882dfc6bac4557bc',1,'Adafruit_SPITFT']]],
-  ['readcommand16',['readcommand16',['../class_adafruit___s_p_i_t_f_t.html#ac80f648cc0abc7b1d1ec27a750e5f79a',1,'Adafruit_SPITFT']]],
-  ['readcommand8',['readcommand8',['../class_adafruit___s_p_i_t_f_t.html#a641ccc4f159129259ee08738cb99627b',1,'Adafruit_SPITFT']]],
-  ['rotation',['rotation',['../class_adafruit___g_f_x.html#a37a479d28fb11906ce516e983b1af926',1,'Adafruit_GFX']]]
+  ['oled_5fcommand',['oled_command',['../class_adafruit___mono_o_l_e_d.html#ab13ab5caf82a25f189b362e2bdf7e7cc',1,'Adafruit_MonoOLED']]],
+  ['oled_5fcommandlist',['oled_commandList',['../class_adafruit___mono_o_l_e_d.html#a37ad2c81c1fb078cab1fa8af47b2801c',1,'Adafruit_MonoOLED']]]
 ];

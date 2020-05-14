@@ -1,11 +1,9 @@
 var searchData=
 [
-  ['getbuffer',['getBuffer',['../class_g_f_xcanvas1.html#a600a4aca735d657230b37a5486be6f47',1,'GFXcanvas1::getBuffer()'],['../class_g_f_xcanvas8.html#a1928e73eeb06e56a8e8c75738b57e304',1,'GFXcanvas8::getBuffer()'],['../class_g_f_xcanvas16.html#a6b524ecbbe1e562b49caef524694a91c',1,'GFXcanvas16::getBuffer()']]],
-  ['getcursorx',['getCursorX',['../class_adafruit___g_f_x.html#a0d1d15f5f15cad95b4c20f0e9ac9c74b',1,'Adafruit_GFX']]],
-  ['getcursory',['getCursorY',['../class_adafruit___g_f_x.html#a81c8558cfcb717c4cfbd5475998daed1',1,'Adafruit_GFX']]],
-  ['getrotation',['getRotation',['../class_adafruit___g_f_x.html#ab90e1378511b93189a7b557d7dda5d73',1,'Adafruit_GFX']]],
-  ['gettextbounds',['getTextBounds',['../class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19',1,'Adafruit_GFX::getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)'],['../class_adafruit___g_f_x.html#a97525abb71dbe38c6551e4d0da4052b8',1,'Adafruit_GFX::getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)'],['../class_adafruit___g_f_x.html#a4258c8e7e5e897a3e5e87748e4585579',1,'Adafruit_GFX::getTextBounds(const String &amp;str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)']]],
-  ['gfxcanvas1',['GFXcanvas1',['../class_g_f_xcanvas1.html#a3d8047501178f976fb6af095572eb5d0',1,'GFXcanvas1']]],
-  ['gfxcanvas16',['GFXcanvas16',['../class_g_f_xcanvas16.html#a1087f17778b9c60db81162e66220b600',1,'GFXcanvas16']]],
-  ['gfxcanvas8',['GFXcanvas8',['../class_g_f_xcanvas8.html#a57dcdb940a56a37cdfbb3a596f9e0ecd',1,'GFXcanvas8']]]
+  ['fillcircle',['fillCircle',['../class_adafruit___g_f_x.html#a623e031e58492fb41e9fde6a05d97c12',1,'Adafruit_GFX']]],
+  ['fillcirclehelper',['fillCircleHelper',['../class_adafruit___g_f_x.html#a2242d3560b08c6480084152b6660052a',1,'Adafruit_GFX']]],
+  ['fillrect',['fillRect',['../class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69',1,'Adafruit_GFX::fillRect()'],['../class_adafruit___s_p_i_t_f_t.html#a5964fdb249fb43869c649198e13b727b',1,'Adafruit_SPITFT::fillRect()']]],
+  ['fillroundrect',['fillRoundRect',['../class_adafruit___g_f_x.html#a78dc59f6a508bcd3d5ac7af957b8b1ac',1,'Adafruit_GFX']]],
+  ['fillscreen',['fillScreen',['../class_adafruit___g_f_x.html#a2b2730aaf2208990928f9c0f85558527',1,'Adafruit_GFX::fillScreen()'],['../class_g_f_xcanvas1.html#aa282792bbb854a4a045be5ba1c8a7afc',1,'GFXcanvas1::fillScreen()'],['../class_g_f_xcanvas8.html#a9362b64e0e24b34172226cab358f5a45',1,'GFXcanvas8::fillScreen()'],['../class_g_f_xcanvas16.html#ae46db6d49d2943e7cb227fd0bb50b1f8',1,'GFXcanvas16::fillScreen()']]],
+  ['filltriangle',['fillTriangle',['../class_adafruit___g_f_x.html#a4cd646a3d9c9d5b3ee50010d0aa387cd',1,'Adafruit_GFX']]]
 ];
