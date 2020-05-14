@@ -187,7 +187,7 @@ void Adafruit_MonoOLED::oled_command(uint8_t c) {
 bool Adafruit_MonoOLED::oled_commandList(const uint8_t *c, uint8_t n) {
   if (i2c_dev) {            // I2C
     uint8_t dc_byte = 0x00; // Co = 0, D/C = 0
-    if (!i2c_dev->write(c, n, true, &dc_byte, 1)) {
+    if (!i2c_dev->write((uint8_t *)c, n, true, &dc_byte, 1)) {
       return false;
     }
   } else { // SPI -- transaction started in calling function
@@ -238,7 +238,7 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
     }
   } else { // Using one of the SPI modes, either soft or hardware
     if (!spi_dev || !spi_dev->begin()) {
-      return;
+      return false;
     }
     pinMode(dcPin, OUTPUT); // Set data/command pin as output
   }
