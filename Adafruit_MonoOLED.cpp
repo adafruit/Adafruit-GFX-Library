@@ -246,6 +246,12 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
     delay(10);
   }
 
+  // set max dirty window
+  window_x1 = 0;
+  window_y1 = 0;
+  window_x2 = WIDTH - 1;
+  window_y2 = HEIGHT - 1;
+
   return true; // Success
 }
 
@@ -284,6 +290,13 @@ void Adafruit_MonoOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
       y = HEIGHT - y - 1;
       break;
     }
+
+    // adjust dirty window
+    window_x1 = min(window_x1, x);
+    window_y1 = min(window_y1, y);
+    window_x2 = max(window_x2, x);
+    window_y2 = max(window_y2, y);
+
     switch (color) {
     case MONOOLED_WHITE:
       buffer[x + (y / 8) * WIDTH] |= (1 << (y & 7));
@@ -307,6 +320,11 @@ void Adafruit_MonoOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 void Adafruit_MonoOLED::clearDisplay(void) {
   memset(buffer, 0, WIDTH * ((HEIGHT + 7) / 8));
+  // set max dirty window
+  window_x1 = 0;
+  window_y1 = 0;
+  window_x2 = WIDTH - 1;
+  window_y2 = HEIGHT - 1;
 }
 
 /*!

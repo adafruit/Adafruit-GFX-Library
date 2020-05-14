@@ -81,6 +81,12 @@ protected:
   int32_t i2c_preclk = 400000,        ///< Configurable 'high speed' I2C rate
       i2c_postclk = 100000;           ///< Configurable 'low speed' I2C rate
   uint8_t *buffer = NULL; ///< Internal 1:1 framebuffer of display mem
+
+  int16_t window_x1, ///< Dirty tracking window minimum x
+      window_y1,     ///< Dirty tracking window minimum y
+      window_x2,     ///< Dirty tracking window maximum x
+      window_y2;     ///< Dirty tracking window maximum y
+
 private:
   int dcPin, csPin, rstPin;
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
