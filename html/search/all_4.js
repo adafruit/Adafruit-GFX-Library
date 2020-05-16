@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['dcpin',['dcPin',['../class_adafruit___mono_o_l_e_d.html#aa6ae27b240b9691b53b684ba72bab0ee',1,'Adafruit_MonoOLED']]],
   ['default_5fspi_5ffreq',['DEFAULT_SPI_FREQ',['../_adafruit___s_p_i_t_f_t_8h.html#a7434818958eb0d2993bbd2021eea141d',1,'Adafruit_SPITFT.h']]],
   ['display',['display',['../class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5',1,'Adafruit_MonoOLED']]],
   ['dmawait',['dmaWait',['../class_adafruit___s_p_i_t_f_t.html#ae69f8c2c187cccd5c9df9c25d488f1e5',1,'Adafruit_SPITFT']]],

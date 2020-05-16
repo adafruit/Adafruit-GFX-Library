@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rotation',['rotation',['../class_adafruit___g_f_x.html#a37a479d28fb11906ce516e983b1af926',1,'Adafruit_GFX']]]
+  ['last',['last',['../struct_g_f_xfont.html#a9bc82580b9bc5cc1c15ae23457edcd49',1,'GFXfont']]]
 ];
