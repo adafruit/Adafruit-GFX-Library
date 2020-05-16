@@ -222,7 +222,7 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
   if (reset && (rstPin >= 0)) {
     pinMode(rstPin, OUTPUT);
     digitalWrite(rstPin, HIGH);
-    delay(10);                   // VDD goes high at start, pause
+    delay(10);                  // VDD goes high at start, pause
     digitalWrite(rstPin, LOW);  // Bring reset low
     delay(10);                  // Wait 10 ms
     digitalWrite(rstPin, HIGH); // Bring out of reset
