@@ -87,7 +87,9 @@ protected:
       window_x2,     ///< Dirty tracking window maximum x
       window_y2;     ///< Dirty tracking window maximum y
 
-  int dcPin, csPin, rstPin;
+  int dcPin,  ///< The Arduino pin connected to D/C (for SPI)
+      csPin,  ///< The Arduino pin connected to CS (for SPI)
+      rstPin; ///< The Arduino pin connected to reset (-1 if unused)
 
 private:
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
