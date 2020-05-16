@@ -219,6 +219,17 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
     return false;
   }
 
+  // Reset OLED if requested and reset pin specified in constructor
+  if (reset && (rstPin >= 0)) {
+    pinMode(rstPin, OUTPUT);
+    digitalWrite(rstPin, HIGH);
+    delay(1);                   // VDD goes high at start, pause for 1 ms
+    digitalWrite(rstPin, LOW);  // Bring reset low
+    delay(10);                  // Wait 10 ms
+    digitalWrite(rstPin, HIGH); // Bring out of reset
+    delay(10);
+  }
+
   // Setup pin directions
   if (_theWire) { // using I2C
     i2c_dev = new Adafruit_I2CDevice(addr, _theWire);
@@ -234,17 +245,6 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
   }
 
   clearDisplay();
-
-  // Reset OLED if requested and reset pin specified in constructor
-  if (reset && (rstPin >= 0)) {
-    pinMode(rstPin, OUTPUT);
-    digitalWrite(rstPin, HIGH);
-    delay(1);                   // VDD goes high at start, pause for 1 ms
-    digitalWrite(rstPin, LOW);  // Bring reset low
-    delay(10);                  // Wait 10 ms
-    digitalWrite(rstPin, HIGH); // Bring out of reset
-    delay(10);
-  }
 
   // set max dirty window
   window_x1 = 0;
