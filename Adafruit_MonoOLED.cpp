@@ -182,9 +182,8 @@ bool Adafruit_MonoOLED::oled_commandList(const uint8_t *c, uint8_t n) {
     }
   } else { // SPI -- transaction started in calling function
     digitalWrite(dcPin, LOW);
-    while (n--) {
-      uint8_t b = pgm_read_byte(c++);
-      spi_dev->write(&b, 1);
+    if (!spi_dev->write((uint8_t *)c, n)) {
+      return false;
     }
   }
   return true;
@@ -223,7 +222,7 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
   if (reset && (rstPin >= 0)) {
     pinMode(rstPin, OUTPUT);
     digitalWrite(rstPin, HIGH);
-    delay(1);                   // VDD goes high at start, pause for 1 ms
+    delay(10);                   // VDD goes high at start, pause
     digitalWrite(rstPin, LOW);  // Bring reset low
     delay(10);                  // Wait 10 ms
     digitalWrite(rstPin, HIGH); // Bring out of reset

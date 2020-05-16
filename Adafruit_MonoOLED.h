@@ -87,8 +87,9 @@ protected:
       window_x2,     ///< Dirty tracking window maximum x
       window_y2;     ///< Dirty tracking window maximum y
 
-private:
   int dcPin, csPin, rstPin;
+
+private:
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
 };
 
