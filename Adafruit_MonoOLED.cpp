@@ -399,5 +399,4 @@ void Adafruit_MonoOLED::setContrast(uint8_t level) {
   oled_commandList(cmd, 2);
 }
 
-
 #endif /* ATTIN85 not supported */
