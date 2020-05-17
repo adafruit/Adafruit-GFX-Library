@@ -15,6 +15,8 @@
  *
  */
 
+#if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
+
 #include "Adafruit_MonoOLED.h"
 #include <Adafruit_GFX.h>
 
@@ -396,3 +398,6 @@ void Adafruit_MonoOLED::setContrast(uint8_t level) {
   uint8_t cmd[] = {MONOOLED_SETCONTRAST, level};
   oled_commandList(cmd, 2);
 }
+
+
+#endif /* ATTIN85 not supported */
