@@ -189,7 +189,7 @@ public:
   // 1 for SPI_MODE1, etc...use ONLY the SPI_MODEn defines! Only!
   // Name is outdated (interface may be parallel) but for compatibility:
   void initSPI(uint32_t freq = 0, uint8_t spiMode = SPI_MODE0);
-  void setSPISpeed(uint32_t freq);
+  void setSPISpeed(uint32_t freq, uint8_t spiMode = -1);
   // Chip select and/or hardware SPI transaction start as needed:
   void startWrite(void);
   // Chip deselect and/or hardware SPI transaction end as needed:
