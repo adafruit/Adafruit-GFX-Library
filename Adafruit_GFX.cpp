@@ -639,8 +639,13 @@ void Adafruit_GFX::fillArc(int16_t x0, int16_t y0, int16_t r, double start_angle
         clockwise = !clockwise;
     }
     // cacluate the coordinates of the start end and angle
+    #if !defined (__STRICT_ANSI__) || defined(__cplusplus)
     sincos(start_angle, &xa, &ya);
     sincos(stop_angle, &xe, &ye);
+    #else
+    xa = sin(start_angle); ya = cos(start_angle);
+    xe = sin(stop_angle); ye = cos(stop_angle);
+    #endif
     // start end and point are connected by a line
     double delta = abs(xa - xe) < 1e-6 ? 0.0 : (ye-ya)/(xe-xa);
 
