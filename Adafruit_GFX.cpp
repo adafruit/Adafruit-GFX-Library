@@ -638,8 +638,8 @@ void Adafruit_GFX::fillArc(int16_t x0, int16_t y0, int16_t r, double start_angle
         stop_angle = tmp;
         clockwise = !clockwise;
     }
-    // cacluate the coordinates of the start end and angle
-    #if !defined (__STRICT_ANSI__) || defined(__cplusplus)
+    // cacluate the coordinates of the start end and angle - todo which other platforms are supported?
+    #if defined(ESP8266) || defined(ESP32)
     sincos(start_angle, &xa, &ya);
     sincos(stop_angle, &xe, &ye);
     #else
