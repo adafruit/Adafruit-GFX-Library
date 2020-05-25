@@ -520,6 +520,218 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     @param    color 16-bit 5-6-5 Color to draw with
 */
 /**************************************************************************/
+
+
+/**************************************************************************/
+/*!
+   @brief    Draw an arc outline
+    @param    x0          Center-point x coordinate
+    @param    y0          Center-point y coordinate
+    @param    r           Radius of arc
+    @param    start_angle Angle in radians where to start drawing (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing (less or equal PI)
+    @param    clockwise   If true draw in clockwise direction
+    @param    color       16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawArc(int16_t x0, int16_t y0, int16_t r, double start_angle, double stop_angle, boolean clockwise,
+        uint16_t color) 
+{
+  // check whether the angles are exchanged
+  if (start_angle > stop_angle) {
+    double tmp = start_angle;
+    start_angle = stop_angle;
+    stop_angle = tmp;
+    clockwise = !clockwise;
+  }
+  startWrite();
+  if (clockwise) {
+    // clockwise drawing two segments
+    drawArcHelper(x0, y0, r, -M_PI, start_angle, color);
+    drawArcHelper(x0, y0, r, stop_angle, M_PI, color);
+  } else {
+    drawArcHelper(x0, y0, r, start_angle, stop_angle, color);
+  }
+  endWrite();
+}
+        
+/**************************************************************************/
+/*!
+   @brief    Helper function for drawing an arc
+    @param    x0          Center-point x coordinate
+    @param    y0          Center-point y coordinate
+    @param    r           Radius of arc
+    @param    start_angle Angle in radians where to start drawing (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing (less or equal PI)
+    @param    clockwise   If true draw in clockwise direction
+    @param    color       16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawArcHelper(int16_t x0, int16_t y0, int16_t r, double start_angle, double stop_angle,
+        uint16_t color)         
+        {
+  int16_t f = 1 - r;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * r;
+  int16_t x = 0;
+  int16_t y = r;
+
+  // Check the four "corners" of the circle at mulitples of PI/2
+  if (start_angle <= M_PI    && M_PI    <= stop_angle) writePixel(x0  , y0+r, color);
+  if (start_angle <= 0       && 0       <= stop_angle) writePixel(x0  , y0-r, color);
+  if (start_angle <= M_PI/2  && M_PI/2  <= stop_angle) writePixel(x0+r, y0  , color);
+  if (start_angle <= -M_PI/2 && -M_PI/2 <= stop_angle) writePixel(x0-r, y0  , color);
+
+  while (x<y) {
+    if (f >= 0) {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    // Calculate for each pixel if it's angle is within start_angle - stop_angle
+    // Optimize the number of atan2 calls by using 
+    //   atan2(x, y) = - atan2(-x, y) and 
+    //   atan2(x, -y) = -atan2(x, y) + sign(x)*PI 
+    //   (make sure y is not 0)
+    double a1 = atan2(x, y);
+    if (start_angle <= a1 && a1 <= stop_angle) writePixel(x0 + x, y0 + y, color);
+    double a2 = - a1;
+    if (start_angle <= a2 && a2 <= stop_angle) writePixel(x0 - x, y0 + y, color);
+    double a3 = (x < 0) ?  - M_PI - a1 : M_PI - a1;
+    if (start_angle <= a3 && a3 <= stop_angle) writePixel(x0 + x, y0 - y, color);
+    double a4 = - a3;
+    if (start_angle <= a4 && a4 <= stop_angle) writePixel(x0 - x, y0 - y, color);
+    a1 = atan2(y, x);
+    if (start_angle <= a1 && a1 <= stop_angle) writePixel(x0 + y, y0 + x, color);
+    a2 = - a1;
+    if (start_angle <= a2 && a2 <= stop_angle) writePixel(x0 - y, y0 + x, color);
+    a3 = (x < 0) ?  - M_PI - a1 : M_PI - a1;
+    if (start_angle <= a3 && a3 <= stop_angle) writePixel(x0 + y, y0 - x, color);
+    a4 = - a3;
+    if (start_angle <= a4 && a4 <= stop_angle) writePixel(x0 - y, y0 - x, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Draw a filled arc
+    @param    x0          Center-point x coordinate
+    @param    y0          Center-point y coordinate
+    @param    r           Radius of arc
+    @param    start_angle Angle in radians where to start drawing (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing (less or equal PI)
+    @param    clockwise   If true draw in clockwise direction
+    @param    color       16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillArc(int16_t x0, int16_t y0, int16_t r, double start_angle, double stop_angle, boolean clockwise,
+        uint16_t color) {
+    double xa, ya, xe, ye;
+    // check if the angles are exchanged
+    if (start_angle > stop_angle) {
+        double tmp = start_angle;
+        start_angle = stop_angle;
+        stop_angle = tmp;
+        clockwise = !clockwise;
+    }
+    // cacluate the coordinates of the start end and angle
+    sincos(start_angle, &xa, &ya);
+    sincos(stop_angle, &xe, &ye);
+    // start end and point are connected by a line
+    double delta = abs(xa - xe) < 1e-6 ? 0.0 : (ye-ya)/(xe-xa);
+
+    startWrite();
+    fillArcHelper(x0, y0, r, start_angle, stop_angle, ((double)r)*xa+x0, ((double)r)*ya+y0, delta, clockwise, color);
+    endWrite();
+}
+
+/**************************************************************************/
+/*!
+   @brief    Helper method for drawing a filled arc
+    @param    x0          Center-point x coordinate
+    @param    y0          Center-point y coordinate
+    @param    r           Radius of arc
+    @param    start_angle Angle in radians where to start drawing (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing (less or equal PI)
+    @param    xa          Arc start point x coordinate
+    @param    ya          Arc start point y coordinate
+    @param    delta       Delta between arc start and end point    
+    @param    clockwise   If true draw in clockwise direction
+    @param    color       16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillArcHelper(int16_t x0, int16_t y0, int16_t r, double start_angle, double stop_angle, int16_t xa, int16_t ya, double delta, boolean clockwise, uint16_t color) {
+
+    int16_t f     = 1 - r;
+    int16_t ddF_x = 1;
+    int16_t ddF_y = -2 * r;
+    int16_t x     = 0;
+    int16_t y     = r;
+
+    // Draw middle line of the circle (if within the arc)
+    drawFastVLineHelper(x0, y0, 0, r, start_angle, stop_angle, xa, ya, delta, clockwise, color);
+
+    while (x<y) {
+      if (f >= 0) {
+        y--;
+        ddF_y += 2;
+        f     += ddF_y;
+      }
+      x++;
+      ddF_x += 2;
+      f     += ddF_x;
+
+      // Draw each of the 4 segments of the circle (if within the arc)
+      drawFastVLineHelper(x0+x, y0, x, y, start_angle, stop_angle, xa, ya, delta, clockwise, color);
+      drawFastVLineHelper(x0+y, y0, y, x, start_angle, stop_angle, xa, ya, delta, clockwise, color);
+      drawFastVLineHelper(x0-x, y0, -x, y, start_angle, stop_angle, xa, ya, delta, clockwise, color);
+      drawFastVLineHelper(x0-y, y0, -y, x, start_angle, stop_angle, xa, ya, delta, clockwise, color);
+    }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Helper method to determine where to start and stop drawing the vertical line and draw it
+    @param    x0          Center-point x coordinate
+    @param    y0          Center-point y coordinate
+    @param    x           Increment x coordinate
+    @param    y           Increment y coordinate
+    @param    start_angle Angle in radians where to start drawing (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing (less or equal PI)
+    @param    xa          Arc start point x coordinate
+    @param    ya          Arc start point y coordinate
+    @param    delta       Delta between arc start and end point    
+    @param    clockwise   If true draw in clockwise direction
+    @param    color       16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawFastVLineHelper(int16_t x1, int16_t y0, int16_t x, int16_t y, double start_angle, double stop_angle, int16_t xa, int16_t ya, double delta, boolean clockwise, uint16_t color) {
+  double angle1 = atan2(x, -y);
+  //instead of double angle2 = atan2(x, y); we can use atan2(x, -y) = -atan2(x, y) + sign(x)*PI (make sure y is not 0)
+  double angle2 = (x < 0) ?  - M_PI - angle1 : M_PI - angle1;
+  double dy = (x1-xa)*delta;
+  
+  if ((!clockwise && start_angle <= angle1 && angle1 <= stop_angle) || 
+      (clockwise && -M_PI <= angle1 && angle1 <= start_angle) || (clockwise && stop_angle <= angle1 && angle1 <= M_PI)) {
+    if ((!clockwise && start_angle <= angle2 && angle2 <= stop_angle) || 
+        (clockwise && -M_PI <= angle2 && angle2 <= start_angle) || (clockwise && stop_angle <= angle2 && angle2 <= M_PI)) {
+      // Draw a vertical line between 2 points on the arc  
+      writeFastVLine(x1, y0-y, 2*y+1, color);
+    } else {
+      // Draw a vertical line between point on the circle and start-end line 
+      writeFastVLine(x1, y0-y, ya+dy-y0+y, color);
+    }
+  } else if ((!clockwise && start_angle <= angle2 && angle2 <= stop_angle) || 
+              (clockwise && -M_PI <= angle2 && angle2 <= start_angle) || (clockwise && stop_angle <= angle2 && angle2 <= M_PI)) {
+    // Draw a vertical line between point on the circle and start-end line
+    writeFastVLine(x1, ya+dy, y0+y-ya-dy+1, color);
+  }
+}
+
 void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
                             uint16_t color) {
   startWrite();
