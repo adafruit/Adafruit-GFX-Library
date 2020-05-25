@@ -512,17 +512,6 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 
 /**************************************************************************/
 /*!
-   @brief   Draw a rectangle with no fill color
-    @param    x   Top left corner x coordinate
-    @param    y   Top left corner y coordinate
-    @param    w   Width in pixels
-    @param    h   Height in pixels
-    @param    color 16-bit 5-6-5 Color to draw with
-*/
-/**************************************************************************/
-
-/**************************************************************************/
-/*!
    @brief    Draw an arc outline
     @param    x0          Center-point x coordinate
     @param    y0          Center-point y coordinate
@@ -566,7 +555,6 @@ void Adafruit_GFX::drawArc(int16_t x0, int16_t y0, int16_t r,
                           (greater or equal -PI)
     @param    stop_angle  Angle in radians where to stop drawing
                           (less or equal PI)
-    @param    clockwise   If true draw in clockwise direction
     @param    color       16-bit 5-6-5 Color to draw with
 */
 /**************************************************************************/
@@ -734,7 +722,7 @@ void Adafruit_GFX::fillArcHelper(int16_t x0, int16_t y0, int16_t r,
 /*!
    @brief    Helper method to determine where to start and stop drawing the
    vertical line and draw it
-    @param    x0          Center-point x coordinate
+    @param    x1          Calculated x coordinate
     @param    y0          Center-point y coordinate
     @param    x           Increment x coordinate
     @param    y           Increment y coordinate
@@ -780,6 +768,16 @@ void Adafruit_GFX::drawFastVLineHelper(int16_t x1, int16_t y0, int16_t x,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief   Draw a rectangle with no fill color
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    w   Width in pixels
+    @param    h   Height in pixels
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
 void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
                             uint16_t color) {
   startWrite();
