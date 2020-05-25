@@ -527,10 +527,10 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     @param    x0          Center-point x coordinate
     @param    y0          Center-point y coordinate
     @param    r           Radius of arc
-    @param    start_angle Angle in radians where to start drawing (greater or
-   equal -PI)
-    @param    stop_angle  Angle in radians where to stop drawing (less or equal
-   PI)
+    @param    start_angle Angle in radians where to start drawing
+                          (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing
+                          (less or equal PI)
     @param    clockwise   If true draw in clockwise direction
     @param    color       16-bit 5-6-5 Color to draw with
 */
@@ -562,10 +562,10 @@ void Adafruit_GFX::drawArc(int16_t x0, int16_t y0, int16_t r,
     @param    x0          Center-point x coordinate
     @param    y0          Center-point y coordinate
     @param    r           Radius of arc
-    @param    start_angle Angle in radians where to start drawing (greater or
-   equal -PI)
-    @param    stop_angle  Angle in radians where to stop drawing (less or equal
-   PI)
+    @param    start_angle Angle in radians where to start drawing
+                          (greater or equal -PI)
+    @param    stop_angle  Angle in radians where to stop drawing
+                          (less or equal PI)
     @param    clockwise   If true draw in clockwise direction
     @param    color       16-bit 5-6-5 Color to draw with
 */
@@ -637,9 +637,9 @@ void Adafruit_GFX::drawArcHelper(int16_t x0, int16_t y0, int16_t r,
     @param    x0          Center-point x coordinate
     @param    y0          Center-point y coordinate
     @param    r           Radius of arc
-    @param    start_angle Angle in radians where to start drawing 
+    @param    start_angle Angle in radians where to start drawing
                           (greater or equal -PI)
-    @param    stop_angle  Angle in radians where to stop drawing 
+    @param    stop_angle  Angle in radians where to stop drawing
                           (less or equal PI)
     @param    clockwise   If true draw in clockwise direction
     @param    color       16-bit 5-6-5 Color to draw with
@@ -682,9 +682,9 @@ void Adafruit_GFX::fillArc(int16_t x0, int16_t y0, int16_t r,
     @param    x0          Center-point x coordinate
     @param    y0          Center-point y coordinate
     @param    r           Radius of arc
-    @param    start_angle Angle in radians where to start drawing 
+    @param    start_angle Angle in radians where to start drawing
                          (greater or equal -PI)
-    @param    stop_angle  Angle in radians where to stop drawing 
+    @param    stop_angle  Angle in radians where to stop drawing
                          (less or equal PI)
     @param    xa          Arc start point x coordinate
     @param    ya          Arc start point y coordinate
@@ -738,9 +738,9 @@ void Adafruit_GFX::fillArcHelper(int16_t x0, int16_t y0, int16_t r,
     @param    y0          Center-point y coordinate
     @param    x           Increment x coordinate
     @param    y           Increment y coordinate
-    @param    start_angle Angle in radians where to start drawing 
+    @param    start_angle Angle in radians where to start drawing
                           (greater or equal -PI)
-    @param    stop_angle  Angle in radians where to stop drawing 
+    @param    stop_angle  Angle in radians where to stop drawing
                           (less or equal PI)
     @param    xa          Arc start point x coordinate
     @param    ya          Arc start point y coordinate
@@ -755,7 +755,7 @@ void Adafruit_GFX::drawFastVLineHelper(int16_t x1, int16_t y0, int16_t x,
                                        int16_t ya, double delta,
                                        boolean clockwise, uint16_t color) {
   double angle1 = atan2(x, -y);
-  // instead of double angle2 = atan2(x, y); we can use 
+  // instead of double angle2 = atan2(x, y); we can use
   // atan2(x, -y) = -atan2(x, y) + sign(x)*PI (make sure y is not 0)
   double angle2 = (x < 0) ? -M_PI - angle1 : M_PI - angle1;
   double dy = (x1 - xa) * delta;
