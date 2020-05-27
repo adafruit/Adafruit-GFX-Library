@@ -62,6 +62,10 @@ public:
                         uint16_t color);
   virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
                         uint16_t color);
+  virtual void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+                        uint16_t bg, uint8_t size);
+  virtual void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+                        uint16_t bg, uint8_t size_x, uint8_t size_y);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
@@ -104,10 +108,6 @@ public:
                      const uint8_t mask[], int16_t w, int16_t h);
   void drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, uint8_t *mask,
                      int16_t w, int16_t h);
-  void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-                uint16_t bg, uint8_t size);
-  void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-                uint16_t bg, uint8_t size_x, uint8_t size_y);
   void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1,
                      int16_t *y1, uint16_t *w, uint16_t *h);
   void getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
