@@ -3,6 +3,25 @@
 import sys
 import re
 
+# typedef struct {
+#   uint16_t bitmapOffset; ///< Pointer into GFXfont->bitmap
+#   uint8_t width;         ///< Bitmap dimensions in pixels
+#   uint8_t height;        ///< Bitmap dimensions in pixels
+#   uint8_t xAdvance;      ///< Distance to advance cursor (x axis)
+#   int8_t xOffset;        ///< X dist from cursor pos to UL corner
+#   int8_t yOffset;        ///< Y dist from cursor pos to UL corner
+# } GFXglyph;
+#
+# typedef struct {
+#   uint8_t *bitmap;  ///< Glyph bitmaps, concatenated
+#   GFXglyph *glyph;  ///< Glyph array
+#   uint16_t first;   ///< ASCII extents (first char)
+#   uint16_t last;    ///< ASCII extents (last char)
+#   uint8_t yAdvance; ///< Newline distance (y axis)
+# } GFXfont;
+
+
+
 class ParseFont:
     def __init__(self):
         self.data = {}
@@ -40,9 +59,14 @@ class ParseFont:
 
             ls = [int(ix,0) for ix in re.split(',\s*', m[2])[2:5]]
             (self.first, self.last, self.yAdvance) = ls
-        print("gfx:{{name:{}, first:{}, last:{}, yAdvance:{},glyphs:{},bmp:{}}}".format(
-            self.name, self.first, self.last, self.yAdvance,
-            self.glyphs, self.bmp))
+
+        print("gfx:{{\nname:{},\nfirst:{},\nlast:{},\nyAdvance:{},\nglyphs:{},\nbmp:{}}}".format(
+            self.name,
+            self.first,
+            self.last,
+            self.yAdvance,
+            self.glyphs,
+            self.bmp))
 
 def main():
     data = ""
