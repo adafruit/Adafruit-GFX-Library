@@ -49,9 +49,7 @@ class GFX_FontParser:
         return self._parseData(stripped)
 
     def _stripComments(self, data):
-        #print("Orig: `{}`".format(data))
         data = re.sub('/\*.*?\*/', '', data, flags=re.S) # C comments
-        #print("cComments stripped: `{}`".format(data))
         data = re.sub('//.*', '', data) # C++ comments
         data = re.sub('#.*', '', data) # CPP directives
         data = re.sub('\s+', ' ', data) # merge whitespace runs
@@ -69,7 +67,7 @@ class GFX_FontParser:
             raise ValueError("cannot parse statement: `{}`".format(s))
 
     def _parseBitmap(self, stmt):
-        m = re.match('const uint8_t (\w*)\[\] PROGMEM = {\s*(.*)\s*}', stmt, re.S)
+        m = re.match('const uint8_t (\w*)\[\w*\] PROGMEM = {\s*(.*)\s*}', stmt, re.S)
         if not m:
             return False
         try:
@@ -81,7 +79,7 @@ class GFX_FontParser:
         return True
 
     def _parseGlyphs(self, stmt):
-        m = re.match('const GFXglyph (\w*)\[\] PROGMEM = {\s*(.*)\s*}', stmt, re.S)
+        m = re.match('const GFXglyph (\w*)\[\w*\] PROGMEM = {\s*(.*)\s*}', stmt, re.S)
         if not m:
             return False
         arr = [re.split(' ?, ?',im[1])
@@ -103,28 +101,52 @@ class GFX_FontParser:
         self.font = GFX_Font(name, bitmap, glyphs, first, last, ya)
         return True
 
+class GFX_FontFormatter:
+    """ Emit a GFXfont in C++ header format """
+
+    def __init__(self):
+        pass
+
+    def format(self, font):
+        def fmtGlyphs(glyphs):
+            s = '{'
+            for i in range(len(glyphs)):
+                ch = font.first + i
+                chChar = '' if ch < 0x20 or ch > 0x7e else " '{}'".format(chr(ch))
+                comment = "0x{:02X}{}".format(ch, chChar)
+                sep = '};' if i == len(glyphs)-1 else ','
+                g = glyphs[i]
+                s += '{{{}, {}, {}, {}, {}, {}}}{} // {}\n'.format(
+                   g.bo, g.w, g.h, g.xa, g.xo, g.yo, sep, comment)
+            return s
+
+        approximateBytes = len(font.bitmap) + len(font.glyphs) * 7 + 7
+
+        out = \
+"""const uint8_t {0}Bitmaps[] PROGMEM = {{{1}}};
+
+const GFXglyph {0}Glyphs[] PROGMEM = {2}
+
+const GFXfont {0} PROGMEM = {{
+    (uint8_t *){0}Bitmaps,
+    (GFXglyph *){0}Glyphs,
+    0x{3:02X}, 0x{4:02X}, {5}
+}};
+
+// Approx. {6} bytes
+""".format(font.name,
+           ', '.join(['0x{:02X}'.format(x)
+               for x in font.bitmap]),
+           fmtGlyphs(font.glyphs),
+           font.first,
+           font.last,
+           font.ya,
+           approximateBytes)
+        return out
+
 def main():
     data = ''.join(sys.stdin)
-    if False:
-        for line in fh:
-            line = re.sub('/\*.*\*/', '', line)
-            line = re.sub('//.*', '', line)
-            line = re.sub('^\s*', '', line)
-            line = re.sub('\s{1,}', ' ', line)
-            #line = re.sub('\n', '', line)
-            if not len(line):
-                #print("[skipping blank line]");
-                continue
-            if re.match('^#.*$', line):
-                #print("[skipping: {}]".format(line))
-                continue
-            data = data + line
     font = GFX_FontParser().parse(data)
-
-    #if True:  # just to see more on screen
-    #    font.glyphs = []
-    #    font.bitmap = []
-
     def encodingExtension(obj):
         if isinstance(obj, GFX_Glyph):
             return {"$GFX_Glyph": obj.__dict__}
@@ -132,7 +154,10 @@ def main():
             return {"$GFX_Font": obj.__dict__}
         raise TypeError(repr(obj) + " is not JSON serializable")
 
-    print(json.dumps(font, default=encodingExtension))
+    if False:
+        print(json.dumps(font, default=encodingExtension))
+
+    print("{}".format(GFX_FontFormatter().format(font)))
 
 if __name__ == "__main__":
     main()
