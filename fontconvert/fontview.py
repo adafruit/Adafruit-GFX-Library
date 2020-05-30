@@ -113,8 +113,17 @@ class GFX_FontFormatter:
             s = '{'
             for i in range(len(glyphs)):
                 ch = font.first + i
-                chChar = '' if ch < 0x20 or ch > 0x7e else " '{}'".format(chr(ch))
-                comment = "0x{:02X}{}".format(ch, chChar)
+                if True:
+                    chChr = chr(ch)
+                    chName = ''
+                    try:
+                        uName = unicodedata.name(chChr)
+                        # If it has a uName we can print the char and its name
+                        chName += " {}:{}".format(chChr, uName)
+                    except ValueError:
+                        pass
+                    chComment = "{}".format(chName)
+                comment = "0x{:02X}{}".format(ch, chComment)
                 sep = '};' if i == len(glyphs)-1 else ','
                 g = glyphs[i]
                 s += '{{{}, {}, {}, {}, {}, {}}}{} // {}\n'.format(
