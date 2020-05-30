@@ -3,6 +3,7 @@
 import sys
 import re
 import json
+import unicodedata
 
 # typedef struct {
 #   uint16_t bitmapOffset; ///< Pointer into GFXfont->bitmap
