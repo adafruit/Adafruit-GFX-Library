@@ -105,35 +105,45 @@ class GFX_FontParser:
 class GFX_FontFormatter:
     """ Emit a GFXfont in C++ header format """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        self._enhanced = kwargs['enhanced'] if 'enhanced' in kwargs else False
+        self._break_bmp = kwargs['break_bmp'] if 'break_bmp' in kwargs else False
         pass
 
-    def format(self, font):
-        def fmtGlyphs(glyphs):
-            s = '{'
-            for i in range(len(glyphs)):
-                ch = font.first + i
-                if True:
-                    chChr = chr(ch)
-                    chName = ''
-                    try:
-                        uName = unicodedata.name(chChr)
-                        # If it has a uName we can print the char and its name
-                        chName += " {}:{}".format(chChr, uName)
-                    except ValueError:
-                        pass
-                    chComment = "{}".format(chName)
-                comment = "0x{:02X}{}".format(ch, chComment)
-                sep = '};' if i == len(glyphs)-1 else ','
-                g = glyphs[i]
-                s += '{{{}, {}, {}, {}, {}, {}}}{} // {}\n'.format(
-                   g.bo, g.w, g.h, g.xa, g.xo, g.yo, sep, comment)
-            return s
+    def _fmtBitmap(self, font):
+        return "{{{}}};".format(
+                ', '.join(['0x{:02X}'.format(x) for x in font.bitmap]))
 
+    def _fmtGlyphs(self, font):
+        s = '{'
+        for i in range(len(font.glyphs)):
+            ch = font.first + i
+            chChr = chr(ch)
+
+            if self._enhanced:
+                chName = ''
+                try:
+                    uName = unicodedata.name(chChr)
+                    # If it has a uName we can print the char and its name
+                    chName += " {}:{}".format(chChr, uName)
+                except ValueError:
+                    pass
+                chComment = "{}".format(chName)
+            else:
+                prn = ch >= 0x20 and ch <= 0x7e
+                chComment = " '{}'".format(chChr) if prn else ""
+            comment = "0x{:02X}{}".format(ch, chComment)
+            sep = '};' if i == len(font.glyphs)-1 else ','
+            g = font.glyphs[i]
+            s += '{{{}, {}, {}, {}, {}, {}}}{} // {}\n'.format(
+               g.bo, g.w, g.h, g.xa, g.xo, g.yo, sep, comment)
+        return s
+
+    def format(self, font):
         approximateBytes = len(font.bitmap) + len(font.glyphs) * 7 + 7
 
         out = \
-"""const uint8_t {0}Bitmaps[] PROGMEM = {{{1}}};
+"""const uint8_t {0}Bitmaps[] PROGMEM = {1}
 
 const GFXglyph {0}Glyphs[] PROGMEM = {2}
 
@@ -145,9 +155,8 @@ const GFXfont {0} PROGMEM = {{
 
 // Approx. {6} bytes
 """.format(font.name,
-           ', '.join(['0x{:02X}'.format(x)
-               for x in font.bitmap]),
-           fmtGlyphs(font.glyphs),
+           self._fmtBitmap(font),
+           self._fmtGlyphs(font),
            font.first,
            font.last,
            font.ya,
@@ -167,7 +176,8 @@ def main():
     if False:
         print(json.dumps(font, default=encodingExtension))
 
-    print("{}".format(GFX_FontFormatter().format(font)))
+    formatter = GFX_FontFormatter()
+    print("{}".format(formatter.format(font)))
 
 if __name__ == "__main__":
     main()
