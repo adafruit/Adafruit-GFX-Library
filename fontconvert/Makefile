@@ -28,37 +28,16 @@ tag.freefont-ttf-20120503.zip.converted: fontconvert makefonts.sh tag.freefont-t
 freefont-ttf-20120503.zip: get_fonts.sh
 	./get_fonts.sh $@
 
-#$(FREEFONTS_ZIP):
-#	if [[ -f $(notdir $(FREEFONTS_ZIP)) ]] ; then \
-#	  cp $(notdir $(FREEFONTS_ZIP)) $@ ; \
-#	else \
-#	  curl --output $@ "$(FREEFONTS_URL_BASE)/$(notdir $@)" ; \
-#	fi
+#fonts:=FreeMono FreeSans FreeSerif
+#styles:="" "Bold" "Italic" "BoldItalic" "Oblique" "BoldOblique"
+#sizes:=9 12 18 24
 #
-#$(BUILD_DIR)/shasum.passed: $(FREEFONTS_ZIP) freefonts.shasum
-#	cd $(BUILD_DIR) ; shasum -a 512224 -c $(abspath freefonts.shasum)
-#	touch $@
+#faces=$(foreach f,$(fonts),$(foreach sty,$(styles),$(f)$(sty)))
+#sizedFaces=$(foreach f,$(faces),$(foreach sz,$(sizes),Fonts/$(f)$(sz)pt7b.h))
 
-#$(BUILD_DIR)/freefont-$(FREEFONTS_VERSION): $(BUILD_DIR)/shasum.passed
-#	unzip -o $(FREEFONTS_ZIP) -d $(BUILD_DIR) 'freefont-$(FREEFONTS_VERSION)/*.ttf'
+$(sizedFaces): convert
 
-fonts:=FreeMono FreeSans FreeSerif
-styles:="" "Bold" "Italic" "BoldItalic" "Oblique" "BoldOblique"
-sizes:=9 12 18 24
-
-faces:=$(foreach f,$(fonts),$(foreach sty,$(styles),$(shell printf "%s%s" $(f) $(sty))))
-outs:=$(foreach face,$(faces),$(foreach sz,$(sizes),$(shell printf "%s/%s%spt7b.h" $(FONT_HDR_DIR) $(face) $(sz))))
-
-breakFont=$(shell echo $(notdir $(1)) | sed -e 's/^\([A-Za-z]*\)\([0-9]*\)pt7b\.h/\1:\2/' | cut -d: -f $(2))
-fontSrc=$(BUILD_DIR)/freefont-$(FREEFONTS_VERSION)/$(call breakFont,$1,1).ttf
-fontSize=$(call breakFont,$1,2)
-
-#@echo "\$$@:[$@]"
-#@echo "[fontSrc:$(call fontSrc,$@)]"
-#@echo "[fontSize:$(call fontSize,$@)]"
-$(outs):
-	if [[ -f "$(call fontSrc,$@)" ]] ; then $(BUILD_DIR)/fontconvert $(call fontSrc,$@) $(call fontSize,$@) > $@ ; fi
-
-# @echo $(BUILD_DIR)/fontconvert $infile $size > $outfile
-
-dbg: $(outs)
+dbg:
+	@echo $(faces)
+	@echo "---"
+	@echo $(sizedFaces)
