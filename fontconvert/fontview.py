@@ -21,82 +21,118 @@ import json
 #   uint8_t yAdvance; ///< Newline distance (y axis)
 # } GFXfont;
 
-class ParseFont:
+class GFX_Glyph:
+    def __init__(self, bo, w, h, xa, xo, yo):
+        self.bo = bo
+        self.w = w
+        self.h = h
+        self.xa = xa
+        self.xo = xo
+        self.yo = yo
+
+class GFX_Font:
+    def __init__(self, name, bitmap, glyphs, first, last, ya):
+        self.name = name
+        self.bitmap = bitmap
+        self.glyphs = glyphs
+        self.first = first
+        self.last = last
+        self.ya = ya
+
+class GFX_FontParser:
     def __init__(self):
+        self._cDecls = {}
         pass
 
     def parse(self, data):
-        stmts = re.split('\s*;\s*', data)
-        #for s in stmts:
-        #    print("s={}".format(s))
+        stripped = self._stripComments(data)
+        return self._parseData(stripped)
 
-        if True:
-            #print("stmts[0]={}".format(stmts[0]))
-            m = re.match('const uint8_t (.*)\[\] PROGMEM = {\s*(.*)\s*}', stmts[0])
-            if not m:
-                raise ValueError("invalid Bitmaps decl")
-            self.bmpName = m[1]
-            self.bmp = [int(x,0) for x in re.split("\s*,\s*", m[2])]
+    def _stripComments(self, data):
+        #print("Orig: `{}`".format(data))
+        data = re.sub('/\*.*?\*/', '', data, flags=re.S) # C comments
+        #print("cComments stripped: `{}`".format(data))
+        data = re.sub('//.*', '', data) # C++ comments
+        data = re.sub('#.*', '', data) # CPP directives
+        data = re.sub('\s+', ' ', data) # merge whitespace runs
+        return data
 
-        if True:
-            #print("stmts[1]={}".format(stmts[1]))
-            m = re.match('const GFXglyph (.*)\[\] PROGMEM = {\s*(.*)\s*}', stmts[1])
-            if not m:
-                raise ValueError("invalid glyphs decl")
-            self.glyphsName = m[1]  # should be same as self.name
-            arr = [re.split('\s*,\s*',im[1]) for im in re.finditer('{\s*([^}]*)}', m[2])]
-            gg = [[int(xe,0) for xe in g] for g in arr]
-            self.glyphs = gg
+    def _parseData(self, data):
+        for s in re.split(' ?; ?', data):
+            s = re.sub('^\s*','',s)
+            if self._parseBitmap(s):
+                continue
+            if self._parseGlyphs(s):
+                continue
+            if self._parseFont(s):
+                return self.font
+            raise ValueError("cannot parse statement: `{}`".format(s))
 
-        if True:
-            #print("stmts[2]={}".format(stmts[2]))
-            m = re.match('const GFXfont (\w*) PROGMEM = {\s*(.*?)\s*}', stmts[2])
-            if not m:
-                raise ValueError("invalid GFXfont decl")
+    def _parseBitmap(self, stmt):
+        m = re.match('const uint8_t (\w*)\[\] PROGMEM = {\s*(.*)\s*}', stmt, re.S)
+        if not m:
+            return False
+        try:
+            self._cDecls[m[1]] = [int(x,0)
+                    for x in re.split(" ?, ?", m[2]) if len(x)]
+        except Exception as e:
+            print("failed to parse stmt=`{}`".format(stmt), file=sys.stderr)
+            raise e
+        return True
 
-            self.name = m[1]
+    def _parseGlyphs(self, stmt):
+        m = re.match('const GFXglyph (\w*)\[\] PROGMEM = {\s*(.*)\s*}', stmt, re.S)
+        if not m:
+            return False
+        arr = [re.split(' ?, ?',im[1])
+                for im in re.finditer('{\s*([^}]*)}', m[2])]
+        self._cDecls[m[1]] = [GFX_Glyph(*[int(xe,0) for xe in g])
+                for g in arr if len(g)]
+        return True
 
-            ls = [int(ix,0) for ix in re.split(',\s*', m[2])[2:5]]
-            (self.first, self.last, self.yAdvance) = ls
-
-        return {
-                "name": self.name,
-                "first": self.first,
-                "last": self.last,
-                "yAdvance": self.yAdvance,
-                "glpyhs": self.glyphs,
-                "bitmap": self.bmp
-                }
+    def _parseFont(self, stmt):
+        m = re.match('const GFXfont (\w*) PROGMEM = {\s*(.*?)\s*}', stmt, re.S)
+        if not m:
+            return False
+        name = m[1]
+        elements = re.split(' ?, ?', m[2])
+        elements = [re.sub('^\(.*?\)', '', e) for e in elements] # strip casting
+        bitmap = self._cDecls[elements[0]]
+        glyphs = self._cDecls[elements[1]]
+        (first, last, ya) = [int(ix,0) for ix in elements[2:5]]
+        self.font = GFX_Font(name, bitmap, glyphs, first, last, ya)
+        return True
 
 def main():
-    data = ""
+    data = ''.join(sys.stdin)
+    if False:
+        for line in fh:
+            line = re.sub('/\*.*\*/', '', line)
+            line = re.sub('//.*', '', line)
+            line = re.sub('^\s*', '', line)
+            line = re.sub('\s{1,}', ' ', line)
+            #line = re.sub('\n', '', line)
+            if not len(line):
+                #print("[skipping blank line]");
+                continue
+            if re.match('^#.*$', line):
+                #print("[skipping: {}]".format(line))
+                continue
+            data = data + line
+    font = GFX_FontParser().parse(data)
 
-    #print("args[1] = `{}`".format(sys.argv[1]))
-    fh = sys.stdin
-    i = 0
-    for line in fh:
-        line = re.sub('/\*.*\*/', '', line)
-        line = re.sub('//.*', '', line)
-        line = re.sub('^\s*', '', line)
-        line = re.sub('\s{1,}', ' ', line)
-        #line = re.sub('\n', '', line)
-        if not len(line):
-            #print("[skipping blank line]");
-            continue
-        if re.match('^#.*$', line):
-            #print("[skipping: {}]".format(line))
-            continue
-        # print("[{}]{}".format(i, line))
-        data = data + line
-        i = i + 1
+    #if True:  # just to see more on screen
+    #    font.glyphs = []
+    #    font.bitmap = []
 
-    pf = ParseFont()
-    font = pf.parse(data)
-    print(json.dumps(font))
+    def encodingExtension(obj):
+        if isinstance(obj, GFX_Glyph):
+            return {"$GFX_Glyph": obj.__dict__}
+        if isinstance(obj, GFX_Font):
+            return {"$GFX_Font": obj.__dict__}
+        raise TypeError(repr(obj) + " is not JSON serializable")
 
-    #print("name: {}".format(pf.name))
-    #print("bmp[{}]: {}".format(len(pf.bmp), pf.bmp))
-    #print("glyphs[{}]: {}".format(len(pf.glyphs), pf.glyphs))
+    print(json.dumps(font, default=encodingExtension))
 
 if __name__ == "__main__":
     main()
