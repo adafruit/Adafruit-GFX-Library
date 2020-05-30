@@ -1,26 +1,26 @@
 
 CFLAGS:=-Wall $(shell pkg-config --cflags freetype2)
 LDFLAGS:=$(shell pkg-config --libs freetype2)
-BUILD_DIR:=build
 
-SRCS:=fontconvert.c
-
-FREEFONTS_VERSION:=20120503
-FREEFONTS_ZIP:=$(BUILD_DIR)/freefont-ttf-$(FREEFONTS_VERSION).zip
-FREEFONTS_URL_BASE:=http://ftp.gnu.org/gnu/freefont
-
-FONT_HDR_DIR:=$(BUILD_DIR)/Fonts
-
-all: $(BUILD_DIR) $(BUILD_DIR)/fontconvert $(BUILD_DIR)/freefont-$(FREEFONTS_VERSION)
+all: fontconvert
 
 clean: 
-	rm -rf $(BUILD_DIR)
+	rm -rf fontconvert
 
-$(BUILD_DIR):
-	mkdir $(BUILD_DIR)
+download: freefont-ttf-20120503.zip.verified
+expand: freefont-ttf-20120503.zip.expanded
 
-$(BUILD_DIR)/fontconvert: fontconvert.c
-	$(CC) $(SRCS) $(CFLAGS) $(LDFLAGS) -o $@
+freefont-ttf-20120503.zip.verified: get_fonts.sh freefont-ttf-20120503.zip freefonts.shasum
+	./get_fonts.sh freefont-ttf-20120503.zip
+	shasum -a 512224 -c freefonts.shasum
+	touch $@
+
+freefont-ttf-20120503.zip.expanded: freefont-ttf-20120503.zip.verified
+	unzip -o freefont-ttf-20120503.zip
+	touch $@
+
+freefont-ttf-20120503.zip: get_fonts.sh
+	./get_fonts.sh $@
 
 $(FREEFONTS_ZIP):
 	if [[ -f $(notdir $(FREEFONTS_ZIP)) ]] ; then \
