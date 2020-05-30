@@ -12,13 +12,14 @@
 # (huge zipfile, different license) but they're easily acquired:
 # http://savannah.gnu.org/projects/freefont/
 
+
 convert=${convert:-./fontconvert}
 inpath=${inpath:-~/Desktop/freefont}
 outpath=${outpath:-../Fonts}
 
 fonts=(FreeMono FreeSans FreeSerif)
 styles=("" Bold Italic BoldItalic Oblique BoldOblique)
-#sizes=(9 12 18 24)
+sizes=(9 12 18 24)
 
 for f in "${fonts[@]}"; do
     for st in "${styles[@]}"; do
@@ -27,7 +28,7 @@ for f in "${fonts[@]}"; do
           echo "no input file: \"$infile\"" >&2
           continue
         fi
-        for si in 9 12 18 24 ; do
+        for si in "${sizes[@]}"; do
           outfile="${outpath}/${f}${st}${si}pt7b.h"
           ( set -x ; "$convert" "$infile" "$si" > "$outfile" )
         done
