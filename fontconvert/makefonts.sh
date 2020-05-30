@@ -25,7 +25,7 @@ for f in "${fonts[@]}"; do
     for st in "${styles[@]}"; do
         infile="${inpath}/${f}${st}.ttf"
         if [[ ! -f $infile ]] ; then
-          echo "no input file: \"$infile\"" >&2
+          #echo "no input file: \"$infile\"" >&2
           continue
         fi
         for si in "${sizes[@]}"; do

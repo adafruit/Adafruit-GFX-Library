@@ -2,39 +2,45 @@
 CFLAGS:=-Wall $(shell pkg-config --cflags freetype2)
 LDFLAGS:=$(shell pkg-config --libs freetype2)
 
-all: fontconvert
+all: convert
 
 clean: 
 	rm -rf fontconvert
 
-download: freefont-ttf-20120503.zip.verified
-expand: freefont-ttf-20120503.zip.expanded
+download: tag.freefont-ttf-20120503.zip.verified
+expand: tag.freefont-ttf-20120503.zip.expanded
+convert: tag.freefont-ttf-20120503.zip.converted
 
-freefont-ttf-20120503.zip.verified: get_fonts.sh freefont-ttf-20120503.zip freefonts.shasum
+tag.freefont-ttf-20120503.zip.verified: get_fonts.sh freefont-ttf-20120503.zip freefonts.shasum
 	./get_fonts.sh freefont-ttf-20120503.zip
 	shasum -a 512224 -c freefonts.shasum
 	touch $@
 
-freefont-ttf-20120503.zip.expanded: freefont-ttf-20120503.zip.verified
+tag.freefont-ttf-20120503.zip.expanded: tag.freefont-ttf-20120503.zip.verified
 	unzip -o freefont-ttf-20120503.zip
+	touch $@
+
+tag.freefont-ttf-20120503.zip.converted: fontconvert makefonts.sh tag.freefont-ttf-20120503.zip.expanded
+	mkdir -p Fonts
+	convert=./fontconvert inpath=freefont-20120503 outpath=Fonts ./makefonts.sh
 	touch $@
 
 freefont-ttf-20120503.zip: get_fonts.sh
 	./get_fonts.sh $@
 
-$(FREEFONTS_ZIP):
-	if [[ -f $(notdir $(FREEFONTS_ZIP)) ]] ; then \
-	  cp $(notdir $(FREEFONTS_ZIP)) $@ ; \
-	else \
-	  curl --output $@ "$(FREEFONTS_URL_BASE)/$(notdir $@)" ; \
-	fi
+#$(FREEFONTS_ZIP):
+#	if [[ -f $(notdir $(FREEFONTS_ZIP)) ]] ; then \
+#	  cp $(notdir $(FREEFONTS_ZIP)) $@ ; \
+#	else \
+#	  curl --output $@ "$(FREEFONTS_URL_BASE)/$(notdir $@)" ; \
+#	fi
+#
+#$(BUILD_DIR)/shasum.passed: $(FREEFONTS_ZIP) freefonts.shasum
+#	cd $(BUILD_DIR) ; shasum -a 512224 -c $(abspath freefonts.shasum)
+#	touch $@
 
-$(BUILD_DIR)/shasum.passed: $(FREEFONTS_ZIP) freefonts.shasum
-	cd $(BUILD_DIR) ; shasum -a 512224 -c $(abspath freefonts.shasum)
-	touch $@
-
-$(BUILD_DIR)/freefont-$(FREEFONTS_VERSION): $(BUILD_DIR)/shasum.passed
-	unzip -o $(FREEFONTS_ZIP) -d $(BUILD_DIR) 'freefont-$(FREEFONTS_VERSION)/*.ttf'
+#$(BUILD_DIR)/freefont-$(FREEFONTS_VERSION): $(BUILD_DIR)/shasum.passed
+#	unzip -o $(FREEFONTS_ZIP) -d $(BUILD_DIR) 'freefont-$(FREEFONTS_VERSION)/*.ttf'
 
 fonts:=FreeMono FreeSans FreeSerif
 styles:="" "Bold" "Italic" "BoldItalic" "Oblique" "BoldOblique"
