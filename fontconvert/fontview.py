@@ -106,13 +106,45 @@ class GFX_FontFormatter:
     """ Emit a GFXfont in C++ header format """
 
     def __init__(self, **kwargs):
-        self._enhanced = kwargs['enhanced'] if 'enhanced' in kwargs else False
-        self._break_bmp = kwargs['break_bmp'] if 'break_bmp' in kwargs else False
+        self._unicode_names = kwargs['unicode_names'] \
+                if 'unicode_names' in kwargs else False
+        self._break_bmp = kwargs['break_bmp'] \
+                if 'break_bmp' in kwargs else False
+        self._draw = kwargs['draw'] \
+                if 'draw' in kwargs else False
         pass
 
     def _fmtBitmap(self, font):
-        return "{{{}}};".format(
-                ', '.join(['0x{:02X}'.format(x) for x in font.bitmap]))
+        s = "{\n"
+        if self._break_bmp:
+            glyphEnds = {}
+            ch = font.first
+            for g in font.glyphs:
+                glyphEnds[int(g.bo + ((g.h * g.w) + 7) / 8)] = (g, ch)
+                ch += 1
+            # Place a clang-format resistant comment after each glyph in the bmp
+            for i in range(len(font.bitmap)):
+                if (i in glyphEnds):
+                    (g, ch) = glyphEnds[i]
+                    s += " // 0x{:02X} '{}' ({} x {}) \n\n".format(ch, chr(ch),
+                            g.w, g.h)
+                    if self._draw:
+                        pos = 8 * g.bo
+                        for y in range(g.h):
+                            s += '      // '
+                            for x in range(g.w):
+                                bit = font.bitmap[int(pos / 8)]
+                                bit = (bit >> (7 - (pos%8))) & 1
+                                s += '*' if (bit) else ' '
+                                pos += 1
+                            s += '\n'
+                    s += '\n'
+                sep = '' if i == len(font.bitmap) - 1 else ','
+                s += '0x{:02X}{}'.format(font.bitmap[i], sep)
+        else:
+            s += ', '.join(['0x{:02X}'.format(x) for x in font.bitmap])
+        s += "};"
+        return s
 
     def _fmtGlyphs(self, font):
         s = '{'
@@ -120,7 +152,7 @@ class GFX_FontFormatter:
             ch = font.first + i
             chChr = chr(ch)
 
-            if self._enhanced:
+            if self._unicode_names:
                 chName = ''
                 try:
                     uName = unicodedata.name(chChr)
@@ -176,7 +208,12 @@ def main():
     if False:
         print(json.dumps(font, default=encodingExtension))
 
-    formatter = GFX_FontFormatter()
+    fmtArgs = {
+            "unicode_names": True,
+            "break_bmp": True,
+            "draw": True,
+    }
+    formatter = GFX_FontFormatter(**fmtArgs)
     print("{}".format(formatter.format(font)))
 
 if __name__ == "__main__":
