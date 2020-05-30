@@ -2,6 +2,7 @@
 
 import sys
 import re
+import json
 
 # typedef struct {
 #   uint16_t bitmapOffset; ///< Pointer into GFXfont->bitmap
@@ -20,11 +21,9 @@ import re
 #   uint8_t yAdvance; ///< Newline distance (y axis)
 # } GFXfont;
 
-
-
 class ParseFont:
     def __init__(self):
-        self.data = {}
+        pass
 
     def parse(self, data):
         stmts = re.split('\s*;\s*', data)
@@ -60,13 +59,14 @@ class ParseFont:
             ls = [int(ix,0) for ix in re.split(',\s*', m[2])[2:5]]
             (self.first, self.last, self.yAdvance) = ls
 
-        print("gfx:{{\nname:{},\nfirst:{},\nlast:{},\nyAdvance:{},\nglyphs:{},\nbmp:{}}}".format(
-            self.name,
-            self.first,
-            self.last,
-            self.yAdvance,
-            self.glyphs,
-            self.bmp))
+        return {
+                "name": self.name,
+                "first": self.first,
+                "last": self.last,
+                "yAdvance": self.yAdvance,
+                "glpyhs": self.glyphs,
+                "bitmap": self.bmp
+                }
 
 def main():
     data = ""
@@ -91,7 +91,8 @@ def main():
         i = i + 1
 
     pf = ParseFont()
-    pf.parse(data)
+    font = pf.parse(data)
+    print(json.dumps(font))
 
     #print("name: {}".format(pf.name))
     #print("bmp[{}]: {}".format(len(pf.bmp), pf.bmp))
