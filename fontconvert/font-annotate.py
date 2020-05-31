@@ -119,58 +119,59 @@ class GFX_FontFormatter:
             for g in font.glyphs:
                 glyphEnds[int(g.bo + ((g.h * g.w) + 7) / 8)] = (g, ch)
                 ch += 1
+
             # Place a clang-format resistant comment after each glyph in the bmp
+            def annotation(i):
+                (g, ch) = glyphEnds[i]
+                s = " // 0x{:02X} '{}' ({} x {}) @({},{}) +{}\n\n".format(
+                       ch, chr(ch), g.w, g.h, g.xo, g.yo, g.xa)
+                if self._draw:
+                    box_t = min(g.yo, 0)
+                    box_b = max(g.yo + g.h - 1, 0)
+                    box_l = min(g.xo, 0)
+                    box_r = max(g.xo + g.w - 1, g.xa, 0)
+                    grid  = [[' ' for x in range(box_l, box_r+1)]
+                            for y in range(box_t, box_b+1)]
+                    def pt(x,y,c,alt=None):
+                        try:
+                            if grid[y - box_t][x - box_l] == ' ':
+                                grid[y - box_t][x - box_l] = c
+                            elif alt:
+                                grid[y - box_t][x - box_l] = alt
+                            return ''
+                        except IndexError as e:
+                            #return "[bounds ({},{}) not in ([{}:{}],[{}:{}]) ]".format(
+                            #        x,y,box_l,box_r,box_t,box_b)
+                            raise e
+                    s += pt(0, 0, '0','@')
+                    s += pt(g.xa, 0, '>','}')
+                    pos = 8 * g.bo
+                    for y in range(g.h):
+                        #s += '// '
+                        for x in range(g.w):
+                            bit = font.bitmap[int(pos / 8)]
+                            bit = (bit >> (7 - (pos%8))) & 1
+                            #s += '*' if bit else '.'
+                            if bit:
+                                s += pt(g.xo + x, g.yo + y, '*', 'X')
+                            else:
+                                s += pt(g.xo + x, g.yo + y,'.')
+                            pos += 1
+                        #s += '\n'
+                    for row in grid:
+                        s += '// [' + ''.join(row) + ']\n'
+                s += '\n'
+                return s
+
+            i = 0
             for i in range(len(font.bitmap)):
                 if (i in glyphEnds):
-                    (g, ch) = glyphEnds[i]
-                    s += " // 0x{:02X} '{}' ({} x {}) @({},{}) +{}\n\n".format(
-                            ch, chr(ch), g.w, g.h, g.xo, g.yo, g.xa)
-                    if self._draw:
-                        box_t = min(g.yo, 0)
-                        box_b = max(g.yo + g.h - 1, 0)
-
-                        box_l = min(g.xo, 0)
-                        box_r = max(g.xo + g.w - 1, g.xa, 0)
-                        s += "// box:[{} {} {} {}]\n".format(box_l, box_r, box_t, box_b)
-
-                        grid  = [[' ' for x in range(box_l, box_r+1)]
-                                for y in range(box_t, box_b+1)]
-
-                        def pt(x,y,c,alt=None):
-                            try:
-                                if grid[y - box_t][x - box_l] == ' ':
-                                    grid[y - box_t][x - box_l] = c
-                                elif alt:
-                                    grid[y - box_t][x - box_l] = alt
-                                return ''
-                            except IndexError as e:
-                                #return "[bounds ({},{}) not in ([{}:{}],[{}:{}]) ]".format(
-                                #        x,y,box_l,box_r,box_t,box_b)
-                                raise e
-
-                        s += pt(0, 0, '0','@')
-                        s += pt(g.xa, 0, '>','}')
-
-                        pos = 8 * g.bo
-                        for y in range(g.h):
-                            #s += '// '
-                            for x in range(g.w):
-                                bit = font.bitmap[int(pos / 8)]
-                                bit = (bit >> (7 - (pos%8))) & 1
-                                #s += '*' if bit else '.'
-                                if bit:
-                                    s += pt(g.xo + x, g.yo + y, '*', 'X')
-                                else:
-                                    s += pt(g.xo + x, g.yo + y,'.')
-                                pos += 1
-                            #s += '\n'
-
-                        for row in grid:
-                            s += '// [' + ''.join(row) + ']\n'
-
-                    s += '\n'
+                    s += annotation(i)
                 sep = '' if i == len(font.bitmap) - 1 else ','
                 s += '0x{:02X}{}'.format(font.bitmap[i], sep)
+                i += 1
+            if (i in glyphEnds):
+                s += annotation(i)
         else:
             s += ', '.join(['0x{:02X}'.format(x) for x in font.bitmap])
         s += "};"
