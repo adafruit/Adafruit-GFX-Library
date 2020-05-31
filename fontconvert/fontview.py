@@ -106,13 +106,10 @@ class GFX_FontFormatter:
     """ Emit a GFXfont in C++ header format """
 
     def __init__(self, **kwargs):
-        self._unicode_names = kwargs['unicode_names'] \
-                if 'unicode_names' in kwargs else False
-        self._break_bmp = kwargs['break_bmp'] \
-                if 'break_bmp' in kwargs else False
-        self._draw = kwargs['draw'] \
-                if 'draw' in kwargs else False
-        pass
+        getIf = lambda key : kwargs[key] if key in kwargs else False
+        self._unicode_names = getIf('unicode_names')
+        self._break_bmp = getIf('break_bmp')
+        self._draw = getIf('draw')
 
     def _fmtBitmap(self, font):
         s = "{\n"
@@ -126,18 +123,51 @@ class GFX_FontFormatter:
             for i in range(len(font.bitmap)):
                 if (i in glyphEnds):
                     (g, ch) = glyphEnds[i]
-                    s += " // 0x{:02X} '{}' ({} x {}) \n\n".format(ch, chr(ch),
-                            g.w, g.h)
+                    s += " // 0x{:02X} '{}' ({} x {}) @({},{}) +{}\n\n".format(
+                            ch, chr(ch), g.w, g.h, g.xo, g.yo, g.xa)
                     if self._draw:
+                        box_t = min(g.yo, 0)
+                        box_b = max(g.yo + g.h - 1, 0)
+
+                        box_l = min(g.xo, 0)
+                        box_r = max(g.xo + g.w - 1, g.xa, 0)
+                        s += "// box:[{} {} {} {}]\n".format(box_l, box_r, box_t, box_b)
+
+                        grid  = [[' ' for x in range(box_l, box_r+1)]
+                                for y in range(box_t, box_b+1)]
+
+                        def pt(x,y,c,alt=None):
+                            try:
+                                if grid[y - box_t][x - box_l] == ' ':
+                                    grid[y - box_t][x - box_l] = c
+                                elif alt:
+                                    grid[y - box_t][x - box_l] = alt
+                                return ''
+                            except IndexError as e:
+                                #return "[bounds ({},{}) not in ([{}:{}],[{}:{}]) ]".format(
+                                #        x,y,box_l,box_r,box_t,box_b)
+                                raise e
+
+                        s += pt(0, 0, '0','@')
+                        s += pt(g.xa, 0, '>','}')
+
                         pos = 8 * g.bo
                         for y in range(g.h):
-                            s += '      // '
+                            #s += '// '
                             for x in range(g.w):
                                 bit = font.bitmap[int(pos / 8)]
                                 bit = (bit >> (7 - (pos%8))) & 1
-                                s += '*' if (bit) else ' '
+                                #s += '*' if bit else '.'
+                                if bit:
+                                    s += pt(g.xo + x, g.yo + y, '*', 'X')
+                                else:
+                                    s += pt(g.xo + x, g.yo + y,'.')
                                 pos += 1
-                            s += '\n'
+                            #s += '\n'
+
+                        for row in grid:
+                            s += '// [' + ''.join(row) + ']\n'
+
                     s += '\n'
                 sep = '' if i == len(font.bitmap) - 1 else ','
                 s += '0x{:02X}{}'.format(font.bitmap[i], sep)
@@ -175,24 +205,24 @@ class GFX_FontFormatter:
         approximateBytes = len(font.bitmap) + len(font.glyphs) * 7 + 7
 
         out = \
-"""const uint8_t {0}Bitmaps[] PROGMEM = {1}
+"""const uint8_t {name}Bitmaps[] PROGMEM = {bitmap}
 
-const GFXglyph {0}Glyphs[] PROGMEM = {2}
+const GFXglyph {name}Glyphs[] PROGMEM = {glyphs}
 
-const GFXfont {0} PROGMEM = {{
-    (uint8_t *){0}Bitmaps,
-    (GFXglyph *){0}Glyphs,
-    0x{3:02X}, 0x{4:02X}, {5}
+const GFXfont {name} PROGMEM = {{
+    (uint8_t *){name}Bitmaps,
+    (GFXglyph *){name}Glyphs,
+    0x{first:02X}, 0x{last:02X}, {ya}
 }};
 
-// Approx. {6} bytes
-""".format(font.name,
-           self._fmtBitmap(font),
-           self._fmtGlyphs(font),
-           font.first,
-           font.last,
-           font.ya,
-           approximateBytes)
+// Approx. {approximateBytes} bytes
+""".format(name=font.name,
+           bitmap=self._fmtBitmap(font),
+           glyphs=self._fmtGlyphs(font),
+           first=font.first,
+           last=font.last,
+           ya=font.ya,
+           approximateBytes=approximateBytes)
         return out
 
 def main():
