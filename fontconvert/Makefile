@@ -1,13 +1,16 @@
-FT26_PC=/Users/billy/prog/install/freetype-2.6/lib/pkgconfig
-PKG_CONFIG=pkg-config
-CFLAGS=-Wall $(shell $(PKG_CONFIG) --cflags freetype2)
-LDFLAGS=$(shell $(PKG_CONFIG) --libs freetype2)
+
+FREETYPE_CONFIG=freetype2-install/bin/freetype-config
+CFLAGS=-Wall $(shell $(FREETYPE_CONFIG) --cflags )
+LDFLAGS=$(shell $(FREETYPE_CONFIG) --libs)
+
+FONT_CONVERT=./fontconvert
+TOP_DIR:=$(shell pwd)
 
 all: annotate
 
 convert: tag.convert
 
-annotate: tag.annotate
+annotate: tag.annotate.orig tag.annotate.new
 
 # expensive ~5minutes, so only really do this before checkin.
 format: tag.clang-format
@@ -24,8 +27,8 @@ tag.expand: tag.download
 	unzip -o freefont-ttf-20120503.zip
 	touch $@
 
-tag.convert: tag.expand fontconvert
-	mkdir -p Fonts
+tag.convert: tag.expand $(FONT_CONVERT)
+	mkdir -p Fonts.new
 	for f in Mono Sans Serif; do \
 	  for weight in "" Bold; do \
 	    for slant in "" Italic Oblique; do \
@@ -33,29 +36,59 @@ tag.convert: tag.expand fontconvert
 	      infile="freefont-20120503/$${face}.ttf"; \
 	      [[ ! -f $$infile ]] && continue; \
 	      for sz in 9 12 18 24; do \
-		outfile="Fonts/$${face}$${sz}pt7b.h"; \
+		outfile="Fonts.new/$${face}$${sz}pt7b.h"; \
 		echo "$$infile $$sz -> $$outfile"; \
-		./fontconvert $$infile $$sz > $$outfile; \
+		$(FONT_CONVERT) $$infile $$sz > $$outfile; \
 	      done; \
 	    done; \
 	  done; \
 	done
 	touch $@
 
-tag.annotate: tag.convert font-annotate.py
-	mkdir -p Fonts-annotated
-	for f in $$(basename Fonts/*.h); do \
-	  in=Fonts/$$f; \
-	  out=Fonts-annotated/$$f; \
+tag.annotate.new: tag.convert font-annotate.py
+	mkdir -p Fonts.annotated.new
+	for f in $$(basename Fonts.new/*.h); do \
+	  in=Fonts.new/$$f; \
+	  out=Fonts.annotated.new/$$f; \
 	  echo "$$in -> $$out"; \
 	  ./font-annotate.py <$$in >$$out; \
 	done
 	touch $@
 
-tag.clang-format: tag.annotate
-	clang-format -verbose -i Fonts-annotated/*.h
+tag.annotate.orig: font-annotate.py
+	mkdir -p Fonts.annotated.orig
+	for f in $$(basename ../Fonts/*.h); do \
+	  in=../Fonts/$$f; \
+	  out=Fonts.annotated.orig/$$f; \
+	  echo "$$in -> $$out"; \
+	  ./font-annotate.py <$$in >$$out; \
+	done
 	touch $@
 
-fontconvert-freetype-2.6: fontconvert.c
-	PKG_CONFIG_PATH=$(FT26_PC)
+tag.clang-format: tag.annotate.new
+	clang-format -verbose -i Fonts.annotated.new/*.h
+	touch $@
+
+# FREETYPE_CONFIG=freetype2-install/bin/freetype-config
+
+$(FONT_CONVERT): fontconvert.c freetype2-install
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+
+FT2_GIT_URL:=git://git.sv.nongnu.org/freetype/freetype2.git
+
+freetype2-git:
+	rm -rf $@
+	git clone $(FT2_GIT_URL) --branch=VER-2-6 $@
+
+freetype2-autoconf:
+	(cd freetype2-git; sh autogen.sh)
+
+freetype2-configure: freetype2-autoconf
+	mkdir -p freetype2-build
+	(cd freetype2-build; ../freetype2-git/configure --prefix=$(TOP_DIR)/freetype2-install)
+
+freetype2-make: freetype2-configure
+	(cd freetype2-build; make)
+
+freetype2-install: freetype2-make
+	(cd freetype2-build; make install)

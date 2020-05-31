@@ -38,6 +38,7 @@ class GFX_Font:
         self.first = first
         self.last = last
         self.ya = ya
+        self.headerComment = ""
 
 
 class GFX_FontParser:
@@ -46,8 +47,12 @@ class GFX_FontParser:
         pass
 
     def parse(self, data):
+        # self.headerComment = self._extractHeaderComments(data)
         stripped = self._stripComments(data)
-        return self._parseData(stripped)
+        return self._parseCxxFile(stripped)
+
+    # def _extractHeaderComments(self, data):
+    #    pass
 
     def _stripComments(self, data):
         data = re.sub("/\*.*?\*/", "", data, flags=re.S)  # C comments
@@ -56,16 +61,19 @@ class GFX_FontParser:
         data = re.sub("\s+", " ", data)  # merge whitespace runs
         return data
 
-    def _parseData(self, data):
-        for s in re.split(" ?; ?", data):
+    def _parseCxxFile(self, data):
+        for s in re.split(" *; *", data):
             s = re.sub("^\s*", "", s)
+            # print("_parseCxxFile: s:`{}`".format(s), file=sys.stderr)
+            if not len(s):
+                continue
             if self._parseBitmap(s):
                 continue
             if self._parseGlyphs(s):
                 continue
             if self._parseFont(s):
                 return self.font
-            raise ValueError("cannot parse statement: `{}`".format(s))
+            raise ValueError("Cannot parse statement: `{}`".format(s))
 
     def _parseBitmap(self, stmt):
         m = re.match("const uint8_t (\w*)\[\w*\] PROGMEM = {\s*(.*)\s*}", stmt, re.S)
@@ -208,7 +216,12 @@ class GFX_FontFormatter:
         gsz = 7  # sizeof(GFXglyph)
         approximateBytes = len(font.bitmap) + len(font.glyphs) * gsz + fsz
 
-        out = """const uint8_t {name}Bitmaps[] PROGMEM = {bitmap}
+        headerComment = "// Processed by `{}`\n{}".format(
+            " ".join(sys.argv), font.headerComment
+        )
+
+        out = """{header_comment}
+const uint8_t {name}Bitmaps[] PROGMEM = {bitmap}
 
 const GFXglyph {name}Glyphs[] PROGMEM = {glyphs}
 
@@ -220,6 +233,7 @@ const GFXfont {name} PROGMEM = {{
 
 // Approx. {approximateBytes} bytes
 """.format(
+            header_comment=headerComment,
             name=font.name,
             bitmap=self._fmtBitmap(font),
             glyphs=self._fmtGlyphs(font),
