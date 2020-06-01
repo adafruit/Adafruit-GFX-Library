@@ -1,4 +1,6 @@
-/*
+#!/usr/bin/env python3
+
+"""
 TrueType to Adafruit_GFX font converter.  Derived from Peter Jakobs'
 Adafruit_ftGFX fork & makefont tool, and Paul Kourany's Adafruit_mfGFX.
 
@@ -15,25 +17,149 @@ Will eventually extend with some int'l chars a la ftGFX, not there yet.
 Keep 7-bit fonts around as an option in that case, more compact.
 
 See notes at end for glyph nomenclature & other tidbits.
-*/
-#ifndef ARDUINO
+"""
 
-#include <ctype.h>
-#include <ft2build.h>
-#include <stdint.h>
-#include <stdio.h>
-#include FT_GLYPH_H
-#include FT_MODULE_H
-#include FT_TRUETYPE_DRIVER_H
-#include "../gfxfont.h" // Adafruit_GFX font structures
+import sys
+import re
+import math
+
+from gfxfont import GFX_Font, GFX_Glyph
+
+try:
+    import freetype
+except ImportError as e:
+    print("missing freetype. Try `pip install freetype-py`")
+    exit(1)
+
+# Adafruit 2.8" TFT (https://www.adafruit.com/product/1770)
+# diag=2.8in, x_res=320px, y_res=240px)
+#    dpi = sqrt(x_res^2 + y_res^2) / diag = 142.86 px/in
+dpi = 141
 
 
-// Can override this with the FONTCONVERT_DPI environment variable.
-// Adafruit 2.8" TFT (https://www.adafruit.com/product/1770)
-// diag=2.8in, x_res=320px, y_res=240px)
-//    dpi = sqrt(x_res^2 + y_res^2) / diag = 142.86 px/in
-#define DEFAULT_DPI 141 // Approximate res. of Adafruit 2.8" TFT
+def ftbmpToBitSeq(bitmap):
+    bitSeq = []
+    bitPos = 0
+    for y in range(0, bitmap.rows):
+        rowIdx = y * bitmap.pitch
+        bitPos = 0
+        for x in range(bitmap.width):
+            bitSeq.append((bitmap.buffer[rowIdx] >> (7 - bitPos)) & 1)
+            bitPos += 1
+            if bitPos == 8:
+                rowIdx += 1
+                bitPos = 0
+    return bitSeq
 
+
+def bitSeqToGfxBitmap(bitSeq):
+    arr = []
+    acc = 0
+    bitPos = 7
+    for b in bitSeq:
+        acc = acc | (b << bitPos)
+        if bitPos == 0:
+            arr.append(acc)
+            acc = 0
+            bitPos = 8
+        bitPos -= 1
+    if bitPos != 7:
+        arr.append(acc << (7 - bitPos))
+    return arr
+
+
+def render(facePath, size, first, last):
+    chRange = range(first, last + 1)
+    face = freetype.Face(facePath)
+    face.set_char_size(size << 6, 0, dpi, 0)
+    fontName = "{}{}".format(re.match(".*/(\w*).ttf", facePath)[1], size)
+
+    # First collect all the Glyphs in a table
+    table = []
+    for ch in chRange:
+        char = chr(ch)
+        face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
+        slot = face.glyph
+
+        # Reshape the Freetype2 bitmap as an Adafruit_GFXfont bitmap.
+        gfxBytes = bitSeqToGfxBitmap(ftbmpToBitSeq(slot.bitmap))
+
+        # print("gfxBytes={}".format(gfxBytes))
+
+        table.append(
+            {
+                "ch": ch,
+                "props": {
+                    "w": slot.bitmap.width,
+                    "h": slot.bitmap.rows,
+                    "xa": slot.advance.x >> 6,
+                    "xo": slot.bitmap_left,
+                    "yo": 1 - slot.bitmap_top,
+                },
+                "bmp": gfxBytes,
+            }
+        )
+
+    print("const uint8_t {}Bitmaps[] PROGMEM = {{".format(fontName))
+    for gi in range(len(table)):
+        g = table[gi]
+        sep = " " if gi == len(table) - 1 else ", "
+        print(
+            "{}{}// ch=0x{:02X}\n".format(
+                ",".join(["0x{:02X}".format(x) for x in g["bmp"]]), sep, g["ch"]
+            )
+        )
+    print("};\n")  # End bitmap array
+
+    # Output glyph attributes table (one per character)
+    print("const GFXglyph {}Glyphs[] PROGMEM = {{".format(fontName))
+
+    bo = 0
+    for gi in range(len(table)):
+        g = table[gi]
+        sep = " " if gi == len(table) - 1 else ", "
+        print(
+            "    {{{}, {}, {}, {}, {}, {}}}{}// ch=0x{:02X}".format(
+                    bo,
+                    g['props']['w'],
+                    g['props']['h'],
+                    g['props']['xa'],
+                    g['props']['xo'],
+                    g['props']['yo'],
+                    sep, g['ch']
+            )
+        )
+        bo += len(g['bmp'])
+    print("};\n")
+
+
+    # No face height info, assume fixed width and get from a glyph.
+    #    if (face->size->metrics.height == 0) {
+    #        printf("  0x%02X, 0x%02X, %d };\n\n", first, last, table[0].height);
+    #    } else {
+    #        printf("  0x%02X, 0x%02X, %ld };\n\n", first, last,
+    #            face->size->metrics.height >> 6);
+    #    }
+    ya = face.height >> 6
+
+    # Output glyph attributes table (one per character)
+    print("const GFXfont {} PROGMEM = {{".format(fontName))
+    print("  (uint8_t  *){}Bitmaps,".format(fontName));
+    print("  (GFXglyph *){}Glyphs,".format(fontName));
+    print("  0x{:02X}, 0x{:02X}, {}}};\n\n".format(first, last, ya));
+
+def main():
+    infile = sys.argv[1]
+    size = int(sys.argv[2])
+    first = int(sys.argv[3]) if len(sys.argv) > 3 else 0x20
+    last = int(sys.argv[4]) if len(sys.argv) > 4 else 0x7E
+    render(infile, size, first, last)
+
+
+if __name__ == "__main__":
+    main()
+
+"""
 // Accumulate bits for output, with periodic hexadecimal byte write
 void enbit(uint8_t value) {
   static uint8_t row = 0, sum = 0, bit = 0x80, firstCall = 1;
@@ -259,7 +385,9 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+"""
 
+"""
 /* -------------------------------------------------------------------------
 
 Character metrics are slightly different from classic GFX & ftGFX.
@@ -302,5 +430,4 @@ the cursor on the X axis after drawing the corresponding symbol.
 There's also some changes with regard to 'background' color and new GFX
 fonts (classic fonts unchanged).  See Adafruit_GFX.cpp for explanation.
 */
-
-#endif /* !ARDUINO */
+"""
