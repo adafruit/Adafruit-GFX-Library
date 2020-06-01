@@ -18,8 +18,12 @@ format: tag.clang-format
 clean: 
 	rm -rf fontconvert
 
-tag.download: get_fonts.sh freefonts.shasum
-	./get_fonts.sh freefont-ttf-20120503.zip
+FREEFONTS_URL_BASE=http://ftp.gnu.org/gnu/freefont
+FREEFONTS_VERSION=20120503
+FREEFONTS_ZIP=freefont-ttf-$(FREEFONTS_VERSION).zip
+
+tag.download: freefonts.shasum
+	curl --output "$(FREEFONTS_ZIP)" "$(FREEFONTS_URL_BASE)/$(FREEFONTS_ZIP)"
 	shasum -a 512224 -c freefonts.shasum
 	touch $@
 
