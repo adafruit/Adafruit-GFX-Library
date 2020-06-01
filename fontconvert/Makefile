@@ -1,10 +1,10 @@
 
-FREETYPE_CONFIG=freetype2-install/bin/freetype-config
-CFLAGS=-Wall $(shell $(FREETYPE_CONFIG) --cflags )
-LDFLAGS=$(shell $(FREETYPE_CONFIG) --libs)
+TOP_DIR:=$(shell pwd)
+FREETYPE2_CONFIG=$(TOP_DIR)/freetype2/local/bin/freetype-config
+CFLAGS=-Wall $(shell $(FREETYPE2_CONFIG) --cflags )
+LDFLAGS=$(shell $(FREETYPE2_CONFIG) --libs)
 
 FONT_CONVERT=./fontconvert
-TOP_DIR:=$(shell pwd)
 
 all: annotate
 
@@ -69,26 +69,21 @@ tag.clang-format: tag.annotate.new
 	clang-format -verbose -i Fonts.annotated.new/*.h
 	touch $@
 
-# FREETYPE_CONFIG=freetype2-install/bin/freetype-config
-
-$(FONT_CONVERT): fontconvert.c freetype2-install
+$(FONT_CONVERT): fontconvert.c tag.freetype2.install
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
 
 FT2_GIT_URL:=git://git.sv.nongnu.org/freetype/freetype2.git
 
-freetype2-git:
-	rm -rf $@
-	git clone $(FT2_GIT_URL) --branch=VER-2-6 $@
+tag.freetype2.clone:
+	rm -rf freetype2/src
+	mkdir -p freetype2/src
+	git clone $(FT2_GIT_URL) --branch=VER-2-6 freetype2/src
+	touch $@
 
-freetype2-autoconf:
-	(cd freetype2-git; sh autogen.sh)
-
-freetype2-configure: freetype2-autoconf
-	mkdir -p freetype2-build
-	(cd freetype2-build; ../freetype2-git/configure --prefix=$(TOP_DIR)/freetype2-install)
-
-freetype2-make: freetype2-configure
-	(cd freetype2-build; make)
-
-freetype2-install: freetype2-make
-	(cd freetype2-build; make install)
+tag.freetype2.install: tag.freetype2.clone
+	(cd freetype2/src && sh autogen.sh)
+	mkdir -p freetype2/build
+	(cd freetype2/build && ../src/configure --prefix=$(TOP_DIR)/freetype2/local)
+	(cd freetype2/build && make)
+	(cd freetype2/build && make install)
+	touch $@
