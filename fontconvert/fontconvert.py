@@ -138,7 +138,7 @@ def bitSeqToGfxBitmap(bitSeq):
             bitPos = 8
         bitPos -= 1
     if bitPos != 7:
-        arr.append(acc << (7 - bitPos))
+        arr.append(acc)
     return arr
 
 
