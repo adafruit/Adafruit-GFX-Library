@@ -69,17 +69,8 @@ import os
 import re
 import math
 
-#if 'FREETYPE_PROPERTIES' not in os.environ:
-#    os.environ['FREETYPE_PROPERTIES'] = 'truetype:interpreter-version=35'
-
 from gfxfont import Font as GFX_Font, Glyph as GFX_Glyph
 from gfxfont_annotate import GFX_FontFormatter as Formatter
-
-try:
-    import freetype
-except ImportError as e:
-    print("missing freetype. Try `python3 -m pip install freetype-py`", file=sys.stderr)
-    raise e
 
 # Adafruit 2.8" TFT (https://www.adafruit.com/product/1770)
 #    sqrt(320^2 + 240^2) / 2.8 = 142.86 dpi
@@ -150,6 +141,13 @@ class Fnt:
     pass
 
 
+try:
+    import freetype
+except ImportError as e:
+    print("Missing freetype. Try `python3 -m pip install freetype-py`", file=sys.stderr)
+    raise e
+
+
 def getGlyph(face, ch):
     char = chr(ch)
     face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
@@ -165,17 +163,23 @@ def getGlyph(face, ch):
     return gly
 
 
-def render(infile, size, first, last, dpi):
+def render(infile, size, first, last, dpi, **kwargs):
+    if 'freetype_tt_ver' in kwargs :
+        if "FREETYPE_PROPERTIES" not in os.environ:
+            os.environ["FREETYPE_PROPERTIES"] = ""
+        os.environ["FREETYPE_PROPERTIES"] = "{} truetype:interpreter-version={}".format(
+            os.environ["FREETYPE_PROPERTIES"], kwargs['freetype_tt_ver']
+        )
+
     face = freetype.Face(infile)
     face.set_char_size(size << 6, 0, dpi, 0)
-    fontName = "{}{}".format(re.match(".*/(\w*).ttf", infile)[1], size)
 
     font = Fnt()
-    font.name = fontName
+    font.name = "{}{}pt7b".format(re.match(".*/(\w*).ttf", infile)[1], size)
     font.glyphs = [getGlyph(face, ch) for ch in range(first, last + 1)]
     font.first = first
     font.last = last
-    font.ya = face.height >> 6
+    font.ya = face.size.height >> 6
 
     print("const uint8_t {}Bitmaps[] PROGMEM = {{".format(font.name))
     for gi, g in enumerate(font.glyphs):
@@ -210,12 +214,24 @@ def render(infile, size, first, last, dpi):
 
 def main():
     parser = argparse.ArgumentParser(description="Convert TTF to Adafruit-GFX font .h")
+    parser.add_argument("--debug", type=bool, default=False, help="enable verbose debug info")
     parser.add_argument("--first", type=int, default=0x20, help="first character")
     parser.add_argument("--last", type=int, default=0x7E, help="last character")
     parser.add_argument("--dpi", type=int, default=_DPI_DEFAULT, help="dots per inch")
+    parser.add_argument(
+        "--freetype_tt_ver",
+        type=int,
+        choices=[35, 38, 40],
+        default=None,
+        help="Explicitly configure Freetype2 truetype:interpreter-version",
+    )
     parser.add_argument("infile", type=str, help="TrueType (.ttf) input file")
     parser.add_argument("size", type=int, help="font point size")
-    render(**vars(parser.parse_args()))
+
+    opts = vars(parser.parse_args())
+    if opts['debug']:
+        print("FreeType v{}".format('.'.join([str(x) for x in freetype.version()])), file=sys.stderr)
+    render(**opts)
 
 
 if __name__ == "__main__":

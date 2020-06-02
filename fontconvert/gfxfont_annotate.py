@@ -213,16 +213,6 @@ def main():
     data = "".join(sys.stdin)
     font = GFX_FontParser().parse(data)
 
-    def encodingExtension(obj):
-        if isinstance(obj, GFX_Glyph):
-            return {"$GFX_Glyph": obj.__dict__}
-        if isinstance(obj, GFX_Font):
-            return {"$GFX_Font": obj.__dict__}
-        raise TypeError(repr(obj) + " is not JSON serializable")
-
-    if False:
-        print(json.dumps(font, default=encodingExtension))
-
     fmtArgs = {
         "unicode_names": True,
         "break_bmp": True,

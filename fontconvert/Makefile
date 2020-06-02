@@ -1,7 +1,7 @@
 
 TOP_DIR:=$(shell pwd)
-#FREETYPE2_CONFIG=$(TOP_DIR)/freetype2/local/bin/freetype-config
-FREETYPE2_CONFIG=freetype-config
+FREETYPE2_CONFIG=pkg-config $(TOP_DIR)/freetype2/local/lib/pkgconfig/freetype2.pc
+#FREETYPE2_CONFIG=freetype-config
 CFLAGS=-Wall $(shell $(FREETYPE2_CONFIG) --cflags )
 LDFLAGS=$(shell $(FREETYPE2_CONFIG) --libs)
 
