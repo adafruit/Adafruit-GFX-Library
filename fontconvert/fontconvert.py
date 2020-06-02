@@ -6,7 +6,10 @@ TrueType to Adafruit_GFX font converter.  Derived from Peter Jakobs'
 Adafruit_ftGFX fork & makefont tool, and Paul Kourany's Adafruit_mfGFX.
 
 For UNIX-like systems.  Outputs to stdout; redirect to header file, e.g.:
-  ./fontconvert ~/Library/Fonts/FreeSans.ttf 18 > FreeSans18pt7b.h
+
+  ./fontconvert.py ~/Library/Fonts/FreeSans.ttf 18 > FreeSans18pt7b.h
+
+Try `--help` for more options.
 
 REQUIRES FREETYPE LIBRARY.  www.freetype.org
 Install Freetype Python bindings with `python3 -m pip install freetype-py`
