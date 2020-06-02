@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "%s:%s=%u (%u)\n", lib, key, (unsigned)v, (unsigned)err);
   }
 
-#if 0
+#if 1
   // Use TrueType engine version 35, without subpixel rendering.
   // This improves clarity of fonts since this library does not
   // support rendering multiple levels of gray in a glyph.

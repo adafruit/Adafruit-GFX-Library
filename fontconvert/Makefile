@@ -62,8 +62,7 @@ tag.convert.py: tag.expand $(FONT_CONVERT_PY) gfxfont_annotate.py
 	      for sz in 9 12 18 24; do \
 		outfile="Fonts.py/$${face}$${sz}pt7b.h"; \
 		echo "$$infile $$sz -> $$outfile"; \
-		FREETYPE_PROPERTIES="truetype:interpreter-version=35" \
-		  $(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
+		env FREETYPE_PROPERTIES="truetype:interpreter-version=35" $(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
 	      done; \
 	    done; \
 	  done; \
