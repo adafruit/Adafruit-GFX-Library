@@ -1,16 +1,18 @@
 
 TOP_DIR:=$(shell pwd)
-FREETYPE2_CONFIG=$(TOP_DIR)/freetype2/local/bin/freetype-config
+#FREETYPE2_CONFIG=$(TOP_DIR)/freetype2/local/bin/freetype-config
+FREETYPE2_CONFIG=freetype-config
 CFLAGS=-Wall $(shell $(FREETYPE2_CONFIG) --cflags )
 LDFLAGS=$(shell $(FREETYPE2_CONFIG) --libs)
 
 FONT_CONVERT=./fontconvert
+FONT_CONVERT_PY=./fontconvert.py
 
 all: annotate
 
-convert: tag.convert
+convert: tag.convert tag.convert.py
 
-annotate: tag.annotate.orig tag.annotate.new
+annotate: tag.annotate.orig tag.annotate.new tag.annotate.py
 
 # expensive ~5minutes, so only really do this before checkin.
 format: tag.clang-format
@@ -49,6 +51,24 @@ tag.convert: tag.expand $(FONT_CONVERT)
 	done
 	touch $@
 
+tag.convert.py: tag.expand $(FONT_CONVERT_PY) gfxfont_annotate.py
+	mkdir -p Fonts.py
+	for f in Mono Sans Serif; do \
+	  for weight in "" Bold; do \
+	    for slant in "" Italic Oblique; do \
+	      face=Free$${f}$${weight}$${slant}; \
+	      infile="freefont-20120503/$${face}.ttf"; \
+	      [[ ! -f $$infile ]] && continue; \
+	      for sz in 9 12 18 24; do \
+		outfile="Fonts.py/$${face}$${sz}pt7b.h"; \
+		echo "$$infile $$sz -> $$outfile"; \
+		$(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
+	      done; \
+	    done; \
+	  done; \
+	done
+	touch $@
+
 tag.annotate.new: tag.convert gfxfont_annotate.py
 	mkdir -p Fonts.annotated.new
 	for f in $$(basename Fonts.new/*.h); do \
@@ -64,6 +84,16 @@ tag.annotate.orig: gfxfont_annotate.py
 	for f in $$(basename ../Fonts/*.h); do \
 	  in=../Fonts/$$f; \
 	  out=Fonts.annotated.orig/$$f; \
+	  echo "$$in -> $$out"; \
+	  ./gfxfont_annotate.py <$$in >$$out; \
+	done
+	touch $@
+
+tag.annotate.py: tag.convert.py gfxfont_annotate.py
+	mkdir -p Fonts.annotated.py
+	for f in $$(basename Fonts.py/*.h); do \
+	  in=Fonts.py/$$f; \
+	  out=Fonts.annotated.py/$$f; \
 	  echo "$$in -> $$out"; \
 	  ./gfxfont_annotate.py <$$in >$$out; \
 	done

@@ -65,11 +65,15 @@ fonts (classic fonts unchanged).  See Adafruit_GFX.cpp for explanation.
 import argparse
 import json
 import sys
+import os
 import re
 import math
 
 from gfxfont import Font as GFX_Font, Glyph as GFX_Glyph
 from gfxfont_annotate import GFX_FontFormatter as Formatter
+
+
+os.environ['FREETYPE_PROPERTIES'] = 'truetype:interpreter-version=35'
 
 try:
     import freetype
@@ -138,85 +142,70 @@ def bitSeqToGfxBitmap(bitSeq):
     return arr
 
 
+class Gly:
+    pass
+
+
+class Fnt:
+    pass
+
+
+def getGlyph(face, ch):
+    char = chr(ch)
+    face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
+    slot = face.glyph
+    gly = Gly()
+    gly.ch = ch
+    gly.w = slot.bitmap.width
+    gly.h = slot.bitmap.rows
+    gly.xa = slot.advance.x >> 6
+    gly.xo = slot.bitmap_left
+    gly.yo = 1 - slot.bitmap_top
+    gly.bmp = bitSeqToGfxBitmap(ftbmpToBitSeq(slot.bitmap))
+    return gly
+
+
 def render(infile, size, first, last, dpi):
-    chRange = range(first, last + 1)
     face = freetype.Face(infile)
     face.set_char_size(size << 6, 0, dpi, 0)
     fontName = "{}{}".format(re.match(".*/(\w*).ttf", infile)[1], size)
 
-    # First collect all the Glyphs in a table
-    table = []
-    for ch in chRange:
-        char = chr(ch)
-        face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
-        slot = face.glyph
+    font = Fnt()
+    font.name = fontName
+    font.glyphs = [getGlyph(face, ch) for ch in range(first, last + 1)]
+    font.first = first
+    font.last = last
+    font.ya = face.height >> 6
 
-        # Reshape the Freetype2 bitmap as an Adafruit_GFXfont bitmap.
-        gfxBytes = bitSeqToGfxBitmap(ftbmpToBitSeq(slot.bitmap))
-
-        # print("gfxBytes={}".format(gfxBytes))
-
-        table.append(
-            {
-                "ch": ch,
-                "props": {
-                    "w": slot.bitmap.width,
-                    "h": slot.bitmap.rows,
-                    "xa": slot.advance.x >> 6,
-                    "xo": slot.bitmap_left,
-                    "yo": 1 - slot.bitmap_top,
-                },
-                "bmp": gfxBytes,
-            }
-        )
-
-    print("const uint8_t {}Bitmaps[] PROGMEM = {{".format(fontName))
-    for gi in range(len(table)):
-        g = table[gi]
-        sep = " " if gi == len(table) - 1 else ", "
+    print("const uint8_t {}Bitmaps[] PROGMEM = {{".format(font.name))
+    for gi, g in enumerate(font.glyphs):
+        sep = " " if gi == len(font.glyphs) - 1 else ", "
         print(
             "{}{}// ch=0x{:02X}\n".format(
-                ",".join(["0x{:02X}".format(x) for x in g["bmp"]]), sep, g["ch"]
+                ",".join(["0x{:02X}".format(x) for x in g.bmp]), sep, g.ch
             )
         )
-    print("};\n")  # End bitmap array
-
-    # Output glyph attributes table (one per character)
-    print("const GFXglyph {}Glyphs[] PROGMEM = {{".format(fontName))
-
-    bo = 0
-    for gi in range(len(table)):
-        g = table[gi]
-        sep = " " if gi == len(table) - 1 else ", "
-        print(
-            "    {{{}, {}, {}, {}, {}, {}}}{}// ch=0x{:02X}".format(
-                bo,
-                g["props"]["w"],
-                g["props"]["h"],
-                g["props"]["xa"],
-                g["props"]["xo"],
-                g["props"]["yo"],
-                sep,
-                g["ch"],
-            )
-        )
-        bo += len(g["bmp"])
     print("};\n")
 
-    # No face height info, assume fixed width and get from a glyph.
-    #    if (face->size->metrics.height == 0) {
-    #        printf("  0x%02X, 0x%02X, %d };\n\n", first, last, table[0].height);
-    #    } else {
-    #        printf("  0x%02X, 0x%02X, %ld };\n\n", first, last,
-    #            face->size->metrics.height >> 6);
-    #    }
-    ya = face.height >> 6
+    # Output glyph attributes table (one per character)
+    print("const GFXglyph {}Glyphs[] PROGMEM = {{".format(font.name))
+
+    bo = 0
+    for gi, g in enumerate(font.glyphs):
+        sep = " " if gi == len(font.glyphs) - 1 else ", "
+        print(
+            "    {{{}, {}, {}, {}, {}, {}}}{}// ch=0x{:02X}".format(
+                bo, g.w, g.h, g.xa, g.xo, g.yo, sep, g.ch,
+            )
+        )
+        bo += len(g.bmp)
+    print("};\n")
 
     # Output glyph attributes table (one per character)
-    print("const GFXfont {} PROGMEM = {{".format(fontName))
-    print("  (uint8_t  *){}Bitmaps,".format(fontName))
-    print("  (GFXglyph *){}Glyphs,".format(fontName))
-    print("  0x{:02X}, 0x{:02X}, {}}};\n\n".format(first, last, ya))
+    print("const GFXfont {} PROGMEM = {{".format(font.name))
+    print("  (uint8_t  *){}Bitmaps,".format(font.name))
+    print("  (GFXglyph *){}Glyphs,".format(font.name))
+    print("  0x{:02X}, 0x{:02X}, {}}};\n\n".format(font.first, font.last, font.ya))
 
 
 def main():

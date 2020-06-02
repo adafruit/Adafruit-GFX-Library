@@ -86,7 +86,7 @@ class GFX_FontFormatter:
         self._draw = getIf("draw")
 
     def _fmtBitmap(self, font):
-        s = "{\n"
+        s = "{\n\n"
         if self._break_bmp:
             glyphEnds = {}
             ch = font.first
@@ -97,7 +97,7 @@ class GFX_FontFormatter:
             # Place a clang-format resistant comment after each glyph in the bmp
             def annotation(i):
                 (g, ch) = glyphEnds[i]
-                s = " // 0x{:02X} '{}' ({} x {}) @({},{}) +{}\n\n".format(
+                s = "\n\n// {{ 0x{:02X} '{}' ({} x {}) @({},{}) +{} }}\n".format(
                     ch, chr(ch), g.w, g.h, g.xo, g.yo, g.xa
                 )
                 if self._draw:
@@ -129,7 +129,7 @@ class GFX_FontFormatter:
                             if bit:
                                 s += pt(g.xo + x, g.yo + y, "*", "X")
                             else:
-                                s += pt(g.xo + x, g.yo + y, ".")
+                                s += pt(g.xo + x, g.yo + y, " ")
                             pos += 1
                         # s += '\n'
                     for row in grid:
