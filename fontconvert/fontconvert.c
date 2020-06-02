@@ -137,6 +137,7 @@ int main(int argc, char *argv[]) {
     return err;
   }
 
+#if 0
   // Use TrueType engine version 35, without subpixel rendering.
   // This improves clarity of fonts since this library does not
   // support rendering multiple levels of gray in a glyph.
@@ -144,6 +145,7 @@ int main(int argc, char *argv[]) {
   FT_UInt interpreter_version = TT_INTERPRETER_VERSION_35;
   FT_Property_Set(library, "truetype", "interpreter-version",
                   &interpreter_version);
+#endif
 
   if ((err = FT_New_Face(library, argv[1], 0, &face))) {
     fprintf(stderr, "Font load error: %d", err);

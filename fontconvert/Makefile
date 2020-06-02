@@ -8,6 +8,10 @@ LDFLAGS=$(shell $(FREETYPE2_CONFIG) --libs)
 FONT_CONVERT=./fontconvert
 FONT_CONVERT_PY=./fontconvert.py
 
+#FREETYPE_FORCE=env FREETYPE_PROPERTIES="truetype:interpreter-version=35"
+#FREETYPE_FORCE=env FREETYPE_PROPERTIES="truetype:interpreter-version=40"
+
+
 all: annotate
 
 convert: tag.convert tag.convert.py
@@ -44,7 +48,7 @@ tag.convert: tag.expand $(FONT_CONVERT)
 	      for sz in 9 12 18 24; do \
 		outfile="Fonts.new/$${face}$${sz}pt7b.h"; \
 		echo "$$infile $$sz -> $$outfile"; \
-		env FREETYPE_PROPERTIES="truetype:interpreter-version=35" $(FONT_CONVERT) $$infile $$sz > $$outfile; \
+		$(FREETYPE_FORCE) $(FONT_CONVERT) $$infile $$sz > $$outfile; \
 	      done; \
 	    done; \
 	  done; \
@@ -62,7 +66,7 @@ tag.convert.py: tag.expand $(FONT_CONVERT_PY) gfxfont_annotate.py
 	      for sz in 9 12 18 24; do \
 		outfile="Fonts.py/$${face}$${sz}pt7b.h"; \
 		echo "$$infile $$sz -> $$outfile"; \
-		env FREETYPE_PROPERTIES="truetype:interpreter-version=35" $(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
+		$(FREETYPE_FORCE) $(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
 	      done; \
 	    done; \
 	  done; \
