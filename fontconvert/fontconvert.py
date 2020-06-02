@@ -69,11 +69,11 @@ import os
 import re
 import math
 
+if 'FREETYPE_PROPERTIES' not in os.environ:
+    os.environ['FREETYPE_PROPERTIES'] = 'truetype:interpreter-version=35'
+
 from gfxfont import Font as GFX_Font, Glyph as GFX_Glyph
 from gfxfont_annotate import GFX_FontFormatter as Formatter
-
-
-os.environ['FREETYPE_PROPERTIES'] = 'truetype:interpreter-version=35'
 
 try:
     import freetype
