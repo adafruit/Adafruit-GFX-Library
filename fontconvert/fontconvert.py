@@ -91,6 +91,16 @@ class Gly:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+        # Zero out an empty box
+        empty = True
+        for px in self.bmp:
+            if px:
+                empty = False
+                break
+        if empty:
+            self.w = 0
+            self.h = 0
+
 
 class Fnt:
     def __init__(self, **kwargs):

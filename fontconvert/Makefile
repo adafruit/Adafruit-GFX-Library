@@ -6,7 +6,7 @@ FONT_CONVERT_PY=./fontconvert.py
 FREEFONTS_URL_BASE=http://ftp.gnu.org/gnu/freefont
 FREEFONTS_VERSION=20120503
 FREEFONTS_ZIP=freefont-ttf-$(FREEFONTS_VERSION).zip
-FONT_SRC_DIR=freefont-$(FREEFONT_VERSION)
+FONT_SRC_DIR=freefont-$(FREEFONTS_VERSION)
 
 all: annotate
 
@@ -49,11 +49,15 @@ tag.convert.py: tag.expand $(FONT_CONVERT_PY) gfxfont_annotate.py
 	    for slant in "" Italic Oblique; do \
 	      face=Free$${f}$${weight}$${slant}; \
 	      infile="$(FONT_SRC_DIR)/$${face}.ttf"; \
-	      [[ ! -f $$infile ]] && continue; \
+	      if [[ ! -f $$infile ]]; then \
+		echo "Skip $$infile"; \
+		continue ; \
+	      fi ; \
+	      echo "$$infile:"; \
 	      for sz in 9 12 18 24; do \
 		outfile="Fonts.py/$${face}$${sz}pt7b.h"; \
-		echo "$$infile $$sz -> $$outfile"; \
-		$(FREETYPE_FORCE) $(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
+		echo "    $$infile $$sz -> $$outfile"; \
+		$(FONT_CONVERT_PY) $$infile $$sz > $$outfile; \
 	      done; \
 	    done; \
 	  done; \
