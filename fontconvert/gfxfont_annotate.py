@@ -5,7 +5,7 @@ import re
 import json
 import unicodedata
 
-from gfxfont import GFX_Font, GFX_Glyph
+from gfxfont import Font as GFX_Font, Glyph as GFX_Glyph
 
 class GFX_FontParser:
     def __init__(self):
@@ -182,9 +182,7 @@ class GFX_FontFormatter:
         gsz = 7  # sizeof(GFXglyph)
         approximateBytes = len(font.bitmap) + len(font.glyphs) * gsz + fsz
 
-        headerComment = "// Processed by `{}`\n{}".format(
-            " ".join(sys.argv), font.headerComment
-        )
+        headerComment = "// Processed by `{}`\n".format(" ".join(sys.argv))
 
         out = """{header_comment}
 const uint8_t {name}Bitmaps[] PROGMEM = {bitmap}

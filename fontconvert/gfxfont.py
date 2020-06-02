@@ -8,7 +8,7 @@
 #   int8_t xOffset;        ///< X dist from cursor pos to UL corner
 #   int8_t yOffset;        ///< Y dist from cursor pos to UL corner
 # } GFXglyph;
-class GFX_Glyph:
+class Glyph:
     def __init__(self, bo, w, h, xa, xo, yo):
         self.bo = bo
         self.w = w
@@ -24,7 +24,7 @@ class GFX_Glyph:
 #   uint16_t last;    ///< ASCII extents (last char)
 #   uint8_t yAdvance; ///< Newline distance (y axis)
 # } GFXfont;
-class GFX_Font:
+class Font:
     def __init__(self, name, bitmap, glyphs, first, last, ya):
         self.name = name
         self.bitmap = bitmap
@@ -32,5 +32,4 @@ class GFX_Font:
         self.first = first
         self.last = last
         self.ya = ya
-        self.headerComment = ""
 

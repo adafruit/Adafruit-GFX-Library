@@ -49,23 +49,23 @@ tag.convert: tag.expand $(FONT_CONVERT)
 	done
 	touch $@
 
-tag.annotate.new: tag.convert font-annotate.py
+tag.annotate.new: tag.convert gfxfont_annotate.py
 	mkdir -p Fonts.annotated.new
 	for f in $$(basename Fonts.new/*.h); do \
 	  in=Fonts.new/$$f; \
 	  out=Fonts.annotated.new/$$f; \
 	  echo "$$in -> $$out"; \
-	  ./font-annotate.py <$$in >$$out; \
+	  ./gfxfont_annotate.py <$$in >$$out; \
 	done
 	touch $@
 
-tag.annotate.orig: font-annotate.py
+tag.annotate.orig: gfxfont_annotate.py
 	mkdir -p Fonts.annotated.orig
 	for f in $$(basename ../Fonts/*.h); do \
 	  in=../Fonts/$$f; \
 	  out=Fonts.annotated.orig/$$f; \
 	  echo "$$in -> $$out"; \
-	  ./font-annotate.py <$$in >$$out; \
+	  ./gfxfont_annotate.py <$$in >$$out; \
 	done
 	touch $@
 
