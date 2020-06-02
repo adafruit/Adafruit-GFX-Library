@@ -66,7 +66,6 @@ fonts (classic fonts unchanged).  See Adafruit_GFX.cpp for explanation.
 """
 
 import argparse
-import json
 import sys
 import os
 import re
@@ -80,29 +79,72 @@ from gfxfont_annotate import GFX_FontFormatter as Formatter
 _DPI_DEFAULT = 141
 
 
-def parseOptions():
-    parser = argparse.ArgumentParser(
-        prog="fontconvert.py",
-        description="Convert TTF to adafruit GFXfont header format",
-    )
-    parser.add_argument("--dpi", type=int, default=_DPI_DEFAULT, help="dots per inch")
-    parser.add_argument(
-        "infile", type=str, help="TrueType (.ttf) input file",
-    )
-    parser.add_argument("size", type=int, help="font point size")
-    parser.add_argument("--first", type=int, default=0x20, help="first glyph character")
-    parser.add_argument("--last", type=int, default=0x7E, help="last glyph character")
-    # parser.add_argument(
-    #    "outfile",
-    #    type=argparse.FileType(mode="w"),
-    #    help="GFXfont (.h) output file",
-    # )
-    class Opt:
-        pass
+class Gly:
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self,k,v)
 
-    opt = Opt()
-    parser.parse_args(namespace=opt)
-    return opt
+
+class Fnt:
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self,k,v)
+
+
+class FontConvert:
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self,k,v)
+
+
+    def render(self):
+        if 'freetype_tt_ver' in vars(self):
+            if "FREETYPE_PROPERTIES" not in os.environ:
+                os.environ["FREETYPE_PROPERTIES"] = ""
+            os.environ["FREETYPE_PROPERTIES"] = "{} truetype:interpreter-version={}".format(
+                os.environ["FREETYPE_PROPERTIES"], self.freetype_tt_ver
+            )
+
+        face = freetype.Face(self.infile)
+        face.set_char_size(self.size << 6, 0, self.dpi, 0)
+
+        font = Fnt(
+            name = "{}{}pt7b".format(re.match(".*/(\w*).ttf", self.infile)[1], self.size),
+            glyphs = [getGlyph(face, ch) for ch in range(self.first, self.last + 1)],
+            first = self.first,
+            last = self.last,
+            ya = face.size.height >> 6)
+
+        print("const uint8_t {}Bitmaps[] PROGMEM = {{".format(font.name))
+        for gi, g in enumerate(font.glyphs):
+            sep = " " if gi == len(font.glyphs) - 1 else ", "
+            print(
+                "{}{}// ch=0x{:02X}\n".format(
+                    ",".join(["0x{:02X}".format(x) for x in g.bmp]), sep, g.ch
+                )
+            )
+        print("};\n")
+
+        # Output glyph attributes table (one per character)
+        print("const GFXglyph {}Glyphs[] PROGMEM = {{".format(font.name))
+
+        bmpOffset = 0
+        for gi, g in enumerate(font.glyphs):
+            sep = " " if gi == len(font.glyphs) - 1 else ", "
+            print(
+                "    {{{}, {}, {}, {}, {}, {}}}{}// ch=0x{:02X}".format(
+                    bmpOffset, g.w, g.h, g.xa, g.xo, g.yo, sep, g.ch,
+                )
+            )
+            bmpOffset += len(g.bmp)
+
+        print("};\n")
+
+        # Output glyph attributes table (one per character)
+        print("const GFXfont {} PROGMEM = {{".format(font.name))
+        print("  (uint8_t  *){}Bitmaps,".format(font.name))
+        print("  (GFXglyph *){}Glyphs,".format(font.name))
+        print("  0x{:02X}, 0x{:02X}, {}}};\n\n".format(font.first, font.last, font.ya))
 
 
 def ftbmpToBitSeq(bitmap):
@@ -136,14 +178,6 @@ def bitSeqToGfxBitmap(bitSeq):
     return arr
 
 
-class Gly:
-    pass
-
-
-class Fnt:
-    pass
-
-
 try:
     import freetype
 except ImportError as e:
@@ -155,64 +189,40 @@ def getGlyph(face, ch):
     char = chr(ch)
     face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
     slot = face.glyph
-    gly = Gly()
-    gly.ch = ch
-    gly.w = slot.bitmap.width
-    gly.h = slot.bitmap.rows
-    gly.xa = slot.advance.x >> 6
-    gly.xo = slot.bitmap_left
-    gly.yo = 1 - slot.bitmap_top
-    gly.bmp = bitSeqToGfxBitmap(ftbmpToBitSeq(slot.bitmap))
+    gly = Gly(
+        ch = ch,
+        w = slot.bitmap.width,
+        h = slot.bitmap.rows,
+        xa = slot.advance.x >> 6,
+        xo = slot.bitmap_left,
+        yo = 1 - slot.bitmap_top,
+        bmp = bitSeqToGfxBitmap(ftbmpToBitSeq(slot.bitmap)))
     return gly
 
 
-def render(infile, size, first, last, dpi, **kwargs):
-    if 'freetype_tt_ver' in kwargs :
-        if "FREETYPE_PROPERTIES" not in os.environ:
-            os.environ["FREETYPE_PROPERTIES"] = ""
-        os.environ["FREETYPE_PROPERTIES"] = "{} truetype:interpreter-version={}".format(
-            os.environ["FREETYPE_PROPERTIES"], kwargs['freetype_tt_ver']
-        )
+def parseOptions():
+    parser = argparse.ArgumentParser(
+        prog="fontconvert.py",
+        description="Convert TTF to adafruit GFXfont header format",
+    )
+    parser.add_argument("--dpi", type=int, default=_DPI_DEFAULT, help="dots per inch")
+    parser.add_argument(
+        "infile", type=str, help="TrueType (.ttf) input file",
+    )
+    parser.add_argument("size", type=int, help="font point size")
+    parser.add_argument("--first", type=int, default=0x20, help="first glyph character")
+    parser.add_argument("--last", type=int, default=0x7E, help="last glyph character")
+    # parser.add_argument(
+    #    "outfile",
+    #    type=argparse.FileType(mode="w"),
+    #    help="GFXfont (.h) output file",
+    # )
+    class Opt:
+        pass
 
-    face = freetype.Face(infile)
-    face.set_char_size(size << 6, 0, dpi, 0)
-
-    font = Fnt()
-    font.name = "{}{}pt7b".format(re.match(".*/(\w*).ttf", infile)[1], size)
-    font.glyphs = [getGlyph(face, ch) for ch in range(first, last + 1)]
-    font.first = first
-    font.last = last
-    font.ya = face.size.height >> 6
-
-    print("const uint8_t {}Bitmaps[] PROGMEM = {{".format(font.name))
-    for gi, g in enumerate(font.glyphs):
-        sep = " " if gi == len(font.glyphs) - 1 else ", "
-        print(
-            "{}{}// ch=0x{:02X}\n".format(
-                ",".join(["0x{:02X}".format(x) for x in g.bmp]), sep, g.ch
-            )
-        )
-    print("};\n")
-
-    # Output glyph attributes table (one per character)
-    print("const GFXglyph {}Glyphs[] PROGMEM = {{".format(font.name))
-
-    bo = 0
-    for gi, g in enumerate(font.glyphs):
-        sep = " " if gi == len(font.glyphs) - 1 else ", "
-        print(
-            "    {{{}, {}, {}, {}, {}, {}}}{}// ch=0x{:02X}".format(
-                bo, g.w, g.h, g.xa, g.xo, g.yo, sep, g.ch,
-            )
-        )
-        bo += len(g.bmp)
-    print("};\n")
-
-    # Output glyph attributes table (one per character)
-    print("const GFXfont {} PROGMEM = {{".format(font.name))
-    print("  (uint8_t  *){}Bitmaps,".format(font.name))
-    print("  (GFXglyph *){}Glyphs,".format(font.name))
-    print("  0x{:02X}, 0x{:02X}, {}}};\n\n".format(font.first, font.last, font.ya))
+    opt = Opt()
+    parser.parse_args(namespace=opt)
+    return opt
 
 
 def main():
@@ -234,7 +244,8 @@ def main():
     opts = vars(parser.parse_args())
     if opts['debug']:
         print("FreeType v{}".format('.'.join([str(x) for x in freetype.version()])), file=sys.stderr)
-    render(**opts)
+
+    FontConvert(**opts).render()
 
 
 if __name__ == "__main__":
