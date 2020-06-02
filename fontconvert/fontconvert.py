@@ -102,8 +102,6 @@ class FontConvert:
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
-
-    def render(self):
         if "freetype_tt_ver" in vars(self):
             if "FREETYPE_PROPERTIES" not in os.environ:
                 os.environ["FREETYPE_PROPERTIES"] = ""
@@ -113,12 +111,59 @@ class FontConvert:
                 os.environ["FREETYPE_PROPERTIES"], self.freetype_tt_ver
             )
 
+    def _ftbmpToBitSeq(self, bitmap):
+        bitSeq = []
+        bitPos = 0
+        for y in range(0, bitmap.rows):
+            rowIdx = y * bitmap.pitch
+            bitPos = 0
+            for x in range(bitmap.width):
+                bitSeq.append((bitmap.buffer[rowIdx] >> (7 - bitPos)) & 1)
+                bitPos += 1
+                if bitPos == 8:
+                    rowIdx += 1
+                    bitPos = 0
+        return bitSeq
+
+
+    def _bitSeqToGfxBitmap(self, bitSeq):
+        arr = []
+        acc = 0
+        bitPos = 7
+        for b in bitSeq:
+            acc = acc | (b << bitPos)
+            if bitPos == 0:
+                arr.append(acc)
+                acc = 0
+                bitPos = 8
+            bitPos -= 1
+        if bitPos != 7:
+            arr.append(acc)
+        return arr
+
+
+    def _getGlyph(self, face, ch):
+        char = chr(ch)
+        face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
+        slot = face.glyph
+        gly = Gly(
+            ch=ch,
+            w=slot.bitmap.width,
+            h=slot.bitmap.rows,
+            xa=slot.advance.x >> 6,
+            xo=slot.bitmap_left,
+            yo=1 - slot.bitmap_top,
+            bmp=self._bitSeqToGfxBitmap(self._ftbmpToBitSeq(slot.bitmap)),
+        )
+        return gly
+
+    def render(self):
         face = freetype.Face(self.infile)
         face.set_char_size(self.size << 6, 0, self.dpi, 0)
 
         font = Fnt(
             name="{}{}pt7b".format(re.match(".*/(\w*).ttf", self.infile)[1], self.size),
-            glyphs=[getGlyph(face, ch) for ch in range(self.first, self.last + 1)],
+            glyphs=[self._getGlyph(face, ch) for ch in range(self.first, self.last + 1)],
             first=self.first,
             last=self.last,
             ya=face.size.height >> 6,
@@ -154,53 +199,6 @@ class FontConvert:
         print("  (uint8_t  *){}Bitmaps,".format(font.name))
         print("  (GFXglyph *){}Glyphs,".format(font.name))
         print("  0x{:02X}, 0x{:02X}, {}}};\n\n".format(font.first, font.last, font.ya))
-
-
-def ftbmpToBitSeq(bitmap):
-    bitSeq = []
-    bitPos = 0
-    for y in range(0, bitmap.rows):
-        rowIdx = y * bitmap.pitch
-        bitPos = 0
-        for x in range(bitmap.width):
-            bitSeq.append((bitmap.buffer[rowIdx] >> (7 - bitPos)) & 1)
-            bitPos += 1
-            if bitPos == 8:
-                rowIdx += 1
-                bitPos = 0
-    return bitSeq
-
-
-def bitSeqToGfxBitmap(bitSeq):
-    arr = []
-    acc = 0
-    bitPos = 7
-    for b in bitSeq:
-        acc = acc | (b << bitPos)
-        if bitPos == 0:
-            arr.append(acc)
-            acc = 0
-            bitPos = 8
-        bitPos -= 1
-    if bitPos != 7:
-        arr.append(acc)
-    return arr
-
-
-def getGlyph(face, ch):
-    char = chr(ch)
-    face.load_char(char, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO)
-    slot = face.glyph
-    gly = Gly(
-        ch=ch,
-        w=slot.bitmap.width,
-        h=slot.bitmap.rows,
-        xa=slot.advance.x >> 6,
-        xo=slot.bitmap_left,
-        yo=1 - slot.bitmap_top,
-        bmp=bitSeqToGfxBitmap(ftbmpToBitSeq(slot.bitmap)),
-    )
-    return gly
 
 
 def parseOptions():
