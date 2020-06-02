@@ -131,32 +131,12 @@ int main(int argc, char *argv[]) {
       fontName[i] = '_';
   }
 
-  //setenv("FREETYPE_PROPERTIES", "truetype:interpreter-version=35", 0);
-
-  {
-    const char* key = "FREETYPE_PROPERTIES";
-    const char *ftprops = getenv(key);
-    if (ftprops)
-      fprintf(stderr, "`%s` = `%s`\n", key, ftprops);
-    else
-      fprintf(stderr, "`%s` unset\n", key);
-  }
-
   // Init FreeType lib, load font
   if ((err = FT_Init_FreeType(&library))) {
     fprintf(stderr, "FreeType init error: %d", err);
     return err;
   }
 
-  {
-    FT_UInt v;
-    const char* lib = "truetype";
-    const char* key = "interpreter-version";
-    FT_Error err = FT_Property_Get(library, lib, key, &v);
-    fprintf(stderr, "%s:%s=%u (%u)\n", lib, key, (unsigned)v, (unsigned)err);
-  }
-
-#if 1
   // Use TrueType engine version 35, without subpixel rendering.
   // This improves clarity of fonts since this library does not
   // support rendering multiple levels of gray in a glyph.
@@ -164,7 +144,6 @@ int main(int argc, char *argv[]) {
   FT_UInt interpreter_version = TT_INTERPRETER_VERSION_35;
   FT_Property_Set(library, "truetype", "interpreter-version",
                   &interpreter_version);
-#endif
 
   if ((err = FT_New_Face(library, argv[1], 0, &face))) {
     fprintf(stderr, "Font load error: %d", err);
