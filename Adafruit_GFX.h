@@ -318,8 +318,10 @@ public:
   */
   /**********************************************************************/
   uint8_t *getBuffer(void) const { return buffer; }
+
 protected:
   bool getRawPixel(int16_t x, int16_t y) const;
+
 private:
   uint8_t *buffer;
 
@@ -345,8 +347,10 @@ public:
   */
   /**********************************************************************/
   uint8_t *getBuffer(void) const { return buffer; }
+
 protected:
   uint8_t getRawPixel(int16_t x, int16_t y) const;
+
 private:
   uint8_t *buffer;
 };
@@ -359,7 +363,7 @@ public:
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void byteSwap(void);
-  uint16_t	getPixel(int16_t x, int16_t y) const;
+  uint16_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
     @brief    Get a pointer to the internal buffer memory
@@ -367,8 +371,10 @@ public:
   */
   /**********************************************************************/
   uint16_t *getBuffer(void) const { return buffer; }
+
 protected:
-  uint16_t	getRawPixel(int16_t x, int16_t y) const;
+  uint16_t getRawPixel(int16_t x, int16_t y) const;
+
 private:
   uint16_t *buffer;
 };
