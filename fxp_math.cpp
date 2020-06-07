@@ -97,10 +97,9 @@ int16_t q15_sin(const int16_t a) {
   // for a positive number > 0
   const int16_t q15_f1 = 32768 - a;
   // multiple by 16/32768
-  const int16_t x = q15_mul(a, q15_f1); 
+  const int16_t x = q15_mul(a, q15_f1);
   // multiple by 16/32768
-  const int16_t y =
-      double_to_q15(5.0 / 16) - q15_mul(double_to_q15(0.25), x);
+  const int16_t y = double_to_q15(5.0 / 16) - q15_mul(double_to_q15(0.25), x);
   const int16_t sin = q15_div(x, y);
   return (a < 0) ? -sin : sin;
 }
