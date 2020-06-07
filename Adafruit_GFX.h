@@ -7,6 +7,7 @@
 #else
 #include "WProgram.h"
 #endif
+#include "fxp_math.h"
 #include "gfxfont.h"
 
 /// A generic graphics superclass that can handle all sorts of drawing. At a
@@ -70,19 +71,20 @@ public:
   void fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
   void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
                         int16_t delta, uint16_t color);
-  void fillArc(int16_t x0, int16_t y0, int16_t r, double start_angle,
-               double stop_angle, boolean clockwise, uint16_t color);
-  void fillArcHelper(int16_t x0, int16_t y0, int16_t r, double start_angle,
-                     double stop_angle, int16_t xa, int16_t ya, double delta,
-                     boolean clockwise, uint16_t color);
+  void fillArc(int16_t x0, int16_t y0, int16_t r, int16_t start_angle,
+               int16_t stop_angle, boolean clockwise, uint16_t color);
+  void fillArcHelper(int16_t x0, int16_t y0, int16_t r, int16_t start_angle,
+                     int16_t stop_angle, int16_t xa, int16_t ya,
+                     int32_t x_delta, int32_t y_delta, boolean clockwise,
+                     uint16_t color);
   void drawFastVLineHelper(int16_t x1, int16_t y0, int16_t x, int16_t y,
-                           double start_angle, double stop_angle, int16_t xa,
-                           int16_t ya, double delta, boolean clockwise,
-                           uint16_t color);
-  void drawArc(int16_t x0, int16_t y0, int16_t r, double start_angle,
-               double stop_angle, boolean clockwise, uint16_t color);
-  void drawArcHelper(int16_t x0, int16_t y0, int16_t r, double start_angle,
-                     double stop_angle, uint16_t color);
+                           int16_t start_angle, int16_t stop_angle, int16_t xa,
+                           int16_t ya, int32_t x_delta, int32_t y_delta,
+                           boolean clockwise, uint16_t color);
+  void drawArc(int16_t x0, int16_t y0, int16_t r, int16_t start_angle,
+               int16_t stop_angle, boolean clockwise, uint16_t color);
+  void drawArcHelper(int16_t x0, int16_t y0, int16_t r, int16_t start_angle,
+                     int16_t stop_angle, uint16_t color);
   void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
                     int16_t y2, uint16_t color);
   void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
