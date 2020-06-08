@@ -411,7 +411,6 @@ void Adafruit_GFX::drawCircleHelper(int16_t x0, int16_t y0, int16_t r,
   int16_t ddF_y = -2 * r;
   int16_t x = 0;
   int16_t y = r;
-  int16_t xold = x;
 
   while (x < y) {
     if (f >= 0) {
@@ -422,24 +421,21 @@ void Adafruit_GFX::drawCircleHelper(int16_t x0, int16_t y0, int16_t r,
     x++;
     ddF_x += 2;
     f += ddF_x;
-    if (f >= 0 || x == y) {
-      if (cornername & 0x4) { // SE
-        drawFastHLine(x0 + xold + 1, y0 + y, x - xold, color);
-        drawFastVLine(x0 + y, y0 + xold + 1, x - xold, color);
-      }
-      if (cornername & 0x2) { // NE
-        drawFastHLine(x0 + xold + 1, y0 - y, x - xold, color);
-        drawFastVLine(x0 + y, y0 - x, x - xold, color);
-      }
-      if (cornername & 0x8) { // SW
-        drawFastVLine(x0 - y, y0 + xold + 1, x - xold, color);
-        drawFastHLine(x0 - x, y0 + y, x - xold, color);
-      }
-      if (cornername & 0x1) { // NW
-        drawFastVLine(x0 - y, y0 - x, x - xold, color);
-        drawFastHLine(x0 - x, y0 - y, x - xold, color);
-      }
-      xold = x;
+    if (cornername & 0x4) {
+      writePixel(x0 + x, y0 + y, color);
+      writePixel(x0 + y, y0 + x, color);
+    }
+    if (cornername & 0x2) {
+      writePixel(x0 + x, y0 - y, color);
+      writePixel(x0 + y, y0 - x, color);
+    }
+    if (cornername & 0x8) {
+      writePixel(x0 - y, y0 + x, color);
+      writePixel(x0 - x, y0 + y, color);
+    }
+    if (cornername & 0x1) {
+      writePixel(x0 - y, y0 - x, color);
+      writePixel(x0 - x, y0 - y, color);
     }
   }
 }
@@ -1152,36 +1148,27 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
     startWrite();
     for (int8_t i = 0; i < 5; i++) { // Char bitmap = 5 columns
-      uint8_t count = 0;
-      uint8_t j_new, j, line = pgm_read_byte(&font[c * 5 + i]);
-      j = j_new = 0;
-      while (j < 8) {
-        while (j_new < 8 && (line & 1) == 0) { // bg pixels
-          count++;                             // count up bg pixels in a row
-          j_new++;
-          line >>= 1;
+      uint8_t line = pgm_read_byte(&font[c * 5 + i]);
+      for (int8_t j = 0; j < 8; j++, line >>= 1) {
+        if (line & 1) {
+          if (size_x == 1 && size_y == 1)
+            writePixel(x + i, y + j, color);
+          else
+            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y,
+                          color);
+        } else if (bg != color) {
+          if (size_x == 1 && size_y == 1)
+            writePixel(x + i, y + j, bg);
+          else
+            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y, bg);
         }
-        if (count && bg != color) { // need to draw background color
-          writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y * count,
-                        bg);
-        }
-        count = 0;
-        j = j_new;
-        while (j_new < 8 && (line & 1) == 1) { // fg pixels
-          count++;                             // count up fg pixels
-          j_new++;
-          line >>= 1;
-        }
-        if (count) { // need to draw foreground color
-          writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y * count,
-                        color);
-          count = 0;
-          j = j_new;
-        }
-      } // while (j < 8)
+      }
     }
     if (bg != color) { // If opaque, draw vertical line for last column
-      writeFillRect(x + 5 * size_x, y, size_x, 8 * size_y, bg);
+      if (size_x == 1 && size_y == 1)
+        writeFastVLine(x + 5, y, 8, bg);
+      else
+        writeFillRect(x + 5 * size_x, y, size_x, 8 * size_y, bg);
     }
     endWrite();
 
