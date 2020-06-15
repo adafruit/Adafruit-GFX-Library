@@ -1713,9 +1713,7 @@ bool Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
    @returns  True if was pressed before, now is not.
 */
 /**************************************************************************/
-bool Adafruit_GFX_Button::justReleased() {
-  return (!currstate && laststate);
-}
+bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 
 // -------------------------------------------------------------------------
 
