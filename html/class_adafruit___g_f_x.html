@@ -117,9 +117,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a6ac337c49876cee23ed062a928724675"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6ac337c49876cee23ed062a928724675">setRotation</a> (uint8_t r)</td></tr>
 <tr class="memdesc:a6ac337c49876cee23ed062a928724675"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set rotation setting for display.  <a href="#a6ac337c49876cee23ed062a928724675">More...</a><br /></td></tr>
 <tr class="separator:a6ac337c49876cee23ed062a928724675"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fa315803f39a5e73b1841874daf0483"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a2fa315803f39a5e73b1841874daf0483">invertDisplay</a> (boolean i)</td></tr>
-<tr class="memdesc:a2fa315803f39a5e73b1841874daf0483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the display (ideally using built-in hardware command)  <a href="#a2fa315803f39a5e73b1841874daf0483">More...</a><br /></td></tr>
-<tr class="separator:a2fa315803f39a5e73b1841874daf0483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45028d348fe4eb23854eb86f5cf99388"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a45028d348fe4eb23854eb86f5cf99388">invertDisplay</a> (bool i)</td></tr>
+<tr class="memdesc:a45028d348fe4eb23854eb86f5cf99388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the display (ideally using built-in hardware command)  <a href="#a45028d348fe4eb23854eb86f5cf99388">More...</a><br /></td></tr>
+<tr class="separator:a45028d348fe4eb23854eb86f5cf99388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cffbb1d69c5faf49cd0cff27686a837"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a1cffbb1d69c5faf49cd0cff27686a837">drawFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
 <tr class="memdesc:a1cffbb1d69c5faf49cd0cff27686a837"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a perfectly vertical line (this is often optimized in a subclass!)  <a href="#a1cffbb1d69c5faf49cd0cff27686a837">More...</a><br /></td></tr>
 <tr class="separator:a1cffbb1d69c5faf49cd0cff27686a837"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -234,12 +234,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:ab6e88c585d3ab6b4f95199361f224fc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab6e88c585d3ab6b4f95199361f224fc6">setTextColor</a> (uint16_t c, uint16_t bg)</td></tr>
 <tr class="memdesc:ab6e88c585d3ab6b4f95199361f224fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text font color with custom background color.  <a href="#ab6e88c585d3ab6b4f95199361f224fc6">More...</a><br /></td></tr>
 <tr class="separator:ab6e88c585d3ab6b4f95199361f224fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aeeacd62bf26f3e7abbdc4b5b50faa6fa">setTextWrap</a> (boolean w)</td></tr>
-<tr class="memdesc:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether text that is too long for the screen width should automatically wrap around to the next line (else clip right).  <a href="#aeeacd62bf26f3e7abbdc4b5b50faa6fa">More...</a><br /></td></tr>
-<tr class="separator:aeeacd62bf26f3e7abbdc4b5b50faa6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d447fe274e3f0ff12f12afa538d0afe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6d447fe274e3f0ff12f12afa538d0afe">cp437</a> (boolean x=true)</td></tr>
-<tr class="memdesc:a6d447fe274e3f0ff12f12afa538d0afe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable (or disable) Code Page 437-compatible charset. There was an error in glcdfont.c for the longest time &ndash; one character (#176, the 'light shade' block) was missing &ndash; this threw off the index of every character that followed it. But a TON of code has been written with the erroneous character indices. By default, the library uses the original 'wrong' behavior and old sketches will still work. Pass 'true' to this function to use correct CP437 character values in your code.  <a href="#a6d447fe274e3f0ff12f12afa538d0afe">More...</a><br /></td></tr>
-<tr class="separator:a6d447fe274e3f0ff12f12afa538d0afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f69fe66c38989e75be3216be22359b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a2f69fe66c38989e75be3216be22359b1">setTextWrap</a> (bool w)</td></tr>
+<tr class="memdesc:a2f69fe66c38989e75be3216be22359b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether text that is too long for the screen width should automatically wrap around to the next line (else clip right).  <a href="#a2f69fe66c38989e75be3216be22359b1">More...</a><br /></td></tr>
+<tr class="separator:a2f69fe66c38989e75be3216be22359b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3cd691e204f3df61297a9557e2ea5c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ac3cd691e204f3df61297a9557e2ea5c7">cp437</a> (bool x=true)</td></tr>
+<tr class="memdesc:ac3cd691e204f3df61297a9557e2ea5c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable (or disable) Code Page 437-compatible charset. There was an error in glcdfont.c for the longest time &ndash; one character (#176, the 'light shade' block) was missing &ndash; this threw off the index of every character that followed it. But a TON of code has been written with the erroneous character indices. By default, the library uses the original 'wrong' behavior and old sketches will still work. Pass 'true' to this function to use correct CP437 character values in your code.  <a href="#ac3cd691e204f3df61297a9557e2ea5c7">More...</a><br /></td></tr>
+<tr class="separator:ac3cd691e204f3df61297a9557e2ea5c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8773d92cafa93d3f749fb55c535d8f2e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a8773d92cafa93d3f749fb55c535d8f2e">write</a> (uint8_t)</td></tr>
 <tr class="memdesc:a8773d92cafa93d3f749fb55c535d8f2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print one byte/character of data, used to support print()  <a href="#a8773d92cafa93d3f749fb55c535d8f2e">More...</a><br /></td></tr>
 <tr class="separator:a8773d92cafa93d3f749fb55c535d8f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -311,14 +311,14 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a37a479d28fb11906ce516e983b1af926">rotation</a></td></tr>
 <tr class="memdesc:a37a479d28fb11906ce516e983b1af926"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display rotation (0 thru 3) <br /></td></tr>
 <tr class="separator:a37a479d28fb11906ce516e983b1af926"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6bd603e01861212829d536312a7190b"><td class="memItemLeft" align="right" valign="top"><a id="ad6bd603e01861212829d536312a7190b"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ad6bd603e01861212829d536312a7190b">wrap</a></td></tr>
-<tr class="memdesc:ad6bd603e01861212829d536312a7190b"><td class="mdescLeft">&#160;</td><td class="mdescRight">If set, 'wrap' text at right edge of display. <br /></td></tr>
-<tr class="separator:ad6bd603e01861212829d536312a7190b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaef3d4d239641084cd3825a8b1042e01"><td class="memItemLeft" align="right" valign="top"><a id="aaef3d4d239641084cd3825a8b1042e01"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aaef3d4d239641084cd3825a8b1042e01">_cp437</a></td></tr>
-<tr class="memdesc:aaef3d4d239641084cd3825a8b1042e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">If set, use correct CP437 charset (default is off) <br /></td></tr>
-<tr class="separator:aaef3d4d239641084cd3825a8b1042e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c31e63d43f7285e47aa48c363d86ce9"><td class="memItemLeft" align="right" valign="top"><a id="a8c31e63d43f7285e47aa48c363d86ce9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a8c31e63d43f7285e47aa48c363d86ce9">wrap</a></td></tr>
+<tr class="memdesc:a8c31e63d43f7285e47aa48c363d86ce9"><td class="mdescLeft">&#160;</td><td class="mdescRight">If set, 'wrap' text at right edge of display. <br /></td></tr>
+<tr class="separator:a8c31e63d43f7285e47aa48c363d86ce9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a751d54ed0e52ca2657b194769782d5eb"><td class="memItemLeft" align="right" valign="top"><a id="a751d54ed0e52ca2657b194769782d5eb"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a751d54ed0e52ca2657b194769782d5eb">_cp437</a></td></tr>
+<tr class="memdesc:a751d54ed0e52ca2657b194769782d5eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">If set, use correct CP437 charset (default is off) <br /></td></tr>
+<tr class="separator:a751d54ed0e52ca2657b194769782d5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afeb94c3253f43dada05e1270e322fa06"><td class="memItemLeft" align="right" valign="top"><a id="afeb94c3253f43dada05e1270e322fa06"></a>
 <a class="el" href="struct_g_f_xfont.html">GFXfont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#afeb94c3253f43dada05e1270e322fa06">gfxFont</a></td></tr>
 <tr class="memdesc:afeb94c3253f43dada05e1270e322fa06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to special font. <br /></td></tr>
@@ -763,8 +763,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a2fa315803f39a5e73b1841874daf0483"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2fa315803f39a5e73b1841874daf0483">&#9670;&nbsp;</a></span>invertDisplay()</h2>
+<a id="a45028d348fe4eb23854eb86f5cf99388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45028d348fe4eb23854eb86f5cf99388">&#9670;&nbsp;</a></span>invertDisplay()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -775,7 +775,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
         <tr>
           <td class="memname">void Adafruit_GFX::invertDisplay </td>
           <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>i</em></td><td>)</td>
           <td></td>
         </tr>
@@ -795,7 +795,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="class_adafruit___mono_o_l_e_d.html#ad5a4340016c35eea3f44f181c56404c4">Adafruit_MonoOLED</a>.</p>
+<p>Reimplemented in <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a21a13b3b0e6e0bb1328b5050559dd919">Adafruit_SPITFT</a>, and <a class="el" href="class_adafruit___mono_o_l_e_d.html#afc64512468c286053c9adad976e7533c">Adafruit_MonoOLED</a>.</p>
 
 </div>
 </div>
@@ -3054,8 +3054,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="aeeacd62bf26f3e7abbdc4b5b50faa6fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeeacd62bf26f3e7abbdc4b5b50faa6fa">&#9670;&nbsp;</a></span>setTextWrap()</h2>
+<a id="a2f69fe66c38989e75be3216be22359b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f69fe66c38989e75be3216be22359b1">&#9670;&nbsp;</a></span>setTextWrap()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3066,7 +3066,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
         <tr>
           <td class="memname">void Adafruit_GFX::setTextWrap </td>
           <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>w</em></td><td>)</td>
           <td></td>
         </tr>
@@ -3088,8 +3088,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a6d447fe274e3f0ff12f12afa538d0afe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d447fe274e3f0ff12f12afa538d0afe">&#9670;&nbsp;</a></span>cp437()</h2>
+<a id="ac3cd691e204f3df61297a9557e2ea5c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3cd691e204f3df61297a9557e2ea5c7">&#9670;&nbsp;</a></span>cp437()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3100,7 +3100,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
         <tr>
           <td class="memname">void Adafruit_GFX::cp437 </td>
           <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>x</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>

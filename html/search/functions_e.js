@@ -10,7 +10,7 @@ var searchData=
   ['setspispeed',['setSPISpeed',['../class_adafruit___s_p_i_t_f_t.html#a4eb7f9703e15a7a289e61f5bc450ca4d',1,'Adafruit_SPITFT']]],
   ['settextcolor',['setTextColor',['../class_adafruit___g_f_x.html#a59178a0e0c845a14a39b457c43567dd9',1,'Adafruit_GFX::setTextColor(uint16_t c)'],['../class_adafruit___g_f_x.html#ab6e88c585d3ab6b4f95199361f224fc6',1,'Adafruit_GFX::setTextColor(uint16_t c, uint16_t bg)']]],
   ['settextsize',['setTextSize',['../class_adafruit___g_f_x.html#a39eb4a8a2c9fa4ab7d58ceffd19535d5',1,'Adafruit_GFX::setTextSize(uint8_t s)'],['../class_adafruit___g_f_x.html#abd8ea7d9203db38d7b601979f1252e37',1,'Adafruit_GFX::setTextSize(uint8_t sx, uint8_t sy)']]],
-  ['settextwrap',['setTextWrap',['../class_adafruit___g_f_x.html#aeeacd62bf26f3e7abbdc4b5b50faa6fa',1,'Adafruit_GFX']]],
+  ['settextwrap',['setTextWrap',['../class_adafruit___g_f_x.html#a2f69fe66c38989e75be3216be22359b1',1,'Adafruit_GFX']]],
   ['spi_5fbegin_5ftransaction',['SPI_BEGIN_TRANSACTION',['../class_adafruit___s_p_i_t_f_t.html#adb38cd7e43e128cf47b1f456423bea33',1,'Adafruit_SPITFT']]],
   ['spi_5fcs_5fhigh',['SPI_CS_HIGH',['../class_adafruit___s_p_i_t_f_t.html#ab395bc0dca991a4b5151f459adf5ad38',1,'Adafruit_SPITFT']]],
   ['spi_5fcs_5flow',['SPI_CS_LOW',['../class_adafruit___s_p_i_t_f_t.html#afbb8eeea97e940e29cc124e155383f76',1,'Adafruit_SPITFT']]],
