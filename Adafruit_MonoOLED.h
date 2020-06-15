@@ -66,17 +66,17 @@ public:
    **/
   virtual void display(void) = 0;
   void clearDisplay(void);
-  void invertDisplay(boolean i);
+  void invertDisplay(bool i);
   void setContrast(uint8_t contrastlevel);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
-  boolean getPixel(int16_t x, int16_t y);
+  bool getPixel(int16_t x, int16_t y);
   uint8_t *getBuffer(void);
 
   void oled_command(uint8_t c);
   bool oled_commandList(const uint8_t *c, uint8_t n);
 
 protected:
-  bool _init(uint8_t i2caddr = 0x3C, boolean reset = true);
+  bool _init(uint8_t i2caddr = 0x3C, bool reset = true);
 
   Adafruit_SPIDevice *spi_dev = NULL; ///< The SPI interface BusIO device
   Adafruit_I2CDevice *i2c_dev = NULL; ///< The I2C interface BusIO device

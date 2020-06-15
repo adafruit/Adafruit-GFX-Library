@@ -213,7 +213,7 @@ bool Adafruit_MonoOLED::oled_commandList(const uint8_t *c, uint8_t n) {
             proceeding.
     @note   MUST call this function before any drawing or updates!
 */
-bool Adafruit_MonoOLED::_init(uint8_t addr, boolean reset) {
+bool Adafruit_MonoOLED::_init(uint8_t addr, bool reset) {
 
   // attempt to malloc the bitmap framebuffer
   if ((!buffer) && !(buffer = (uint8_t *)malloc(WIDTH * ((HEIGHT + 7) / 8)))) {
@@ -339,7 +339,7 @@ void Adafruit_MonoOLED::clearDisplay(void) {
     @note   Reads from buffer contents; may not reflect current contents of
             screen if display() has not been called.
 */
-boolean Adafruit_MonoOLED::getPixel(int16_t x, int16_t y) {
+bool Adafruit_MonoOLED::getPixel(int16_t x, int16_t y) {
   if ((x >= 0) && (x < width()) && (y >= 0) && (y < height())) {
     // Pixel is in-bounds. Rotate coordinates if needed.
     switch (getRotation()) {
@@ -383,7 +383,7 @@ uint8_t *Adafruit_MonoOLED::getBuffer(void) { return buffer; }
             enabled, drawing MONOOLED_BLACK (value 0) pixels will actually draw
    white, MONOOLED_WHITE (value 1) will draw black.
 */
-void Adafruit_MonoOLED::invertDisplay(boolean i) {
+void Adafruit_MonoOLED::invertDisplay(bool i) {
   oled_command(i ? MONOOLED_INVERTDISPLAY : MONOOLED_NORMALDISPLAY);
 }
 
