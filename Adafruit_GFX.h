@@ -310,6 +310,7 @@ public:
   ~GFXcanvas1(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
+  bool getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
     @brief    Get a pointer to the internal buffer memory
@@ -318,8 +319,16 @@ public:
   /**********************************************************************/
   uint8_t *getBuffer(void) const { return buffer; }
 
+protected:
+  bool getRawPixel(int16_t x, int16_t y) const;
+
 private:
   uint8_t *buffer;
+
+#ifdef __AVR__
+  // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
+  static const uint8_t PROGMEM GFXsetBit[], GFXclrBit[];
+#endif
 };
 
 /// A GFX 8-bit canvas context for graphics
@@ -330,6 +339,7 @@ public:
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  uint8_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
    @brief    Get a pointer to the internal buffer memory
@@ -337,6 +347,9 @@ public:
   */
   /**********************************************************************/
   uint8_t *getBuffer(void) const { return buffer; }
+
+protected:
+  uint8_t getRawPixel(int16_t x, int16_t y) const;
 
 private:
   uint8_t *buffer;
@@ -350,6 +363,7 @@ public:
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void byteSwap(void);
+  uint16_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
     @brief    Get a pointer to the internal buffer memory
@@ -357,6 +371,9 @@ public:
   */
   /**********************************************************************/
   uint16_t *getBuffer(void) const { return buffer; }
+
+protected:
+  uint16_t getRawPixel(int16_t x, int16_t y) const;
 
 private:
   uint16_t *buffer;
