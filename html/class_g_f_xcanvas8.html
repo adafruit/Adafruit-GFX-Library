@@ -60,6 +60,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="class_g_f_xcanvas8-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">GFXcanvas8 Class Reference</div>  </div>
@@ -98,6 +99,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5eadf69798e020345107af6cdb86f222"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a5eadf69798e020345107af6cdb86f222">writeFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
 <tr class="memdesc:a5eadf69798e020345107af6cdb86f222"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line, overwrite in subclasses if startWrite is defined!  <a href="#a5eadf69798e020345107af6cdb86f222">More...</a><br /></td></tr>
 <tr class="separator:a5eadf69798e020345107af6cdb86f222"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a596d92a61af6e59c69f132f1670ee62c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a596d92a61af6e59c69f132f1670ee62c">getPixel</a> (int16_t x, int16_t y) const</td></tr>
+<tr class="memdesc:a596d92a61af6e59c69f132f1670ee62c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the pixel color value at a given coordinate.  <a href="#a596d92a61af6e59c69f132f1670ee62c">More...</a><br /></td></tr>
+<tr class="separator:a596d92a61af6e59c69f132f1670ee62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1928e73eeb06e56a8e8c75738b57e304"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a1928e73eeb06e56a8e8c75738b57e304">getBuffer</a> (void) const</td></tr>
 <tr class="memdesc:a1928e73eeb06e56a8e8c75738b57e304"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a pointer to the internal buffer memory.  <a href="#a1928e73eeb06e56a8e8c75738b57e304">More...</a><br /></td></tr>
 <tr class="separator:a1928e73eeb06e56a8e8c75738b57e304"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -267,12 +271,18 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get text cursor Y location.  <a href="class_adafruit___g_f_x.html#a81c8558cfcb717c4cfbd5475998daed1">More...</a><br /></td></tr>
 <tr class="separator:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a4ba7ffdd7a75f7377f5856547e4e1391"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a4ba7ffdd7a75f7377f5856547e4e1391">getRawPixel</a> (int16_t x, int16_t y) const</td></tr>
+<tr class="memdesc:a4ba7ffdd7a75f7377f5856547e4e1391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the pixel color value at a given, unrotated coordinate. This method is intended for hardware drivers to get pixel value in physical coordinates.  <a href="#a4ba7ffdd7a75f7377f5856547e4e1391">More...</a><br /></td></tr>
+<tr class="separator:a4ba7ffdd7a75f7377f5856547e4e1391"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">charBounds</a> (unsigned char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
 <tr class="memdesc:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">More...</a><br /></td></tr>
 <tr class="separator:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:aded338777abeac3c457660023f5c0724 inherit pro_attribs_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top"><a id="aded338777abeac3c457660023f5c0724"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aded338777abeac3c457660023f5c0724">WIDTH</a></td></tr>
@@ -417,7 +427,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <table class="params">
     <tr><td class="paramname">x</td><td>x coordinate </td></tr>
     <tr><td class="paramname">y</td><td>y coordinate </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">color</td><td>8-bit Color to fill with. Only lower byte of uint16_t is used. </td></tr>
   </table>
   </dd>
 </dl>
@@ -453,7 +463,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Fill the framebuffer completely with one color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">color</td><td>8-bit Color to fill with. Only lower byte of uint16_t is used. </td></tr>
   </table>
   </dd>
 </dl>
@@ -523,6 +533,44 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
+<a id="a596d92a61af6e59c69f132f1670ee62c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a596d92a61af6e59c69f132f1670ee62c">&#9670;&nbsp;</a></span>getPixel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t GFXcanvas8::getPixel </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the pixel color value at a given coordinate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>x coordinate </td></tr>
+    <tr><td class="paramname">y</td><td>y coordinate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The desired pixel's 8-bit color value </dd></dl>
+
+</div>
+</div>
 <a id="a1928e73eeb06e56a8e8c75738b57e304"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1928e73eeb06e56a8e8c75738b57e304">&#9670;&nbsp;</a></span>getBuffer()</h2>
 
@@ -549,6 +597,52 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>Get a pointer to the internal buffer memory. </p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the allocated buffer </dd></dl>
+
+</div>
+</div>
+<a id="a4ba7ffdd7a75f7377f5856547e4e1391"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ba7ffdd7a75f7377f5856547e4e1391">&#9670;&nbsp;</a></span>getRawPixel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t GFXcanvas8::getRawPixel </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the pixel color value at a given, unrotated coordinate. This method is intended for hardware drivers to get pixel value in physical coordinates. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>x coordinate </td></tr>
+    <tr><td class="paramname">y</td><td>y coordinate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The desired pixel's 8-bit color value </dd></dl>
 
 </div>
 </div>

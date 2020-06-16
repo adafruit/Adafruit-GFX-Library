@@ -60,6 +60,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="class_g_f_xcanvas16-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">GFXcanvas16 Class Reference</div>  </div>
@@ -99,6 +100,9 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#a1d0f26a1252ad384612ca14b07cee98e">byteSwap</a> (void)</td></tr>
 <tr class="memdesc:a1d0f26a1252ad384612ca14b07cee98e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reverses the "endian-ness" of each 16-bit pixel within the canvas; little-endian to big-endian, or big-endian to little. Most microcontrollers (such as SAMD) are little-endian, while most displays tend toward big-endianness. All the drawing functions (including RGB bitmap drawing) take care of this automatically, but some specialized code (usually involving DMA) can benefit from having pixel data already in the display-native order. Note that this does NOT convert to a SPECIFIC endian-ness, it just flips the bytes within each word. <br /></td></tr>
 <tr class="separator:a1d0f26a1252ad384612ca14b07cee98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0debb25a92095f1b069b649eb3e795e"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#aa0debb25a92095f1b069b649eb3e795e">getPixel</a> (int16_t x, int16_t y) const</td></tr>
+<tr class="memdesc:aa0debb25a92095f1b069b649eb3e795e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the pixel color value at a given coordinate.  <a href="#aa0debb25a92095f1b069b649eb3e795e">More...</a><br /></td></tr>
+<tr class="separator:aa0debb25a92095f1b069b649eb3e795e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b524ecbbe1e562b49caef524694a91c"><td class="memItemLeft" align="right" valign="top">uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#a6b524ecbbe1e562b49caef524694a91c">getBuffer</a> (void) const</td></tr>
 <tr class="memdesc:a6b524ecbbe1e562b49caef524694a91c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a pointer to the internal buffer memory.  <a href="#a6b524ecbbe1e562b49caef524694a91c">More...</a><br /></td></tr>
 <tr class="separator:a6b524ecbbe1e562b49caef524694a91c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -271,12 +275,18 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get text cursor Y location.  <a href="class_adafruit___g_f_x.html#a81c8558cfcb717c4cfbd5475998daed1">More...</a><br /></td></tr>
 <tr class="separator:a81c8558cfcb717c4cfbd5475998daed1 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:af2ffc935a173c5f99e03b645cc883678"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#af2ffc935a173c5f99e03b645cc883678">getRawPixel</a> (int16_t x, int16_t y) const</td></tr>
+<tr class="memdesc:af2ffc935a173c5f99e03b645cc883678"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the pixel color value at a given, unrotated coordinate. This method is intended for hardware drivers to get pixel value in physical coordinates.  <a href="#af2ffc935a173c5f99e03b645cc883678">More...</a><br /></td></tr>
+<tr class="separator:af2ffc935a173c5f99e03b645cc883678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">charBounds</a> (unsigned char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
 <tr class="memdesc:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">More...</a><br /></td></tr>
 <tr class="separator:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:aded338777abeac3c457660023f5c0724 inherit pro_attribs_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top"><a id="aded338777abeac3c457660023f5c0724"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aded338777abeac3c457660023f5c0724">WIDTH</a></td></tr>
@@ -466,6 +476,44 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
+<a id="aa0debb25a92095f1b069b649eb3e795e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0debb25a92095f1b069b649eb3e795e">&#9670;&nbsp;</a></span>getPixel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t GFXcanvas16::getPixel </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the pixel color value at a given coordinate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>x coordinate </td></tr>
+    <tr><td class="paramname">y</td><td>y coordinate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The desired pixel's 16-bit 5-6-5 color value </dd></dl>
+
+</div>
+</div>
 <a id="a6b524ecbbe1e562b49caef524694a91c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6b524ecbbe1e562b49caef524694a91c">&#9670;&nbsp;</a></span>getBuffer()</h2>
 
@@ -492,6 +540,52 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>Get a pointer to the internal buffer memory. </p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the allocated buffer </dd></dl>
+
+</div>
+</div>
+<a id="af2ffc935a173c5f99e03b645cc883678"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2ffc935a173c5f99e03b645cc883678">&#9670;&nbsp;</a></span>getRawPixel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t GFXcanvas16::getRawPixel </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the pixel color value at a given, unrotated coordinate. This method is intended for hardware drivers to get pixel value in physical coordinates. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>x coordinate </td></tr>
+    <tr><td class="paramname">y</td><td>y coordinate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The desired pixel's 16-bit 5-6-5 color value </dd></dl>
 
 </div>
 </div>
