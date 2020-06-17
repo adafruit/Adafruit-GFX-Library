@@ -37,6 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <avr/pgmspace.h>
 #elif defined(ESP8266) || defined(ESP32)
 #include <pgmspace.h>
+#include <math.h>
+#define PI 3.14159
 #endif
 
 // Many (but maybe not all) non-AVR board installs define macros
@@ -529,6 +531,64 @@ void Adafruit_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
   writeFastVLine(x + w - 1, y, h, color);
   endWrite();
 }
+
+/**************************************************************************/
+/*!
+   @brief   Draw a pentabram with no fill color
+    @param    x   Center corner x coordinate
+    @param    y   Center corner y coordinate
+    @param    r   radius
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawPentagram(int16_t x, int16_t y, int16_t r, uint16_t color) {
+    int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5;//五个顶点坐标
+    x1=x;y1=y-r;
+    x2=x-r*sin(PI/180*72);y2 = y+ r* -(cos(PI / 180 * 72));
+    x3 = x - r * -(sin(PI / 180 * 36));
+    y3 = y - r * -(cos(PI / 180 * 36));
+    x4 = x + r * -(sin(PI / 180 * 36));
+    y4 = y - r * -(cos(PI / 180 * 36));
+    x5 = x + r * sin(PI / 180 * 72);
+    y5 = y + r * -(cos(PI / 180 * 72));
+    startWrite();
+    drawLine(x1, y1, x3, y3, color);
+    drawLine(x1, y1, x4, y4, color);
+    drawLine(x2, y2, x3, y3, color);
+    drawLine(x2, y2, x5, y5, color);
+    drawLine(x4, y4, x5, y5, color);
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
+   @brief   Draw a ellipse with no fill color
+    @param    x1,y1   F1 x,y coordinate
+    @param    x2,y2   F2 x,y coordinate
+    @param    a
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+// Draw a ellipse outline
+void Adafruit_GFX::drawEllipse(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t a, uint16_t color) {
+    
+    int16_t max_x = ((x1 > x2 ? x1 : x2) + a > 128 ? (x1 > x2 ? x1 : x2) + a : 128);
+    int16_t max_y = ((y1 > y2 ? y1 : y2) + a > 64 ? (y1 > y2 ? y1 : y2) + a : 64);
+    
+    for (int16_t x = ((x1 > x2 ? x2 : x1) - a > 0 ? (x1 > x2 ? x2 : x1) - a : 0 ); x <= max_x; x++) {
+        for (int16_t y = ((y1 > y2 ? y2 : y1) - a > 0 ? (y1 > y2 ? y2 : y1) - a : 0); y <= max_y; y++) {
+            int32_t d = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1)) + sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
+            if (d-a == a) {
+                writePixel(x, y, color);
+            }
+        }
+    }
+    endWrite();
+}
+
+
+
+
 
 /**************************************************************************/
 /*!
