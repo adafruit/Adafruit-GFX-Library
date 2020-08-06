@@ -39,6 +39,8 @@
 #if defined(__AVR_XMEGA__) // only tested with __AVR_ATmega4809__
 #define AVR_WRITESPI(x)                                                        \
   for (SPI0_DATA = (x); (!(SPI0_INTFLAGS & _BV(SPI_IF_bp)));)
+#elif defined(__LGT8F__)
+#define AVR_WRITESPI(x) SPDR = (x);asm volatile("nop");while((SPFR & _BV(RDEMPT)));SPFR = _BV(RDEMPT) | _BV(WREMPT)
 #else
 #define AVR_WRITESPI(x) for (SPDR = (x); (!(SPSR & _BV(SPIF)));)
 #endif
