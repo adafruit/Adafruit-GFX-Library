@@ -1980,6 +1980,15 @@ void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   Binary (on or off) color to fill with
+*/
+/**************************************************************************/
 void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
@@ -2010,6 +2019,15 @@ void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   Binary (on or off) color to fill with
+*/
+/**************************************************************************/
 void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
@@ -2286,6 +2304,16 @@ void GFXcanvas8::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
+   used.
+*/
+/**************************************************************************/
 void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
@@ -2296,6 +2324,16 @@ void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
+   used.
+*/
+/**************************************************************************/
 void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
@@ -2547,6 +2585,15 @@ void GFXcanvas16::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   color 16-bit 5-6-5 Color to draw line with
+*/
+/**************************************************************************/
 void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
@@ -2557,6 +2604,15 @@ void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   color 16-bit 5-6-5 Color to draw line with
+*/
+/**************************************************************************/
 void GFXcanvas16::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
