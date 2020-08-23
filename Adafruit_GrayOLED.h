@@ -1,8 +1,8 @@
 /*!
- * @file Adafruit_MonoOLED.h
+ * @file Adafruit_GrayOLED.h
  *
  * This is part of for Adafruit's GFX library, supplying generic support
- * for monochrome OLED displays: http://www.adafruit.com/category/63_98
+ * for grayscale OLED displays: http://www.adafruit.com/category/63_98
  *
  * These displays use I2C or SPI to communicate. I2C requires 2 pins
  * (SCL+SDA) and optionally a RESET pin. SPI requires 4 pins (MOSI, SCK,
@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef _Adafruit_MONOOLED_H_
-#define _Adafruit_MONOOLED_H_
+#ifndef _Adafruit_GRAYOLED_H_
+#define _Adafruit_GRAYOLED_H_
 
 #if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
 
@@ -32,33 +32,31 @@
 #include <SPI.h>
 #include <Wire.h>
 
-#define MONOOLED_BLACK 0   ///< Draw 'off' pixels
-#define MONOOLED_WHITE 1   ///< Draw 'on' pixels
-#define MONOOLED_INVERSE 2 ///< Invert pixels
+#define GRAYOLED_SETCONTRAST 0x81   ///< Generic contrast for almost all OLEDs
+#define GRAYOLED_NORMALDISPLAY 0xA6 ///< Generic non-invert for almost all OLEDs
+#define GRAYOLED_INVERTDISPLAY 0xA7 ///< Generic invert for almost all OLEDs
 
-/// These seem to be common commands for OLEDs
-#define MONOOLED_SETCONTRAST 0x81   ///< See datasheet
-#define MONOOLED_NORMALDISPLAY 0xA6 ///< See datasheet
-#define MONOOLED_INVERTDISPLAY 0xA7 ///< See datasheet
-#define MONOOLED_DISPLAYOFF 0xAE    ///< See datasheet
-#define MONOOLED_DISPLAYON 0xAF     ///< See datasheet
+#define MONOOLED_BLACK 0   ///< Default black 'color' for monochrome OLEDS
+#define MONOOLED_WHITE 1   ///< Default white 'color' for monochrome OLEDS
+#define MONOOLED_INVERSE 2 ///< Default inversion command for monochrome OLEDS
 
 /*!
     @brief  Class that stores state and functions for interacting with
-            generic monochrome OLED displays.
+            generic grayscale OLED displays.
 */
-class Adafruit_MonoOLED : public Adafruit_GFX {
+class Adafruit_GrayOLED : public Adafruit_GFX {
 public:
-  Adafruit_MonoOLED(uint16_t w, uint16_t h, TwoWire *twi = &Wire,
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, TwoWire *twi = &Wire,
                     int8_t rst_pin = -1, uint32_t preclk = 400000,
                     uint32_t postclk = 100000);
-  Adafruit_MonoOLED(uint16_t w, uint16_t h, int8_t mosi_pin, int8_t sclk_pin,
-                    int8_t dc_pin, int8_t rst_pin, int8_t cs_pin);
-  Adafruit_MonoOLED(uint16_t w, uint16_t h, SPIClass *spi, int8_t dc_pin,
-                    int8_t rst_pin, int8_t cs_pin,
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, int8_t mosi_pin,
+                    int8_t sclk_pin, int8_t dc_pin, int8_t rst_pin,
+                    int8_t cs_pin);
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, SPIClass *spi,
+                    int8_t dc_pin, int8_t rst_pin, int8_t cs_pin,
                     uint32_t bitrate = 8000000UL);
 
-  ~Adafruit_MonoOLED(void);
+  ~Adafruit_GrayOLED(void);
 
   /**
    @brief The function that sub-classes define that writes out the buffer to
@@ -93,9 +91,10 @@ protected:
       csPin,  ///< The Arduino pin connected to CS (for SPI)
       rstPin; ///< The Arduino pin connected to reset (-1 if unused)
 
+  uint8_t _bpp = 1; ///< Bits per pixel color for this display
 private:
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
 };
 
 #endif // end __AVR_ATtiny85__
-#endif // _Adafruit_MonoOLED_H_
+#endif // _Adafruit_GrayOLED_H_

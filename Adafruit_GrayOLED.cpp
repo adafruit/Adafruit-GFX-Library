@@ -1,7 +1,7 @@
 /*!
- * @file Adafruit_MonoOLED.cpp
+ * @file Adafruit_GrayOLED.cpp
  *
- * This is documentation for Adafruit's generic library for monochrome
+ * This is documentation for Adafruit's generic library for grayscale
  * OLED displays: http://www.adafruit.com/category/63_98
  *
  * These displays use I2C or SPI to communicate. I2C requires 2 pins
@@ -17,18 +17,19 @@
 
 #if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
 
-#include "Adafruit_MonoOLED.h"
+#include "Adafruit_GrayOLED.h"
 #include <Adafruit_GFX.h>
 
 // SOME DEFINES AND STATIC VARIABLES USED INTERNALLY -----------------------
 
-#define monooled_swap(a, b)                                                    \
+#define grayoled_swap(a, b)                                                    \
   (((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b))) ///< No-temp-var swap operation
 
 // CONSTRUCTORS, DESTRUCTOR ------------------------------------------------
 
 /*!
     @brief  Constructor for I2C-interfaced OLED displays.
+    @param  bpp Bits per pixel, 1 for monochrome, 4 for 16-gray
     @param  w
             Display width in pixels
     @param  h
@@ -59,18 +60,19 @@
     @note   Call the object's begin() function before use -- buffer
             allocation is performed there!
 */
-Adafruit_MonoOLED::Adafruit_MonoOLED(uint16_t w, uint16_t h, TwoWire *twi,
-                                     int8_t rst_pin, uint32_t clkDuring,
-                                     uint32_t clkAfter)
+Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
+                                     TwoWire *twi, int8_t rst_pin,
+                                     uint32_t clkDuring, uint32_t clkAfter)
     : Adafruit_GFX(w, h), i2c_preclk(clkDuring), i2c_postclk(clkAfter),
-      buffer(NULL), dcPin(-1), csPin(-1), rstPin(rst_pin) {
+      buffer(NULL), dcPin(-1), csPin(-1), rstPin(rst_pin), _bpp(bpp) {
   i2c_dev = NULL;
   _theWire = twi;
 }
 
 /*!
-    @brief  Constructor for SPI MonoOLED displays, using software (bitbang)
+    @brief  Constructor for SPI GrayOLED displays, using software (bitbang)
             SPI.
+    @param  bpp Bits per pixel, 1 for monochrome, 4 for 16-gray
     @param  w
             Display width in pixels
     @param  h
@@ -94,16 +96,19 @@ Adafruit_MonoOLED::Adafruit_MonoOLED(uint16_t w, uint16_t h, TwoWire *twi,
     @note   Call the object's begin() function before use -- buffer
             allocation is performed there!
 */
-Adafruit_MonoOLED::Adafruit_MonoOLED(uint16_t w, uint16_t h, int8_t mosi_pin,
-                                     int8_t sclk_pin, int8_t dc_pin,
-                                     int8_t rst_pin, int8_t cs_pin)
-    : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin) {
+Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
+                                     int8_t mosi_pin, int8_t sclk_pin,
+                                     int8_t dc_pin, int8_t rst_pin,
+                                     int8_t cs_pin)
+    : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
+      _bpp(bpp) {
 
   spi_dev = new Adafruit_SPIDevice(cs_pin, sclk_pin, -1, mosi_pin, 1000000);
 }
 
 /*!
-    @brief  Constructor for SPI MonoOLED displays, using native hardware SPI.
+    @brief  Constructor for SPI GrayOLED displays, using native hardware SPI.
+    @param  bpp Bits per pixel, 1 for monochrome, 4 for 16-gray
     @param  w
             Display width in pixels
     @param  h
@@ -127,19 +132,21 @@ Adafruit_MonoOLED::Adafruit_MonoOLED(uint16_t w, uint16_t h, int8_t mosi_pin,
     @note   Call the object's begin() function before use -- buffer
             allocation is performed there!
 */
-Adafruit_MonoOLED::Adafruit_MonoOLED(uint16_t w, uint16_t h, SPIClass *spi,
-                                     int8_t dc_pin, int8_t rst_pin,
-                                     int8_t cs_pin, uint32_t bitrate)
-    : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin) {
+Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
+                                     SPIClass *spi, int8_t dc_pin,
+                                     int8_t rst_pin, int8_t cs_pin,
+                                     uint32_t bitrate)
+    : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
+      _bpp(bpp) {
 
   spi_dev = new Adafruit_SPIDevice(cs_pin, bitrate, SPI_BITORDER_MSBFIRST,
                                    SPI_MODE0, spi);
 }
 
 /*!
-    @brief  Destructor for Adafruit_MonoOLED object.
+    @brief  Destructor for Adafruit_GrayOLED object.
 */
-Adafruit_MonoOLED::~Adafruit_MonoOLED(void) {
+Adafruit_GrayOLED::~Adafruit_GrayOLED(void) {
   if (buffer) {
     free(buffer);
     buffer = NULL;
@@ -157,7 +164,7 @@ Adafruit_MonoOLED::~Adafruit_MonoOLED(void) {
    needed.
     @param c The single byte command
 */
-void Adafruit_MonoOLED::oled_command(uint8_t c) {
+void Adafruit_GrayOLED::oled_command(uint8_t c) {
   if (i2c_dev) {                // I2C
     uint8_t buf[2] = {0x00, c}; // Co = 0, D/C = 0
     i2c_dev->write(buf, 2);
@@ -167,7 +174,7 @@ void Adafruit_MonoOLED::oled_command(uint8_t c) {
   }
 }
 
-// Issue list of commands to MonoOLED
+// Issue list of commands to GrayOLED
 /*!
     @brief Issue multiple bytes of commands OLED, using I2C or hard/soft SPI as
    needed.
@@ -176,7 +183,7 @@ void Adafruit_MonoOLED::oled_command(uint8_t c) {
     @returns True for success on ability to write the data in I2C.
 */
 
-bool Adafruit_MonoOLED::oled_commandList(const uint8_t *c, uint8_t n) {
+bool Adafruit_GrayOLED::oled_commandList(const uint8_t *c, uint8_t n) {
   if (i2c_dev) {            // I2C
     uint8_t dc_byte = 0x00; // Co = 0, D/C = 0
     if (!i2c_dev->write((uint8_t *)c, n, true, &dc_byte, 1)) {
@@ -213,10 +220,11 @@ bool Adafruit_MonoOLED::oled_commandList(const uint8_t *c, uint8_t n) {
             proceeding.
     @note   MUST call this function before any drawing or updates!
 */
-bool Adafruit_MonoOLED::_init(uint8_t addr, bool reset) {
+bool Adafruit_GrayOLED::_init(uint8_t addr, bool reset) {
 
   // attempt to malloc the bitmap framebuffer
-  if ((!buffer) && !(buffer = (uint8_t *)malloc(WIDTH * ((HEIGHT + 7) / 8)))) {
+  if ((!buffer) &&
+      !(buffer = (uint8_t *)malloc(_bpp * WIDTH * ((HEIGHT + 7) / 8)))) {
     return false;
   }
 
@@ -269,17 +277,16 @@ bool Adafruit_MonoOLED::_init(uint8_t addr, bool reset) {
     @param  color
             Pixel color, one of: MONOOLED_BLACK, MONOOLED_WHITE or
    MONOOLED_INVERT.
-    @return None (void).
     @note   Changes buffer contents only, no immediate effect on display.
             Follow up with a call to display(), or with other graphics
             commands as needed by one's own application.
 */
-void Adafruit_MonoOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
+void Adafruit_GrayOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x >= 0) && (x < width()) && (y >= 0) && (y < height())) {
     // Pixel is in-bounds. Rotate coordinates if needed.
     switch (getRotation()) {
     case 1:
-      monooled_swap(x, y);
+      grayoled_swap(x, y);
       x = WIDTH - x - 1;
       break;
     case 2:
@@ -287,7 +294,7 @@ void Adafruit_MonoOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
       y = HEIGHT - y - 1;
       break;
     case 3:
-      monooled_swap(x, y);
+      grayoled_swap(x, y);
       y = HEIGHT - y - 1;
       break;
     }
@@ -298,29 +305,43 @@ void Adafruit_MonoOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
     window_x2 = max(window_x2, x);
     window_y2 = max(window_y2, y);
 
-    switch (color) {
-    case MONOOLED_WHITE:
-      buffer[x + (y / 8) * WIDTH] |= (1 << (y & 7));
-      break;
-    case MONOOLED_BLACK:
-      buffer[x + (y / 8) * WIDTH] &= ~(1 << (y & 7));
-      break;
-    case MONOOLED_INVERSE:
-      buffer[x + (y / 8) * WIDTH] ^= (1 << (y & 7));
-      break;
+    if (_bpp == 1) {
+      switch (color) {
+      case MONOOLED_WHITE:
+        buffer[x + (y / 8) * WIDTH] |= (1 << (y & 7));
+        break;
+      case MONOOLED_BLACK:
+        buffer[x + (y / 8) * WIDTH] &= ~(1 << (y & 7));
+        break;
+      case MONOOLED_INVERSE:
+        buffer[x + (y / 8) * WIDTH] ^= (1 << (y & 7));
+        break;
+      }
+    }
+    if (_bpp == 4) {
+      uint8_t *pixelptr = &buffer[x / 2 + (y * WIDTH / 2)];
+      // Serial.printf("(%d, %d) -> offset %d\n", x, y, x/2 + (y * WIDTH / 2));
+      if (x % 2 == 0) { // even, left nibble
+        uint8_t t = pixelptr[0] & 0x0F;
+        t |= (color & 0xF) << 4;
+        pixelptr[0] = t;
+      } else { // odd, right lower nibble
+        uint8_t t = pixelptr[0] & 0xF0;
+        t |= color & 0xF;
+        pixelptr[0] = t;
+      }
     }
   }
 }
 
 /*!
     @brief  Clear contents of display buffer (set all pixels to off).
-    @return None (void).
     @note   Changes buffer contents only, no immediate effect on display.
             Follow up with a call to display(), or with other graphics
             commands as needed by one's own application.
 */
-void Adafruit_MonoOLED::clearDisplay(void) {
-  memset(buffer, 0, WIDTH * ((HEIGHT + 7) / 8));
+void Adafruit_GrayOLED::clearDisplay(void) {
+  memset(buffer, 0, _bpp * WIDTH * ((HEIGHT + 7) / 8));
   // set max dirty window
   window_x1 = 0;
   window_y1 = 0;
@@ -339,12 +360,12 @@ void Adafruit_MonoOLED::clearDisplay(void) {
     @note   Reads from buffer contents; may not reflect current contents of
             screen if display() has not been called.
 */
-bool Adafruit_MonoOLED::getPixel(int16_t x, int16_t y) {
+bool Adafruit_GrayOLED::getPixel(int16_t x, int16_t y) {
   if ((x >= 0) && (x < width()) && (y >= 0) && (y < height())) {
     // Pixel is in-bounds. Rotate coordinates if needed.
     switch (getRotation()) {
     case 1:
-      monooled_swap(x, y);
+      grayoled_swap(x, y);
       x = WIDTH - x - 1;
       break;
     case 2:
@@ -352,7 +373,7 @@ bool Adafruit_MonoOLED::getPixel(int16_t x, int16_t y) {
       y = HEIGHT - y - 1;
       break;
     case 3:
-      monooled_swap(x, y);
+      grayoled_swap(x, y);
       y = HEIGHT - y - 1;
       break;
     }
@@ -366,7 +387,7 @@ bool Adafruit_MonoOLED::getPixel(int16_t x, int16_t y) {
     @return Pointer to an unsigned 8-bit array, column-major, columns padded
             to full byte boundary if needed.
 */
-uint8_t *Adafruit_MonoOLED::getBuffer(void) { return buffer; }
+uint8_t *Adafruit_GrayOLED::getBuffer(void) { return buffer; }
 
 // OTHER HARDWARE SETTINGS -------------------------------------------------
 
@@ -376,26 +397,24 @@ uint8_t *Adafruit_MonoOLED::getBuffer(void) { return buffer; }
     @param  i
             If true, switch to invert mode (black-on-white), else normal
             mode (white-on-black).
-    @return None (void).
     @note   This has an immediate effect on the display, no need to call the
             display() function -- buffer contents are not changed, rather a
             different pixel mode of the display hardware is used. When
             enabled, drawing MONOOLED_BLACK (value 0) pixels will actually draw
    white, MONOOLED_WHITE (value 1) will draw black.
 */
-void Adafruit_MonoOLED::invertDisplay(bool i) {
-  oled_command(i ? MONOOLED_INVERTDISPLAY : MONOOLED_NORMALDISPLAY);
+void Adafruit_GrayOLED::invertDisplay(bool i) {
+  oled_command(i ? GRAYOLED_INVERTDISPLAY : GRAYOLED_NORMALDISPLAY);
 }
 
 /*!
     @brief  Adjust the display contrast.
     @param  level The contrast level from 0 to 0x7F
-    @return None (void).
     @note   This has an immediate effect on the display, no need to call the
             display() function -- buffer contents are not changed.
 */
-void Adafruit_MonoOLED::setContrast(uint8_t level) {
-  uint8_t cmd[] = {MONOOLED_SETCONTRAST, level};
+void Adafruit_GrayOLED::setContrast(uint8_t level) {
+  uint8_t cmd[] = {GRAYOLED_SETCONTRAST, level};
   oled_commandList(cmd, 2);
 }
 
