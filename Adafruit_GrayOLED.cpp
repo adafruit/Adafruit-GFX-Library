@@ -59,11 +59,12 @@
     @note   Call the object's begin() function before use -- buffer
             allocation is performed there!
 */
-Adafruit_GrayOLED::Adafruit_GrayOLED(uint16_t w, uint16_t h, TwoWire *twi,
+Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, 
+                                     uint16_t w, uint16_t h, TwoWire *twi,
                                      int8_t rst_pin, uint32_t clkDuring,
                                      uint32_t clkAfter)
     : Adafruit_GFX(w, h), i2c_preclk(clkDuring), i2c_postclk(clkAfter),
-      buffer(NULL), dcPin(-1), csPin(-1), rstPin(rst_pin) {
+      buffer(NULL), dcPin(-1), csPin(-1), rstPin(rst_pin), _bpp(bpp) {
   i2c_dev = NULL;
   _theWire = twi;
 }
@@ -94,10 +95,12 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint16_t w, uint16_t h, TwoWire *twi,
     @note   Call the object's begin() function before use -- buffer
             allocation is performed there!
 */
-Adafruit_GrayOLED::Adafruit_GrayOLED(uint16_t w, uint16_t h, int8_t mosi_pin,
+Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, 
+                                     uint16_t w, uint16_t h, int8_t mosi_pin,
                                      int8_t sclk_pin, int8_t dc_pin,
                                      int8_t rst_pin, int8_t cs_pin)
-    : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin) {
+  : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
+    _bpp(bpp) {
 
   spi_dev = new Adafruit_SPIDevice(cs_pin, sclk_pin, -1, mosi_pin, 1000000);
 }
@@ -127,10 +130,12 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint16_t w, uint16_t h, int8_t mosi_pin,
     @note   Call the object's begin() function before use -- buffer
             allocation is performed there!
 */
-Adafruit_GrayOLED::Adafruit_GrayOLED(uint16_t w, uint16_t h, SPIClass *spi,
+Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, 
+                                     uint16_t w, uint16_t h, SPIClass *spi,
                                      int8_t dc_pin, int8_t rst_pin,
                                      int8_t cs_pin, uint32_t bitrate)
-    : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin) {
+  : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
+    _bpp(bpp) {
 
   spi_dev = new Adafruit_SPIDevice(cs_pin, bitrate, SPI_BITORDER_MSBFIRST,
                                    SPI_MODE0, spi);
@@ -216,7 +221,7 @@ bool Adafruit_GrayOLED::oled_commandList(const uint8_t *c, uint8_t n) {
 bool Adafruit_GrayOLED::_init(uint8_t addr, bool reset) {
 
   // attempt to malloc the bitmap framebuffer
-  if ((!buffer) && !(buffer = (uint8_t *)malloc(WIDTH * ((HEIGHT + 7) / 8)))) {
+  if ((!buffer) && !(buffer = (uint8_t *)malloc(_bpp * WIDTH * ((HEIGHT + 7) / 8)))) {
     return false;
   }
 
@@ -298,16 +303,31 @@ void Adafruit_GrayOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
     window_x2 = max(window_x2, x);
     window_y2 = max(window_y2, y);
 
-    switch (color) {
-    case MONOOLED_WHITE:
-      buffer[x + (y / 8) * WIDTH] |= (1 << (y & 7));
-      break;
-    case MONOOLED_BLACK:
-      buffer[x + (y / 8) * WIDTH] &= ~(1 << (y & 7));
-      break;
-    case MONOOLED_INVERSE:
-      buffer[x + (y / 8) * WIDTH] ^= (1 << (y & 7));
-      break;
+    if (_bpp == 1) {
+      switch (color) {
+      case MONOOLED_WHITE:
+        buffer[x + (y / 8) * WIDTH] |= (1 << (y & 7));
+        break;
+      case MONOOLED_BLACK:
+        buffer[x + (y / 8) * WIDTH] &= ~(1 << (y & 7));
+        break;
+      case MONOOLED_INVERSE:
+        buffer[x + (y / 8) * WIDTH] ^= (1 << (y & 7));
+        break;
+      }
+    }
+    if (_bpp == 4) {
+      uint8_t *pixelptr = &buffer[x/2 + (y * WIDTH / 2)];
+      //Serial.printf("(%d, %d) -> offset %d\n", x, y, x/2 + (y * WIDTH / 2));
+      if (x % 2 == 0) { // even, left nibble
+        uint8_t t = pixelptr[0] & 0x0F;
+        t |= (color & 0xF) << 4;
+        pixelptr[0] = t;
+      } else { // odd, right lower nibble
+        uint8_t t = pixelptr[0] & 0xF0;
+        t |= color & 0xF;
+        pixelptr[0] = t;
+      }
     }
   }
 }
@@ -320,7 +340,7 @@ void Adafruit_GrayOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
             commands as needed by one's own application.
 */
 void Adafruit_GrayOLED::clearDisplay(void) {
-  memset(buffer, 0, WIDTH * ((HEIGHT + 7) / 8));
+  memset(buffer, 0, _bpp * WIDTH * ((HEIGHT + 7) / 8));
   // set max dirty window
   window_x1 = 0;
   window_y1 = 0;

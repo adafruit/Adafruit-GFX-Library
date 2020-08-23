@@ -32,22 +32,30 @@
 #include <SPI.h>
 #include <Wire.h>
 
+#define GRAYOLED_SETCONTRAST 0x81
+#define GRAYOLED_NORMALDISPLAY 0xA6
+#define GRAYOLED_INVERTDISPLAY 0xA7
+
+#define MONOOLED_BLACK 0
+#define MONOOLED_WHITE 1
+#define MONOOLED_INVERSE 2
+
 /*!
     @brief  Class that stores state and functions for interacting with
             generic grayscale OLED displays.
 */
-class Adafruit_GrayscaleOLED : public Adafruit_GFX {
+class Adafruit_GrayOLED : public Adafruit_GFX {
 public:
-  Adafruit_Grayscale16OLED(uint16_t w, uint16_t h, TwoWire *twi = &Wire,
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, TwoWire *twi = &Wire,
                     int8_t rst_pin = -1, uint32_t preclk = 400000,
                     uint32_t postclk = 100000);
-  Adafruit_Grayscale16OLED(uint16_t w, uint16_t h, int8_t mosi_pin, int8_t sclk_pin,
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, int8_t mosi_pin, int8_t sclk_pin,
                     int8_t dc_pin, int8_t rst_pin, int8_t cs_pin);
-  Adafruit_GrayscaleOLED(uint16_t w, uint16_t h, SPIClass *spi, int8_t dc_pin,
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, SPIClass *spi, int8_t dc_pin,
                     int8_t rst_pin, int8_t cs_pin,
                     uint32_t bitrate = 8000000UL);
 
-  ~Adafruit_GrayscaleOLED(void);
+  ~Adafruit_GrayOLED(void);
 
   /**
    @brief The function that sub-classes define that writes out the buffer to
@@ -82,6 +90,7 @@ protected:
       csPin,  ///< The Arduino pin connected to CS (for SPI)
       rstPin; ///< The Arduino pin connected to reset (-1 if unused)
 
+    uint8_t _bpp = 1;
 private:
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
 };
