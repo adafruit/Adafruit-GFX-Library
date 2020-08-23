@@ -32,13 +32,13 @@
 #include <SPI.h>
 #include <Wire.h>
 
-#define GRAYOLED_SETCONTRAST 0x81
-#define GRAYOLED_NORMALDISPLAY 0xA6
-#define GRAYOLED_INVERTDISPLAY 0xA7
+#define GRAYOLED_SETCONTRAST 0x81   ///< Generic contrast for almost all OLEDs
+#define GRAYOLED_NORMALDISPLAY 0xA6 ///< Generic non-invert for almost all OLEDs
+#define GRAYOLED_INVERTDISPLAY 0xA7 ///< Generic invert for almost all OLEDs
 
-#define MONOOLED_BLACK 0
-#define MONOOLED_WHITE 1
-#define MONOOLED_INVERSE 2
+#define MONOOLED_BLACK 0   ///< Default black 'color' for monochrome OLEDS
+#define MONOOLED_WHITE 1   ///< Default white 'color' for monochrome OLEDS
+#define MONOOLED_INVERSE 2 ///< Default inversion command for monochrome OLEDS
 
 /*!
     @brief  Class that stores state and functions for interacting with
