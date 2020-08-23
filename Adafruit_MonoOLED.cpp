@@ -29,6 +29,7 @@
 
 /*!
     @brief  Constructor for I2C-interfaced OLED displays.
+    @param  bpp Bits per pixel, 1 for monochrome, 4 for 16-gray
     @param  w
             Display width in pixels
     @param  h
@@ -72,6 +73,7 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp,
 /*!
     @brief  Constructor for SPI GrayOLED displays, using software (bitbang)
             SPI.
+    @param  bpp Bits per pixel, 1 for monochrome, 4 for 16-gray
     @param  w
             Display width in pixels
     @param  h
@@ -107,6 +109,7 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp,
 
 /*!
     @brief  Constructor for SPI GrayOLED displays, using native hardware SPI.
+    @param  bpp Bits per pixel, 1 for monochrome, 4 for 16-gray
     @param  w
             Display width in pixels
     @param  h
@@ -274,7 +277,6 @@ bool Adafruit_GrayOLED::_init(uint8_t addr, bool reset) {
     @param  color
             Pixel color, one of: MONOOLED_BLACK, MONOOLED_WHITE or
    MONOOLED_INVERT.
-    @return None (void).
     @note   Changes buffer contents only, no immediate effect on display.
             Follow up with a call to display(), or with other graphics
             commands as needed by one's own application.
@@ -334,7 +336,6 @@ void Adafruit_GrayOLED::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 /*!
     @brief  Clear contents of display buffer (set all pixels to off).
-    @return None (void).
     @note   Changes buffer contents only, no immediate effect on display.
             Follow up with a call to display(), or with other graphics
             commands as needed by one's own application.
@@ -396,7 +397,6 @@ uint8_t *Adafruit_GrayOLED::getBuffer(void) { return buffer; }
     @param  i
             If true, switch to invert mode (black-on-white), else normal
             mode (white-on-black).
-    @return None (void).
     @note   This has an immediate effect on the display, no need to call the
             display() function -- buffer contents are not changed, rather a
             different pixel mode of the display hardware is used. When
@@ -410,7 +410,6 @@ void Adafruit_GrayOLED::invertDisplay(bool i) {
 /*!
     @brief  Adjust the display contrast.
     @param  level The contrast level from 0 to 0x7F
-    @return None (void).
     @note   This has an immediate effect on the display, no need to call the
             display() function -- buffer contents are not changed.
 */

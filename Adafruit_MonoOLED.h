@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef _Adafruit_GRAY16OLED_H_
-#define _Adafruit_GRAY16OLED_H_
+#ifndef _Adafruit_GRAYOLED_H_
+#define _Adafruit_GRAYOLED_H_
 
 #if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
 
@@ -90,7 +90,7 @@ protected:
       csPin,  ///< The Arduino pin connected to CS (for SPI)
       rstPin; ///< The Arduino pin connected to reset (-1 if unused)
 
-    uint8_t _bpp = 1;
+    uint8_t _bpp = 1; ///< Bits per pixel color for this display
 private:
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
 };
