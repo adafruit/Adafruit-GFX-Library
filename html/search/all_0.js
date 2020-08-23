@@ -1,12 +1,13 @@
 var searchData=
 [
+  ['_5fbpp',['_bpp',['../class_adafruit___gray_o_l_e_d.html#a43e005545deba5b3231a6c438355b052',1,'Adafruit_GrayOLED']]],
   ['_5fcp437',['_cp437',['../class_adafruit___g_f_x.html#a751d54ed0e52ca2657b194769782d5eb',1,'Adafruit_GFX']]],
   ['_5fcs',['_cs',['../class_adafruit___s_p_i_t_f_t.html#ac0ed6886fcef09bd3d98a02238ae7300',1,'Adafruit_SPITFT']]],
   ['_5fd0',['_d0',['../class_adafruit___s_p_i_t_f_t.html#a5b26872a4e2b08017b475e9a542261cb',1,'Adafruit_SPITFT']]],
   ['_5fdc',['_dc',['../class_adafruit___s_p_i_t_f_t.html#a154f060e2830dc7096af9d0b6022d12a',1,'Adafruit_SPITFT']]],
   ['_5ffreq',['_freq',['../class_adafruit___s_p_i_t_f_t.html#a65e9eb00f665cadb411babf9c506a01d',1,'Adafruit_SPITFT']]],
   ['_5fheight',['_height',['../class_adafruit___g_f_x.html#ab9bb0cbc2455f64dce2a5ec36307aa94',1,'Adafruit_GFX']]],
-  ['_5finit',['_init',['../class_adafruit___mono_o_l_e_d.html#acc6915540fc325c51f82205bd5673efd',1,'Adafruit_MonoOLED']]],
+  ['_5finit',['_init',['../class_adafruit___gray_o_l_e_d.html#a11bd4d7d0f9c14e1c7ce839b6318c9de',1,'Adafruit_GrayOLED']]],
   ['_5fmiso',['_miso',['../class_adafruit___s_p_i_t_f_t.html#a19f9a2a73ad817b16cd8c73556138363',1,'Adafruit_SPITFT']]],
   ['_5fmode',['_mode',['../class_adafruit___s_p_i_t_f_t.html#a78479cba8923b3d1c59b104359d71904',1,'Adafruit_SPITFT']]],
   ['_5fmosi',['_mosi',['../class_adafruit___s_p_i_t_f_t.html#a02d06f8d1fbe420c6dca776f636a41e5',1,'Adafruit_SPITFT']]],

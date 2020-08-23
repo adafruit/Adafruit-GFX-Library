@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Adafruit GFX Library: Adafruit_MonoOLED Class Reference</title>
+<title>Adafruit GFX Library: Adafruit_GrayOLED Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,69 +62,69 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="class_adafruit___mono_o_l_e_d-members.html">List of all members</a>  </div>
+<a href="class_adafruit___gray_o_l_e_d-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Adafruit_MonoOLED Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">Adafruit_GrayOLED Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Class that stores state and functions for interacting with generic monochrome OLED displays.  
- <a href="class_adafruit___mono_o_l_e_d.html#details">More...</a></p>
+<p>Class that stores state and functions for interacting with generic grayscale OLED displays.  
+ <a href="class_adafruit___gray_o_l_e_d.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_adafruit___mono_o_l_e_d_8h_source.html">Adafruit_MonoOLED.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_adafruit___gray_o_l_e_d_8h_source.html">Adafruit_GrayOLED.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for Adafruit_MonoOLED:</div>
+Inheritance diagram for Adafruit_GrayOLED:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="class_adafruit___mono_o_l_e_d.png" usemap="#Adafruit_5FMonoOLED_map" alt=""/>
-  <map id="Adafruit_5FMonoOLED_map" name="Adafruit_5FMonoOLED_map">
-<area href="class_adafruit___g_f_x.html" alt="Adafruit_GFX" shape="rect" coords="0,56,130,80"/>
+  <img src="class_adafruit___gray_o_l_e_d.png" usemap="#Adafruit_5FGrayOLED_map" alt=""/>
+  <map id="Adafruit_5FGrayOLED_map" name="Adafruit_5FGrayOLED_map">
+<area href="class_adafruit___g_f_x.html" alt="Adafruit_GFX" shape="rect" coords="0,56,126,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3096d5246e190c6a85b830e081c35a59"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a3096d5246e190c6a85b830e081c35a59">Adafruit_MonoOLED</a> (uint16_t w, uint16_t h, TwoWire *twi=&amp;Wire, int8_t rst_pin=-1, uint32_t preclk=400000, uint32_t postclk=100000)</td></tr>
-<tr class="memdesc:a3096d5246e190c6a85b830e081c35a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for I2C-interfaced OLED displays.  <a href="#a3096d5246e190c6a85b830e081c35a59">More...</a><br /></td></tr>
-<tr class="separator:a3096d5246e190c6a85b830e081c35a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaad01d606ffeb7f116e9d985932d3659"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#aaad01d606ffeb7f116e9d985932d3659">Adafruit_MonoOLED</a> (uint16_t w, uint16_t h, int8_t mosi_pin, int8_t sclk_pin, int8_t dc_pin, int8_t rst_pin, int8_t cs_pin)</td></tr>
-<tr class="memdesc:aaad01d606ffeb7f116e9d985932d3659"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for SPI MonoOLED displays, using software (bitbang) SPI.  <a href="#aaad01d606ffeb7f116e9d985932d3659">More...</a><br /></td></tr>
-<tr class="separator:aaad01d606ffeb7f116e9d985932d3659"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac75f12a5583298f2167e9d76b653b309"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#ac75f12a5583298f2167e9d76b653b309">Adafruit_MonoOLED</a> (uint16_t w, uint16_t h, SPIClass *spi, int8_t dc_pin, int8_t rst_pin, int8_t cs_pin, uint32_t bitrate=8000000UL)</td></tr>
-<tr class="memdesc:ac75f12a5583298f2167e9d76b653b309"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for SPI MonoOLED displays, using native hardware SPI.  <a href="#ac75f12a5583298f2167e9d76b653b309">More...</a><br /></td></tr>
-<tr class="separator:ac75f12a5583298f2167e9d76b653b309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f26d5c566f99be8b5279db6f6734c13"><td class="memItemLeft" align="right" valign="top"><a id="a4f26d5c566f99be8b5279db6f6734c13"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a4f26d5c566f99be8b5279db6f6734c13">~Adafruit_MonoOLED</a> (void)</td></tr>
-<tr class="memdesc:a4f26d5c566f99be8b5279db6f6734c13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for <a class="el" href="class_adafruit___mono_o_l_e_d.html" title="Class that stores state and functions for interacting with generic monochrome OLED displays...">Adafruit_MonoOLED</a> object. <br /></td></tr>
-<tr class="separator:a4f26d5c566f99be8b5279db6f6734c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4f90e6c918952f1057904752a6e0cc5"><td class="memItemLeft" align="right" valign="top"><a id="ac4f90e6c918952f1057904752a6e0cc5"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5">display</a> (void)=0</td></tr>
-<tr class="memdesc:ac4f90e6c918952f1057904752a6e0cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function that sub-classes define that writes out the buffer to the display over I2C or SPI. <br /></td></tr>
-<tr class="separator:ac4f90e6c918952f1057904752a6e0cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a4d2370e3a4b7d9189d913e617edfcc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a9a4d2370e3a4b7d9189d913e617edfcc">clearDisplay</a> (void)</td></tr>
-<tr class="memdesc:a9a4d2370e3a4b7d9189d913e617edfcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear contents of display buffer (set all pixels to off).  <a href="#a9a4d2370e3a4b7d9189d913e617edfcc">More...</a><br /></td></tr>
-<tr class="separator:a9a4d2370e3a4b7d9189d913e617edfcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc64512468c286053c9adad976e7533c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#afc64512468c286053c9adad976e7533c">invertDisplay</a> (bool i)</td></tr>
-<tr class="memdesc:afc64512468c286053c9adad976e7533c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable display invert mode (white-on-black vs black-on-white). Handy for testing!  <a href="#afc64512468c286053c9adad976e7533c">More...</a><br /></td></tr>
-<tr class="separator:afc64512468c286053c9adad976e7533c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a548a9a3770c3795b845ae00dfa021f75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a548a9a3770c3795b845ae00dfa021f75">setContrast</a> (uint8_t contrastlevel)</td></tr>
-<tr class="memdesc:a548a9a3770c3795b845ae00dfa021f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust the display contrast.  <a href="#a548a9a3770c3795b845ae00dfa021f75">More...</a><br /></td></tr>
-<tr class="separator:a548a9a3770c3795b845ae00dfa021f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a606c97d83bd4f49cc14efd71107675bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a606c97d83bd4f49cc14efd71107675bf">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
-<tr class="memdesc:a606c97d83bd4f49cc14efd71107675bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set/clear/invert a single pixel. This is also invoked by the <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a> library in generating many higher-level graphics primitives.  <a href="#a606c97d83bd4f49cc14efd71107675bf">More...</a><br /></td></tr>
-<tr class="separator:a606c97d83bd4f49cc14efd71107675bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97dc987212fa75f1973e10e7de254121"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a97dc987212fa75f1973e10e7de254121">getPixel</a> (int16_t x, int16_t y)</td></tr>
-<tr class="memdesc:a97dc987212fa75f1973e10e7de254121"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return color of a single pixel in display buffer.  <a href="#a97dc987212fa75f1973e10e7de254121">More...</a><br /></td></tr>
-<tr class="separator:a97dc987212fa75f1973e10e7de254121"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e765b59c78bb2a857a15be52c0de05f"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a7e765b59c78bb2a857a15be52c0de05f">getBuffer</a> (void)</td></tr>
-<tr class="memdesc:a7e765b59c78bb2a857a15be52c0de05f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get base address of display buffer for direct reading or writing.  <a href="#a7e765b59c78bb2a857a15be52c0de05f">More...</a><br /></td></tr>
-<tr class="separator:a7e765b59c78bb2a857a15be52c0de05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab13ab5caf82a25f189b362e2bdf7e7cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#ab13ab5caf82a25f189b362e2bdf7e7cc">oled_command</a> (uint8_t c)</td></tr>
-<tr class="memdesc:ab13ab5caf82a25f189b362e2bdf7e7cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue single command byte to OLED, using I2C or hard/soft SPI as needed.  <a href="#ab13ab5caf82a25f189b362e2bdf7e7cc">More...</a><br /></td></tr>
-<tr class="separator:ab13ab5caf82a25f189b362e2bdf7e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37ad2c81c1fb078cab1fa8af47b2801c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a37ad2c81c1fb078cab1fa8af47b2801c">oled_commandList</a> (const uint8_t *c, uint8_t n)</td></tr>
-<tr class="memdesc:a37ad2c81c1fb078cab1fa8af47b2801c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue multiple bytes of commands OLED, using I2C or hard/soft SPI as needed.  <a href="#a37ad2c81c1fb078cab1fa8af47b2801c">More...</a><br /></td></tr>
-<tr class="separator:a37ad2c81c1fb078cab1fa8af47b2801c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a529b94a903240f3a8484edba9bc64af1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a529b94a903240f3a8484edba9bc64af1">Adafruit_GrayOLED</a> (uint8_t bpp, uint16_t w, uint16_t h, TwoWire *twi=&amp;Wire, int8_t rst_pin=-1, uint32_t preclk=400000, uint32_t postclk=100000)</td></tr>
+<tr class="memdesc:a529b94a903240f3a8484edba9bc64af1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for I2C-interfaced OLED displays.  <a href="#a529b94a903240f3a8484edba9bc64af1">More...</a><br /></td></tr>
+<tr class="separator:a529b94a903240f3a8484edba9bc64af1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a283d68a0a29c9699fb35715c3c5ba6d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a283d68a0a29c9699fb35715c3c5ba6d7">Adafruit_GrayOLED</a> (uint8_t bpp, uint16_t w, uint16_t h, int8_t mosi_pin, int8_t sclk_pin, int8_t dc_pin, int8_t rst_pin, int8_t cs_pin)</td></tr>
+<tr class="memdesc:a283d68a0a29c9699fb35715c3c5ba6d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for SPI GrayOLED displays, using software (bitbang) SPI.  <a href="#a283d68a0a29c9699fb35715c3c5ba6d7">More...</a><br /></td></tr>
+<tr class="separator:a283d68a0a29c9699fb35715c3c5ba6d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05449925eafa8152a0f6346bcee31da1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a05449925eafa8152a0f6346bcee31da1">Adafruit_GrayOLED</a> (uint8_t bpp, uint16_t w, uint16_t h, SPIClass *spi, int8_t dc_pin, int8_t rst_pin, int8_t cs_pin, uint32_t bitrate=8000000UL)</td></tr>
+<tr class="memdesc:a05449925eafa8152a0f6346bcee31da1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for SPI GrayOLED displays, using native hardware SPI.  <a href="#a05449925eafa8152a0f6346bcee31da1">More...</a><br /></td></tr>
+<tr class="separator:a05449925eafa8152a0f6346bcee31da1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a672ae5128356ffffac26c8c6e5b4a17c"><td class="memItemLeft" align="right" valign="top"><a id="a672ae5128356ffffac26c8c6e5b4a17c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a672ae5128356ffffac26c8c6e5b4a17c">~Adafruit_GrayOLED</a> (void)</td></tr>
+<tr class="memdesc:a672ae5128356ffffac26c8c6e5b4a17c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for <a class="el" href="class_adafruit___gray_o_l_e_d.html" title="Class that stores state and functions for interacting with generic grayscale OLED displays...">Adafruit_GrayOLED</a> object. <br /></td></tr>
+<tr class="separator:a672ae5128356ffffac26c8c6e5b4a17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b810dea16ebbf1e69196cbeacbc9820"><td class="memItemLeft" align="right" valign="top"><a id="a1b810dea16ebbf1e69196cbeacbc9820"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820">display</a> (void)=0</td></tr>
+<tr class="memdesc:a1b810dea16ebbf1e69196cbeacbc9820"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function that sub-classes define that writes out the buffer to the display over I2C or SPI. <br /></td></tr>
+<tr class="separator:a1b810dea16ebbf1e69196cbeacbc9820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0b51c6e9ffc7e76060b733a166a2c53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#ae0b51c6e9ffc7e76060b733a166a2c53">clearDisplay</a> (void)</td></tr>
+<tr class="memdesc:ae0b51c6e9ffc7e76060b733a166a2c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear contents of display buffer (set all pixels to off).  <a href="#ae0b51c6e9ffc7e76060b733a166a2c53">More...</a><br /></td></tr>
+<tr class="separator:ae0b51c6e9ffc7e76060b733a166a2c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accaade9c6647e0d97737ee29f8257183"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#accaade9c6647e0d97737ee29f8257183">invertDisplay</a> (bool i)</td></tr>
+<tr class="memdesc:accaade9c6647e0d97737ee29f8257183"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable display invert mode (white-on-black vs black-on-white). Handy for testing!  <a href="#accaade9c6647e0d97737ee29f8257183">More...</a><br /></td></tr>
+<tr class="separator:accaade9c6647e0d97737ee29f8257183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5b84beec33b79918c1db1ee1f458a04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#af5b84beec33b79918c1db1ee1f458a04">setContrast</a> (uint8_t contrastlevel)</td></tr>
+<tr class="memdesc:af5b84beec33b79918c1db1ee1f458a04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust the display contrast.  <a href="#af5b84beec33b79918c1db1ee1f458a04">More...</a><br /></td></tr>
+<tr class="separator:af5b84beec33b79918c1db1ee1f458a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6736062d7d342aa8ab093d09f45563aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a6736062d7d342aa8ab093d09f45563aa">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
+<tr class="memdesc:a6736062d7d342aa8ab093d09f45563aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set/clear/invert a single pixel. This is also invoked by the <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a> library in generating many higher-level graphics primitives.  <a href="#a6736062d7d342aa8ab093d09f45563aa">More...</a><br /></td></tr>
+<tr class="separator:a6736062d7d342aa8ab093d09f45563aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fe49c5ae9285c483ccd0c4ff41b8b82"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a4fe49c5ae9285c483ccd0c4ff41b8b82">getPixel</a> (int16_t x, int16_t y)</td></tr>
+<tr class="memdesc:a4fe49c5ae9285c483ccd0c4ff41b8b82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return color of a single pixel in display buffer.  <a href="#a4fe49c5ae9285c483ccd0c4ff41b8b82">More...</a><br /></td></tr>
+<tr class="separator:a4fe49c5ae9285c483ccd0c4ff41b8b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba34b8acc8e907d761fa53985499b328"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#aba34b8acc8e907d761fa53985499b328">getBuffer</a> (void)</td></tr>
+<tr class="memdesc:aba34b8acc8e907d761fa53985499b328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get base address of display buffer for direct reading or writing.  <a href="#aba34b8acc8e907d761fa53985499b328">More...</a><br /></td></tr>
+<tr class="separator:aba34b8acc8e907d761fa53985499b328"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24b83d7f148e7f2c09ab6b202e918294"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a24b83d7f148e7f2c09ab6b202e918294">oled_command</a> (uint8_t c)</td></tr>
+<tr class="memdesc:a24b83d7f148e7f2c09ab6b202e918294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue single command byte to OLED, using I2C or hard/soft SPI as needed.  <a href="#a24b83d7f148e7f2c09ab6b202e918294">More...</a><br /></td></tr>
+<tr class="separator:a24b83d7f148e7f2c09ab6b202e918294"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a206d32087e5100246b4346bf627ea40f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a206d32087e5100246b4346bf627ea40f">oled_commandList</a> (const uint8_t *c, uint8_t n)</td></tr>
+<tr class="memdesc:a206d32087e5100246b4346bf627ea40f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue multiple bytes of commands OLED, using I2C or hard/soft SPI as needed.  <a href="#a206d32087e5100246b4346bf627ea40f">More...</a><br /></td></tr>
+<tr class="separator:a206d32087e5100246b4346bf627ea40f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a6f6f1abccf677eac244fa17d105133ea inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">Adafruit_GFX</a> (int16_t w, int16_t h)</td></tr>
 <tr class="memdesc:a6f6f1abccf677eac244fa17d105133ea inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instatiate a GFX context for graphics! Can only be done by a superclass.  <a href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">More...</a><br /></td></tr>
@@ -296,9 +296,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:acc6915540fc325c51f82205bd5673efd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#acc6915540fc325c51f82205bd5673efd">_init</a> (uint8_t i2caddr=0x3C, bool reset=true)</td></tr>
-<tr class="memdesc:acc6915540fc325c51f82205bd5673efd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate RAM for image buffer, initialize peripherals and pins. Note that subclasses must call this before other begin() init.  <a href="#acc6915540fc325c51f82205bd5673efd">More...</a><br /></td></tr>
-<tr class="separator:acc6915540fc325c51f82205bd5673efd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11bd4d7d0f9c14e1c7ce839b6318c9de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a11bd4d7d0f9c14e1c7ce839b6318c9de">_init</a> (uint8_t i2caddr=0x3C, bool reset=true)</td></tr>
+<tr class="memdesc:a11bd4d7d0f9c14e1c7ce839b6318c9de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate RAM for image buffer, initialize peripherals and pins. Note that subclasses must call this before other begin() init.  <a href="#a11bd4d7d0f9c14e1c7ce839b6318c9de">More...</a><br /></td></tr>
+<tr class="separator:a11bd4d7d0f9c14e1c7ce839b6318c9de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">charBounds</a> (unsigned char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
 <tr class="memdesc:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">More...</a><br /></td></tr>
@@ -306,54 +306,58 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a4e30e139bba712dad25b5b4b3bca3c90"><td class="memItemLeft" align="right" valign="top"><a id="a4e30e139bba712dad25b5b4b3bca3c90"></a>
-Adafruit_SPIDevice *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a4e30e139bba712dad25b5b4b3bca3c90">spi_dev</a> = NULL</td></tr>
-<tr class="memdesc:a4e30e139bba712dad25b5b4b3bca3c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SPI interface BusIO device. <br /></td></tr>
-<tr class="separator:a4e30e139bba712dad25b5b4b3bca3c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94708f432bcbb9c60d3f8d12ae9746ec"><td class="memItemLeft" align="right" valign="top"><a id="a94708f432bcbb9c60d3f8d12ae9746ec"></a>
-Adafruit_I2CDevice *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a94708f432bcbb9c60d3f8d12ae9746ec">i2c_dev</a> = NULL</td></tr>
-<tr class="memdesc:a94708f432bcbb9c60d3f8d12ae9746ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">The I2C interface BusIO device. <br /></td></tr>
-<tr class="separator:a94708f432bcbb9c60d3f8d12ae9746ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9246e9efc710395bc0e111413f21ae33"><td class="memItemLeft" align="right" valign="top"><a id="a9246e9efc710395bc0e111413f21ae33"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a9246e9efc710395bc0e111413f21ae33">i2c_preclk</a> = 400000</td></tr>
-<tr class="memdesc:a9246e9efc710395bc0e111413f21ae33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configurable 'high speed' I2C rate. <br /></td></tr>
-<tr class="separator:a9246e9efc710395bc0e111413f21ae33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f256e06e52a06ee5fe77c95698c751f"><td class="memItemLeft" align="right" valign="top"><a id="a1f256e06e52a06ee5fe77c95698c751f"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a1f256e06e52a06ee5fe77c95698c751f">i2c_postclk</a> = 100000</td></tr>
-<tr class="memdesc:a1f256e06e52a06ee5fe77c95698c751f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configurable 'low speed' I2C rate. <br /></td></tr>
-<tr class="separator:a1f256e06e52a06ee5fe77c95698c751f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f7ed72c189f18180cf164f2c51b455b"><td class="memItemLeft" align="right" valign="top"><a id="a0f7ed72c189f18180cf164f2c51b455b"></a>
-uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a0f7ed72c189f18180cf164f2c51b455b">buffer</a> = NULL</td></tr>
-<tr class="memdesc:a0f7ed72c189f18180cf164f2c51b455b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal 1:1 framebuffer of display mem. <br /></td></tr>
-<tr class="separator:a0f7ed72c189f18180cf164f2c51b455b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84fa64243a1985b73f4895775268f5c2"><td class="memItemLeft" align="right" valign="top"><a id="a84fa64243a1985b73f4895775268f5c2"></a>
-int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a84fa64243a1985b73f4895775268f5c2">window_x1</a></td></tr>
-<tr class="memdesc:a84fa64243a1985b73f4895775268f5c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window minimum x. <br /></td></tr>
-<tr class="separator:a84fa64243a1985b73f4895775268f5c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a404bc5e3ee3d2cb19272d570edc91ec4"><td class="memItemLeft" align="right" valign="top"><a id="a404bc5e3ee3d2cb19272d570edc91ec4"></a>
-int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a404bc5e3ee3d2cb19272d570edc91ec4">window_y1</a></td></tr>
-<tr class="memdesc:a404bc5e3ee3d2cb19272d570edc91ec4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window minimum y. <br /></td></tr>
-<tr class="separator:a404bc5e3ee3d2cb19272d570edc91ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0313339d1718fb3fdb6f48d9a8b9a058"><td class="memItemLeft" align="right" valign="top"><a id="a0313339d1718fb3fdb6f48d9a8b9a058"></a>
-int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a0313339d1718fb3fdb6f48d9a8b9a058">window_x2</a></td></tr>
-<tr class="memdesc:a0313339d1718fb3fdb6f48d9a8b9a058"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window maximum x. <br /></td></tr>
-<tr class="separator:a0313339d1718fb3fdb6f48d9a8b9a058"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a978c850a8d75edc1f7609376a6bd9f92"><td class="memItemLeft" align="right" valign="top"><a id="a978c850a8d75edc1f7609376a6bd9f92"></a>
-int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a978c850a8d75edc1f7609376a6bd9f92">window_y2</a></td></tr>
-<tr class="memdesc:a978c850a8d75edc1f7609376a6bd9f92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window maximum y. <br /></td></tr>
-<tr class="separator:a978c850a8d75edc1f7609376a6bd9f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6ae27b240b9691b53b684ba72bab0ee"><td class="memItemLeft" align="right" valign="top"><a id="aa6ae27b240b9691b53b684ba72bab0ee"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#aa6ae27b240b9691b53b684ba72bab0ee">dcPin</a></td></tr>
-<tr class="memdesc:aa6ae27b240b9691b53b684ba72bab0ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Arduino pin connected to D/C (for SPI) <br /></td></tr>
-<tr class="separator:aa6ae27b240b9691b53b684ba72bab0ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa43bf8cef9a093f33a6cb34f50ed4fd0"><td class="memItemLeft" align="right" valign="top"><a id="aa43bf8cef9a093f33a6cb34f50ed4fd0"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#aa43bf8cef9a093f33a6cb34f50ed4fd0">csPin</a></td></tr>
-<tr class="memdesc:aa43bf8cef9a093f33a6cb34f50ed4fd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Arduino pin connected to CS (for SPI) <br /></td></tr>
-<tr class="separator:aa43bf8cef9a093f33a6cb34f50ed4fd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ce1cc1b67f99dde1cd912a3185e0b02"><td class="memItemLeft" align="right" valign="top"><a id="a7ce1cc1b67f99dde1cd912a3185e0b02"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___mono_o_l_e_d.html#a7ce1cc1b67f99dde1cd912a3185e0b02">rstPin</a></td></tr>
-<tr class="memdesc:a7ce1cc1b67f99dde1cd912a3185e0b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Arduino pin connected to reset (-1 if unused) <br /></td></tr>
-<tr class="separator:a7ce1cc1b67f99dde1cd912a3185e0b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5375d6b117a65c0a8bc67e4a042ddb5"><td class="memItemLeft" align="right" valign="top"><a id="ad5375d6b117a65c0a8bc67e4a042ddb5"></a>
+Adafruit_SPIDevice *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#ad5375d6b117a65c0a8bc67e4a042ddb5">spi_dev</a> = NULL</td></tr>
+<tr class="memdesc:ad5375d6b117a65c0a8bc67e4a042ddb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SPI interface BusIO device. <br /></td></tr>
+<tr class="separator:ad5375d6b117a65c0a8bc67e4a042ddb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa7488ce454be556f3cee63bbb132c56"><td class="memItemLeft" align="right" valign="top"><a id="aaa7488ce454be556f3cee63bbb132c56"></a>
+Adafruit_I2CDevice *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#aaa7488ce454be556f3cee63bbb132c56">i2c_dev</a> = NULL</td></tr>
+<tr class="memdesc:aaa7488ce454be556f3cee63bbb132c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The I2C interface BusIO device. <br /></td></tr>
+<tr class="separator:aaa7488ce454be556f3cee63bbb132c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ccedd0e6c08c84df1ef4cbf174d57f7"><td class="memItemLeft" align="right" valign="top"><a id="a2ccedd0e6c08c84df1ef4cbf174d57f7"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a2ccedd0e6c08c84df1ef4cbf174d57f7">i2c_preclk</a> = 400000</td></tr>
+<tr class="memdesc:a2ccedd0e6c08c84df1ef4cbf174d57f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configurable 'high speed' I2C rate. <br /></td></tr>
+<tr class="separator:a2ccedd0e6c08c84df1ef4cbf174d57f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac40167916deb4a26a1c1f595a60b968e"><td class="memItemLeft" align="right" valign="top"><a id="ac40167916deb4a26a1c1f595a60b968e"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#ac40167916deb4a26a1c1f595a60b968e">i2c_postclk</a> = 100000</td></tr>
+<tr class="memdesc:ac40167916deb4a26a1c1f595a60b968e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configurable 'low speed' I2C rate. <br /></td></tr>
+<tr class="separator:ac40167916deb4a26a1c1f595a60b968e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af554594766a360e1db431ee7e4e4b179"><td class="memItemLeft" align="right" valign="top"><a id="af554594766a360e1db431ee7e4e4b179"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#af554594766a360e1db431ee7e4e4b179">buffer</a> = NULL</td></tr>
+<tr class="memdesc:af554594766a360e1db431ee7e4e4b179"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal 1:1 framebuffer of display mem. <br /></td></tr>
+<tr class="separator:af554594766a360e1db431ee7e4e4b179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83073a894e500684888a4802d49bdf0d"><td class="memItemLeft" align="right" valign="top"><a id="a83073a894e500684888a4802d49bdf0d"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a83073a894e500684888a4802d49bdf0d">window_x1</a></td></tr>
+<tr class="memdesc:a83073a894e500684888a4802d49bdf0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window minimum x. <br /></td></tr>
+<tr class="separator:a83073a894e500684888a4802d49bdf0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9ea4d1c3be6899b5e65e7e7554498e8"><td class="memItemLeft" align="right" valign="top"><a id="ae9ea4d1c3be6899b5e65e7e7554498e8"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#ae9ea4d1c3be6899b5e65e7e7554498e8">window_y1</a></td></tr>
+<tr class="memdesc:ae9ea4d1c3be6899b5e65e7e7554498e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window minimum y. <br /></td></tr>
+<tr class="separator:ae9ea4d1c3be6899b5e65e7e7554498e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeb1bf335e8d97893d9e8b461fb16a76"><td class="memItemLeft" align="right" valign="top"><a id="aaeb1bf335e8d97893d9e8b461fb16a76"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#aaeb1bf335e8d97893d9e8b461fb16a76">window_x2</a></td></tr>
+<tr class="memdesc:aaeb1bf335e8d97893d9e8b461fb16a76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window maximum x. <br /></td></tr>
+<tr class="separator:aaeb1bf335e8d97893d9e8b461fb16a76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5662e0a5b5db6ddd78851f9ea176f5a3"><td class="memItemLeft" align="right" valign="top"><a id="a5662e0a5b5db6ddd78851f9ea176f5a3"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a5662e0a5b5db6ddd78851f9ea176f5a3">window_y2</a></td></tr>
+<tr class="memdesc:a5662e0a5b5db6ddd78851f9ea176f5a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dirty tracking window maximum y. <br /></td></tr>
+<tr class="separator:a5662e0a5b5db6ddd78851f9ea176f5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ee71e1b877defeca7f7d8689677d363"><td class="memItemLeft" align="right" valign="top"><a id="a2ee71e1b877defeca7f7d8689677d363"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a2ee71e1b877defeca7f7d8689677d363">dcPin</a></td></tr>
+<tr class="memdesc:a2ee71e1b877defeca7f7d8689677d363"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Arduino pin connected to D/C (for SPI) <br /></td></tr>
+<tr class="separator:a2ee71e1b877defeca7f7d8689677d363"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff4ae577695b683bb1a958692c0be77a"><td class="memItemLeft" align="right" valign="top"><a id="aff4ae577695b683bb1a958692c0be77a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#aff4ae577695b683bb1a958692c0be77a">csPin</a></td></tr>
+<tr class="memdesc:aff4ae577695b683bb1a958692c0be77a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Arduino pin connected to CS (for SPI) <br /></td></tr>
+<tr class="separator:aff4ae577695b683bb1a958692c0be77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b8ad07d90e716428259fb6ed22fbd3d"><td class="memItemLeft" align="right" valign="top"><a id="a5b8ad07d90e716428259fb6ed22fbd3d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a5b8ad07d90e716428259fb6ed22fbd3d">rstPin</a></td></tr>
+<tr class="memdesc:a5b8ad07d90e716428259fb6ed22fbd3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Arduino pin connected to reset (-1 if unused) <br /></td></tr>
+<tr class="separator:a5b8ad07d90e716428259fb6ed22fbd3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43e005545deba5b3231a6c438355b052"><td class="memItemLeft" align="right" valign="top"><a id="a43e005545deba5b3231a6c438355b052"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___gray_o_l_e_d.html#a43e005545deba5b3231a6c438355b052">_bpp</a> = 1</td></tr>
+<tr class="memdesc:a43e005545deba5b3231a6c438355b052"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bits per pixel color for this display. <br /></td></tr>
+<tr class="separator:a43e005545deba5b3231a6c438355b052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:aded338777abeac3c457660023f5c0724 inherit pro_attribs_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top"><a id="aded338777abeac3c457660023f5c0724"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aded338777abeac3c457660023f5c0724">WIDTH</a></td></tr>
@@ -413,17 +417,23 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:afeb94c3253f43dada05e1270e322fa06 inherit pro_attribs_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class that stores state and functions for interacting with generic monochrome OLED displays. </p>
+<div class="textblock"><p>Class that stores state and functions for interacting with generic grayscale OLED displays. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a3096d5246e190c6a85b830e081c35a59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3096d5246e190c6a85b830e081c35a59">&#9670;&nbsp;</a></span>Adafruit_MonoOLED() <span class="overload">[1/3]</span></h2>
+<a id="a529b94a903240f3a8484edba9bc64af1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a529b94a903240f3a8484edba9bc64af1">&#9670;&nbsp;</a></span>Adafruit_GrayOLED() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Adafruit_MonoOLED::Adafruit_MonoOLED </td>
+          <td class="memname">Adafruit_GrayOLED::Adafruit_GrayOLED </td>
           <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>bpp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>w</em>, </td>
         </tr>
@@ -468,6 +478,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Constructor for I2C-interfaced OLED displays. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">bpp</td><td>Bits per pixel, 1 for monochrome, 4 for 16-gray </td></tr>
     <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
     <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
     <tr><td class="paramname">twi</td><td>Pointer to an existing TwoWire instance (e.g. &amp;Wire, the microcontroller's primary I2C bus). </td></tr>
@@ -481,15 +492,21 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="aaad01d606ffeb7f116e9d985932d3659"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaad01d606ffeb7f116e9d985932d3659">&#9670;&nbsp;</a></span>Adafruit_MonoOLED() <span class="overload">[2/3]</span></h2>
+<a id="a283d68a0a29c9699fb35715c3c5ba6d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a283d68a0a29c9699fb35715c3c5ba6d7">&#9670;&nbsp;</a></span>Adafruit_GrayOLED() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Adafruit_MonoOLED::Adafruit_MonoOLED </td>
+          <td class="memname">Adafruit_GrayOLED::Adafruit_GrayOLED </td>
           <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>bpp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>w</em>, </td>
         </tr>
@@ -537,9 +554,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>Constructor for SPI MonoOLED displays, using software (bitbang) SPI. </p>
+<p>Constructor for SPI GrayOLED displays, using software (bitbang) SPI. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">bpp</td><td>Bits per pixel, 1 for monochrome, 4 for 16-gray </td></tr>
     <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
     <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
     <tr><td class="paramname">mosi_pin</td><td>MOSI (master out, slave in) pin (using Arduino pin numbering). This transfers serial data from microcontroller to display. </td></tr>
@@ -554,15 +572,21 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="ac75f12a5583298f2167e9d76b653b309"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac75f12a5583298f2167e9d76b653b309">&#9670;&nbsp;</a></span>Adafruit_MonoOLED() <span class="overload">[3/3]</span></h2>
+<a id="a05449925eafa8152a0f6346bcee31da1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05449925eafa8152a0f6346bcee31da1">&#9670;&nbsp;</a></span>Adafruit_GrayOLED() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Adafruit_MonoOLED::Adafruit_MonoOLED </td>
+          <td class="memname">Adafruit_GrayOLED::Adafruit_GrayOLED </td>
           <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>bpp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>w</em>, </td>
         </tr>
@@ -610,9 +634,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>Constructor for SPI MonoOLED displays, using native hardware SPI. </p>
+<p>Constructor for SPI GrayOLED displays, using native hardware SPI. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">bpp</td><td>Bits per pixel, 1 for monochrome, 4 for 16-gray </td></tr>
     <tr><td class="paramname">w</td><td>Display width in pixels </td></tr>
     <tr><td class="paramname">h</td><td>Display height in pixels </td></tr>
     <tr><td class="paramname">spi</td><td>Pointer to an existing SPIClass instance (e.g. &amp;SPI, the microcontroller's primary SPI bus). </td></tr>
@@ -628,14 +653,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9a4d2370e3a4b7d9189d913e617edfcc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a4d2370e3a4b7d9189d913e617edfcc">&#9670;&nbsp;</a></span>clearDisplay()</h2>
+<a id="ae0b51c6e9ffc7e76060b733a166a2c53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0b51c6e9ffc7e76060b733a166a2c53">&#9670;&nbsp;</a></span>clearDisplay()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_MonoOLED::clearDisplay </td>
+          <td class="memname">void Adafruit_GrayOLED::clearDisplay </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -645,13 +670,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Clear contents of display buffer (set all pixels to off). </p>
-<dl class="section return"><dt>Returns</dt><dd>None (void). </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Changes buffer contents only, no immediate effect on display. Follow up with a call to <a class="el" href="class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a>, or with other graphics commands as needed by one's own application. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Changes buffer contents only, no immediate effect on display. Follow up with a call to <a class="el" href="class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a>, or with other graphics commands as needed by one's own application. </dd></dl>
 
 </div>
 </div>
-<a id="afc64512468c286053c9adad976e7533c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc64512468c286053c9adad976e7533c">&#9670;&nbsp;</a></span>invertDisplay()</h2>
+<a id="accaade9c6647e0d97737ee29f8257183"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accaade9c6647e0d97737ee29f8257183">&#9670;&nbsp;</a></span>invertDisplay()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -660,7 +684,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_MonoOLED::invertDisplay </td>
+          <td class="memname">void Adafruit_GrayOLED::invertDisplay </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>i</em></td><td>)</td>
@@ -681,21 +705,20 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>None (void). </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This has an immediate effect on the display, no need to call the <a class="el" href="class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a> function &ndash; buffer contents are not changed, rather a different pixel mode of the display hardware is used. When enabled, drawing MONOOLED_BLACK (value 0) pixels will actually draw white, MONOOLED_WHITE (value 1) will draw black. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This has an immediate effect on the display, no need to call the <a class="el" href="class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a> function &ndash; buffer contents are not changed, rather a different pixel mode of the display hardware is used. When enabled, drawing MONOOLED_BLACK (value 0) pixels will actually draw white, MONOOLED_WHITE (value 1) will draw black. </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a45028d348fe4eb23854eb86f5cf99388">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
-<a id="a548a9a3770c3795b845ae00dfa021f75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a548a9a3770c3795b845ae00dfa021f75">&#9670;&nbsp;</a></span>setContrast()</h2>
+<a id="af5b84beec33b79918c1db1ee1f458a04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5b84beec33b79918c1db1ee1f458a04">&#9670;&nbsp;</a></span>setContrast()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_MonoOLED::setContrast </td>
+          <td class="memname">void Adafruit_GrayOLED::setContrast </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
           <td class="paramname"><em>level</em></td><td>)</td>
@@ -711,13 +734,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>None (void). </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This has an immediate effect on the display, no need to call the <a class="el" href="class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a> function &ndash; buffer contents are not changed. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This has an immediate effect on the display, no need to call the <a class="el" href="class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a> function &ndash; buffer contents are not changed. </dd></dl>
 
 </div>
 </div>
-<a id="a606c97d83bd4f49cc14efd71107675bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a606c97d83bd4f49cc14efd71107675bf">&#9670;&nbsp;</a></span>drawPixel()</h2>
+<a id="a6736062d7d342aa8ab093d09f45563aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6736062d7d342aa8ab093d09f45563aa">&#9670;&nbsp;</a></span>drawPixel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -726,7 +748,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_MonoOLED::drawPixel </td>
+          <td class="memname">void Adafruit_GrayOLED::drawPixel </td>
           <td>(</td>
           <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
@@ -765,21 +787,20 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>None (void). </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Changes buffer contents only, no immediate effect on display. Follow up with a call to <a class="el" href="class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a>, or with other graphics commands as needed by one's own application. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Changes buffer contents only, no immediate effect on display. Follow up with a call to <a class="el" href="class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a>, or with other graphics commands as needed by one's own application. </dd></dl>
 
 <p>Implements <a class="el" href="class_adafruit___g_f_x.html#ab7fbf72885c873266f9c7eb53b5c8896">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
-<a id="a97dc987212fa75f1973e10e7de254121"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97dc987212fa75f1973e10e7de254121">&#9670;&nbsp;</a></span>getPixel()</h2>
+<a id="a4fe49c5ae9285c483ccd0c4ff41b8b82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fe49c5ae9285c483ccd0c4ff41b8b82">&#9670;&nbsp;</a></span>getPixel()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Adafruit_MonoOLED::getPixel </td>
+          <td class="memname">bool Adafruit_GrayOLED::getPixel </td>
           <td>(</td>
           <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
@@ -807,18 +828,18 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if pixel is set (usually MONOOLED_WHITE, unless display invert mode is enabled), false if clear (MONOOLED_BLACK). </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Reads from buffer contents; may not reflect current contents of screen if <a class="el" href="class_adafruit___mono_o_l_e_d.html#ac4f90e6c918952f1057904752a6e0cc5" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a> has not been called. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Reads from buffer contents; may not reflect current contents of screen if <a class="el" href="class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820" title="The function that sub-classes define that writes out the buffer to the display over I2C or SPI...">display()</a> has not been called. </dd></dl>
 
 </div>
 </div>
-<a id="a7e765b59c78bb2a857a15be52c0de05f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e765b59c78bb2a857a15be52c0de05f">&#9670;&nbsp;</a></span>getBuffer()</h2>
+<a id="aba34b8acc8e907d761fa53985499b328"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba34b8acc8e907d761fa53985499b328">&#9670;&nbsp;</a></span>getBuffer()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t * Adafruit_MonoOLED::getBuffer </td>
+          <td class="memname">uint8_t * Adafruit_GrayOLED::getBuffer </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -832,14 +853,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="ab13ab5caf82a25f189b362e2bdf7e7cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab13ab5caf82a25f189b362e2bdf7e7cc">&#9670;&nbsp;</a></span>oled_command()</h2>
+<a id="a24b83d7f148e7f2c09ab6b202e918294"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24b83d7f148e7f2c09ab6b202e918294">&#9670;&nbsp;</a></span>oled_command()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_MonoOLED::oled_command </td>
+          <td class="memname">void Adafruit_GrayOLED::oled_command </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
           <td class="paramname"><em>c</em></td><td>)</td>
@@ -858,14 +879,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a37ad2c81c1fb078cab1fa8af47b2801c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37ad2c81c1fb078cab1fa8af47b2801c">&#9670;&nbsp;</a></span>oled_commandList()</h2>
+<a id="a206d32087e5100246b4346bf627ea40f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a206d32087e5100246b4346bf627ea40f">&#9670;&nbsp;</a></span>oled_commandList()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Adafruit_MonoOLED::oled_commandList </td>
+          <td class="memname">bool Adafruit_GrayOLED::oled_commandList </td>
           <td>(</td>
           <td class="paramtype">const uint8_t *&#160;</td>
           <td class="paramname"><em>c</em>, </td>
@@ -896,8 +917,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="acc6915540fc325c51f82205bd5673efd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc6915540fc325c51f82205bd5673efd">&#9670;&nbsp;</a></span>_init()</h2>
+<a id="a11bd4d7d0f9c14e1c7ce839b6318c9de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11bd4d7d0f9c14e1c7ce839b6318c9de">&#9670;&nbsp;</a></span>_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -906,7 +927,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Adafruit_MonoOLED::_init </td>
+          <td class="memname">bool Adafruit_GrayOLED::_init </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
           <td class="paramname"><em>addr</em> = <code>0x3C</code>, </td>
@@ -944,8 +965,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li><a class="el" href="_adafruit___mono_o_l_e_d_8h_source.html">Adafruit_MonoOLED.h</a></li>
-<li><a class="el" href="_adafruit___mono_o_l_e_d_8cpp.html">Adafruit_MonoOLED.cpp</a></li>
+<li><a class="el" href="_adafruit___gray_o_l_e_d_8h_source.html">Adafruit_GrayOLED.h</a></li>
+<li><a class="el" href="_adafruit___gray_o_l_e_d_8cpp.html">Adafruit_GrayOLED.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

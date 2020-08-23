@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dcpin',['dcPin',['../class_adafruit___mono_o_l_e_d.html#aa6ae27b240b9691b53b684ba72bab0ee',1,'Adafruit_MonoOLED']]]
+  ['dcpin',['dcPin',['../class_adafruit___gray_o_l_e_d.html#a2ee71e1b877defeca7f7d8689677d363',1,'Adafruit_GrayOLED']]]
 ];

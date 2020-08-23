@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['_5fbpp',['_bpp',['../class_adafruit___gray_o_l_e_d.html#a43e005545deba5b3231a6c438355b052',1,'Adafruit_GrayOLED']]],
   ['_5fcp437',['_cp437',['../class_adafruit___g_f_x.html#a751d54ed0e52ca2657b194769782d5eb',1,'Adafruit_GFX']]],
   ['_5fcs',['_cs',['../class_adafruit___s_p_i_t_f_t.html#ac0ed6886fcef09bd3d98a02238ae7300',1,'Adafruit_SPITFT']]],
   ['_5fd0',['_d0',['../class_adafruit___s_p_i_t_f_t.html#a5b26872a4e2b08017b475e9a542261cb',1,'Adafruit_SPITFT']]],
