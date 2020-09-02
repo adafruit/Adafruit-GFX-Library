@@ -96,9 +96,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9362b64e0e24b34172226cab358f5a45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a9362b64e0e24b34172226cab358f5a45">fillScreen</a> (uint16_t color)</td></tr>
 <tr class="memdesc:a9362b64e0e24b34172226cab358f5a45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the framebuffer completely with one color.  <a href="#a9362b64e0e24b34172226cab358f5a45">More...</a><br /></td></tr>
 <tr class="separator:a9362b64e0e24b34172226cab358f5a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5eadf69798e020345107af6cdb86f222"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a5eadf69798e020345107af6cdb86f222">writeFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
-<tr class="memdesc:a5eadf69798e020345107af6cdb86f222"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line, overwrite in subclasses if startWrite is defined!  <a href="#a5eadf69798e020345107af6cdb86f222">More...</a><br /></td></tr>
-<tr class="separator:a5eadf69798e020345107af6cdb86f222"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b325776c7f78401534bae15a8d92437"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a8b325776c7f78401534bae15a8d92437">drawFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
+<tr class="memdesc:a8b325776c7f78401534bae15a8d92437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed optimized vertical line drawing.  <a href="#a8b325776c7f78401534bae15a8d92437">More...</a><br /></td></tr>
+<tr class="separator:a8b325776c7f78401534bae15a8d92437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbde83fd6c90945b6989981cd4ae642d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#adbde83fd6c90945b6989981cd4ae642d">drawFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
+<tr class="memdesc:adbde83fd6c90945b6989981cd4ae642d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed optimized horizontal line drawing.  <a href="#adbde83fd6c90945b6989981cd4ae642d">More...</a><br /></td></tr>
+<tr class="separator:adbde83fd6c90945b6989981cd4ae642d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a596d92a61af6e59c69f132f1670ee62c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a596d92a61af6e59c69f132f1670ee62c">getPixel</a> (int16_t x, int16_t y) const</td></tr>
 <tr class="memdesc:a596d92a61af6e59c69f132f1670ee62c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the pixel color value at a given coordinate.  <a href="#a596d92a61af6e59c69f132f1670ee62c">More...</a><br /></td></tr>
 <tr class="separator:a596d92a61af6e59c69f132f1670ee62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,6 +125,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:ae12d09670433af17e666a203b51715f7 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ae12d09670433af17e666a203b51715f7">writeFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
 <tr class="memdesc:ae12d09670433af17e666a203b51715f7 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly vertical line, overwrite in subclasses if startWrite is defined!  <a href="class_adafruit___g_f_x.html#ae12d09670433af17e666a203b51715f7">More...</a><br /></td></tr>
 <tr class="separator:ae12d09670433af17e666a203b51715f7 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad85469e8be73f90932058fba1d4e5cbd inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ad85469e8be73f90932058fba1d4e5cbd">writeFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
+<tr class="memdesc:ad85469e8be73f90932058fba1d4e5cbd inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line, overwrite in subclasses if startWrite is defined!  <a href="class_adafruit___g_f_x.html#ad85469e8be73f90932058fba1d4e5cbd">More...</a><br /></td></tr>
+<tr class="separator:ad85469e8be73f90932058fba1d4e5cbd inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1e5204b9251a04a57c821f69a8e638b inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ae1e5204b9251a04a57c821f69a8e638b">writeLine</a> (int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)</td></tr>
 <tr class="memdesc:ae1e5204b9251a04a57c821f69a8e638b inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a line. Bresenham's algorithm - thx wikpedia.  <a href="class_adafruit___g_f_x.html#ae1e5204b9251a04a57c821f69a8e638b">More...</a><br /></td></tr>
 <tr class="separator:ae1e5204b9251a04a57c821f69a8e638b inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,12 +141,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a45028d348fe4eb23854eb86f5cf99388 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a45028d348fe4eb23854eb86f5cf99388">invertDisplay</a> (bool i)</td></tr>
 <tr class="memdesc:a45028d348fe4eb23854eb86f5cf99388 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the display (ideally using built-in hardware command)  <a href="class_adafruit___g_f_x.html#a45028d348fe4eb23854eb86f5cf99388">More...</a><br /></td></tr>
 <tr class="separator:a45028d348fe4eb23854eb86f5cf99388 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cffbb1d69c5faf49cd0cff27686a837 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a1cffbb1d69c5faf49cd0cff27686a837">drawFastVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
-<tr class="memdesc:a1cffbb1d69c5faf49cd0cff27686a837 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a perfectly vertical line (this is often optimized in a subclass!)  <a href="class_adafruit___g_f_x.html#a1cffbb1d69c5faf49cd0cff27686a837">More...</a><br /></td></tr>
-<tr class="separator:a1cffbb1d69c5faf49cd0cff27686a837 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">drawFastHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
-<tr class="memdesc:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a perfectly horizontal line (this is often optimized in a subclass!)  <a href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">More...</a><br /></td></tr>
-<tr class="separator:a4d42e7cc577c1eb5b06fe656786c9c79 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa43cf1dfe6c17d040a0f1fd5ffbe9d69 inherit pub_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69">fillRect</a> (int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)</td></tr>
 <tr class="memdesc:aa43cf1dfe6c17d040a0f1fd5ffbe9d69 inherit pub_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill a rectangle completely with one color. Update in subclasses if desired!  <a href="class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69">More...</a><br /></td></tr>
 <tr class="separator:aa43cf1dfe6c17d040a0f1fd5ffbe9d69 inherit pub_methods_class_adafruit___g_f_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -276,6 +276,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a4ba7ffdd7a75f7377f5856547e4e1391"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a4ba7ffdd7a75f7377f5856547e4e1391">getRawPixel</a> (int16_t x, int16_t y) const</td></tr>
 <tr class="memdesc:a4ba7ffdd7a75f7377f5856547e4e1391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the pixel color value at a given, unrotated coordinate. This method is intended for hardware drivers to get pixel value in physical coordinates.  <a href="#a4ba7ffdd7a75f7377f5856547e4e1391">More...</a><br /></td></tr>
 <tr class="separator:a4ba7ffdd7a75f7377f5856547e4e1391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac869003b7e9be38fb9e350269cbe30a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#aac869003b7e9be38fb9e350269cbe30a">drawFastRawVLine</a> (int16_t x, int16_t y, int16_t h, uint16_t color)</td></tr>
+<tr class="memdesc:aac869003b7e9be38fb9e350269cbe30a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed optimized vertical line drawing into the raw canvas buffer.  <a href="#aac869003b7e9be38fb9e350269cbe30a">More...</a><br /></td></tr>
+<tr class="separator:aac869003b7e9be38fb9e350269cbe30a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8919acea0c1b958b511c219c4704f011"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas8.html#a8919acea0c1b958b511c219c4704f011">drawFastRawHLine</a> (int16_t x, int16_t y, int16_t w, uint16_t color)</td></tr>
+<tr class="memdesc:a8919acea0c1b958b511c219c4704f011"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed optimized horizontal line drawing into the raw canvas buffer.  <a href="#a8919acea0c1b958b511c219c4704f011">More...</a><br /></td></tr>
+<tr class="separator:a8919acea0c1b958b511c219c4704f011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">charBounds</a> (unsigned char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)</td></tr>
 <tr class="memdesc:a682fb355070668dba526be20a9ce45af inherit pro_methods_class_adafruit___g_f_x"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions.  <a href="class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af">More...</a><br /></td></tr>
@@ -472,8 +478,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a5eadf69798e020345107af6cdb86f222"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5eadf69798e020345107af6cdb86f222">&#9670;&nbsp;</a></span>writeFastHLine()</h2>
+<a id="a8b325776c7f78401534bae15a8d92437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b325776c7f78401534bae15a8d92437">&#9670;&nbsp;</a></span>drawFastVLine()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -482,7 +488,68 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void GFXcanvas8::writeFastHLine </td>
+          <td class="memname">void GFXcanvas8::drawFastVLine </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Speed optimized vertical line drawing. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Line horizontal start point </td></tr>
+    <tr><td class="paramname">y</td><td>Line vertical start point </td></tr>
+    <tr><td class="paramname">h</td><td>length of vertical line to be drawn, including first point </td></tr>
+    <tr><td class="paramname">color</td><td>8-bit Color to fill with. Only lower byte of uint16_t is used. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a1cffbb1d69c5faf49cd0cff27686a837">Adafruit_GFX</a>.</p>
+
+</div>
+</div>
+<a id="adbde83fd6c90945b6989981cd4ae642d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbde83fd6c90945b6989981cd4ae642d">&#9670;&nbsp;</a></span>drawFastHLine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GFXcanvas8::drawFastHLine </td>
           <td>(</td>
           <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
@@ -518,18 +585,18 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Write a perfectly horizontal line, overwrite in subclasses if startWrite is defined! </p>
+<p>Speed optimized horizontal line drawing. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Left-most x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>Left-most y coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>Width in pixels </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill with </td></tr>
+    <tr><td class="paramname">x</td><td>Line horizontal start point </td></tr>
+    <tr><td class="paramname">y</td><td>Line vertical start point </td></tr>
+    <tr><td class="paramname">w</td><td>length of horizontal line to be drawn, including first point </td></tr>
+    <tr><td class="paramname">color</td><td>8-bit Color to fill with. Only lower byte of uint16_t is used. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#ad85469e8be73f90932058fba1d4e5cbd">Adafruit_GFX</a>.</p>
+<p>Reimplemented from <a class="el" href="class_adafruit___g_f_x.html#a4d42e7cc577c1eb5b06fe656786c9c79">Adafruit_GFX</a>.</p>
 
 </div>
 </div>
@@ -643,6 +710,124 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The desired pixel's 8-bit color value </dd></dl>
+
+</div>
+</div>
+<a id="aac869003b7e9be38fb9e350269cbe30a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac869003b7e9be38fb9e350269cbe30a">&#9670;&nbsp;</a></span>drawFastRawVLine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GFXcanvas8::drawFastRawVLine </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Speed optimized vertical line drawing into the raw canvas buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Line horizontal start point </td></tr>
+    <tr><td class="paramname">y</td><td>Line vertical start point </td></tr>
+    <tr><td class="paramname">h</td><td>length of vertical line to be drawn, including first point </td></tr>
+    <tr><td class="paramname">color</td><td>8-bit Color to fill with. Only lower byte of uint16_t is used. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8919acea0c1b958b511c219c4704f011"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8919acea0c1b958b511c219c4704f011">&#9670;&nbsp;</a></span>drawFastRawHLine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GFXcanvas8::drawFastRawHLine </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Speed optimized horizontal line drawing into the raw canvas buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Line horizontal start point </td></tr>
+    <tr><td class="paramname">y</td><td>Line vertical start point </td></tr>
+    <tr><td class="paramname">w</td><td>length of horizontal line to be drawn, including first point </td></tr>
+    <tr><td class="paramname">color</td><td>8-bit Color to fill with. Only lower byte of uint16_t is used. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
