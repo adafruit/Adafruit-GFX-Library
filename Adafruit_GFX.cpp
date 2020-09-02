@@ -1884,6 +1884,209 @@ void GFXcanvas1::fillScreen(uint16_t color) {
 
 /**************************************************************************/
 /*!
+   @brief    Speed optimized vertical line drawing
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   Binary (on or off) color to fill with
+*/
+/**************************************************************************/
+void GFXcanvas1::drawFastVLine(int16_t x, int16_t y, int16_t h,
+                               uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
+    return;
+  }
+
+  if (y + h > height()) {
+    h = height() - y;
+  } else if (h < 0) {
+    // convert negative heights to their postive equivalent
+    h *= -1;
+    y -= h - 1;
+    if (y < 0) {
+      h += y;
+      y = 0;
+    }
+  }
+
+  if (getRotation() == 0) {
+    drawFastRawVLine(x, y, h, color);
+  } else if (getRotation() == 1) {
+    int16_t t = x;
+    x = WIDTH - 1 - y;
+    y = t;
+    x -= h - 1;
+    drawFastRawHLine(x, y, h, color);
+  } else if (getRotation() == 2) {
+    x = WIDTH - 1 - x;
+    y = HEIGHT - 1 - y;
+
+    y -= h - 1;
+    drawFastRawVLine(x, y, h, color);
+  } else if (getRotation() == 3) {
+    int16_t t = x;
+    x = y;
+    y = HEIGHT - 1 - t;
+    drawFastRawHLine(x, y, h, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   Binary (on or off) color to fill with
+*/
+/**************************************************************************/
+void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
+                               uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
+    return;
+  }
+
+  if (x + w > width()) {
+    w = width() - x;
+  } else if (w < 0) {
+    // convert negative widths to their postive equivalent
+    w *= -1;
+    x -= w - 1;
+    if (x < 0) {
+      w += x;
+      x = 0;
+    }
+  }
+
+  if (getRotation() == 0) {
+    drawFastRawHLine(x, y, w, color);
+  } else if (getRotation() == 1) {
+    int16_t t = x;
+    x = WIDTH - 1 - y;
+    y = t;
+    drawFastRawVLine(x, y, w, color);
+  } else if (getRotation() == 2) {
+    x = WIDTH - 1 - x;
+    y = HEIGHT - 1 - y;
+
+    x -= w - 1;
+    drawFastRawHLine(x, y, w, color);
+  } else if (getRotation() == 3) {
+    int16_t t = x;
+    x = y;
+    y = HEIGHT - 1 - t;
+    y -= w - 1;
+    drawFastRawVLine(x, y, w, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   Binary (on or off) color to fill with
+*/
+/**************************************************************************/
+void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+                                  uint16_t color) {
+  // x & y already in raw (rotation 0) coordinates, no need to transform.
+  int16_t row_bytes = ((WIDTH + 7) / 8);
+  uint8_t *buffer = this->getBuffer();
+  uint8_t *ptr = &buffer[(x / 8) + y * row_bytes];
+
+  if (color > 0) {
+#ifdef __AVR__
+    uint8_t bit_mask = pgm_read_byte(&GFXsetBit[x & 7]);
+#else
+    uint8_t bit_mask = (0x80 >> (x & 7));
+#endif
+    for (int16_t i = 0; i < h; i++) {
+      *ptr |= bit_mask;
+      ptr += row_bytes;
+    }
+  } else {
+#ifdef __AVR__
+    uint8_t bit_mask = pgm_read_byte(&GFXclrBit[x & 7]);
+#else
+    uint8_t bit_mask = ~(0x80 >> (x & 7));
+#endif
+    for (int16_t i = 0; i < h; i++) {
+      *ptr &= bit_mask;
+      ptr += row_bytes;
+    }
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   Binary (on or off) color to fill with
+*/
+/**************************************************************************/
+void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+                                  uint16_t color) {
+  // x & y already in raw (rotation 0) coordinates, no need to transform.
+  int16_t rowBytes = ((WIDTH + 7) / 8);
+  uint8_t *buffer = this->getBuffer();
+  uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
+  size_t remainingWidthBits = w;
+
+  // check to see if first byte needs to be partially filled
+  if ((x & 7) > 0) {
+    // create bit mask for first byte
+    uint8_t startByteBitMask = 0x00;
+    for (int8_t i = (x & 7); ((i < 8) && (remainingWidthBits > 0)); i++) {
+#ifdef __AVR__
+      startByteBitMask |= pgm_read_byte(&GFXsetBit[i]);
+#else
+      startByteBitMask |= (0x80 >> i);
+#endif
+      remainingWidthBits--;
+    }
+    if (color > 0) {
+      *ptr |= startByteBitMask;
+    } else {
+      *ptr &= ~startByteBitMask;
+    }
+
+    ptr++;
+  }
+
+  // do the next remainingWidthBits bits
+  if (remainingWidthBits > 0) {
+    size_t remainingWholeBytes = remainingWidthBits / 8;
+    size_t lastByteBits = remainingWidthBits % 8;
+    uint8_t wholeByteColor = color > 0 ? 0xFF : 0x00;
+
+    memset(ptr, wholeByteColor, remainingWholeBytes);
+
+    if (lastByteBits > 0) {
+      uint8_t lastByteBitMask = 0x00;
+      for (int8_t i = 0; i < lastByteBits; i++) {
+#ifdef __AVR__
+        lastByteBitMask |= pgm_read_byte(&GFXsetBit[i]);
+#else
+        lastByteBitMask |= (0x80 >> i);
+#endif
+      }
+      ptr += remainingWholeBytes;
+
+      if (color > 0) {
+        *ptr |= lastByteBitMask;
+      } else {
+        *ptr &= ~lastByteBitMask;
+      }
+    }
+  }
+}
+
+/**************************************************************************/
+/*!
    @brief    Instatiate a GFX 8-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
@@ -2001,41 +2204,139 @@ void GFXcanvas8::fillScreen(uint16_t color) {
   }
 }
 
-void GFXcanvas8::writeFastHLine(int16_t x, int16_t y, int16_t w,
-                                uint16_t color) {
-
-  if ((x >= _width) || (y < 0) || (y >= _height))
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
+   used.
+*/
+/**************************************************************************/
+void GFXcanvas8::drawFastVLine(int16_t x, int16_t y, int16_t h,
+                               uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
     return;
-  int16_t x2 = x + w - 1;
-  if (x2 < 0)
-    return;
-
-  // Clip left/right
-  if (x < 0) {
-    x = 0;
-    w = x2 + 1;
   }
-  if (x2 >= _width)
-    w = _width - x;
 
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
+  if (y + h > height()) {
+    h = height() - y;
+  } else if (h < 0) {
+    // convert negative heights to their postive equivalent
+    h *= -1;
+    y -= h - 1;
+    if (y < 0) {
+      h += y;
+      y = 0;
+    }
+  }
+
+  if (getRotation() == 0) {
+    drawFastRawVLine(x, y, h, color);
+  } else if (getRotation() == 1) {
+    int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
-    break;
-  case 2:
+    x -= h - 1;
+    drawFastRawHLine(x, y, h, color);
+  } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
+
+    y -= h - 1;
+    drawFastRawVLine(x, y, h, color);
+  } else if (getRotation() == 3) {
+    int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
-    break;
+    drawFastRawHLine(x, y, h, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
+   used.
+*/
+/**************************************************************************/
+void GFXcanvas8::drawFastHLine(int16_t x, int16_t y, int16_t w,
+                               uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
+    return;
   }
 
+  if (x + w > width()) {
+    w = width() - x;
+  } else if (w < 0) {
+    // convert negative widths to their postive equivalent
+    w *= -1;
+    x -= w - 1;
+    if (x < 0) {
+      w += x;
+      x = 0;
+    }
+  }
+
+  if (getRotation() == 0) {
+    drawFastRawHLine(x, y, w, color);
+  } else if (getRotation() == 1) {
+    int16_t t = x;
+    x = WIDTH - 1 - y;
+    y = t;
+    drawFastRawVLine(x, y, w, color);
+  } else if (getRotation() == 2) {
+    x = WIDTH - 1 - x;
+    y = HEIGHT - 1 - y;
+
+    x -= w - 1;
+    drawFastRawHLine(x, y, w, color);
+  } else if (getRotation() == 3) {
+    int16_t t = x;
+    x = y;
+    y = HEIGHT - 1 - t;
+    y -= w - 1;
+    drawFastRawVLine(x, y, w, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
+   used.
+*/
+/**************************************************************************/
+void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+                                  uint16_t color) {
+  // x & y already in raw (rotation 0) coordinates, no need to transform.
+  uint8_t *buffer_ptr = buffer + y * WIDTH + x;
+  for (int16_t i = 0; i < h; i++) {
+    (*buffer_ptr) = color;
+    buffer_ptr += WIDTH;
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
+   used.
+*/
+/**************************************************************************/
+void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+                                  uint16_t color) {
+  // x & y already in raw (rotation 0) coordinates, no need to transform.
   memset(buffer + y * WIDTH + x, color, w);
 }
 
@@ -2183,5 +2484,140 @@ void GFXcanvas16::byteSwap(void) {
     uint32_t i, pixels = WIDTH * HEIGHT;
     for (i = 0; i < pixels; i++)
       buffer[i] = __builtin_bswap16(buffer[i]);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   color 16-bit 5-6-5 Color to draw line with
+*/
+/**************************************************************************/
+void GFXcanvas16::drawFastVLine(int16_t x, int16_t y, int16_t h,
+                                uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
+    return;
+  }
+
+  if (y + h > height()) {
+    h = height() - y;
+  } else if (h < 0) {
+    // convert negative heights to their postive equivalent
+    h *= -1;
+    y -= h - 1;
+    if (y < 0) {
+      h += y;
+      y = 0;
+    }
+  }
+
+  if (getRotation() == 0) {
+    drawFastRawVLine(x, y, h, color);
+  } else if (getRotation() == 1) {
+    int16_t t = x;
+    x = WIDTH - 1 - y;
+    y = t;
+    x -= h - 1;
+    drawFastRawHLine(x, y, h, color);
+  } else if (getRotation() == 2) {
+    x = WIDTH - 1 - x;
+    y = HEIGHT - 1 - y;
+
+    y -= h - 1;
+    drawFastRawVLine(x, y, h, color);
+  } else if (getRotation() == 3) {
+    int16_t t = x;
+    x = y;
+    y = HEIGHT - 1 - t;
+    drawFastRawHLine(x, y, h, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   color 16-bit 5-6-5 Color to draw line with
+*/
+/**************************************************************************/
+void GFXcanvas16::drawFastHLine(int16_t x, int16_t y, int16_t w,
+                                uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
+    return;
+  }
+
+  if (x + w > width()) {
+    w = width() - x;
+  } else if (w < 0) {
+    // convert negative widths to their postive equivalent
+    w *= -1;
+    x -= w - 1;
+    if (x < 0) {
+      w += x;
+      x = 0;
+    }
+  }
+
+  if (getRotation() == 0) {
+    drawFastRawHLine(x, y, w, color);
+  } else if (getRotation() == 1) {
+    int16_t t = x;
+    x = WIDTH - 1 - y;
+    y = t;
+    drawFastRawVLine(x, y, w, color);
+  } else if (getRotation() == 2) {
+    x = WIDTH - 1 - x;
+    y = HEIGHT - 1 - y;
+
+    x -= w - 1;
+    drawFastRawHLine(x, y, w, color);
+  } else if (getRotation() == 3) {
+    int16_t t = x;
+    x = y;
+    y = HEIGHT - 1 - t;
+    y -= w - 1;
+    drawFastRawVLine(x, y, w, color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized vertical line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    h   length of vertical line to be drawn, including first point
+   @param    color   color 16-bit 5-6-5 Color to draw line with
+*/
+/**************************************************************************/
+void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+                                   uint16_t color) {
+  // x & y already in raw (rotation 0) coordinates, no need to transform.
+  uint16_t *buffer_ptr = buffer + y * WIDTH + x;
+  for (int16_t i = 0; i < h; i++) {
+    (*buffer_ptr) = color;
+    buffer_ptr += WIDTH;
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
+   @param    x   Line horizontal start point
+   @param    y   Line vertical start point
+   @param    w   length of horizontal line to be drawn, including first point
+   @param    color   color 16-bit 5-6-5 Color to draw line with
+*/
+/**************************************************************************/
+void GFXcanvas16::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+                                   uint16_t color) {
+  // x & y already in raw (rotation 0) coordinates, no need to transform.
+  size_t buffer_index = y * WIDTH + x;
+  for (int16_t i = buffer_index; i < buffer_index + w; i++) {
+    buffer[i] = color;
   }
 }
