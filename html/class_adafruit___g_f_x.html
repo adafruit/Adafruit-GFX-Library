@@ -2683,13 +2683,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Helper to determine size of a string with current font/size. Pass string and a cursor position, returns UL corner and W,H. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">str</td><td>The ascii string to measure </td></tr>
+    <tr><td class="paramname">str</td><td>The ASCII string to measure </td></tr>
     <tr><td class="paramname">x</td><td>The current cursor X </td></tr>
     <tr><td class="paramname">y</td><td>The current cursor Y </td></tr>
-    <tr><td class="paramname">x1</td><td>The boundary X coordinate, set by function </td></tr>
-    <tr><td class="paramname">y1</td><td>The boundary Y coordinate, set by function </td></tr>
-    <tr><td class="paramname">w</td><td>The boundary width, set by function </td></tr>
-    <tr><td class="paramname">h</td><td>The boundary height, set by function </td></tr>
+    <tr><td class="paramname">x1</td><td>The boundary X coordinate, returned by function </td></tr>
+    <tr><td class="paramname">y1</td><td>The boundary Y coordinate, returned by function </td></tr>
+    <tr><td class="paramname">w</td><td>The boundary width, returned by function </td></tr>
+    <tr><td class="paramname">h</td><td>The boundary height, returned by function </td></tr>
   </table>
   </dd>
 </dl>
@@ -3368,13 +3368,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Helper to determine size of a character with current font/size. Broke this out as it's used by both the PROGMEM- and RAM-resident <a class="el" href="class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19" title="Helper to determine size of a string with current font/size. Pass string and a cursor position...">getTextBounds()</a> functions. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">c</td><td>The ascii character in question </td></tr>
-    <tr><td class="paramname">x</td><td>Pointer to x location of character </td></tr>
-    <tr><td class="paramname">y</td><td>Pointer to y location of character </td></tr>
-    <tr><td class="paramname">minx</td><td>Minimum clipping value for X </td></tr>
-    <tr><td class="paramname">miny</td><td>Minimum clipping value for Y </td></tr>
-    <tr><td class="paramname">maxx</td><td>Maximum clipping value for X </td></tr>
-    <tr><td class="paramname">maxy</td><td>Maximum clipping value for Y </td></tr>
+    <tr><td class="paramname">c</td><td>The ASCII character in question </td></tr>
+    <tr><td class="paramname">x</td><td>Pointer to x location of character. Value is modified by this function to advance to next character. </td></tr>
+    <tr><td class="paramname">y</td><td>Pointer to y location of character. Value is modified by this function to advance to next character. </td></tr>
+    <tr><td class="paramname">minx</td><td>Pointer to minimum X coordinate, passed in to AND returned by this function &ndash; this is used to incrementally build a bounding rectangle for a string. </td></tr>
+    <tr><td class="paramname">miny</td><td>Pointer to minimum Y coord, passed in AND returned. </td></tr>
+    <tr><td class="paramname">maxx</td><td>Pointer to maximum X coord, passed in AND returned. </td></tr>
+    <tr><td class="paramname">maxy</td><td>Pointer to maximum Y coord, passed in AND returned. </td></tr>
   </table>
   </dd>
 </dl>
