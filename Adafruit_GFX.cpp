@@ -1352,16 +1352,20 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
 
 /**************************************************************************/
 /*!
-    @brief    Helper to determine size of a character with current font/size.
-       Broke this out as it's used by both the PROGMEM- and RAM-resident
-   getTextBounds() functions.
-    @param    c     The ascii character in question
-    @param    x     Pointer to x location of character
-    @param    y     Pointer to y location of character
-    @param    minx  Minimum clipping value for X
-    @param    miny  Minimum clipping value for Y
-    @param    maxx  Maximum clipping value for X
-    @param    maxy  Maximum clipping value for Y
+    @brief  Helper to determine size of a character with current font/size.
+            Broke this out as it's used by both the PROGMEM- and RAM-resident
+            getTextBounds() functions.
+    @param  c     The ASCII character in question
+    @param  x     Pointer to x location of character. Value is modified by
+                  this function to advance to next character.
+    @param  y     Pointer to y location of character. Value is modified by
+                  this function to advance to next character.
+    @param  minx  Pointer to minimum X coordinate, passed in to AND returned
+                  by this function -- this is used to incrementally build a
+                  bounding rectangle for a string.
+    @param  miny  Pointer to minimum Y coord, passed in AND returned.
+    @param  maxx  Pointer to maximum X coord, passed in AND returned.
+    @param  maxy  Pointer to maximum Y coord, passed in AND returned.
 */
 /**************************************************************************/
 void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
@@ -1430,36 +1434,40 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
 
 /**************************************************************************/
 /*!
-    @brief    Helper to determine size of a string with current font/size. Pass
-   string and a cursor position, returns UL corner and W,H.
-    @param    str     The ascii string to measure
-    @param    x       The current cursor X
-    @param    y       The current cursor Y
-    @param    x1      The boundary X coordinate, set by function
-    @param    y1      The boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @brief  Helper to determine size of a string with current font/size.
+            Pass string and a cursor position, returns UL corner and W,H.
+    @param  str  The ASCII string to measure
+    @param  x    The current cursor X
+    @param  y    The current cursor Y
+    @param  x1   The boundary X coordinate, returned by function
+    @param  y1   The boundary Y coordinate, returned by function
+    @param  w    The boundary width, returned by function
+    @param  h    The boundary height, returned by function
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
                                  int16_t *x1, int16_t *y1, uint16_t *w,
                                  uint16_t *h) {
+
   uint8_t c; // Current character
+  int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
+  // Bound rect is intentionally initialized inverted, so 1st char sets it
 
-  *x1 = x;
+  *x1 = x; // Initial position is value passed in
   *y1 = y;
-  *w = *h = 0;
+  *w = *h = 0; // Initial size is zero
 
-  int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
-
-  while ((c = *str++))
+  while ((c = *str++)) {
+    // charBounds() modifies x/y to advance for each character,
+    // and min/max x/y are updated to incrementally build bounding rect.
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
-
-  if (maxx >= minx) {
-    *x1 = minx;
-    *w = maxx - minx + 1;
   }
-  if (maxy >= miny) {
+
+  if (maxx >= minx) {     // If legit string bounds were found...
+    *x1 = minx;           // Update x1 to least X coord,
+    *w = maxx - minx + 1; // And w to bound rect width
+  }
+  if (maxy >= miny) {     // Same for height
     *y1 = miny;
     *h = maxy - miny + 1;
   }
@@ -1884,29 +1892,36 @@ void GFXcanvas1::fillScreen(uint16_t color) {
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized vertical line drawing
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    h   length of vertical line to be drawn, including first point
-   @param    color   Binary (on or off) color to fill with
+   @brief  Speed optimized vertical line drawing
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  h      Length of vertical line to be drawn, including first point
+   @param  color  Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas1::drawFastVLine(int16_t x, int16_t y, int16_t h,
                                uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
-    return;
-  }
 
-  if (y + h > height()) {
-    h = height() - y;
-  } else if (h < 0) {
-    // convert negative heights to their postive equivalent
+  if (h < 0) { // Convert negative heights to positive equivalent
     h *= -1;
     y -= h - 1;
     if (y < 0) {
       h += y;
       y = 0;
     }
+  }
+
+  // Edge rejection (no-draw if totally off canvas)
+  if ((x < 0) || (x >= width()) || (y >= height()) || ((y + h - 1) < 0)) {
+    return;
+  }
+
+  if (y < 0) { // Clip top
+    h += y;
+    y = 0;
+  }
+  if (y + h > height()) { // Clip bottom
+    h = height() - y;
   }
 
   if (getRotation() == 0) {
@@ -1933,29 +1948,35 @@ void GFXcanvas1::drawFastVLine(int16_t x, int16_t y, int16_t h,
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized horizontal line drawing
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    w   length of horizontal line to be drawn, including first point
-   @param    color   Binary (on or off) color to fill with
+   @brief  Speed optimized horizontal line drawing
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  w      Length of horizontal line to be drawn, including first point
+   @param  color  Color to fill with
 */
 /**************************************************************************/
 void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
                                uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
-    return;
-  }
-
-  if (x + w > width()) {
-    w = width() - x;
-  } else if (w < 0) {
-    // convert negative widths to their postive equivalent
+  if (w < 0) { // Convert negative widths to positive equivalent
     w *= -1;
     x -= w - 1;
     if (x < 0) {
       w += x;
       x = 0;
     }
+  }
+
+  // Edge rejection (no-draw if totally off canvas)
+  if ((y < 0) || (y >= height()) || (x >= width()) || ((x + w - 1) < 0)) {
+    return;
+  }
+
+  if (x < 0) { // Clip left
+    w += x;
+    x = 0;
+  }
+  if (x + w >= width()) { // Clip right
+    w = width() - x;
   }
 
   if (getRotation() == 0) {
@@ -2206,30 +2227,36 @@ void GFXcanvas8::fillScreen(uint16_t color) {
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized vertical line drawing
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    h   length of vertical line to be drawn, including first point
-   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
-   used.
+   @brief  Speed optimized vertical line drawing
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  h      Length of vertical line to be drawn, including first point
+   @param  color  8-bit Color to fill with. Only lower byte of uint16_t is
+                  used.
 */
 /**************************************************************************/
 void GFXcanvas8::drawFastVLine(int16_t x, int16_t y, int16_t h,
                                uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
-    return;
-  }
-
-  if (y + h > height()) {
-    h = height() - y;
-  } else if (h < 0) {
-    // convert negative heights to their postive equivalent
+  if (h < 0) { // Convert negative heights to positive equivalent
     h *= -1;
     y -= h - 1;
     if (y < 0) {
       h += y;
       y = 0;
     }
+  }
+
+  // Edge rejection (no-draw if totally off canvas)
+  if ((x < 0) || (x >= width()) || (y >= height()) || ((y + h - 1) < 0)) {
+    return;
+  }
+
+  if (y < 0) { // Clip top
+    h += y;
+    y = 0;
+  }
+  if (y + h > height()) { // Clip bottom
+    h = height() - y;
   }
 
   if (getRotation() == 0) {
@@ -2256,30 +2283,37 @@ void GFXcanvas8::drawFastVLine(int16_t x, int16_t y, int16_t h,
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized horizontal line drawing
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    w   length of horizontal line to be drawn, including first point
-   @param    color   8-bit Color to fill with. Only lower byte of uint16_t is
-   used.
+   @brief  Speed optimized horizontal line drawing
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  w      Length of horizontal line to be drawn, including 1st point
+   @param  color  8-bit Color to fill with. Only lower byte of uint16_t is
+                  used.
 */
 /**************************************************************************/
 void GFXcanvas8::drawFastHLine(int16_t x, int16_t y, int16_t w,
                                uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
-    return;
-  }
 
-  if (x + w > width()) {
-    w = width() - x;
-  } else if (w < 0) {
-    // convert negative widths to their postive equivalent
+  if (w < 0) { // Convert negative widths to positive equivalent
     w *= -1;
     x -= w - 1;
     if (x < 0) {
       w += x;
       x = 0;
     }
+  }
+
+  // Edge rejection (no-draw if totally off canvas)
+  if ((y < 0) || (y >= height()) || (x >= width()) || ((x + w - 1) < 0)) {
+    return;
+  }
+
+  if (x < 0) { // Clip left
+    w += x;
+    x = 0;
+  }
+  if (x + w >= width()) { // Clip right
+    w = width() - x;
   }
 
   if (getRotation() == 0) {
@@ -2498,20 +2532,26 @@ void GFXcanvas16::byteSwap(void) {
 /**************************************************************************/
 void GFXcanvas16::drawFastVLine(int16_t x, int16_t y, int16_t h,
                                 uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
-    return;
-  }
-
-  if (y + h > height()) {
-    h = height() - y;
-  } else if (h < 0) {
-    // convert negative heights to their postive equivalent
+  if (h < 0) { // Convert negative heights to positive equivalent
     h *= -1;
     y -= h - 1;
     if (y < 0) {
       h += y;
       y = 0;
     }
+  }
+
+  // Edge rejection (no-draw if totally off canvas)
+  if ((x < 0) || (x >= width()) || (y >= height()) || ((y + h - 1) < 0)) {
+    return;
+  }
+
+  if (y < 0) { // Clip top
+    h += y;
+    y = 0;
+  }
+  if (y + h > height()) { // Clip bottom
+    h = height() - y;
   }
 
   if (getRotation() == 0) {
@@ -2538,29 +2578,35 @@ void GFXcanvas16::drawFastVLine(int16_t x, int16_t y, int16_t h,
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized horizontal line drawing
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    w   length of horizontal line to be drawn, including first point
-   @param    color   color 16-bit 5-6-5 Color to draw line with
+   @brief  Speed optimized horizontal line drawing
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  w      Length of horizontal line to be drawn, including 1st point
+   @param  color  Color 16-bit 5-6-5 Color to draw line with
 */
 /**************************************************************************/
 void GFXcanvas16::drawFastHLine(int16_t x, int16_t y, int16_t w,
                                 uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
-    return;
-  }
-
-  if (x + w > width()) {
-    w = width() - x;
-  } else if (w < 0) {
-    // convert negative widths to their postive equivalent
+  if (w < 0) { // Convert negative widths to positive equivalent
     w *= -1;
     x -= w - 1;
     if (x < 0) {
       w += x;
       x = 0;
     }
+  }
+
+  // Edge rejection (no-draw if totally off canvas)
+  if ((y < 0) || (y >= height()) || (x >= width()) || ((x + w - 1) < 0)) {
+    return;
+  }
+
+  if (x < 0) { // Clip left
+    w += x;
+    x = 0;
+  }
+  if (x + w >= width()) { // Clip right
+    w = width() - x;
   }
 
   if (getRotation() == 0) {
