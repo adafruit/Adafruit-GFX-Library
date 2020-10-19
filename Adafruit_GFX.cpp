@@ -2034,7 +2034,7 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
   int16_t rowBytes = ((WIDTH + 7) / 8);
   uint8_t *buffer = this->getBuffer();
   uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
-  size_t remainingWidthBits = w;
+  int16_t remainingWidthBits = w;
 
   // check to see if first byte needs to be partially filled
   if ((x & 7) > 0) {
@@ -2059,15 +2059,15 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
 
   // do the next remainingWidthBits bits
   if (remainingWidthBits > 0) {
-    size_t remainingWholeBytes = remainingWidthBits / 8;
-    size_t lastByteBits = remainingWidthBits % 8;
+    int16_t remainingWholeBytes = remainingWidthBits / 8;
+    int16_t lastByteBits = remainingWidthBits % 8;
     uint8_t wholeByteColor = color > 0 ? 0xFF : 0x00;
 
     memset(ptr, wholeByteColor, remainingWholeBytes);
 
     if (lastByteBits > 0) {
       uint8_t lastByteBitMask = 0x00;
-      for (int8_t i = 0; i < lastByteBits; i++) {
+      for (int16_t i = 0; i < lastByteBits; i++) {
 #ifdef __AVR__
         lastByteBitMask |= pgm_read_byte(&GFXsetBit[i]);
 #else
@@ -2616,7 +2616,7 @@ void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
 void GFXcanvas16::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  size_t buffer_index = y * WIDTH + x;
+  int16_t buffer_index = y * WIDTH + x;
   for (int16_t i = buffer_index; i < buffer_index + w; i++) {
     buffer[i] = color;
   }
