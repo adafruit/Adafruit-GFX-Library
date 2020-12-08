@@ -1984,6 +1984,7 @@ uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
   }
   return result;
 #else
+  (void)addr; // disable -Wunused-parameter warning
   return 0;
 #endif // end !USE_FAST_PINIO
 }
@@ -2171,6 +2172,8 @@ void Adafruit_SPITFT::write16(uint16_t w) {
 #if defined(USE_FAST_PINIO)
     if (tft8.wide)
       *(volatile uint16_t *)tft8.writePort = w;
+#else
+    (void)w; // disable -Wunused-parameter warning
 #endif
     TFT_WR_STROBE();
   }
