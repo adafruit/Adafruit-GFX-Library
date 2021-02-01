@@ -560,7 +560,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     if (
 #if !defined(SPI_INTERFACES_COUNT)
         1
-#endif
+#else
 #if SPI_INTERFACES_COUNT > 0
         (hwspi._spi == &SPI)
 #endif
@@ -579,6 +579,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 #if SPI_INTERFACES_COUNT > 5
         || (hwspi._spi == &SPI5)
 #endif
+#endif // end SPI_INTERFACES_COUNT
     ) {
       hwspi._spi->begin();
     }
