@@ -98,6 +98,46 @@ static const struct {
 
 // CONSTRUCTORS ------------------------------------------------------------
 
+#if defined(SPI_INTERFACES_COUNT)
+/*! If count is explicitly given, use it. */
+#define REAL_SPI_INTERFACES_COUNT SPI_INTERFACES_COUNT
+#else
+/*! If count is unspecified, one interface is assumed. */
+#define REAL_SPI_INTERFACES_COUNT 1
+#endif
+
+/*!
+    @brief Is a SPI interface provided by the variant?
+
+    An "established" SPI interface is one of the ones defined by "variants.h",
+    rather than being user-defined.
+
+    @param   spiClass  Pointer to SPIClass type (e.g. &SPI or &SPI1).
+    @return  True if spiClass is one of the variant-provided SPI interfaces.
+ */
+static bool isVariantDefinedSPIInterface(SPIClass *spiClass) {
+  return false
+#if REAL_SPI_INTERFACES_COUNT > 0
+         || (spiClass == &SPI) // the 0-th SPI.
+#endif
+#if REAL_SPI_INTERFACES_COUNT > 1
+         || (spiClass == &SPI1)
+#endif
+#if REAL_SPI_INTERFACES_COUNT > 2
+         || (spiClass == &SPI2)
+#endif
+#if REAL_SPI_INTERFACES_COUNT > 3
+         || (spiClass == &SPI3)
+#endif
+#if REAL_SPI_INTERFACES_COUNT > 4
+         || (spiClass == &SPI4)
+#endif
+#if REAL_SPI_INTERFACES_COUNT > 5
+         || (spiClass == &SPI5)
+#endif
+      ;
+}
+
 /*!
     @brief   Adafruit_SPITFT constructor for software (bitbang) SPI.
     @param   w     Display width in pixels at default rotation setting (0).
@@ -557,30 +597,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     // SERCOM so we can't make those calls ourselves here. And the SPI
     // device needs to be set up before calling this because it's
     // immediately followed with initialization commands. Blargh.
-    if (
-#if !defined(SPI_INTERFACES_COUNT)
-        1
-#else
-#if SPI_INTERFACES_COUNT > 0
-        (hwspi._spi == &SPI)
-#endif
-#if SPI_INTERFACES_COUNT > 1
-        || (hwspi._spi == &SPI1)
-#endif
-#if SPI_INTERFACES_COUNT > 2
-        || (hwspi._spi == &SPI2)
-#endif
-#if SPI_INTERFACES_COUNT > 3
-        || (hwspi._spi == &SPI3)
-#endif
-#if SPI_INTERFACES_COUNT > 4
-        || (hwspi._spi == &SPI4)
-#endif
-#if SPI_INTERFACES_COUNT > 5
-        || (hwspi._spi == &SPI5)
-#endif
-#endif // end SPI_INTERFACES_COUNT
-    ) {
+    if (isVariantDefinedSPIInterface(hwspi._spi)) {
       hwspi._spi->begin();
     }
   } else if (connection == TFT_SOFT_SPI) {
