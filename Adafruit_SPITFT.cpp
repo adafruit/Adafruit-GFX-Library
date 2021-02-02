@@ -279,6 +279,9 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
                                  int8_t rst)
     : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
+#if defined(SPI_HAS_TRANSACTION)
+  hwspi.settings = NULL;
+#endif
   hwspi._spi = &SPI;
 }
 #else  // !ESP8266
@@ -322,6 +325,9 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
                                  int8_t cs, int8_t dc, int8_t rst)
     : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
+#if defined(SPI_HAS_TRANSACTION)
+  hwspi.settings = NULL;
+#endif
   hwspi._spi = spiClass;
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
@@ -543,6 +549,16 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 
 // end constructors -------
 
+// DESTRUCTOR ----------------------------------------------------------
+
+Adafruit_SPITFT::~Adafruit_SPITFT() {
+#if defined(SPI_HAS_TRANSACTION)
+  if (connection == TFT_HARD_SPI) {
+    delete hwspi.settings;
+  }
+#endif
+}
+
 // CLASS MEMBER FUNCTIONS --------------------------------------------------
 
 // begin() and setAddrWindow() MUST be declared by any subclass.
@@ -580,7 +596,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
   if (connection == TFT_HARD_SPI) {
 
 #if defined(SPI_HAS_TRANSACTION)
-    hwspi.settings = SPISettings(freq, MSBFIRST, spiMode);
+    delete hwspi.settings;
+    hwspi.settings = new SPISettings(freq, MSBFIRST, spiMode);
 #else
     hwspi._freq = freq; // Save freq value for later
 #endif
@@ -914,7 +931,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 */
 void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
 #if defined(SPI_HAS_TRANSACTION)
-  hwspi.settings = SPISettings(freq, MSBFIRST, hwspi._mode);
+  delete hwspi.settings;
+  hwspi.settings = new SPISettings(freq, MSBFIRST, hwspi._mode);
 #else
   hwspi._freq = freq; // Save freq value for later
 #endif
@@ -2024,7 +2042,7 @@ uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
 inline void Adafruit_SPITFT::SPI_BEGIN_TRANSACTION(void) {
   if (connection == TFT_HARD_SPI) {
 #if defined(SPI_HAS_TRANSACTION)
-    hwspi._spi->beginTransaction(hwspi.settings);
+    hwspi._spi->beginTransaction(*hwspi.settings);
 #else // No transactions, configure SPI manually...
 #if defined(__AVR__) || defined(TEENSYDUINO) || defined(ARDUINO_ARCH_STM32F1)
     hwspi._spi->setClockDivider(SPI_CLOCK_DIV2);
