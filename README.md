@@ -22,6 +22,8 @@ Recent Arduino IDE releases include the Library Manager for easy installation. O
 
 - 'fontconvert' folder contains a command-line tool for converting TTF fonts to Adafruit_GFX header format.
 
+- You can also use [this GFX Font Customiser tool](https://github.com/tchapi/Adafruit-GFX-Font-Customiser) (_web version [here](https://tchapi.github.io/Adafruit-GFX-Font-Customiser/)_) to customize or correct the output from [fontconvert](https://github.com/adafruit/Adafruit-GFX-Library/tree/master/fontconvert), and create fonts with only a subset of characters to optimize size.
+
 ---
 
 ### Roadmap
