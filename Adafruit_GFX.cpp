@@ -864,7 +864,7 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
         byte = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
       // Nearly identical to drawBitmap(), only the bit order
       // is reversed here (left-to-right = LSB to MSB):
-        writePixel(x + i, y, (byte & 0x01) ? color : bg);
+      writePixel(x + i, y, (byte & 0x01) ? color : bg);
     }
   }
   endWrite();
