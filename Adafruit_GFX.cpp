@@ -846,10 +846,11 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
     @param    w   Width of bitmap in pixels
     @param    h   Height of bitmap in pixels
     @param    color 16-bit 5-6-5 Color to draw pixels with
+    @param    bg 16-bit 5-6-5 Color to draw background with
 */
 /**************************************************************************/
 void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
-                               int16_t w, int16_t h, uint16_t color) {
+                               int16_t w, int16_t h, uint16_t color, uint16_t bg) {
 
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
@@ -863,8 +864,7 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
         byte = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
       // Nearly identical to drawBitmap(), only the bit order
       // is reversed here (left-to-right = LSB to MSB):
-      if (byte & 0x01)
-        writePixel(x + i, y, color);
+        writePixel(x + i, y, (byte & 0x01) ? color : bg);
     }
   }
   endWrite();
