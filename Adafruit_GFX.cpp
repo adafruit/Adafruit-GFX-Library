@@ -850,7 +850,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
 */
 /**************************************************************************/
 void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
-                               int16_t w, int16_t h, uint16_t color, 
+                               int16_t w, int16_t h, uint16_t color,
                                uint16_t bg) {
 
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
