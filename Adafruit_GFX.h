@@ -209,7 +209,6 @@ public:
   /**********************************************************************/ 
   uint16_t getTextBgColor() { return textbgcolor; }
 
-
   /**********************************************************************/
   /*!
   @brief  Set whether text that is too long for the screen width should
