@@ -137,6 +137,30 @@ public:
 
   /**********************************************************************/
   /*!
+    @brief  Get GFX font
+    @returns  GFX font
+  */
+  /**********************************************************************/
+  GFXfont* getFont() { return gfxFont; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Get text size multiplier x
+    @returns text size multiplier x
+  */
+  /**********************************************************************/
+  uint8_t getTextSizeX() { return textsize_x; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Get text size multiplier y
+    @returns text size multiplier y
+  */
+  /**********************************************************************/
+  uint8_t getTextSizeY() { return textsize_y; }
+
+  /**********************************************************************/
+  /*!
     @brief  Set text cursor location
     @param  x    X coordinate in pixels
     @param  y    Y coordinate in pixels
@@ -168,6 +192,23 @@ public:
     textcolor = c;
     textbgcolor = bg;
   }
+
+  /**********************************************************************/
+  /*!
+    @brief  Get text color
+    @returns text color
+  */
+  /**********************************************************************/ 
+  uint16_t getTextColor() { return textcolor; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Get text background color
+    @returns text background color
+  */
+  /**********************************************************************/ 
+  uint16_t getTextBgColor() { return textbgcolor; }
+
 
   /**********************************************************************/
   /*!
