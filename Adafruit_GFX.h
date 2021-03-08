@@ -124,7 +124,7 @@ public:
     @returns  GFX font
   */
   /**********************************************************************/
-  GFXfont* getFont() { return gfxFont; }
+  GFXfont *getFont() const { return gfxFont; }
 
   /**********************************************************************/
   /*!
@@ -132,7 +132,7 @@ public:
     @returns text size multiplier x
   */
   /**********************************************************************/
-  uint8_t getTextSizeX() { return textsize_x; }
+  uint8_t getTextSizeX() const { return textsize_x; }
 
   /**********************************************************************/
   /*!
@@ -140,7 +140,7 @@ public:
     @returns text size multiplier y
   */
   /**********************************************************************/
-  uint8_t getTextSizeY() { return textsize_y; }
+  uint8_t getTextSizeY() const { return textsize_y; }
 
   /**********************************************************************/
   /*!
@@ -182,7 +182,7 @@ public:
     @returns text color
   */
   /**********************************************************************/ 
-  uint16_t getTextColor() { return textcolor; }
+  uint16_t getTextColor() const { return textcolor; }
 
   /**********************************************************************/
   /*!
@@ -190,7 +190,7 @@ public:
     @returns text background color
   */
   /**********************************************************************/ 
-  uint16_t getTextBgColor() { return textbgcolor; }
+  uint16_t getTextBgColor() const { return textbgcolor; }
 
   /**********************************************************************/
   /*!
