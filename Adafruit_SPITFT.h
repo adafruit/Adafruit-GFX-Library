@@ -233,7 +233,7 @@ public:
   void dmaWait(void);
 
   // Set user defined DMA transfer completion callback
-  static void dmaSetCallback(void(*callback)());
+  static void dmaSetCallback(void (*callback)());
 
   // These functions are similar to the 'write' functions above, but with
   // a chip-select and/or SPI transaction built-in. They're typically used
