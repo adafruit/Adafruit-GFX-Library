@@ -231,6 +231,7 @@ public:
   // Another new function, companion to the new non-blocking
   // writePixels() variant.
   void dmaWait(void);
+  static void dmaSetCallback(void(*callback)());
 
   // These functions are similar to the 'write' functions above, but with
   // a chip-select and/or SPI transaction built-in. They're typically used
