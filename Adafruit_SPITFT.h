@@ -231,6 +231,8 @@ public:
   // Another new function, companion to the new non-blocking
   // writePixels() variant.
   void dmaWait(void);
+
+  // Set user defined DMA transfer completion callback
   static void dmaSetCallback(void(*callback)());
 
   // These functions are similar to the 'write' functions above, but with
