@@ -1143,6 +1143,7 @@ void Adafruit_SPITFT::dmaWait(void) {
             prior non-blocking writePixels() call completes. If DMA is
             not enabled or writePixels is used in a blocking manner (as
             is the default case), then this callback will not be used.
+    @param  callback    Function pointer to callback function.
 */
 void Adafruit_SPITFT::dmaSetCallback(void (*callback)()) {
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
