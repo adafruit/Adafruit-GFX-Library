@@ -993,8 +993,10 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     return;
   }
 #elif defined(ARDUINO_ARCH_RP2040)
-  spi_write16_blocking(spi0, (const uint16_t*)colors, len);
-  return;
+  if (connection == TFT_HARD_SPI) {
+    spi_write16_blocking(spi0, (const uint16_t*)colors, len);
+    return;
+  }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
   // TFT and SPI DMA endian is different we need to swap bytes
@@ -2375,7 +2377,7 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
             transaction and data/command selection must have been
             previously set -- this ONLY issues the word. Despite the name,
             this function is used even if display connection is parallel;
-            name was maintaned for backward compatibility. Naming is also
+            name was maintained for backward compatibility. Naming is also
             not consistent with the 8-bit version, spiWrite(). Sorry about
             that. Again, staying compatible with outside code.
     @param  w  16-bit value to write.
