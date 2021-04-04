@@ -910,9 +910,12 @@ void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::startWrite(void) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
-    SPI_CS_LOW();
+  if (!_lockTransaction) {
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
+      SPI_CS_LOW();
+  }
 }
 
 /*!
@@ -922,11 +925,25 @@ void Adafruit_SPITFT::startWrite(void) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::endWrite(void) {
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) {
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+
+    SPI_END_TRANSACTION();
+  }
 }
 
+/*!
+    @brief  Lock a transaction (i.e. use startWrite() for all functions)
+            so that chip select stays low and a single beginTransaction
+            is performed. When lock parameter is false the bus is released
+            endTransaction is called and chip select is set high.
+*/
+void Adafruit_SPITFT::lockTransaction(bool lock) {
+  if (lock) startWrite();
+  _lockTransaction = lock;
+  endWrite();
+}
 // -------------------------------------------------------------------------
 // Lower-level graphics operations. These functions require a chip-select
 // and/or SPI transaction around them (via startWrite(), endWrite() above).
@@ -1865,9 +1882,12 @@ data
 */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
                                   uint8_t numDataBytes) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
+  if (!_lockTransaction) {
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
     SPI_CS_LOW();
+  }
 
   SPI_DC_LOW();          // Command mode
   spiWrite(commandByte); // Send the command byte
@@ -1883,9 +1903,11 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
     }
   }
 
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) {
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+    SPI_END_TRANSACTION();
+  }
 }
 
 /*!
@@ -1897,9 +1919,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
  */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
                                   uint8_t numDataBytes) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
-    SPI_CS_LOW();
+  if (!_lockTransaction) { 
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
+      SPI_CS_LOW();
+  }
 
   SPI_DC_LOW();          // Command mode
   spiWrite(commandByte); // Send the command byte
@@ -1914,9 +1939,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
     }
   }
 
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) { 
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+
+    SPI_END_TRANSACTION();
+  }
 }
 
 /*!
@@ -1933,9 +1961,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
 void Adafruit_SPITFT::sendCommand16(uint16_t commandWord,
                                     const uint8_t *dataBytes,
                                     uint8_t numDataBytes) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
-    SPI_CS_LOW();
+  if (!_lockTransaction) {
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
+      SPI_CS_LOW();
+  }
 
   if (numDataBytes == 0) {
     SPI_DC_LOW();             // Command mode
@@ -1950,9 +1981,12 @@ void Adafruit_SPITFT::sendCommand16(uint16_t commandWord,
     SPI_WRITE16((uint16_t)pgm_read_byte(dataBytes++));
   }
 
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) {
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+
+    SPI_END_TRANSACTION();
+  }
 }
 
 /*!

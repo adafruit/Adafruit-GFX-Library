@@ -199,6 +199,10 @@ public:
   void startWrite(void);
   // Chip deselect and/or hardware SPI transaction end as needed:
   void endWrite(void);
+  
+  // Lock (true) or unlock (false) a transaction (for RP2040 where beginTransaction takes 68us);
+  void lockTransaction(bool lock);
+
   void sendCommand(uint8_t commandByte, uint8_t *dataBytes,
                    uint8_t numDataBytes);
   void sendCommand(uint8_t commandByte, const uint8_t *dataBytes = NULL,
@@ -528,6 +532,8 @@ protected:
   uint8_t invertOffCommand = 0; ///< Command to disable invert mode
 
   uint32_t _freq = 0; ///< Dummy var to keep subclasses happy
+  
+  bool     _lockTransaction = false; ///< Transaction lock for RP2040 (68us to beginTransaction!)
 };
 
 #endif // end __AVR_ATtiny85__
