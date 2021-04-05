@@ -1,4 +1,11 @@
-Raspberry PI Pico (RP2040) optimised to work with Earle Philhower's Arduino board package.
+Raspberry PI Pico (RP2040) optimised to work with Earle Philhower's Arduino board package and my fork of Adafruit_ILI9341. (https://github.com/Bodmer/Adafruit_ILI9341)
+
+Speed improvement at 62.5MHZ SPI clock is up to 12x:
+
+
+      ![GFX improvement](https://i.imgur.com/8edfXlt.png)
+
+
 
 
 # Adafruit GFX Library ![Build Status](https://github.com/adafruit/Adafruit-GFX-Library/workflows/Arduino%20Library%20CI/badge.svg)
