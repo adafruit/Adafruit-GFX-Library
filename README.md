@@ -2,10 +2,7 @@ Raspberry PI Pico (RP2040) optimised to work with Earle Philhower's Arduino boar
 
 Speed improvement at 62.5MHZ SPI clock is up to 12x:
 
-
-      ![GFX improvement](https://i.imgur.com/8edfXlt.png)
-
-
+![GFX improvement](https://i.imgur.com/8edfXlt.png)
 
 
 # Adafruit GFX Library ![Build Status](https://github.com/adafruit/Adafruit-GFX-Library/workflows/Arduino%20Library%20CI/badge.svg)
