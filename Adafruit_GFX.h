@@ -291,6 +291,14 @@ public:
   /**********************************************************************/
   bool isPressed(void) { return currstate; };
 
+  /**********************************************************************/
+  /*!
+    @brief    Get the label text
+    @returns  the const char pointer of the buttoś label
+  */
+  /**********************************************************************/
+  char *getLabel(void) const { return _label; };
+
 private:
   Adafruit_GFX *_gfx;
   int16_t _x1, _y1; // Coordinates of top-left corner
