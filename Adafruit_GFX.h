@@ -297,7 +297,7 @@ public:
     @returns  the const char pointer of the buttoś label
   */
   /**********************************************************************/
-  char *getLabel(void) const { return _label; };
+  const char *getLabel(void) const { return _label; };
 
 private:
   Adafruit_GFX *_gfx;
