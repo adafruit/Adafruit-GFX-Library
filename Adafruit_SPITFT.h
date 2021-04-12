@@ -295,6 +295,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *csPort |= csPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_set = (1ul << _cs);
 #else  // !USE_FAST_PINIO
     digitalWrite(_cs, HIGH);
 #endif // end !USE_FAST_PINIO
@@ -317,6 +319,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *csPort &= csPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_clr = (1ul << _cs);
 #else  // !USE_FAST_PINIO
     digitalWrite(_cs, LOW);
 #endif // end !USE_FAST_PINIO
@@ -336,6 +340,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *dcPort |= dcPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_set = (1ul << _dc);
 #else  // !USE_FAST_PINIO
     digitalWrite(_dc, HIGH);
 #endif // end !USE_FAST_PINIO
@@ -355,6 +361,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *dcPort &= dcPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_clr = (1ul << _dc);
 #else  // !USE_FAST_PINIO
     digitalWrite(_dc, LOW);
 #endif // end !USE_FAST_PINIO

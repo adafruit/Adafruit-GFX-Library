@@ -992,6 +992,11 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     hwspi._spi->writePixels(colors, len * 2);
     return;
   }
+#elif defined(ARDUINO_ARCH_RP2040)
+  if (connection == TFT_HARD_SPI) {
+    spi_write16_blocking(spi0, (const uint16_t*)colors, len);
+    return;
+  }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
   // TFT and SPI DMA endian is different we need to swap bytes
@@ -1302,7 +1307,25 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         hwspi._spi->write(lo);
       }
     } while (len);
-#else // !ESP8266
+#elif defined(ARDUINO_ARCH_RP2040)
+    bool loaded = false;
+    uint16_t colorBuf[64];
+    const uint16_t* colorPtr = colorBuf;
+    if (len>63) {
+      loaded = true;
+      for (uint32_t i = 0; i < 64; i++) colorBuf[i] = color;
+      while(len>63) {
+        spi_write16_blocking(spi0, (const uint16_t*)colorPtr, 64);
+        len -=64;
+      }
+    }
+
+    if (len) {
+      if (!loaded) for (uint32_t i = 0; i < len; i++) colorBuf[i] = color;
+      spi_write16_blocking(spi0, (const uint16_t*)colorPtr, len);
+    }
+    return;
+#else // !ESP8266 or RP2040
     while (len--) {
 #if defined(__AVR__)
       AVR_WRITESPI(hi);
@@ -2055,6 +2078,11 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
     AVR_WRITESPI(b);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write(b);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_set_format(spi0,  8, (spi_cpol_t)0, (spi_cpha_t)0, SPI_MSB_FIRST);
+    spi_write_blocking(spi0, (const uint8_t*)&(b), 1);
+    spi_set_format(spi0, 16, (spi_cpol_t)0, (spi_cpha_t)0, SPI_MSB_FIRST);
+    return;
 #else
     hwspi._spi->transfer(b);
 #endif
@@ -2361,6 +2389,8 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     AVR_WRITESPI(w);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write16(w);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_write16_blocking(spi0, (const uint16_t*)&(w), 1);
 #else
     hwspi._spi->transfer(w >> 8);
     hwspi._spi->transfer(w);
@@ -2412,6 +2442,8 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
     AVR_WRITESPI(l);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write32(l);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_write16_blocking(spi0, (const uint16_t*)&(l), 2);
 #else
     hwspi._spi->transfer(l >> 24);
     hwspi._spi->transfer(l >> 16);
