@@ -1546,15 +1546,16 @@ void Adafruit_GFX::invertDisplay(bool i) {
 
 /**************************************************************************/
 /*!
-    @brief      Invert the display (ideally using built-in hardware command)
-    @param   i  True if you want to invert, false to make 'normal'
+    @brief      Get the font currently used by Adafruit_GFX
 */
 /**************************************************************************/
+
 GFXfont* Adafruit_GFX::getFont()
 {
-  return gfxFont;
-  
+  return gfxFont;  
 }
+
+
 /***************************************************************************/
 
 
