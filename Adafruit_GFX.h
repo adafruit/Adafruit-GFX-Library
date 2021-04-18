@@ -117,7 +117,7 @@ public:
   void setTextSize(uint8_t s);
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
-  const GFXfont *getFont() const {return gfxFont;};
+  const GFXfont *getFont() const { return gfxFont; };
 
   /**********************************************************************/
   /*!
@@ -320,7 +320,7 @@ public:
     @returns  text shown on the button
   */
   /**********************************************************************/
-  const char *getLabel() const {return _label;};
+  const char *getLabel() const { return _label; };
   
   int radius =  4;
   
