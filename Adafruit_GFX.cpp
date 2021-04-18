@@ -1544,8 +1544,6 @@ void Adafruit_GFX::invertDisplay(bool i) {
 
 /***************************************************************************/
 
-
-
 /**************************************************************************/
 /*!
    @brief    Create a simple drawn button UI element
@@ -1574,8 +1572,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t fill, uint16_t textcolor,
                                      char *label, uint8_t textsize) {
   // Tweak arguments and pass to the newer initButtonUL() function...
-  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, textcolor,
-               label, textsize);
+  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, 
+	       textcolor, label, textsize);
 }
 
 /**************************************************************************/
@@ -1601,8 +1599,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      char *label, uint8_t textsize_x,
                                      uint8_t textsize_y) {
   // Tweak arguments and pass to the newer initButtonUL() function...
-  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, textcolor,
-               label, textsize_x, textsize_y);
+  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, 
+	       textcolor, label, textsize_x, textsize_y);
 }
 
 /**************************************************************************/
@@ -1616,7 +1614,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
-   @param    pressedcolor the background colour to use when the button is pressed
+   @param    pressedcolor the background colour to use when the button is 
+   pressed
    @param    label  Ascii string of the text inside the button
    @param    textsize The font magnification of the label text
 */
@@ -1624,11 +1623,12 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
 // Classic initButton() function: pass center & size
 void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t w, uint16_t h, uint16_t outline,
-                                     uint16_t fill, uint16_t textcolor, uint16_t pressedcolor,
-                                     char *label, uint8_t textsize) {
+                                     uint16_t fill, uint16_t textcolor, 
+				     uint16_t pressedcolor, char *label, 
+				     uint8_t textsize) {
   // Tweak arguments and pass to the newer initButtonUL() function...
-  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, pressedcolor,
-               label, textsize);
+  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, 
+	       pressedcolor, label, textsize);
 }
 
 /**************************************************************************/
@@ -1642,7 +1642,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
-   @param    pressedcolor the background colour to use when the button is pressed
+   @param    pressedcolor the background colour to use when the button is 
+   pressed
    @param    label  Ascii string of the text inside the button
    @param    textsize_x The font magnification in X-axis of the label text
    @param    textsize_y The font magnification in Y-axis of the label text
@@ -1651,12 +1652,12 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
 // Classic initButton() function: pass center & size
 void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t w, uint16_t h, uint16_t outline,
-                                     uint16_t fill, uint16_t textcolor, uint16_t pressedcolor,
-                                     char *label, uint8_t textsize_x,
-                                     uint8_t textsize_y) {
+                                     uint16_t fill, uint16_t textcolor, 
+				     uint16_t pressedcolor, char *label, 
+				     uint8_t textsize_x, uint8_t textsize_y) {
   // Tweak arguments and pass to the newer initButtonUL() function...
-  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, pressedcolor,
-               label, textsize_x, textsize_y);
+  initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor, 
+	       pressedcolor, label, textsize_x, textsize_y);
 }
 
 
@@ -1681,8 +1682,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        uint16_t outline, uint16_t fill,
                                        uint16_t textcolor, char *label,
                                        uint8_t textsize) {
-  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, textcolor, label, textsize,
-               textsize);
+  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, textcolor, label, 
+	       textsize, textsize);
 }
 
 /**************************************************************************/
@@ -1697,7 +1698,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
-   @param    pressedcolor the background colour to use when the button is pressed
+   @param    pressedcolor the background colour to use when the button is 
+   pressed
    @param    label  Ascii string of the text inside the button
    @param    textsize The font magnification of the label text
 */
@@ -1705,10 +1707,11 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
 void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
-                                       uint16_t textcolor, uint16_t pressedcolor, char *label,
+                                       uint16_t textcolor, 
+				       uint16_t pressedcolor, char *label,
                                        uint8_t textsize) {
-  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, pressedcolor, label, textsize,
-               textsize);
+  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, pressedcolor, label, 
+	       textsize, textsize);
 }
 
 
@@ -1734,8 +1737,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        uint16_t outline, uint16_t fill,
                                        uint16_t textcolor, char *label,
                                        uint8_t textsize_x, uint8_t textsize_y) {
-  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, textcolor, label, textsize_x,
-               textsize_y);
+  initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, textcolor, label, 
+	       textsize_x, textsize_y);
 }
 
 /**************************************************************************/
@@ -1750,7 +1753,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
-   @param    pressedcolor the background colour to use when the button is pressed
+   @param    pressedcolor the background colour to use when the button is 
+   pressed
    @param    label  Ascii string of the text inside the button
    @param    textsize_x The font magnification in X-axis of the label text
    @param    textsize_y The font magnification in Y-axis of the label text
@@ -1759,7 +1763,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
 void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
-                                       uint16_t textcolor, uint16_t pressedcolor, char *label,
+                                       uint16_t textcolor, 
+				       uint16_t pressedcolor, char *label,
                                        uint8_t textsize_x, uint8_t textsize_y) {
   _x1 = x1;
   _y1 = y1;
@@ -1774,8 +1779,6 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
   _gfx = gfx;
   strncpy(_label, label, _maxlabellength - 1);
 }
-
-
 
 /**************************************************************************/
 /*!
@@ -1798,39 +1801,32 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
   }
 
   uint8_t r = 0;
-  if (radius > 0)
-  {
-	 r  = radius;
-	_gfx->fillRoundRect(_x1, _y1, _w, _h, r, fill);
-	_gfx->drawRoundRect(_x1, _y1, _w, _h, r, outline);
-  }
-  else
-  {
-	_gfx->fillRect(_x1, _y1, _w, _h, fill);
-	_gfx->drawRect(_x1, _y1, _w, _h, outline);
+  if (radius > 0) {
+    r  = radius;
+    _gfx->fillRoundRect(_x1, _y1, _w, _h, r, fill);
+    _gfx->drawRoundRect(_x1, _y1, _w, _h, r, outline);
+  } else {
+    _gfx->fillRect(_x1, _y1, _w, _h, fill);
+    _gfx->drawRect(_x1, _y1, _w, _h, outline);
   }
   
-  if (_gfx->getFont())
-  {
-	// using a proportional font
+  if (_gfx->getFont()) {
+    // using a proportional font
     int16_t  x1, y1; 
-	uint16_t w, h;
-	_gfx->getTextBounds(_label, 20, 20, &x1, &y1, &w, &h);
-	int textPosX = _x1 + (_w/2)- ((w/2) * _textsize_x);
+    uint16_t w, h;
+    _gfx->getTextBounds(_label, 20, 20, &x1, &y1, &w, &h);
+    int textPosX = _x1 + (_w/2)- ((w/2) * _textsize_x);
     int textPosY = _y1 + (_h * 0.6);
-	_gfx->setCursor(textPosX, textPosY);
-  }
-  else
-  {
-	// using the system mono-spaced font
-	_gfx->setCursor(_x1 + (_w / 2) - (strlen(_label) * 3 * _textsize_x),
-                  _y1 + (_h / 2) - (4 * _textsize_y));
+    _gfx->setCursor(textPosX, textPosY);
+  } else {
+    // using the system mono-spaced font
+    _gfx->setCursor(_x1 + (_w / 2) - (strlen(_label) * 3 * _textsize_x),
+                    _y1 + (_h / 2) - (4 * _textsize_y));
   }
  
- _gfx->setTextColor(text);
+  _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
-  _gfx->print(_label);
-  
+  _gfx->print(_label); 
 }
 
 
