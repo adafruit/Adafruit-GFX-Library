@@ -1838,7 +1838,8 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
 	_gfx->setCursor(_x1 + (_w / 2) - (strlen(_label) * 3 * _textsize_x),
                   _y1 + (_h / 2) - (4 * _textsize_y));
   }
-  _gfx->setTextColor(text);
+ 
+ _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
   _gfx->print(_label);
 }

@@ -332,6 +332,7 @@ private:
   uint8_t _textsize_y;
   uint16_t _outlinecolor, _fillcolor, _textcolor, _pressedcolor;
   
+  
   static const int _maxlabellength = 40;
   char _label[_maxlabellength];
 
