@@ -1842,6 +1842,7 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
  _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
   _gfx->print(_label);
+  
 }
 
 char* Adafruit_GFX_Button::getLabel()

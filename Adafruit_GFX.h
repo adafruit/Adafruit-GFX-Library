@@ -322,7 +322,7 @@ public:
   /**********************************************************************/
   char* getLabel();
   
-  int radius = 4;
+  int radius =  4;
   
 private:
   Adafruit_GFX *_gfx;
