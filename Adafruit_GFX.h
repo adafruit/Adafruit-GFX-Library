@@ -117,7 +117,12 @@ public:
   void setTextSize(uint8_t s);
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
-  const GFXfont *getFont() const { return gfxFont; };
+  /**********************************************************************/
+  /*!
+    @brief  Get the current font
+  */
+  /**********************************************************************/
+ const GFXfont *getFont() const { return gfxFont; };
 
   /**********************************************************************/
   /*!
@@ -315,7 +320,11 @@ public:
   */
   /**********************************************************************/
   const char *getLabel() const { return _label; };
-
+ /**********************************************************************/
+  /*!
+    @brief  Get or Set the radius of rounded button corners. 
+  */
+  /**********************************************************************/
   int radius = 4;
 
 private:
