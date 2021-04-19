@@ -1628,7 +1628,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint8_t textsize) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
-	       pressedcolor, label, textsize);
+               pressedcolor, label, textsize);
 }
 
 /**************************************************************************/
@@ -1659,7 +1659,6 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
                pressedcolor, label, textsize_x, textsize_y);
 }
-
 
 /**************************************************************************/
 /*!
@@ -1708,7 +1707,7 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
                                        uint16_t textcolor,
-                                       uint16_t pressedcolor, char *label,				       
+                                       uint16_t pressedcolor, char *label,
                                        uint8_t textsize) {
   initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, pressedcolor, label,
                textsize, textsize);
@@ -1811,10 +1810,10 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
 
   if (_gfx->getFont()) {
     // using a proportional font
-    int16_t x1, y1; 
+    int16_t x1, y1;
     uint16_t w, h;
     _gfx->getTextBounds(_label, 20, 20, &x1, &y1, &w, &h);
-    int textPosX = _x1 + ( _w / 2) - ((w / 2) * _textsize_x);
+    int textPosX = _x1 + (_w / 2) - ((w / 2) * _textsize_x);
     int textPosY = _y1 + (_h * 0.6);
     _gfx->setCursor(textPosX, textPosY);
   } else {
@@ -1827,7 +1826,6 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
   _gfx->setTextSize(_textsize_x, _textsize_y);
   _gfx->print(_label);
 }
-
 
 /**************************************************************************/
 /*!
