@@ -1573,7 +1573,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      char *label, uint8_t textsize) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
-	       textcolor, label, textsize);
+               textcolor, label, textsize);
 }
 
 /**************************************************************************/
@@ -1600,7 +1600,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint8_t textsize_y) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
-	       textcolor, label, textsize_x, textsize_y);
+               textcolor, label, textsize_x, textsize_y);
 }
 
 /**************************************************************************/
@@ -1614,7 +1614,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
-   @param    pressedcolor the background colour to use when the button is 
+   @param    pressedcolor the background colour to use when the button is
    pressed
    @param    label  Ascii string of the text inside the button
    @param    textsize The font magnification of the label text
@@ -1624,8 +1624,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
 void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t w, uint16_t h, uint16_t outline,
                                      uint16_t fill, uint16_t textcolor,
-				     uint16_t pressedcolor, char *label,
-				     uint8_t textsize) {
+                                     uint16_t pressedcolor, char *label,
+                                     uint8_t textsize) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
 	       pressedcolor, label, textsize);
@@ -1653,11 +1653,11 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
 void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t w, uint16_t h, uint16_t outline,
                                      uint16_t fill, uint16_t textcolor,
-				     uint16_t pressedcolor, char *label,
-				     uint8_t textsize_x, uint8_t textsize_y) {
+                                     uint16_t pressedcolor, char *label,
+                                     uint8_t textsize_x, uint8_t textsize_y) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
-	       pressedcolor, label, textsize_x, textsize_y);
+               pressedcolor, label, textsize_x, textsize_y);
 }
 
 
@@ -1683,7 +1683,7 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        uint16_t textcolor, char *label,
                                        uint8_t textsize) {
   initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, textcolor, label,
-	       textsize, textsize);
+               textsize, textsize);
 }
 
 /**************************************************************************/
@@ -1708,12 +1708,11 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
                                        uint16_t textcolor,
-				       uint16_t pressedcolor, char *label,
+                                       uint16_t pressedcolor, char *label,				       
                                        uint8_t textsize) {
   initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, pressedcolor, label,
-	       textsize, textsize);
+               textsize, textsize);
 }
-
 
 /**************************************************************************/
 /*!
@@ -1738,7 +1737,7 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        uint16_t textcolor, char *label,
                                        uint8_t textsize_x, uint8_t textsize_y) {
   initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, textcolor, label,
-	       textsize_x, textsize_y);
+               textsize_x, textsize_y);
 }
 
 /**************************************************************************/
@@ -1764,7 +1763,7 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
                                        uint16_t textcolor,
-				       uint16_t pressedcolor, char *label,
+                                       uint16_t pressedcolor, char *label,
                                        uint8_t textsize_x, uint8_t textsize_y) {
   _x1 = x1;
   _y1 = y1;
