@@ -323,7 +323,7 @@ public:
   const char *getLabel() const { return _label; };
   /**********************************************************************/
   /*!
-    @brief  Get or Set the radius of rounded button corners.
+    @brief  Get or Set the radius for rounded button corners.
   */
   /**********************************************************************/
   int radius = 4;
