@@ -120,6 +120,7 @@ public:
   /**********************************************************************/
   /*!
     @brief  Get the current font
+    @returns    current font
   */
   /**********************************************************************/
   const GFXfont *getFont() const { return gfxFont; };
