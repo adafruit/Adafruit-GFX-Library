@@ -992,6 +992,11 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     hwspi._spi->writePixels(colors, len * 2);
     return;
   }
+#elif defined(ARDUINO_ARCH_RP2040) // RP2040 has a way to write a block at a time
+  if (connection == TFT_HARD_SPI) {
+    hwspi._spi->transfer(colors, 2*len);
+    return;
+  }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
   // TFT and SPI DMA endian is different we need to swap bytes
@@ -1167,6 +1172,24 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     }
     return;
   }
+#elif defined(ARDUINO_ARCH_RP2040) // RP2040 has a way to write a block at a time
+  // at most 2 scan lines
+  uint32_t const pixbufcount = min(len, ((uint32_t)2 * width()));
+  uint16_t pixbuf[pixbufcount];
+
+  color = __builtin_bswap16(color);
+
+  while (len) {
+    uint32_t const count = min(len, pixbufcount);
+    // fill buffer with color
+    for (uint32_t i = 0; i < count; i++) {
+      pixbuf[i] = color;
+    }
+    writePixels(pixbuf, count, true, true);
+    len -= count;
+  }
+
+  return;
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52840 use SPIM3 DMA at 32Mhz
   // at most 2 scan lines
