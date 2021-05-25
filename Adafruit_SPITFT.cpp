@@ -1014,11 +1014,11 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
   if (!bigEndian) {
-    byteSwap(colors, len); // convert little-to-big endian for display
+    swapBytes(colors, len); // convert little-to-big endian for display
   }
   hwspi._spi->transfer(colors, NULL, 2 * len); // NULL RX to avoid overwrite
   if (!bigEndian) {
-    byteSwap(colors, len); // big-to-little endian to restore pixel buffer
+    swapBytes(colors, len); // big-to-little endian to restore pixel buffer
   }
 
   return;
