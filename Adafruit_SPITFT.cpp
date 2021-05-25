@@ -950,6 +950,24 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 }
 
 /*!
+    @brief  Swap bytes in an array of pixels; converts little-to-big or
+            big-to-little endian. Used by writePixels() below in some
+            situations, but may also be helpful for user code occasionally.
+    @param  src   Source address of 16-bit pixels buffer.
+    @param  len   Number of pixels to byte-swap.
+    @param  dest  Optional destination address if different than src --
+                  otherwise, if NULL (default) or same address is passed,
+                  pixel buffer is overwritten in-place.
+*/
+void swapBytes(uint16_t *src, uint32_t len, uint16_t *dest) {
+  if (!dest)
+    dest = src; // NULL -> overwrite src buffer
+  for (uint32_t i = 0; i < len; i++) {
+    dest[i] = __builtin_bswap16(src[i]);
+  }
+}
+
+/*!
     @brief  Issue a series of pixels from memory to the display. Not self-
             contained; should follow startWrite() and setAddrWindow() calls.
     @param  colors     Pointer to array of 16-bit pixel values in '565' RGB
@@ -963,19 +981,16 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
                        doing ANY other display-related activities (or even
                        any SPI-related activities, if using an SPI display
                        that shares the bus with other devices).
-    @param  bigEndian  If using DMA, and if set true, bitmap in memory is in
-                       big-endian order (most significant byte first). By
-                       default this is false, as most microcontrollers seem
-                       to be little-endian and 16-bit pixel values must be
-                       byte-swapped before issuing to the display (which tend
-                       to be big-endian when using SPI or 8-bit parallel).
-                       If an application can optimize around this -- for
-                       example, a bitmap in a uint16_t array having the byte
-                       values already reordered big-endian, this can save
-                       some processing time here, ESPECIALLY if using this
-                       function's non-blocking DMA mode. Not all cases are
-                       covered...this is really here only for SAMD DMA and
-                       much forethought on the application side.
+    @param  bigEndian  If true, bitmap in memory is in big-endian order (most
+                       significant byte first). By default this is false, as
+                       most microcontrollers seem to be little-endian and
+                       16-bit pixel values must be byte-swapped before
+                       issuing to the display (which tend toward big-endian
+                       when using SPI or 8-bit parallel). If an application
+                       can optimize around this -- for example, a bitmap in a
+                       uint16_t array having the byte values already ordered
+                       big-endian, this can save time here, ESPECIALLY if
+                       using this function's non-blocking DMA mode.
 */
 void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
                                   bool bigEndian) {
@@ -987,28 +1002,23 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
   (void)block;
   (void)bigEndian;
 
-#if defined(ESP32) // ESP32 has a special SPI pixel-writing function...
+#if defined(ESP32)
   if (connection == TFT_HARD_SPI) {
-    hwspi._spi->writePixels(colors, len * 2);
+    if (!bigEndian) {
+      hwspi._spi->writePixels(colors, len * 2); // Inbuilt endian-swap
+    } else {
+      hwspi._spi->writeBytes(colors, len * 2); // Issue bytes direct
+    }
     return;
   }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
-  // TFT and SPI DMA endian is different we need to swap bytes
   if (!bigEndian) {
-    for (uint32_t i = 0; i < len; i++) {
-      colors[i] = __builtin_bswap16(colors[i]);
-    }
+    byteSwap(colors, len); // convert little-to-big endian for display
   }
-
-  // use the separate tx, rx buf variant to prevent overwrite the buffer
-  hwspi._spi->transfer(colors, NULL, 2 * len);
-
-  // swap back color buffer
+  hwspi._spi->transfer(colors, NULL, 2 * len); // NULL RX to avoid overwrite
   if (!bigEndian) {
-    for (uint32_t i = 0; i < len; i++) {
-      colors[i] = __builtin_bswap16(colors[i]);
-    }
+    byteSwap(colors, len); // big-to-little endian to restore pixel buffer
   }
 
   return;
@@ -1031,9 +1041,9 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
         // bytes from the 'colors' array passed into a DMA working
         // buffer. This can take place while the prior DMA transfer
         // is in progress, hence the need for two pixelBufs.
-        for (int i = 0; i < count; i++) {
-          pixelBuf[pixelBufIdx][i] = __builtin_bswap16(*colors++);
-        }
+        swapBytes(colors, count, pixelBuf[pixelBufIdx]);
+        colors += count;
+
         // The transfers themselves are relatively small, so we don't
         // need a long descriptor list. We just alternate between the
         // first two, sharing pixelBufIdx for that purpose.
@@ -1106,8 +1116,22 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 
   // All other cases (bitbang SPI or non-DMA hard SPI or parallel),
   // use a loop with the normal 16-bit data write function:
-  while (len--) {
-    SPI_WRITE16(*colors++);
+
+  if (!bigEndian) {
+    while (len--) {
+      SPI_WRITE16(*colors++);
+    }
+  } else {
+    // Well this is awkward. SPI_WRITE16() was designed for little-endian
+    // hosts and big-endian displays as that's nearly always the typical
+    // case. If the bigEndian flag was set, data is already in display's
+    // order...so each pixel needs byte-swapping before being issued.
+    // Rather than having a separate big-endian SPI_WRITE16 (adding more
+    // bloat), it's preferred if calling function is smart and only uses
+    // bigEndian where DMA is supported. But we gotta handle this...
+    while (len--) {
+      SPI_WRITE16(__builtin_bswap16(*colors++));
+    }
   }
 }
 
@@ -2362,6 +2386,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write16(w);
 #else
+    // MSB, LSB because TFTs are generally big-endian
     hwspi._spi->transfer(w >> 8);
     hwspi._spi->transfer(w);
 #endif
