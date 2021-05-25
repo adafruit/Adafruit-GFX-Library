@@ -959,7 +959,7 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
                   otherwise, if NULL (default) or same address is passed,
                   pixel buffer is overwritten in-place.
 */
-void swapBytes(uint16_t *src, uint32_t len, uint16_t *dest) {
+void Adafruit_SPITFT::swapBytes(uint16_t *src, uint32_t len, uint16_t *dest) {
   if (!dest)
     dest = src; // NULL -> overwrite src buffer
   for (uint32_t i = 0; i < len; i++) {
