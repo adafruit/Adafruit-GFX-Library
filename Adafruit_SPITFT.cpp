@@ -1007,7 +1007,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     if (!bigEndian) {
       hwspi._spi->writePixels(colors, len * 2); // Inbuilt endian-swap
     } else {
-      hwspi._spi->writeBytes(colors, len * 2); // Issue bytes direct
+      hwspi._spi->writeBytes((uint8_t *)colors, len * 2); // Issue bytes direct
     }
     return;
   }
