@@ -26,5 +26,6 @@ var searchData=
   ['spi_5fwrite32',['SPI_WRITE32',['../class_adafruit___s_p_i_t_f_t.html#a97e8acadecd766abcb735e0e89c81149',1,'Adafruit_SPITFT']]],
   ['spiread',['spiRead',['../class_adafruit___s_p_i_t_f_t.html#a6904156a9bb832fc510ae6df33e936e5',1,'Adafruit_SPITFT']]],
   ['spiwrite',['spiWrite',['../class_adafruit___s_p_i_t_f_t.html#a76dfbee0ce62682988badc0dbbdc5790',1,'Adafruit_SPITFT']]],
-  ['startwrite',['startWrite',['../class_adafruit___g_f_x.html#aa991435d3d38f6818fc93f9370c0b3e5',1,'Adafruit_GFX::startWrite()'],['../class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b',1,'Adafruit_SPITFT::startWrite()']]]
+  ['startwrite',['startWrite',['../class_adafruit___g_f_x.html#aa991435d3d38f6818fc93f9370c0b3e5',1,'Adafruit_GFX::startWrite()'],['../class_adafruit___s_p_i_t_f_t.html#ad15008e1d7d71ccc707f6efab2a86e6b',1,'Adafruit_SPITFT::startWrite()']]],
+  ['swapbytes',['swapBytes',['../class_adafruit___s_p_i_t_f_t.html#a080868dfdd9fa2669632e39dbf146ff3',1,'Adafruit_SPITFT']]]
 ];
