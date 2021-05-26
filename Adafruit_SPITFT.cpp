@@ -992,13 +992,9 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     hwspi._spi->writePixels(colors, len * 2);
     return;
   }
-#elif defined(ARDUINO_ARCH_RP2040) // RP2040 has a way to write a block at a time
-  if (connection == TFT_HARD_SPI) {
-    hwspi._spi->transfer(colors, 2*len);
-    return;
-  }
-#elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
-    defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
+
+#elif  defined(ARDUINO_ARCH_RP2040) || (defined(ARDUINO_NRF52_ADAFRUIT) && \
+                                        defined(NRF52840_XXAA)) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
   // TFT and SPI DMA endian is different we need to swap bytes
   if (!bigEndian) {
     for (uint32_t i = 0; i < len; i++) {
