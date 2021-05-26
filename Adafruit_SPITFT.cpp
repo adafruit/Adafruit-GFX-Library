@@ -87,7 +87,7 @@ static const struct {
 #endif
 };
 #define NUM_TIMERS (sizeof tcList / sizeof tcList[0]) ///< # timer/counters
-#endif // end __SAMD51__
+#endif                                                // end __SAMD51__
 
 #endif // end USE_SPI_DMA
 
@@ -157,7 +157,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
   } else {
     swspi.misoPort = portInputRegister(dc);
   }
-#else // !CORE_TEENSY
+#else  // !CORE_TEENSY
   dcPinMask = digitalPinToBitMask(dc);
   swspi.sckPinMask = digitalPinToBitMask(sck);
   swspi.mosiPinMask = digitalPinToBitMask(mosi);
@@ -188,7 +188,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
     swspi.misoPort = (PORTreg_t)portInputRegister(digitalPinToPort(dc));
   }
 #endif // end !CORE_TEENSY
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
   dcPinMaskSet = digitalPinToBitMask(dc);
   swspi.sckPort = (PORTreg_t)portOutputRegister(digitalPinToPort(sck));
@@ -241,7 +241,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
       _dc(dc) {
   hwspi._spi = &SPI;
 }
-#else // !ESP8266
+#else  // !ESP8266
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
                                  int8_t rst)
     : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) {
@@ -304,7 +304,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     csPortSet = dcPortSet;
     csPortClr = dcPortClr;
   }
-#else // !CORE_TEENSY
+#else  // !CORE_TEENSY
   dcPinMask = digitalPinToBitMask(dc);
   dcPortSet = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
   dcPortClr = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
@@ -322,7 +322,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     csPinMask = 0;
   }
 #endif // end !CORE_TEENSY
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
   dcPinMaskSet = digitalPinToBitMask(dc);
   if (cs >= 0) {
@@ -425,7 +425,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   tft8.readPort = portInputRegister(d0);
   tft8.dirSet = portModeRegister(d0);
   tft8.dirClr = portModeRegister(d0);
-#else // !CORE_TEENSY
+#else  // !CORE_TEENSY
   tft8.wrPinMask = digitalPinToBitMask(wr);
   tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
   tft8.wrPortClr = &(PORT->Group[g_APinDescription[wr].ulPort].OUTCLR.reg);
@@ -467,7 +467,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   tft8.dirSet = (volatile uint8_t *)&(p->DIRSET.reg) + offset;
   tft8.dirClr = (volatile uint8_t *)&(p->DIRCLR.reg) + offset;
 #endif // end !CORE_TEENSY
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   tft8.wrPort = (PORTreg_t)portOutputRegister(digitalPinToPort(wr));
   tft8.wrPinMaskSet = digitalPinToBitMask(wr);
   dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
@@ -616,7 +616,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
       *(volatile uint16_t *)tft8.dirSet = 0xFFFF;
       *(volatile uint16_t *)tft8.writePort = 0x0000;
     }
-#else // !CORE_TEENSY
+#else  // !CORE_TEENSY
     uint8_t portNum = g_APinDescription[tft8._d0].ulPort, // d0 PORT #
         dBit = g_APinDescription[tft8._d0].ulPin,         // d0 bit in PORT
         lastBit = dBit + (tft8.wide ? 15 : 7);
@@ -870,7 +870,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
                   DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
               descriptor[d].DSTADDR.reg = (uint32_t)tft8.writePort;
             }
-#endif // __SAMD51
+#endif      // __SAMD51
           } // end parallel-specific DMA setup
 
           lastFillColor = 0x0000;
@@ -1216,7 +1216,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     rtos_free(pixbuf);
     return;
   }
-#else // !ESP32
+#else                      // !ESP32
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
       (len >= 16)) { // Don't bother with DMA on short pixel runs
@@ -1381,7 +1381,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         SPI_SCK_LOW();
         x <<= 1;
       }
-#else // !__AVR__
+#else      // !__AVR__
       for (uint16_t bit = 0, x = color; bit < 16; bit++) {
         if (x & 0x8000)
           SPI_MOSI_HIGH();
@@ -1391,9 +1391,9 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         x <<= 1;
         SPI_SCK_LOW();
       }
-#endif // end !__AVR__
+#endif     // end !__AVR__
     }
-#endif // end !ESP8266
+#endif     // end !ESP8266
   } else { // PARALLEL
     if (hi == lo) {
 #if defined(__AVR__)
@@ -1999,12 +1999,12 @@ uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
     *(volatile uint16_t *)tft8.dirClr = 0xFFFF;   // Input state
     result = *(volatile uint16_t *)tft8.readPort; // 16-bit read
     *(volatile uint16_t *)tft8.dirSet = 0xFFFF;   // Output state
-#else // !HAS_PORT_SET_CLR
-    *(volatile uint16_t *)tft8.portDir = 0x0000;  // Input state
-    result = *(volatile uint16_t *)tft8.readPort; // 16-bit read
-    *(volatile uint16_t *)tft8.portDir = 0xFFFF;  // Output state
-#endif // end !HAS_PORT_SET_CLR
-    TFT_RD_HIGH(); // Read line HIGH
+#else                                             // !HAS_PORT_SET_CLR
+    *(volatile uint16_t *)tft8.portDir = 0x0000;    // Input state
+    result = *(volatile uint16_t *)tft8.readPort;   // 16-bit read
+    *(volatile uint16_t *)tft8.portDir = 0xFFFF;    // Output state
+#endif                                            // end !HAS_PORT_SET_CLR
+    TFT_RD_HIGH();                                // Read line HIGH
     endWrite();
   }
   return result;
@@ -2153,31 +2153,31 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
       *tft8.portDir = 0x00; // Set port to input state
       w = *tft8.readPort;   // Read value from port
       *tft8.portDir = 0xFF; // Restore port to output
-#else // !__AVR__
-      if (!tft8.wide) { // 8-bit TFT connection
+#else                       // !__AVR__
+      if (!tft8.wide) {                             // 8-bit TFT connection
 #if defined(HAS_PORT_SET_CLR)
-        *tft8.dirClr = 0xFF; // Set port to input state
-        w = *tft8.readPort;  // Read value from port
-        *tft8.dirSet = 0xFF; // Restore port to output
-#else // !HAS_PORT_SET_CLR
-        *tft8.portDir = 0x00; // Set port to input state
-        w = *tft8.readPort;   // Read value from port
-        *tft8.portDir = 0xFF; // Restore port to output
+        *tft8.dirClr = 0xFF;                        // Set port to input state
+        w = *tft8.readPort;                         // Read value from port
+        *tft8.dirSet = 0xFF;                        // Restore port to output
+#else  // !HAS_PORT_SET_CLR
+        *tft8.portDir = 0x00;                        // Set port to input state
+        w = *tft8.readPort;                          // Read value from port
+        *tft8.portDir = 0xFF;                        // Restore port to output
 #endif // end HAS_PORT_SET_CLR
-      } else { // 16-bit TFT connection
+      } else {                                      // 16-bit TFT connection
 #if defined(HAS_PORT_SET_CLR)
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
         *(volatile uint16_t *)tft8.dirSet = 0xFFFF; // Output state
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
         *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
         w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
 #endif // end !HAS_PORT_SET_CLR
       }
-      TFT_RD_HIGH(); // Read line HIGH
+      TFT_RD_HIGH();                                 // Read line HIGH
 #endif // end !__AVR__
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
 #endif // end !USE_FAST_PINIO
     }
@@ -2237,16 +2237,16 @@ uint16_t Adafruit_SPITFT::read16(void) {
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
         *(volatile uint16_t *)tft8.dirSet = 0xFFFF; // Output state
-#else // !HAS_PORT_SET_CLR
+#else                                               // !HAS_PORT_SET_CLR
         *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
         w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
-#endif // end !HAS_PORT_SET_CLR
+#endif                                              // end !HAS_PORT_SET_CLR
       }
       TFT_RD_HIGH(); // Read line HIGH
-#else // !USE_FAST_PINIO
+#else                // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
-#endif // end !USE_FAST_PINIO
+#endif               // end !USE_FAST_PINIO
     }
   }
   return w;
@@ -2263,10 +2263,10 @@ inline void Adafruit_SPITFT::SPI_MOSI_HIGH(void) {
 #else // !KINETISK
   *swspi.mosiPortSet = swspi.mosiPinMask;
 #endif
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *swspi.mosiPort |= swspi.mosiPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(swspi._mosi, HIGH);
 #if defined(ESP32)
   for (volatile uint8_t i = 0; i < 1; i++)
@@ -2286,10 +2286,10 @@ inline void Adafruit_SPITFT::SPI_MOSI_LOW(void) {
 #else // !KINETISK
   *swspi.mosiPortClr = swspi.mosiPinMask;
 #endif
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *swspi.mosiPort &= swspi.mosiPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(swspi._mosi, LOW);
 #if defined(ESP32)
   for (volatile uint8_t i = 0; i < 1; i++)
@@ -2306,17 +2306,17 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortSet = 1;
-#else // !KINETISK
+#else                                                // !KINETISK
   *swspi.sckPortSet = swspi.sckPinMask;
 #if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
   for (volatile uint8_t i = 0; i < 1; i++)
     ;
 #endif
 #endif
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *swspi.sckPort |= swspi.sckPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(swspi._sck, HIGH);
 #if defined(ESP32)
   for (volatile uint8_t i = 0; i < 1; i++)
@@ -2333,17 +2333,17 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortClr = 1;
-#else // !KINETISK
+#else                                                // !KINETISK
   *swspi.sckPortClr = swspi.sckPinMask;
 #if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
   for (volatile uint8_t i = 0; i < 1; i++)
     ;
 #endif
 #endif
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *swspi.sckPort &= swspi.sckPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(swspi._sck, LOW);
 #if defined(ESP32)
   for (volatile uint8_t i = 0; i < 1; i++)
@@ -2360,10 +2360,10 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
 #if defined(USE_FAST_PINIO)
 #if defined(KINETISK)
   return *swspi.misoPort;
-#else // !KINETISK
+#else  // !KINETISK
   return *swspi.misoPort & swspi.misoPinMask;
 #endif // end !KINETISK
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   return digitalRead(swspi._miso);
 #endif // end !USE_FAST_PINIO
 }
@@ -2491,15 +2491,15 @@ inline void Adafruit_SPITFT::TFT_WR_STROBE(void) {
 #if defined(KINETISK)
   *tft8.wrPortClr = 1;
   *tft8.wrPortSet = 1;
-#else // !KINETISK
+#else  // !KINETISK
   *tft8.wrPortClr = tft8.wrPinMask;
   *tft8.wrPortSet = tft8.wrPinMask;
 #endif // end !KINETISK
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *tft8.wrPort &= tft8.wrPinMaskClr;
   *tft8.wrPort |= tft8.wrPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(tft8._wr, LOW);
   digitalWrite(tft8._wr, HIGH);
 #endif // end !USE_FAST_PINIO
@@ -2513,10 +2513,10 @@ inline void Adafruit_SPITFT::TFT_RD_HIGH(void) {
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
   *tft8.rdPortSet = tft8.rdPinMask;
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *tft8.rdPort |= tft8.rdPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(tft8._rd, HIGH);
 #endif // end !USE_FAST_PINIO
 }
@@ -2529,10 +2529,10 @@ inline void Adafruit_SPITFT::TFT_RD_LOW(void) {
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
   *tft8.rdPortClr = tft8.rdPinMask;
-#else // !HAS_PORT_SET_CLR
+#else  // !HAS_PORT_SET_CLR
   *tft8.rdPort &= tft8.rdPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
-#else // !USE_FAST_PINIO
+#else  // !USE_FAST_PINIO
   digitalWrite(tft8._rd, LOW);
 #endif // end !USE_FAST_PINIO
 }
