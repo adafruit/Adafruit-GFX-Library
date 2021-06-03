@@ -347,6 +347,25 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 
 /**************************************************************************/
 /*!
+    @brief    draw single Pentagram
+    @param  ` x  Start point x coordinate
+    @param ```y  Start point y coordinate
+    @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit::drawPentagram(int16_t x, int16_t y, uint16_t color){
+
+  startWrite();
+  drawLine(x, y, x + 20, y, color);
+  drawLine(x + 20, y, x + 7, y + 10, color);
+  drawLine(x + 7, y + 10, x + 10, y - 10, color);
+  drawLine(x + 10, y - 10, x + 14, y + 10, color);
+  drawLine(x + 14, y + 10, x, y, color);
+  endWrite();
+
+}
+/**************************************************************************/
+/*!
    @brief    Draw a circle outline
     @param    x0   Center-point x coordinate
     @param    y0   Center-point y coordinate
