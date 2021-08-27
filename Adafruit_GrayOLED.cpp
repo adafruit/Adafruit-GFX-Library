@@ -61,7 +61,7 @@
             allocation is performed there!
 */
 Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
-                                     TwoWire *twi, int8_t rst_pin,
+                                     TwoWire *twi, uint8_t rst_pin,
                                      uint32_t clkDuring, uint32_t clkAfter)
     : Adafruit_GFX(w, h), i2c_preclk(clkDuring), i2c_postclk(clkAfter),
       buffer(NULL), dcPin(-1), csPin(-1), rstPin(rst_pin), _bpp(bpp) {
@@ -97,9 +97,9 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
             allocation is performed there!
 */
 Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
-                                     int8_t mosi_pin, int8_t sclk_pin,
-                                     int8_t dc_pin, int8_t rst_pin,
-                                     int8_t cs_pin)
+                                     uint8_t mosi_pin, uint8_t sclk_pin,
+                                     uint8_t dc_pin, uint8_t rst_pin,
+                                     uint8_t cs_pin)
     : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
       _bpp(bpp) {
 
@@ -133,8 +133,8 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
             allocation is performed there!
 */
 Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
-                                     SPIClass *spi, int8_t dc_pin,
-                                     int8_t rst_pin, int8_t cs_pin,
+                                     SPIClass *spi, uint8_t dc_pin,
+                                     uint8_t rst_pin, uint8_t cs_pin,
                                      uint32_t bitrate)
     : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
       _bpp(bpp) {
@@ -229,7 +229,7 @@ bool Adafruit_GrayOLED::_init(uint8_t addr, bool reset) {
   }
 
   // Reset OLED if requested and reset pin specified in constructor
-  if (reset && (rstPin >= 0)) {
+  if (reset && (rstPin != 0xFF)) {
     pinMode(rstPin, OUTPUT);
     digitalWrite(rstPin, HIGH);
     delay(10);                  // VDD goes high at start, pause
