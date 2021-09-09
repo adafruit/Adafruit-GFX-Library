@@ -910,9 +910,12 @@ void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::startWrite(void) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
-    SPI_CS_LOW();
+  if (!_lockTransaction) {
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
+      SPI_CS_LOW();
+  }
 }
 
 /*!
@@ -922,11 +925,25 @@ void Adafruit_SPITFT::startWrite(void) {
             for all display types; not an SPI-specific function.
 */
 void Adafruit_SPITFT::endWrite(void) {
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) {
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+
+    SPI_END_TRANSACTION();
+  }
 }
 
+/*!
+    @brief  Lock a transaction (i.e. use startWrite() for all functions)
+            so that chip select stays low and a single beginTransaction
+            is performed. When lock parameter is false the bus is released
+            endTransaction is called and chip select is set high.
+*/
+void Adafruit_SPITFT::lockTransaction(bool lock) {
+  if (lock) startWrite();
+  _lockTransaction = lock;
+  endWrite();
+}
 // -------------------------------------------------------------------------
 // Lower-level graphics operations. These functions require a chip-select
 // and/or SPI transaction around them (via startWrite(), endWrite() above).
@@ -1009,6 +1026,11 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     } else {
       hwspi._spi->writeBytes((uint8_t *)colors, len * 2); // Issue bytes direct
     }
+    return;
+  }
+#elif defined(ARDUINO_ARCH_RP2040)
+  if (connection == TFT_HARD_SPI) {
+    spi_write16_blocking(spi0, (const uint16_t*)colors, len);
     return;
   }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
@@ -1326,7 +1348,25 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         hwspi._spi->write(lo);
       }
     } while (len);
-#else // !ESP8266
+#elif defined(ARDUINO_ARCH_RP2040)
+    bool loaded = false;
+    uint16_t colorBuf[64];
+    const uint16_t* colorPtr = colorBuf;
+    if (len>63) {
+      loaded = true;
+      for (uint32_t i = 0; i < 64; i++) colorBuf[i] = color;
+      while(len>63) {
+        spi_write16_blocking(spi0, (const uint16_t*)colorPtr, 64);
+        len -=64;
+      }
+    }
+
+    if (len) {
+      if (!loaded) for (uint32_t i = 0; i < len; i++) colorBuf[i] = color;
+      spi_write16_blocking(spi0, (const uint16_t*)colorPtr, len);
+    }
+    return;
+#else // !ESP8266 or RP2040
     while (len--) {
 #if defined(__AVR__)
       AVR_WRITESPI(hi);
@@ -1866,9 +1906,12 @@ data
 */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
                                   uint8_t numDataBytes) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
+  if (!_lockTransaction) {
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
     SPI_CS_LOW();
+  }
 
   SPI_DC_LOW();          // Command mode
   spiWrite(commandByte); // Send the command byte
@@ -1884,9 +1927,11 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
     }
   }
 
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) {
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+    SPI_END_TRANSACTION();
+  }
 }
 
 /*!
@@ -1898,9 +1943,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes,
  */
 void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
                                   uint8_t numDataBytes) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
-    SPI_CS_LOW();
+  if (!_lockTransaction) { 
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
+      SPI_CS_LOW();
+  }
 
   SPI_DC_LOW();          // Command mode
   spiWrite(commandByte); // Send the command byte
@@ -1915,9 +1963,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
     }
   }
 
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) { 
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+
+    SPI_END_TRANSACTION();
+  }
 }
 
 /*!
@@ -1934,9 +1985,12 @@ void Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes,
 void Adafruit_SPITFT::sendCommand16(uint16_t commandWord,
                                     const uint8_t *dataBytes,
                                     uint8_t numDataBytes) {
-  SPI_BEGIN_TRANSACTION();
-  if (_cs >= 0)
-    SPI_CS_LOW();
+  if (!_lockTransaction) {
+    SPI_BEGIN_TRANSACTION();
+
+    if (_cs >= 0)
+      SPI_CS_LOW();
+  }
 
   if (numDataBytes == 0) {
     SPI_DC_LOW();             // Command mode
@@ -1951,9 +2005,12 @@ void Adafruit_SPITFT::sendCommand16(uint16_t commandWord,
     SPI_WRITE16((uint16_t)pgm_read_byte(dataBytes++));
   }
 
-  if (_cs >= 0)
-    SPI_CS_HIGH();
-  SPI_END_TRANSACTION();
+  if (!_lockTransaction) {
+    if (_cs >= 0)
+      SPI_CS_HIGH();
+
+    SPI_END_TRANSACTION();
+  }
 }
 
 /*!
@@ -2079,6 +2136,11 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
     AVR_WRITESPI(b);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write(b);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_set_format(spi0,  8, (spi_cpol_t)0, (spi_cpha_t)0, SPI_MSB_FIRST);
+    spi_write_blocking(spi0, (const uint8_t*)&(b), 1);
+    spi_set_format(spi0, 16, (spi_cpol_t)0, (spi_cpha_t)0, SPI_MSB_FIRST);
+    return;
 #else
     hwspi._spi->transfer(b);
 #endif
@@ -2373,7 +2435,7 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
             transaction and data/command selection must have been
             previously set -- this ONLY issues the word. Despite the name,
             this function is used even if display connection is parallel;
-            name was maintaned for backward compatibility. Naming is also
+            name was maintained for backward compatibility. Naming is also
             not consistent with the 8-bit version, spiWrite(). Sorry about
             that. Again, staying compatible with outside code.
     @param  w  16-bit value to write.
@@ -2385,6 +2447,8 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     AVR_WRITESPI(w);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write16(w);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_write16_blocking(spi0, (const uint16_t*)&(w), 1);
 #else
     // MSB, LSB because TFTs are generally big-endian
     hwspi._spi->transfer(w >> 8);
@@ -2423,7 +2487,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
             transaction and data/command selection must have been
             previously set -- this ONLY issues the longword. Despite the
             name, this function is used even if display connection is
-            parallel; name was maintaned for backward compatibility. Naming
+            parallel; name was maintained for backward compatibility. Naming
             is also not consistent with the 8-bit version, spiWrite().
             Sorry about that. Again, staying compatible with outside code.
     @param  l  32-bit value to write.
@@ -2437,6 +2501,8 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
     AVR_WRITESPI(l);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write32(l);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_write16_blocking(spi0, (const uint16_t*)&(l), 2);
 #else
     hwspi._spi->transfer(l >> 24);
     hwspi._spi->transfer(l >> 16);

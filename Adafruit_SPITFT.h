@@ -199,6 +199,10 @@ public:
   void startWrite(void);
   // Chip deselect and/or hardware SPI transaction end as needed:
   void endWrite(void);
+  
+  // Lock (true) or unlock (false) a transaction (for RP2040 where beginTransaction takes 68us);
+  void lockTransaction(bool lock);
+
   void sendCommand(uint8_t commandByte, uint8_t *dataBytes,
                    uint8_t numDataBytes);
   void sendCommand(uint8_t commandByte, const uint8_t *dataBytes = NULL,
@@ -298,6 +302,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *csPort |= csPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_set = (1ul << _cs);
 #else  // !USE_FAST_PINIO
     digitalWrite(_cs, HIGH);
 #endif // end !USE_FAST_PINIO
@@ -320,6 +326,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *csPort &= csPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_clr = (1ul << _cs);
 #else  // !USE_FAST_PINIO
     digitalWrite(_cs, LOW);
 #endif // end !USE_FAST_PINIO
@@ -339,6 +347,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *dcPort |= dcPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_set = (1ul << _dc);
 #else  // !USE_FAST_PINIO
     digitalWrite(_dc, HIGH);
 #endif // end !USE_FAST_PINIO
@@ -358,6 +368,8 @@ public:
 #else  // !HAS_PORT_SET_CLR
     *dcPort &= dcPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
+#elif defined (ARDUINO_ARCH_RP2040)
+    sio_hw->gpio_clr = (1ul << _dc);
 #else  // !USE_FAST_PINIO
     digitalWrite(_dc, LOW);
 #endif // end !USE_FAST_PINIO
@@ -523,6 +535,8 @@ protected:
   uint8_t invertOffCommand = 0; ///< Command to disable invert mode
 
   uint32_t _freq = 0; ///< Dummy var to keep subclasses happy
+  
+  bool     _lockTransaction = false; ///< Transaction lock for RP2040 (68us to beginTransaction!)
 };
 
 #endif // end __AVR_ATtiny85__
