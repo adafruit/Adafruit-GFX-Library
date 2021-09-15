@@ -1022,6 +1022,19 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
   }
 
   return;
+#elif defined(ARDUINO_ARCH_RP2040)
+  spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+
+  if (!bigEndian) {
+    // switch to 16-bit writes
+    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB, SPI_SSPCR0_DSS_BITS);
+    spi_write16_blocking(pi_spi, colors, len);
+    // switch back to 8-bit
+    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB, SPI_SSPCR0_DSS_BITS);
+  } else {
+    spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
+  }
+  return;
 #elif defined(USE_SPI_DMA) &&                                                  \
     (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
