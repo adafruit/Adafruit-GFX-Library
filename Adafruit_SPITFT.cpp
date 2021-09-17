@@ -1022,6 +1022,21 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
   }
 
   return;
+#elif defined(ARDUINO_ARCH_RP2040)
+  spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+
+  if (!bigEndian) {
+    // switch to 16-bit writes
+    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB,
+                    SPI_SSPCR0_DSS_BITS);
+    spi_write16_blocking(pi_spi, colors, len);
+    // switch back to 8-bit
+    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB,
+                    SPI_SSPCR0_DSS_BITS);
+  } else {
+    spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
+  }
+  return;
 #elif defined(USE_SPI_DMA) &&                                                  \
     (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
@@ -1326,7 +1341,13 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         hwspi._spi->write(lo);
       }
     } while (len);
-#else // !ESP8266
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    color = __builtin_bswap16(color);
+
+    while (len--)
+      spi_write_blocking(pi_spi, (uint8_t *)&color, 2);
+#else // !ESP8266 && !ARDUINO_ARCH_RP2040
     while (len--) {
 #if defined(__AVR__)
       AVR_WRITESPI(hi);
@@ -2079,6 +2100,9 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
     AVR_WRITESPI(b);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write(b);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    spi_write_blocking(pi_spi, &b, 1);
 #else
     hwspi._spi->transfer(b);
 #endif
@@ -2385,6 +2409,10 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     AVR_WRITESPI(w);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write16(w);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    w = __builtin_bswap16(w);
+    spi_write_blocking(pi_spi, (uint8_t *)&w, 2);
 #else
     // MSB, LSB because TFTs are generally big-endian
     hwspi._spi->transfer(w >> 8);
@@ -2437,6 +2465,10 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
     AVR_WRITESPI(l);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write32(l);
+#elif defined(ARDUINO_ARCH_RP2040)
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    l = __builtin_bswap32(l);
+    spi_write_blocking(pi_spi, (uint8_t *)&l, 4);
 #else
     hwspi._spi->transfer(l >> 24);
     hwspi._spi->transfer(l >> 16);
