@@ -1027,10 +1027,12 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 
   if (!bigEndian) {
     // switch to 16-bit writes
-    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB, SPI_SSPCR0_DSS_BITS);
+    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB,
+                    SPI_SSPCR0_DSS_BITS);
     spi_write16_blocking(pi_spi, colors, len);
     // switch back to 8-bit
-    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB, SPI_SSPCR0_DSS_BITS);
+    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB,
+                    SPI_SSPCR0_DSS_BITS);
   } else {
     spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
   }
