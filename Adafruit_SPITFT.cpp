@@ -1418,7 +1418,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     }
 #endif     // end !ESP8266
   } else { // PARALLEL
-    if (hi == lo) {
+    if (hi == lo || tft8.wide) {
 #if defined(__AVR__)
       len *= 2;
       *tft8.writePort = hi;
@@ -1443,13 +1443,9 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         TFT_WR_STROBE();
         *tft8.writePort = lo;
 #elif defined(USE_FAST_PINIO)
-        if (!tft8.wide) {
-          *tft8.writePort = hi;
-          TFT_WR_STROBE();
-          *tft8.writePort = lo;
-        } else {
-          *(volatile uint16_t *)tft8.writePort = color;
-        }
+        *tft8.writePort = hi;
+        TFT_WR_STROBE();
+        *tft8.writePort = lo;
 #endif
         TFT_WR_STROBE();
       }
