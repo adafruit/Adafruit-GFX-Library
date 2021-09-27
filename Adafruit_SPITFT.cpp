@@ -2197,8 +2197,8 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
 #endif // end !HAS_PORT_SET_CLR
       }
-      TFT_RD_HIGH();                                 // Read line HIGH
 #endif // end !__AVR__
+      TFT_RD_HIGH();                                 // Read line HIGH
 #else  // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
 #endif // end !USE_FAST_PINIO
