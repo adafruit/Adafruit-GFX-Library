@@ -2191,17 +2191,17 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
         *(volatile uint16_t *)tft8.dirSet = 0xFFFF; // Output state
-#else  // !HAS_PORT_SET_CLR
+#else                // !HAS_PORT_SET_CLR
         *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
         w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
-#endif // end !HAS_PORT_SET_CLR
+#endif               // end !HAS_PORT_SET_CLR
       }
-#endif // end !__AVR__
-      TFT_RD_HIGH();                                 // Read line HIGH
-#else  // !USE_FAST_PINIO
+#endif               // end !__AVR__
+      TFT_RD_HIGH(); // Read line HIGH
+#else                // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
-#endif // end !USE_FAST_PINIO
+#endif               // end !USE_FAST_PINIO
     }
     return w;
   }
