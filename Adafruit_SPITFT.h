@@ -127,23 +127,38 @@ public:
   // (reset, miso). cs argument is required but can be -1 if unused --
   // rather than moving it to the optional arguments, it was done this way
   // to avoid breaking existing code (-1 option was a later addition).
+#if defined(ARDUINO_ARCH_STM32)  
   Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc, int16_t mosi,
                   int16_t sck, int16_t rst = -1, int16_t miso = -1);
+#else
+  Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc, int8_t mosi,
+                  int8_t sck, int8_t rst = -1, int8_t miso = -1);
+#endif
 
   // Hardware SPI constructor using the default SPI port: expects width &
   // height (at default rotation setting 0), 2 signal pins (cs, dc),
   // optional reset pin. cs is required but can be -1 if unused -- rather
   // than moving it to the optional arguments, it was done this way to
   // avoid breaking existing code (-1 option was a later addition).
+#if defined(ARDUINO_ARCH_STM32)   
   Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
                   int16_t rst = -1);
+#else
+  Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
+                  int8_t rst = -1);
+#endif
 
 #if !defined(ESP8266) // See notes in .cpp
   // Hardware SPI constructor using an arbitrary SPI peripheral: expects
   // width & height (rotation 0), SPIClass pointer, 2 signal pins (cs, dc)
   // and optional reset pin. cs is required but can be -1 if unused.
+#if defined(ARDUINO_ARCH_STM32)   
   Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int16_t cs,
                   int16_t dc, int16_t rst = -1);
+#else
+  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs,
+                  int8_t dc, int8_t rst = -1);
+#endif
 #endif // end !ESP8266
 
   // Parallel constructor: expects width & height (rotation 0), flag
@@ -151,9 +166,15 @@ public:
   // pins (d0, wr, dc), 3 optional pins (cs, rst, rd). 16-bit parallel
   // isn't even fully implemented but the 'wide' flag was added as a
   // required argument to avoid ambiguity with other constructors.
+#if defined(ARDUINO_ARCH_STM32)   
   Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth, int16_t d0,
                   int16_t wr, int16_t dc, int16_t cs = -1, int16_t rst = -1,
                   int16_t rd = -1);
+#else 
+  Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth, int8_t d0,
+                  int8_t wr, int8_t dc, int8_t cs = -1, int8_t rst = -1,
+                  int8_t rd = -1);                 
+#endif
 
   // DESTRUCTOR ----------------------------------------------------------
 
@@ -435,9 +456,15 @@ protected:
       ADAGFX_PORT_t misoPinMask; ///< Bitmask for MISO
 #endif                           // end !KINETISK
 #endif                           // end USE_FAST_PINIO
+#if defined(ARDUINO_ARCH_STM32) 
       int16_t _mosi;              ///< MOSI pin #
       int16_t _miso;              ///< MISO pin #
       int16_t _sck;               ///< SCK pin #
+#else
+      int8_t _mosi;              ///< MOSI pin #
+      int8_t _miso;              ///< MISO pin #
+      int8_t _sck;               ///< SCK pin #
+#endif
     } swspi;                     ///< Software SPI values
     struct {                     //   Values specific to 8-bit parallel:
 #if defined(USE_FAST_PINIO)
@@ -479,9 +506,15 @@ protected:
       ADAGFX_PORT_t rdPinMaskClr; ///< Bitmask for read strobe CLEAR (AND)
 #endif                         // end HAS_PORT_SET_CLR
 #endif                         // end USE_FAST_PINIO
+#if defined(ARDUINO_ARCH_STM32)
       int16_t _d0;              ///< Data pin 0 #
       int16_t _wr;              ///< Write strobe pin #
       int16_t _rd;              ///< Read strobe pin # (or -1)
+#else
+      int8_t _d0;              ///< Data pin 0 #
+      int8_t _wr;              ///< Write strobe pin #
+      int8_t _rd;              ///< Read strobe pin # (or -1)
+#endif
       bool wide = 0;           ///< If true, is 16-bit interface
     } tft8;                    ///< Parallel interface settings
 #if defined(__cplusplus) && (__cplusplus >= 201100)
@@ -513,9 +546,15 @@ protected:
 #endif                     // end HAS_PORT_SET_CLR
 #endif                     // end USE_FAST_PINIO
   uint8_t connection;      ///< TFT_HARD_SPI, TFT_SOFT_SPI, etc.
+#if defined(ARDUINO_ARCH_STM32)  
   int16_t _rst;             ///< Reset pin # (or -1)
   int16_t _cs;              ///< Chip select pin # (or -1)
   int16_t _dc;              ///< Data/command pin #
+#else
+  int8_t _rst;             ///< Reset pin # (or -1)
+  int8_t _cs;              ///< Chip select pin # (or -1)
+  int8_t _dc;              ///< Data/command pin #
+#endif
 
   int16_t _xstart = 0;          ///< Internal framebuffer X offset
   int16_t _ystart = 0;          ///< Internal framebuffer Y offset
