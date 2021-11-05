@@ -45,7 +45,7 @@ public:
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void setRotation(uint8_t r);
-  virtual void invertDisplay(boolean i);
+  virtual void invertDisplay(bool i);
 
   // BASIC DRAW API
   // These MAY be overridden by the subclass to provide device-specific
@@ -159,7 +159,7 @@ public:
   @param  w  true for wrapping, false for clipping
   */
   /**********************************************************************/
-  void setTextWrap(boolean w) { wrap = w; }
+  void setTextWrap(bool w) { wrap = w; }
 
   /**********************************************************************/
   /*!
@@ -175,7 +175,7 @@ public:
     @param  x  true = enable (new behavior), false = disable (old behavior)
   */
   /**********************************************************************/
-  void cp437(boolean x = true) { _cp437 = x; }
+  void cp437(bool x = true) { _cp437 = x; }
 
   using Print::write;
 #if ARDUINO >= 100
@@ -240,8 +240,8 @@ protected:
   uint8_t textsize_x;   ///< Desired magnification in X-axis of text to print()
   uint8_t textsize_y;   ///< Desired magnification in Y-axis of text to print()
   uint8_t rotation;     ///< Display rotation (0 thru 3)
-  boolean wrap;         ///< If set, 'wrap' text at right edge of display
-  boolean _cp437;       ///< If set, use correct CP437 charset (default is off)
+  bool wrap;            ///< If set, 'wrap' text at right edge of display
+  bool _cp437;          ///< If set, use correct CP437 charset (default is off)
   GFXfont *gfxFont;     ///< Pointer to special font
 };
 
@@ -266,8 +266,8 @@ public:
                     uint16_t h, uint16_t outline, uint16_t fill,
                     uint16_t textcolor, char *label, uint8_t textsize_x,
                     uint8_t textsize_y);
-  void drawButton(boolean inverted = false);
-  boolean contains(int16_t x, int16_t y);
+  void drawButton(bool inverted = false);
+  bool contains(int16_t x, int16_t y);
 
   /**********************************************************************/
   /*!
@@ -275,13 +275,13 @@ public:
     @param    p  True for pressed, false for not.
   */
   /**********************************************************************/
-  void press(boolean p) {
+  void press(bool p) {
     laststate = currstate;
     currstate = p;
   }
 
-  boolean justPressed();
-  boolean justReleased();
+  bool justPressed();
+  bool justReleased();
 
   /**********************************************************************/
   /*!
@@ -289,7 +289,7 @@ public:
     @returns  True if pressed
   */
   /**********************************************************************/
-  boolean isPressed(void) { return currstate; };
+  bool isPressed(void) { return currstate; };
 
 private:
   Adafruit_GFX *_gfx;
@@ -300,7 +300,7 @@ private:
   uint16_t _outlinecolor, _fillcolor, _textcolor;
   char _label[10];
 
-  boolean currstate, laststate;
+  bool currstate, laststate;
 };
 
 /// A GFX 1-bit canvas context for graphics
@@ -310,6 +310,9 @@ public:
   ~GFXcanvas1(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
+  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  bool getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
     @brief    Get a pointer to the internal buffer memory
@@ -318,8 +321,18 @@ public:
   /**********************************************************************/
   uint8_t *getBuffer(void) const { return buffer; }
 
+protected:
+  bool getRawPixel(int16_t x, int16_t y) const;
+  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+
 private:
   uint8_t *buffer;
+
+#ifdef __AVR__
+  // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
+  static const uint8_t PROGMEM GFXsetBit[], GFXclrBit[];
+#endif
 };
 
 /// A GFX 8-bit canvas context for graphics
@@ -329,7 +342,9 @@ public:
   ~GFXcanvas8(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
-  void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  uint8_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
    @brief    Get a pointer to the internal buffer memory
@@ -337,6 +352,11 @@ public:
   */
   /**********************************************************************/
   uint8_t *getBuffer(void) const { return buffer; }
+
+protected:
+  uint8_t getRawPixel(int16_t x, int16_t y) const;
+  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
 private:
   uint8_t *buffer;
@@ -350,6 +370,9 @@ public:
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void byteSwap(void);
+  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  uint16_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
     @brief    Get a pointer to the internal buffer memory
@@ -357,6 +380,11 @@ public:
   */
   /**********************************************************************/
   uint16_t *getBuffer(void) const { return buffer; }
+
+protected:
+  uint16_t getRawPixel(int16_t x, int16_t y) const;
+  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
 private:
   uint16_t *buffer;

@@ -22,12 +22,26 @@ Recent Arduino IDE releases include the Library Manager for easy installation. O
 
 - 'fontconvert' folder contains a command-line tool for converting TTF fonts to Adafruit_GFX header format.
 
+- You can also use [this GFX Font Customiser tool](https://github.com/tchapi/Adafruit-GFX-Font-Customiser) (_web version [here](https://tchapi.github.io/Adafruit-GFX-Font-Customiser/)_) to customize or correct the output from [fontconvert](https://github.com/adafruit/Adafruit-GFX-Library/tree/master/fontconvert), and create fonts with only a subset of characters to optimize size.
+
 ---
 
 ### Roadmap
 
-The PRIME DIRECTIVE is to maintain backward compatibility with existing Arduino sketches -- many are hosted elsewhere and don't track changes here, some are in print and can never be changed! This "little" library has grown organically over time and sometimes we paint ourselves into a design corner and just have to live with it or add ungainly workarounds.
+The PRIME DIRECTIVE is to maintain backward compatibility with existing Arduino sketches -- many are hosted elsewhere and don't track changes here, some are in print and can never be changed! This "little" library has grown organically over time and sometimes we paint ourselves into a design corner and just have to live with it or add progressively more ungainly workarounds.
 
-Highly unlikely to merge any changes for additional or incompatible font formats (see Prime Directive above). There are already two formats and the code is quite bloaty there as it is (this also creates liabilities for tools and documentation). If you *must* have a more sophisticated font format, consider creating a fork with the features required for your project. For similar reasons, also unlikely to add any more bitmap formats, it's getting messy.
+**We are grateful for everyone's contributions, but pull requests for the following will NOT be merged:**
 
-Please don't reformat code for the sake of reformatting code. The resulting large "visual diff" makes it impossible to untangle actual bug fixes from merely rearranged lines.
+- Additional or incompatible font formats (see Prime Directive above). There are already two formats and the code is quite bloaty there as it is. This also creates liabilities for tools and documentation. What's there isn't perfect but it does the job.
+
+- Additional or incompatible bitmap formats, for similar reasons. It's getting messy.
+
+- Adding background color to custom fonts to erase prior screen contents. The ONLY acceptable methods are to clear the area with a filled rect, or (to avoid flicker) draw text into a GFXcanvas1 and copy to screen with drawBitmap() w/background color. This is on purpose and by design. We've discussed this. Glyphs can overlap.
+
+- Scrolling, whether hardware- or software-based. Such implementations tend to rely on hardware-specific features (not universally available), read access to the screen's framebuffer (ditto) and/or the addition of virtual functions in GFX which them must be added in *every* subclass, of which there are many. The GFX API is largely "set" at this point and this is just a limitation we live with now.
+
+- Please don't reformat code for the sake of reformatting code. The resulting large "visual diff" makes it impossible to untangle actual bug fixes from merely rearranged lines. clang-format will be the final arbiter.
+
+- Please no more pentagram-drawing PRs. Any oddly-specific drawing functions can go in your own code and aren't helpful in a library context.
+
+If you *must* have one of these features, consider creating a fork with the features required for your project...it's easy to keep synced with the upstream code.
