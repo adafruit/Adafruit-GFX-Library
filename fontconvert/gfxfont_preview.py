@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+Adds comments to an Adafruit GFX font .h file helpful for visualizing the data.
+
+Read an Adafruit GFXFont .h file on stdin, and print the same header on stdout,
+but with comments that show what each Glyph looks like in ASCII art, as well
+as the Unicode name of each glyph.
+"""
+
 import sys
 import gfxfont
 
