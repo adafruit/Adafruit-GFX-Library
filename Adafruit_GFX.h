@@ -266,7 +266,15 @@ public:
                     uint16_t h, uint16_t outline, uint16_t fill,
                     uint16_t textcolor, char *label, uint8_t textsize_x,
                     uint8_t textsize_y);
+  void initButton(int16_t mid_x, int16_t mid_y, const uint16_t bitmap_progmem_tru[],
+                   const uint8_t mask_progmem_tru[], const uint16_t bitmap_progmem_fal[],
+                   const uint8_t mask_progmem_fal[], int16_t width, int16_t height,
+                   Adafruit_GFX *gfx);
+  void initButton(int16_t mid_x, int16_t mid_y, const uint8_t mon_bitmap_progmem[],
+                   uint16_t color_true, uint16_t color_false, int16_t width,
+                    int16_t height, Adafruit_GFX *gfx);
   void drawButton(bool inverted = false);
+  void Change_Position(int16_t mid_x, int16_t mid_y);
   bool contains(int16_t x, int16_t y);
 
   /**********************************************************************/
@@ -291,6 +299,7 @@ public:
   /**********************************************************************/
   bool isPressed(void) { return currstate; };
 
+  unsigned long Last_Time_Used_millis;
 private:
   Adafruit_GFX *_gfx;
   int16_t _x1, _y1; // Coordinates of top-left corner
@@ -299,6 +308,10 @@ private:
   uint8_t _textsize_y;
   uint16_t _outlinecolor, _fillcolor, _textcolor;
   char _label[10];
+  const uint16_t* Bitmap_Progmem_tru;
+  const uint8_t* Mask_Progmem_tru;
+  const uint16_t* Bitmap_Progmem_fal;
+  const uint8_t* Mask_Progmem_fal;
 
   bool currstate, laststate;
 };
