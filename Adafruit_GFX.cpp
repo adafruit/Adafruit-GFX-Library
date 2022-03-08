@@ -1176,7 +1176,6 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       c++; // Handle 'classic' charset behavior
 
     startWrite();
-#ifndef __AVR__
       if (color != bg) { // faster opaque text
         setAddrWindow(x, y, 5*size_x, 7*size_y);
         for (int8_t j = 0; j < 7; j++) { // 7 lines
@@ -1189,7 +1188,6 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
             } // repeat for each line of size_y
         } // for j
       } else
-#endif // __AVR__
       { // slower text which doesn't overwrite the background color
         for (int8_t i = 0; i < 5; i++) { // Char bitmap = 5 columns
           uint8_t line = pgm_read_byte(&font[c * 5 + i]);
