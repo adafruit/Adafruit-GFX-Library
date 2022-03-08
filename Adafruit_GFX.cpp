@@ -244,13 +244,12 @@ void Adafruit_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
   fillRect(x, y, w, h, color);
 }
 
-#ifndef __AVR__
 /**************************************************************************/
 /*!
    @brief    set the address window (memory area), overwrite in subclasses if needed
 */
 /**************************************************************************/
-void Adafruit_GFX::setAddrWindow(unsigned short x, unsigned short y, unsigned short w, unsigned short h)
+void Adafruit_GFX::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
   (void)x; (void)y; (void)w; (void)h;
 }
@@ -274,7 +273,6 @@ void Adafruit_GFX::writePixels(uint16_t *colors, uint32_t len, bool block,
 {
   (void)colors; (void)len; (void)block; (void)bigEndian;
 }
-#endif __AVR__
 /**************************************************************************/
 /*!
    @brief    End a display-writing routine, overwrite in subclasses if
