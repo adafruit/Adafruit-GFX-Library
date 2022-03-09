@@ -248,6 +248,10 @@ void Adafruit_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 /*!
    @brief    set the address window (memory area), overwrite in subclasses if
    needed
+   @param    x    starting x coordinate
+   @param    y    starting y coordinate
+   @param    w    width in pixels
+   @param    h    height in pixels
 */
 /**************************************************************************/
 void Adafruit_GFX::setAddrWindow(uint16_t x, uint16_t y, uint16_t w,
@@ -262,6 +266,8 @@ void Adafruit_GFX::setAddrWindow(uint16_t x, uint16_t y, uint16_t w,
 /*!
    @brief    write len pixels of the given color, overwrite in subclasses if
    needed
+   @param    color    16-bit 5-6-5 color to write
+   @param    len      number of pixels to write
 */
 /**************************************************************************/
 void Adafruit_GFX::writeColor(uint16_t color, uint32_t len) {
@@ -269,17 +275,6 @@ void Adafruit_GFX::writeColor(uint16_t color, uint32_t len) {
   (void)len;
 }
 
-/**************************************************************************/
-/*!
-   @brief    write a buffer of pixels, overwrite in subclasses if needed
-*/
-void Adafruit_GFX::writePixels(uint16_t *colors, uint32_t len, bool block,
-                               bool bigEndian) {
-  (void)colors;
-  (void)len;
-  (void)block;
-  (void)bigEndian;
-}
 /**************************************************************************/
 /*!
    @brief    End a display-writing routine, overwrite in subclasses if
