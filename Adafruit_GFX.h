@@ -35,7 +35,7 @@ public:
   virtual void setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
   virtual void writeColor(uint16_t color, uint32_t len);
   virtual void writePixels(uint16_t *colors, uint32_t len, bool block,
-                   bool bigEndian);
+                           bool bigEndian);
   virtual void writePixel(int16_t x, int16_t y, uint16_t color);
   virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                              uint16_t color);
