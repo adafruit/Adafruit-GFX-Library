@@ -246,6 +246,37 @@ void Adafruit_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 
 /**************************************************************************/
 /*!
+   @brief    set the address window (memory area), overwrite in subclasses if
+   needed
+   @param    x    starting x coordinate
+   @param    y    starting y coordinate
+   @param    w    width in pixels
+   @param    h    height in pixels
+*/
+/**************************************************************************/
+void Adafruit_GFX::setAddrWindow(uint16_t x, uint16_t y, uint16_t w,
+                                 uint16_t h) {
+  (void)x;
+  (void)y;
+  (void)w;
+  (void)h;
+}
+
+/**************************************************************************/
+/*!
+   @brief    write len pixels of the given color, overwrite in subclasses if
+   needed
+   @param    color    16-bit 5-6-5 color to write
+   @param    len      number of pixels to write
+*/
+/**************************************************************************/
+void Adafruit_GFX::writeColor(uint16_t color, uint32_t len) {
+  (void)color;
+  (void)len;
+}
+
+/**************************************************************************/
+/*!
    @brief    End a display-writing routine, overwrite in subclasses if
    startWrite is defined!
 */
@@ -1147,28 +1178,41 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       c++; // Handle 'classic' charset behavior
 
     startWrite();
-    for (int8_t i = 0; i < 5; i++) { // Char bitmap = 5 columns
-      uint8_t line = pgm_read_byte(&font[c * 5 + i]);
-      for (int8_t j = 0; j < 8; j++, line >>= 1) {
-        if (line & 1) {
-          if (size_x == 1 && size_y == 1)
-            writePixel(x + i, y + j, color);
-          else
-            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y,
-                          color);
-        } else if (bg != color) {
-          if (size_x == 1 && size_y == 1)
-            writePixel(x + i, y + j, bg);
-          else
-            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y, bg);
+    if (color != bg) { // faster opaque text
+      setAddrWindow(x, y, 5 * size_x, 7 * size_y);
+      for (int8_t j = 0; j < 7; j++) { // 7 lines
+        uint8_t uc, ucMask = (1 << j);
+        for (uint8_t k = 0; k < size_y; k++) { // repeat size_y lines
+          for (uint8_t i = 0; i < 5; i++) {    // 5 columns
+            uc = pgm_read_byte(&font[(c * 5) + i]);
+            writeColor((uc & ucMask) ? color : bg, size_x);
+          }  // for each column
+        }    // repeat for each line of size_y
+      }      // for j
+    } else { // slower text which doesn't overwrite the background color
+      for (int8_t i = 0; i < 5; i++) { // Char bitmap = 5 columns
+        uint8_t line = pgm_read_byte(&font[c * 5 + i]);
+        for (int8_t j = 0; j < 8; j++, line >>= 1) {
+          if (line & 1) {
+            if (size_x == 1 && size_y == 1)
+              writePixel(x + i, y + j, color);
+            else
+              writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y,
+                            color);
+          } else if (bg != color) {
+            if (size_x == 1 && size_y == 1)
+              writePixel(x + i, y + j, bg);
+            else
+              writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y, bg);
+          }
         }
       }
-    }
-    if (bg != color) { // If opaque, draw vertical line for last column
-      if (size_x == 1 && size_y == 1)
-        writeFastVLine(x + 5, y, 8, bg);
-      else
-        writeFillRect(x + 5 * size_x, y, size_x, 8 * size_y, bg);
+      if (bg != color) { // If opaque, draw vertical line for last column
+        if (size_x == 1 && size_y == 1)
+          writeFastVLine(x + 5, y, 8, bg);
+        else
+          writeFillRect(x + 5 * size_x, y, size_x, 8 * size_y, bg);
+      }
     }
     endWrite();
 
