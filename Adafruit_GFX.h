@@ -32,8 +32,6 @@ public:
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   virtual void startWrite(void);
-  virtual void setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-  virtual void writeColor(uint16_t color, uint32_t len);
   virtual void writePixel(int16_t x, int16_t y, uint16_t color);
   virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                              uint16_t color);
