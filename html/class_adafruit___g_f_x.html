@@ -95,12 +95,6 @@ Public Member Functions</h2></td></tr>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aa991435d3d38f6818fc93f9370c0b3e5">startWrite</a> (void)</td></tr>
 <tr class="memdesc:aa991435d3d38f6818fc93f9370c0b3e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start a display-writing routine, overwrite in subclasses. <br /></td></tr>
 <tr class="separator:aa991435d3d38f6818fc93f9370c0b3e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1666ac55042bf6f4efe70c7a7f8e0c3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aa1666ac55042bf6f4efe70c7a7f8e0c3">setAddrWindow</a> (uint16_t x, uint16_t y, uint16_t w, uint16_t h)</td></tr>
-<tr class="memdesc:aa1666ac55042bf6f4efe70c7a7f8e0c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the address window (memory area), overwrite in subclasses if needed  <a href="#aa1666ac55042bf6f4efe70c7a7f8e0c3">More...</a><br /></td></tr>
-<tr class="separator:aa1666ac55042bf6f4efe70c7a7f8e0c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa39f6217aab67f19937987349eb780f3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aa39f6217aab67f19937987349eb780f3">writeColor</a> (uint16_t color, uint32_t len)</td></tr>
-<tr class="memdesc:aa39f6217aab67f19937987349eb780f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">write len pixels of the given color, overwrite in subclasses if needed  <a href="#aa39f6217aab67f19937987349eb780f3">More...</a><br /></td></tr>
-<tr class="separator:aa39f6217aab67f19937987349eb780f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab66a1577ec595a254e4492d641b36fd8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab66a1577ec595a254e4492d641b36fd8">writePixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
 <tr class="memdesc:ab66a1577ec595a254e4492d641b36fd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a pixel, overwrite in subclasses if startWrite is defined!  <a href="#ab66a1577ec595a254e4492d641b36fd8">More...</a><br /></td></tr>
 <tr class="separator:ab66a1577ec595a254e4492d641b36fd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -422,114 +416,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </dl>
 
 <p>Implemented in <a class="el" href="class_g_f_xcanvas16.html#ade30ed51e7dd07be0436b4f9407b6fd8">GFXcanvas16</a>, <a class="el" href="class_g_f_xcanvas8.html#a596553ea995b2d7830cc3eef0c4085fc">GFXcanvas8</a>, <a class="el" href="class_g_f_xcanvas1.html#a0859d124c8dcaa147ef22a54d6e843a8">GFXcanvas1</a>, <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a5e118fc9c0fb141c8ee9f14e49f20704">Adafruit_SPITFT</a>, and <a class="el" href="class_adafruit___gray_o_l_e_d.html#a6736062d7d342aa8ab093d09f45563aa">Adafruit_GrayOLED</a>.</p>
-
-</div>
-</div>
-<a id="aa1666ac55042bf6f4efe70c7a7f8e0c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1666ac55042bf6f4efe70c7a7f8e0c3">&#9670;&nbsp;</a></span>setAddrWindow()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::setAddrWindow </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>w</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>h</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set the address window (memory area), overwrite in subclasses if needed </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>starting x coordinate </td></tr>
-    <tr><td class="paramname">y</td><td>starting y coordinate </td></tr>
-    <tr><td class="paramname">w</td><td>width in pixels </td></tr>
-    <tr><td class="paramname">h</td><td>height in pixels </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Reimplemented in <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932">Adafruit_SPITFT</a>.</p>
-
-</div>
-</div>
-<a id="aa39f6217aab67f19937987349eb780f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa39f6217aab67f19937987349eb780f3">&#9670;&nbsp;</a></span>writeColor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Adafruit_GFX::writeColor </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>len</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>write len pixels of the given color, overwrite in subclasses if needed </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 color to write </td></tr>
-    <tr><td class="paramname">len</td><td>number of pixels to write </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Reimplemented in <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a42824e0f1475f2b3df335d31651dc75a">Adafruit_SPITFT</a>.</p>
 
 </div>
 </div>

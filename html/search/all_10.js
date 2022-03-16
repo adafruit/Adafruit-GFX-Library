@@ -2,7 +2,7 @@ var searchData=
 [
   ['sendcommand',['sendCommand',['../class_adafruit___s_p_i_t_f_t.html#afbc3e9e663e0bea2d45d98c90b2300d7',1,'Adafruit_SPITFT::sendCommand(uint8_t commandByte, uint8_t *dataBytes, uint8_t numDataBytes)'],['../class_adafruit___s_p_i_t_f_t.html#a5ef8b31057e71a95d0aa03209925f4bf',1,'Adafruit_SPITFT::sendCommand(uint8_t commandByte, const uint8_t *dataBytes=NULL, uint8_t numDataBytes=0)']]],
   ['sendcommand16',['sendCommand16',['../class_adafruit___s_p_i_t_f_t.html#aef31a2ee17d9ea6d089996a2430087ef',1,'Adafruit_SPITFT']]],
-  ['setaddrwindow',['setAddrWindow',['../class_adafruit___g_f_x.html#aa1666ac55042bf6f4efe70c7a7f8e0c3',1,'Adafruit_GFX::setAddrWindow()'],['../class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932',1,'Adafruit_SPITFT::setAddrWindow()']]],
+  ['setaddrwindow',['setAddrWindow',['../class_adafruit___s_p_i_t_f_t.html#a1928d1a2b27cc32422624ed54c0ea932',1,'Adafruit_SPITFT']]],
   ['setcontrast',['setContrast',['../class_adafruit___gray_o_l_e_d.html#af5b84beec33b79918c1db1ee1f458a04',1,'Adafruit_GrayOLED']]],
   ['setcursor',['setCursor',['../class_adafruit___g_f_x.html#aaf96a40cad0f34dd8ec73494b3866c33',1,'Adafruit_GFX']]],
   ['setfont',['setFont',['../class_adafruit___g_f_x.html#ab0479a2bb4e09e7c39c35e35c55d6ed1',1,'Adafruit_GFX']]],
