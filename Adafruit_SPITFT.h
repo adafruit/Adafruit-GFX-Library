@@ -236,6 +236,9 @@ public:
   // user code, so it's public...
   void swapBytes(uint16_t *src, uint32_t len, uint16_t *dest = NULL);
 
+  // Set user defined DMA transfer completion callback
+  static void dmaSetCallback(void (*callback)());
+
   // These functions are similar to the 'write' functions above, but with
   // a chip-select and/or SPI transaction built-in. They're typically used
   // solo -- that is, as graphics primitives in themselves, not invoked by

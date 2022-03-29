@@ -61,7 +61,13 @@
 
 // DMA transfer-in-progress indicator and callback
 static volatile bool dma_busy = false;
-static void dma_callback(Adafruit_ZeroDMA *dma) { dma_busy = false; }
+static void (*s_dma_complete_callback)() = nullptr; // User defined callback
+static void dma_callback(Adafruit_ZeroDMA *dma) {
+  dma_busy = false;
+  if (s_dma_complete_callback) {
+    s_dma_complete_callback();
+  }
+}
 
 #if defined(__SAMD51__)
 // Timer/counter info by index #
@@ -1168,6 +1174,19 @@ void Adafruit_SPITFT::dmaWait(void) {
     pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
   }
 #endif // end __SAMD51__ || ARDUINO_SAMD_ZERO
+#endif
+}
+
+/*!
+    @brief  Set callback to be executed when the last DMA transfer in a
+            prior non-blocking writePixels() call completes. If DMA is
+            not enabled or writePixels is used in a blocking manner (as
+            is the default case), then this callback will not be used.
+    @param  callback    Function pointer to callback function.
+*/
+void Adafruit_SPITFT::dmaSetCallback(void (*callback)()) {
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+  s_dma_complete_callback = callback;
 #endif
 }
 
