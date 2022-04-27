@@ -1,6 +1,7 @@
 var searchData=
 [
   ['display',['display',['../class_adafruit___gray_o_l_e_d.html#a1b810dea16ebbf1e69196cbeacbc9820',1,'Adafruit_GrayOLED']]],
+  ['dmabusy',['dmaBusy',['../class_adafruit___s_p_i_t_f_t.html#a740d831e28d917a1ca4ebce2c60c332c',1,'Adafruit_SPITFT']]],
   ['dmawait',['dmaWait',['../class_adafruit___s_p_i_t_f_t.html#ae69f8c2c187cccd5c9df9c25d488f1e5',1,'Adafruit_SPITFT']]],
   ['drawbitmap',['drawBitmap',['../class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56',1,'Adafruit_GFX::drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color)'],['../class_adafruit___g_f_x.html#a0def482cb5ab6010cac6936de8e07188',1,'Adafruit_GFX::drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color, uint16_t bg)'],['../class_adafruit___g_f_x.html#a957c2d2fc53e3121c5914a8bd9e5c3da',1,'Adafruit_GFX::drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color)'],['../class_adafruit___g_f_x.html#a25dfb7db5b7446406b9204c738f0885e',1,'Adafruit_GFX::drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg)']]],
   ['drawbutton',['drawButton',['../class_adafruit___g_f_x___button.html#a60b389bf3ac1546eb379ec09ebc2d16c',1,'Adafruit_GFX_Button']]],
