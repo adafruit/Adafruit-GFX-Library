@@ -1175,8 +1175,7 @@ void Adafruit_SPITFT::dmaWait(void) {
     @brief  Check if DMA transfer is active. Always returts false  if DMA
             is not enabled.
 */
-bool Adafruit_SPITFT::dmaBusy(void) const
-{
+bool Adafruit_SPITFT::dmaBusy(void) const {
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   return dma_busy;
 #else
