@@ -1172,6 +1172,19 @@ void Adafruit_SPITFT::dmaWait(void) {
 }
 
 /*!
+    @brief  Check if DMA transfer is active. Always returts false if DMA
+            is not enabled.
+    @return true if DMA is enabled and transmitting data, false otherwise.
+*/
+bool Adafruit_SPITFT::dmaBusy(void) const {
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+  return dma_busy;
+#else
+  return false;
+#endif
+}
+
+/*!
     @brief  Issue a series of pixels, all the same color. Not self-
             contained; should follow startWrite() and setAddrWindow() calls.
     @param  color  16-bit pixel color in '565' RGB format.

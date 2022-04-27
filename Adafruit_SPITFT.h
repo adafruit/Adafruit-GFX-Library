@@ -234,6 +234,7 @@ public:
   void dmaWait(void);
   // Used by writePixels() in some situations, but might have rare need in
   // user code, so it's public...
+  bool dmaBusy(void) const; // true if DMA is used and busy, false otherwise
   void swapBytes(uint16_t *src, uint32_t len, uint16_t *dest = NULL);
 
   // These functions are similar to the 'write' functions above, but with
