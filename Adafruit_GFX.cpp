@@ -1307,6 +1307,15 @@ size_t Adafruit_GFX::write(uint8_t c) {
   return 1;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Set a window to print text in, clip lines which are too long
+    @param  x  x coordinate of the window's top left point
+    @param  y  y coordinate of the window's top left point
+    @param  w  The width of the window
+    @param  h  The height of the window
+    @note Also sets the text cursor position to the top left
+/**************************************************************************/
 void Adafruit_GFX::setTextWindow(int16_t x, int16_t y, int16_t w, int16_t h) {
   textX = cursor_x = x;
   textY = cursor_y = y;
@@ -1314,8 +1323,17 @@ void Adafruit_GFX::setTextWindow(int16_t x, int16_t y, int16_t w, int16_t h) {
   textH = h;
   textWindowed = true;
 }
+/**************************************************************************/
+/*!
+    @brief  Disables text windowing
+/**************************************************************************/
 void Adafruit_GFX::removeTextWindow() { textWindowed = false; }
 
+/**************************************************************************/
+/*!
+    @brief  Helper to determine the height in pixels of the current font
+    @returns The height of the font
+/**************************************************************************/
 uint16_t Adafruit_GFX::getFontHeight() {
   if (!gfxFont) { // 'Classic' built-in font
     return textsize_y * 8;
