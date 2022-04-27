@@ -1242,14 +1242,14 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 /**************************************************************************/
 size_t Adafruit_GFX::write(uint8_t c) {
   int16_t x0, y0, xw, yh;
-  if(textWindowed) {
+  if (textWindowed) {
     x0 = textX;
     xw = textW;
     y0 = textY;
     yh = textH;
   } else {
     x0 = 0;
-    xw =_width;
+    xw = _width;
     y0 = 0;
     yh = _height;
   }
@@ -1261,12 +1261,14 @@ size_t Adafruit_GFX::write(uint8_t c) {
       cursor_y += textsize_y * 8; // advance y one line
     } else if (c != '\r') {       // Ignore carriage returns
       if (wrap && ((cursor_x + textsize_x * 6) > xw)) { // Off right?
-        cursor_x = x0;                                       // Reset x to zero,
-        cursor_y += textsize_y * 8; // advance y one line
+        cursor_x = x0;                                  // Reset x to zero,
+        cursor_y += textsize_y * 8;                     // advance y one line
       }
-      if(!textWindowed || (textWindowed && ((cursor_x + textsize_x * 6) < (x0 + xw)) && (cursor_y < (y0 + yh)))){
+      if (!textWindowed || 
+          (textWindowed && ((cursor_x + textsize_x * 6) < (x0 + xw)) && 
+           (cursor_y < (y0 + yh)))) {
         drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize_x,
-               textsize_y);
+                 textsize_y);
       }
       cursor_x += textsize_x * 6; // Advance x one char
     }
@@ -1291,9 +1293,10 @@ size_t Adafruit_GFX::write(uint8_t c) {
             cursor_y += (int16_t)textsize_y *
                         (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
           }
-          if(!textWindowed || (textWindowed && ((cursor_x + cw)< (x0 + xw)) && (cursor_y < (y0 + yh)))){
-              drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize_x,
-                      textsize_y);
+          if (!textWindowed || (textWindowed && ((cursor_x + cw)< (x0 + xw)) && 
+                                (cursor_y < (y0 + yh)))) {
+            drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize_x,
+                     textsize_y);
           }
         }
         cursor_x +=
@@ -1311,15 +1314,13 @@ void Adafruit_GFX::setTextWindow(int16_t x, int16_t y, int16_t w, int16_t h) {
   textH = h;
   textWindowed = true;
 }
-void Adafruit_GFX::removeTextWindow() {
-  textWindowed = false;
-}
+void Adafruit_GFX::removeTextWindow() { textWindowed = false; }
 
 uint16_t Adafruit_GFX::getFontHeight() {
   if (!gfxFont) { // 'Classic' built-in font
     return textsize_y * 8;
   } else {
-      return (int16_t)textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
+    return (int16_t)textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
   }
 }
 
@@ -1388,9 +1389,7 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   gfxFont = (GFXfont *)f;
 }
 
-const GFXfont* Adafruit_GFX::getFont() {
-  return gfxFont;
-}
+const GFXfont *Adafruit_GFX::getFont() { return gfxFont; }
 
 /**************************************************************************/
 /*!
@@ -1485,7 +1484,7 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  y1   The boundary Y coordinate, returned by function
     @param  w    The boundary width, returned by function
     @param  h    The boundary height, returned by function
-    @note   If text windowing is enabled, the returned values are constrained 
+    @note   If text windowing is enabled, the returned values are constrained
             to fit in the window
 */
 /**************************************************************************/
@@ -1516,11 +1515,15 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     *h = maxy - miny + 1;
   }
 
-  if(textWindowed) {
-    if(*x1 < textX) *x1 = textX;
-    if(*w > textW) *w = textW;
-    if(*y1 < textY) *y1 = textY;
-    if(*h > textH) *h = textH;
+  if (textWindowed) {
+    if (*x1 < textX) 
+      *x1 = textX;
+    if (*w > textW) 
+      *w = textW;
+    if (*y1 < textY) 
+      *y1 = textY;
+    if (*h > textH) 
+      *h = textH;
   }
 }
 
@@ -1535,7 +1538,7 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     @param    y1     The boundary Y coordinate, set by function
     @param    w      The boundary width, set by function
     @param    h      The boundary height, set by function
-    @note   If text windowing is enabled, the returned values are constrained 
+    @note   If text windowing is enabled, the returned values are constrained
             to fit in the window
 */
 /**************************************************************************/
@@ -1585,11 +1588,15 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
     *h = maxy - miny + 1;
   }
 
-  if(textWindowed) {
-    if(*x1 < textX) *x1 = textX;
-    if(*w > textW) *w = textW;
-    if(*y1 < textY) *y1 = textY;
-    if(*h > textH) *h = textH;
+  if (textWindowed) {
+    if (*x1 < textX) 
+      *x1 = textX;
+    if (*w > textW) 
+      *w = textW;
+    if (*y1 < textY) 
+      *y1 = textY;
+    if (*h > textH) 
+      *h = textH;
   }
 }
 

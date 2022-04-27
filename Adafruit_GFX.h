@@ -117,7 +117,7 @@ public:
   void setTextSize(uint8_t s);
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
-  const GFXfont* getFont();
+  const GFXfont *getFont();
 
   /**********************************************************************/
   /*!
