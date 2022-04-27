@@ -117,6 +117,8 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) : WIDTH(w), HEIGHT(h) {
   wrap = true;
   _cp437 = false;
   gfxFont = NULL;
+  textWindowed = false;
+  textX = textY = textW = textH = 0;
 }
 
 /**************************************************************************/
