@@ -9,6 +9,9 @@
 #endif
 #include "gfxfont.h"
 
+#include <Adafruit_I2CDevice.h>
+#include <Adafruit_SPIDevice.h>
+
 /// A generic graphics superclass that can handle all sorts of drawing. At a
 /// minimum you can subclass and provide drawPixel(). At a maximum you can do a
 /// ton of overriding to optimize. Used for any/all Adafruit displays!
