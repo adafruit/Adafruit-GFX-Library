@@ -1867,8 +1867,7 @@ bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
 bool GFXcanvas1::getRawPixel(int16_t x, int16_t y) const {
   if ((x < 0) || (y < 0) || (x >= WIDTH) || (y >= HEIGHT))
     return 0;
-  if (this->getBuffer()) {
-    uint8_t *buffer = this->getBuffer();
+  if (buffer) {
     uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
 
 #ifdef __AVR__
@@ -2017,7 +2016,6 @@ void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
   int16_t row_bytes = ((WIDTH + 7) / 8);
-  uint8_t *buffer = this->getBuffer();
   uint8_t *ptr = &buffer[(x / 8) + y * row_bytes];
 
   if (color > 0) {
@@ -2056,7 +2054,6 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
   int16_t rowBytes = ((WIDTH + 7) / 8);
-  uint8_t *buffer = this->getBuffer();
   uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
   size_t remainingWidthBits = w;
 
