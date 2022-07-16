@@ -891,16 +891,24 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
 }
 
 /*!
-    @brief  Allow changing the SPI clock speed after initialization
-    @param  freq Desired frequency of SPI clock, may not be the
-    end frequency you get based on what the chip can do!
+    @brief  Allow changing the SPI clock speed and SPI mode after initialization
+    @param  freq     Desired frequency of SPI clock, may not be the end
+                     frequency you get based on what the chip can do!
+    @param  spiMode  SPI mode when using hardware SPI (optional, -1 if unused).
+                     MUST be one of the values SPI_MODE0, SPI_MODE1, SPI_MODE2
+                     or SPI_MODE3 defined in SPI.h. Do NOT attempt to pass '0'
+                     for SPI_MODE0 and so forth...the values are NOT the same!
+                     Use ONLY the defines! (Pity it's not an enum.)
 */
-void Adafruit_SPITFT::setSPISpeed(uint32_t freq) {
+void Adafruit_SPITFT::setSPISpeed(uint32_t freq, uint8_t spiMode) {
 #if defined(SPI_HAS_TRANSACTION)
-  hwspi.settings = SPISettings(freq, MSBFIRST, hwspi._mode);
+  if (spiMode == -1)
+    spiMode = hwspi._mode;
+  hwspi.settings = SPISettings(freq, MSBFIRST, spiMode);
 #else
   hwspi._freq = freq; // Save freq value for later
 #endif
+  hwspi._mode = spiMode; // Save spiMode value for later
 }
 
 /*!
