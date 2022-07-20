@@ -17,8 +17,7 @@
  * BSD license, all text here must be included in any redistribution.
  */
 
-#ifndef _ADAFRUIT_SPITFT_H_
-#define _ADAFRUIT_SPITFT_H_
+#pragma once
 
 #if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
 
@@ -527,4 +526,3 @@ protected:
 };
 
 #endif // end __AVR_ATtiny85__
-#endif // end _ADAFRUIT_SPITFT_H_

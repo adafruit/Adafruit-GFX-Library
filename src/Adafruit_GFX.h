@@ -1,5 +1,4 @@
-#ifndef _ADAFRUIT_GFX_H
-#define _ADAFRUIT_GFX_H
+#pragma once
 
 #if ARDUINO >= 100
 #include "Arduino.h"
@@ -166,15 +165,15 @@ public:
 
   /**********************************************************************/
   /*!
-    @brief  Enable (or disable) Code Page 437-compatible charset.
-            There was an error in glcdfont.c for the longest time -- one
-            character (#176, the 'light shade' block) was missing -- this
-            threw off the index of every character that followed it.
-            But a TON of code has been written with the erroneous
-            character indices. By default, the library uses the original
-            'wrong' behavior and old sketches will still work. Pass
-            'true' to this function to use correct CP437 character values
-            in your code.
+    @brief  Enable or disable Code Page 437-compatible charset.
+            There was a bug in glcdfont.c for years -- one character
+            (#176, the 'light shade' block) was missing -- this threw off
+            the index of every character that followed it. But a TON of
+            code has been written with the erroneous character indices.
+            By default, the library now uses the correct charset. Old code
+            relying on the prior 'wrong' behavior really should update any
+            upper char indices its using, but can still work as-is by
+            adding an initial call to cp437(false).
     @param  x  true = enable (new behavior), false = disable (old behavior)
   */
   /**********************************************************************/
@@ -247,150 +246,3 @@ protected:
   bool _cp437;          ///< If set, use correct CP437 charset (default is off)
   GFXfont *gfxFont;     ///< Pointer to special font
 };
-
-/// A simple drawn button UI element
-class Adafruit_GFX_Button {
-
-public:
-  Adafruit_GFX_Button(void);
-  // "Classic" initButton() uses center & size
-  void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y, uint16_t w,
-                  uint16_t h, uint16_t outline, uint16_t fill,
-                  uint16_t textcolor, char *label, uint8_t textsize);
-  void initButton(Adafruit_GFX *gfx, int16_t x, int16_t y, uint16_t w,
-                  uint16_t h, uint16_t outline, uint16_t fill,
-                  uint16_t textcolor, char *label, uint8_t textsize_x,
-                  uint8_t textsize_y);
-  // New/alt initButton() uses upper-left corner & size
-  void initButtonUL(Adafruit_GFX *gfx, int16_t x1, int16_t y1, uint16_t w,
-                    uint16_t h, uint16_t outline, uint16_t fill,
-                    uint16_t textcolor, char *label, uint8_t textsize);
-  void initButtonUL(Adafruit_GFX *gfx, int16_t x1, int16_t y1, uint16_t w,
-                    uint16_t h, uint16_t outline, uint16_t fill,
-                    uint16_t textcolor, char *label, uint8_t textsize_x,
-                    uint8_t textsize_y);
-  void drawButton(bool inverted = false);
-  bool contains(int16_t x, int16_t y);
-
-  /**********************************************************************/
-  /*!
-    @brief    Sets button state, should be done by some touch function
-    @param    p  True for pressed, false for not.
-  */
-  /**********************************************************************/
-  void press(bool p) {
-    laststate = currstate;
-    currstate = p;
-  }
-
-  bool justPressed();
-  bool justReleased();
-
-  /**********************************************************************/
-  /*!
-    @brief    Query whether the button is currently pressed
-    @returns  True if pressed
-  */
-  /**********************************************************************/
-  bool isPressed(void) { return currstate; };
-
-private:
-  Adafruit_GFX *_gfx;
-  int16_t _x1, _y1; // Coordinates of top-left corner
-  uint16_t _w, _h;
-  uint8_t _textsize_x;
-  uint8_t _textsize_y;
-  uint16_t _outlinecolor, _fillcolor, _textcolor;
-  char _label[10];
-
-  bool currstate, laststate;
-};
-
-/// A GFX 1-bit canvas context for graphics
-class GFXcanvas1 : public Adafruit_GFX {
-public:
-  GFXcanvas1(uint16_t w, uint16_t h);
-  ~GFXcanvas1(void);
-  void drawPixel(int16_t x, int16_t y, uint16_t color);
-  void fillScreen(uint16_t color);
-  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  bool getPixel(int16_t x, int16_t y) const;
-  /**********************************************************************/
-  /*!
-    @brief    Get a pointer to the internal buffer memory
-    @returns  A pointer to the allocated buffer
-  */
-  /**********************************************************************/
-  uint8_t *getBuffer(void) const { return buffer; }
-
-protected:
-  bool getRawPixel(int16_t x, int16_t y) const;
-  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-private:
-  uint8_t *buffer;
-
-#ifdef __AVR__
-  // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
-  static const uint8_t PROGMEM GFXsetBit[], GFXclrBit[];
-#endif
-};
-
-/// A GFX 8-bit canvas context for graphics
-class GFXcanvas8 : public Adafruit_GFX {
-public:
-  GFXcanvas8(uint16_t w, uint16_t h);
-  ~GFXcanvas8(void);
-  void drawPixel(int16_t x, int16_t y, uint16_t color);
-  void fillScreen(uint16_t color);
-  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  uint8_t getPixel(int16_t x, int16_t y) const;
-  /**********************************************************************/
-  /*!
-   @brief    Get a pointer to the internal buffer memory
-   @returns  A pointer to the allocated buffer
-  */
-  /**********************************************************************/
-  uint8_t *getBuffer(void) const { return buffer; }
-
-protected:
-  uint8_t getRawPixel(int16_t x, int16_t y) const;
-  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-private:
-  uint8_t *buffer;
-};
-
-///  A GFX 16-bit canvas context for graphics
-class GFXcanvas16 : public Adafruit_GFX {
-public:
-  GFXcanvas16(uint16_t w, uint16_t h);
-  ~GFXcanvas16(void);
-  void drawPixel(int16_t x, int16_t y, uint16_t color);
-  void fillScreen(uint16_t color);
-  void byteSwap(void);
-  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  uint16_t getPixel(int16_t x, int16_t y) const;
-  /**********************************************************************/
-  /*!
-    @brief    Get a pointer to the internal buffer memory
-    @returns  A pointer to the allocated buffer
-  */
-  /**********************************************************************/
-  uint16_t *getBuffer(void) const { return buffer; }
-
-protected:
-  uint16_t getRawPixel(int16_t x, int16_t y) const;
-  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-private:
-  uint16_t *buffer;
-};
-
-#endif // _ADAFRUIT_GFX_H

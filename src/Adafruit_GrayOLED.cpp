@@ -18,7 +18,6 @@
 #if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
 
 #include "Adafruit_GrayOLED.h"
-#include <Adafruit_GFX.h>
 
 // SOME DEFINES AND STATIC VARIABLES USED INTERNALLY -----------------------
 
@@ -418,4 +417,4 @@ void Adafruit_GrayOLED::setContrast(uint8_t level) {
   oled_commandList(cmd, 2);
 }
 
-#endif /* ATTIN85 not supported */
+#endif // end !__AVR_ATtiny85__
