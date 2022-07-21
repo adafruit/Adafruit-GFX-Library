@@ -281,7 +281,8 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
                                  int8_t cs, int8_t dc, int8_t rst)
     : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
-#if (USB_VID == 0x2341) // Arduino SAMD package declares SPI differently
+#if (USB_VID == 0x2341) && defined(ARDUINO_SAMD_ZERO)
+  // Arduino SAMD package declares SPI differently
   hwspi._spi = (SPIClassSAMD *)spiClass;
 #else
   hwspi._spi = spiClass;
