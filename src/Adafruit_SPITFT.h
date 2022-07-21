@@ -393,7 +393,11 @@ protected:
   union {
 #endif
     struct {          //   Values specific to HARDWARE SPI:
+#if (USB_VID == 0x2341) // Arduino SAMD package declares SPI differently
+      SPIClassSAMD *_spi; ///< SPI class pointer
+#else
       SPIClass *_spi; ///< SPI class pointer
+#endif
 #if defined(SPI_HAS_TRANSACTION)
       SPISettings settings; ///< SPI transaction settings
 #else

@@ -281,7 +281,11 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
                                  int8_t cs, int8_t dc, int8_t rst)
     : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
+#if (USB_VID == 0x2341) // Arduino SAMD package declares SPI differently
+  hwspi._spi = (SPIClassSAMD *)spiClass;
+#else
   hwspi._spi = spiClass;
+#endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(CORE_TEENSY)
@@ -654,8 +658,8 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     // The DMA library needs to alloc at least one valid descriptor,
     // so we do that here. It's not used in the usual sense though,
     // just before a transfer we copy descriptor[0] to this address.
-    if (dptr = dma.addDescriptor(NULL, NULL, 42, DMA_BEAT_SIZE_BYTE, false,
-                                 false)) {
+    if ((dptr = dma.addDescriptor(NULL, NULL, 42, DMA_BEAT_SIZE_BYTE, false,
+                                 false))) {
       // Alloc 2 scanlines worth of pixels on display's major axis,
       // whichever that is, rounding each up to 2-pixel boundary.
       int major = (WIDTH > HEIGHT) ? WIDTH : HEIGHT;
