@@ -30,8 +30,8 @@
 typedef uint8_t ADAGFX_PORT_t;       ///< PORT values are 8-bit
 #define USE_FAST_PINIO               ///< Use direct PORT register access
 #elif defined(ARDUINO_STM32_FEATHER) // WICED
-typedef class HardwareSPI SPIClass;        ///< SPI is a bit odd on WICED
-typedef uint32_t ADAGFX_PORT_t;            ///< PORT values are 32-bit
+typedef class HardwareSPI SPIClass; ///< SPI is a bit odd on WICED
+typedef uint32_t ADAGFX_PORT_t;     ///< PORT values are 32-bit
 #elif defined(__arm__)
 #if defined(ARDUINO_ARCH_SAMD)
 // Adafruit M0, M4
@@ -70,25 +70,15 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 #define DEFAULT_SPI_FREQ 16000000L ///< Hardware SPI default speed
 #endif
 
-#if defined(ADAFRUIT_PYPORTAL) || defined(ADAFRUIT_PYPORTAL_M4_TITANO) ||      \
-    defined(ADAFRUIT_PYBADGE_M4_EXPRESS) ||                                    \
-    defined(ADAFRUIT_PYGAMER_M4_EXPRESS) ||                                    \
-    defined(ADAFRUIT_MONSTER_M4SK_EXPRESS) || defined(NRF52_SERIES) ||         \
-    defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
-#define USE_SPI_DMA ///< Auto DMA
-#else
-                                           //#define USE_SPI_DMA ///< If set,
-                                           // use DMA if available
+#if defined(__SAMD51__) || defined(SAM_D5X_E5X) || defined(_SAMD21_) ||        \
+    defined(SAMD21) || defined(ARDUINO_SAMD_ZERO)
+#define USE_SAMD_DMA ///< Enable DMA on ALL SAMD boards now, not a list
+#include <Adafruit_ZeroDMA.h>
 #endif
-// Another "oops" name -- this now also handles parallel DMA.
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
 // Estimated RAM usage:
 // 4 bytes/pixel on display major axis + 8 bytes/pixel on minor axis,
 // e.g. 320x240 pixels = 320 * 4 + 240 * 8 = 3,200 bytes.
-
-#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
-#include <Adafruit_ZeroDMA.h>
-#endif
 
 // This is kind of a kludge. Needed a way to disambiguate the software SPI
 // and parallel constructors via their argument lists. Originally tried a
@@ -487,9 +477,7 @@ protected:
 #if defined(__cplusplus) && (__cplusplus >= 201100)
   }; ///< Only one interface is active
 #endif
-#if defined(USE_SPI_DMA) &&                                                    \
-    (defined(__SAMD51__) ||                                                    \
-     defined(ARDUINO_SAMD_ZERO))     // Used by hardware SPI and tft8
+#if defined(USE_SAMD_DMA)            // Used by hardware SPI and tft8
   Adafruit_ZeroDMA dma;              ///< DMA instance
   DmacDescriptor *dptr = NULL;       ///< 1st descriptor
   DmacDescriptor *descriptor = NULL; ///< Allocated descriptor list

@@ -51,8 +51,7 @@
 #define digitalPinToPort(P) (&(PORT_IOBUS->Group[g_APinDescription[P].ulPort]))
 #endif // end PORT_IOBUS
 
-#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
-// #pragma message ("GFX DMA IS ENABLED. HIGHLY EXPERIMENTAL.")
+#if defined(USE_SAMD_DMA)
 #include "wiring_private.h" // pinPeripheral() function
 #include <Adafruit_ZeroDMA.h>
 #include <malloc.h>          // memalign() function
@@ -89,7 +88,7 @@ static const struct {
 #define NUM_TIMERS (sizeof tcList / sizeof tcList[0]) ///< # timer/counters
 #endif                                                // end __SAMD51__
 
-#endif // end USE_SPI_DMA
+#endif // end USE_SAMD_DMA
 
 // Possible values for Adafruit_SPITFT.connection:
 #define TFT_HARD_SPI 0 ///< Display interface = hardware SPI
@@ -649,7 +648,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     delay(200);
   }
 
-#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+#if defined(USE_SAMD_DMA)
   if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
       (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
     // The DMA library needs to alloc at least one valid descriptor,
@@ -887,7 +886,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     }           // end addDescriptor()
     dma.free(); // Deallocate DMA channel
   }
-#endif // end USE_SPI_DMA
+#endif // end USE_SAMD_DMA
 }
 
 /*!
@@ -1037,8 +1036,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
   }
   return;
-#elif defined(USE_SPI_DMA) &&                                                  \
-    (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+#elif defined(USE_SAMD_DMA)
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
     int maxSpan = maxFillLen / 2; // One scanline max
     uint8_t pixelBufIdx = 0;      // Active pixel buffer number
@@ -1127,7 +1125,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     }
     return;
   }
-#endif // end USE_SPI_DMA
+#endif // end USE_SAMD_DMA
 
   // All other cases (bitbang SPI or non-DMA hard SPI or parallel),
   // use a loop with the normal 16-bit data write function:
@@ -1157,7 +1155,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
             was used (as is the default case).
 */
 void Adafruit_SPITFT::dmaWait(void) {
-#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+#if defined(USE_SAMD_DMA)
   while (dma_busy)
     ;
 #if defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO)
@@ -1177,7 +1175,7 @@ void Adafruit_SPITFT::dmaWait(void) {
     @return true if DMA is enabled and transmitting data, false otherwise.
 */
 bool Adafruit_SPITFT::dmaBusy(void) const {
-#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+#if defined(USE_SAMD_DMA)
   return dma_busy;
 #else
   return false;
@@ -1245,7 +1243,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     return;
   }
 #else                      // !ESP32
-#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+#if defined(USE_SAMD_DMA)
   if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
       (len >= 16)) { // Don't bother with DMA on short pixel runs
     int i, d, numDescriptors;
@@ -1336,7 +1334,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 #endif // end __SAMD51__
     return;
   }
-#endif // end USE_SPI_DMA
+#endif // end USE_SAMD_DMA
 #endif // end !ESP32
 
   // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
