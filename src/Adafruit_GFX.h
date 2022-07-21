@@ -248,5 +248,5 @@ protected:
 };
 
 #include "GFXcanvas1.h"
-#include "GFXcanvas8.h"
 #include "GFXcanvas16.h"
+#include "GFXcanvas8.h"
