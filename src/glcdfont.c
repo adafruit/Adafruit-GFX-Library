@@ -1,8 +1,6 @@
 // This is the 'classic' fixed-space bitmap font for Adafruit_GFX since 1.0.
 // See gfxfont.h for newer custom bitmap font info.
 
-#pragma once
-
 #ifdef __AVR__
 #include <avr/io.h>
 #include <avr/pgmspace.h>
