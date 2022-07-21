@@ -660,7 +660,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     // so we do that here. It's not used in the usual sense though,
     // just before a transfer we copy descriptor[0] to this address.
     if ((dptr = dma.addDescriptor(NULL, NULL, 42, DMA_BEAT_SIZE_BYTE, false,
-                                 false))) {
+                                  false))) {
       // Alloc 2 scanlines worth of pixels on display's major axis,
       // whichever that is, rounding each up to 2-pixel boundary.
       int major = (WIDTH > HEIGHT) ? WIDTH : HEIGHT;

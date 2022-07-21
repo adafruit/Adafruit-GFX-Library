@@ -392,12 +392,12 @@ protected:
 #if defined(__cplusplus) && (__cplusplus >= 201100)
   union {
 #endif
-    struct {          //   Values specific to HARDWARE SPI:
+    struct { //   Values specific to HARDWARE SPI:
 #if (USB_VID == 0x2341) && defined(ARDUINO_SAMD_ZERO)
       // Arduino SAMD package declares SPI differently
       SPIClassSAMD *_spi; ///< SPI class pointer
 #else
-      SPIClass *_spi; ///< SPI class pointer
+    SPIClass *_spi; ///< SPI class pointer
 #endif
 #if defined(SPI_HAS_TRANSACTION)
       SPISettings settings; ///< SPI transaction settings
