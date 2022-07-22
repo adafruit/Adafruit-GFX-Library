@@ -27,28 +27,14 @@ public:
   void fillScreen(uint16_t color);
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  /*!
-    @brief    Get the pixel color value at a given coordinate
-    @param    x  x coordinate
-    @param    y  y coordinate
-    @returns  The pixel's binary color value, either 0x1 (on) or 0x0 (off)
-  */
   bool getPixel(int16_t x, int16_t y) const;
   /*!
-    @brief    Get a pointer to the internal buffer memory
-    @returns  A pointer to the allocated buffer
+    @brief   Get pointer to internal canvas memory.
+    @return  Pointer (uint8_t *) to start of canvas buffer.
   */
   uint8_t *getBuffer(void) const { return buffer; }
 
 protected:
-  /*!
-    @brief    Get the pixel color value at a given, unrotated coordinate.
-              This method is intended for hardware drivers to get pixel value
-              in native physical coordinates.
-    @param    x  x coordinate
-    @param    y  y coordinate
-    @returns  The pixel's binary color value, either 0x1 (on) or 0x0 (off)
-  */
   bool getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
