@@ -1,7 +1,7 @@
 /*!
- * @file GFXcanvas1.cpp
+ * @file GFXcanvas4.cpp
  *
- * Part of Adafruit's GFX graphics library. Provides a 1-bit in-RAM
+ * Part of Adafruit's GFX graphics library. Provides a 4-bit in-RAM
  * offscreen drawing canvas.
  *
  * Adafruit invests time and resources providing this open source code,
@@ -14,25 +14,17 @@
  * BSD license, all text here must be included in any redistribution.
  */
 
-#include "GFXcanvas1.h"
-
-#ifdef __AVR__
-// Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
-const uint8_t PROGMEM GFXcanvas1::GFXsetBit[] = {0x80, 0x40, 0x20, 0x10,
-                                                 0x08, 0x04, 0x02, 0x01};
-const uint8_t PROGMEM GFXcanvas1::GFXclrBit[] = {0x7F, 0xBF, 0xDF, 0xEF,
-                                                 0xF7, 0xFB, 0xFD, 0xFE};
-#endif
+#include "GFXcanvas4.h"
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 1-bit canvas context for graphics
-   @param    w   Display width, in pixels
-   @param    h   Display height, in pixels
+   @brief  Instatiate a 4-bit graphics canvas.
+   @param  w  Canvas width, in pixels
+   @param  h  Canvas height, in pixels
 */
 /**************************************************************************/
-GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint16_t bytes = ((w + 7) / 8) * h;
+GFXcanvas4::GFXcanvas4(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
+  uint16_t bytes = ((w + 1) / 2) * h; // Scanlines are byte-aligned
   if ((buffer = (uint8_t *)malloc(bytes))) {
     memset(buffer, 0, bytes);
   }
@@ -40,10 +32,10 @@ GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 
 /**************************************************************************/
 /*!
-   @brief    Delete the canvas, free memory
+   @brief  Delete the canvas, free memory
 */
 /**************************************************************************/
-GFXcanvas1::~GFXcanvas1(void) {
+GFXcanvas4::~GFXcanvas4(void) {
   if (buffer)
     free(buffer);
 }
@@ -51,12 +43,12 @@ GFXcanvas1::~GFXcanvas1(void) {
 /**************************************************************************/
 /*!
     @brief  Draw a pixel to the canvas framebuffer
-    @param  x     x coordinate
-    @param  y     y coordinate
-    @param  color Binary (on or off) color to fill with
+    @param  x      x coordinate
+    @param  y      y coordinate
+    @param  color  4-bit color to set pixel
 */
 /**************************************************************************/
-void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
+void GFXcanvas4::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if (buffer) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
@@ -79,22 +71,16 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
       break;
     }
 
-    uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
-#ifdef __AVR__
-    if (color)
-      *ptr |= pgm_read_byte(&GFXsetBit[x & 7]);
-    else
-      *ptr &= pgm_read_byte(&GFXclrBit[x & 7]);
-#else
-    if (color)
-      *ptr |= 0x80 >> (x & 7);
-    else
-      *ptr &= ~(0x80 >> (x & 7));
-#endif
+    uint8_t *ptr = &buffer[(x / 2) + y * ((WIDTH + 1) / 2)];
+    if (x & 1) { // Odd column - lower nybble
+      *ptr = (*ptr & 0xF0) | (color & 0xF);
+    } else { // Even column - upper nybble
+      *ptr = (*ptr & 0x0F) | (color << 4);
+    }
   }
 }
 
-bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
+bool GFXcanvas4::getPixel(int16_t x, int16_t y) const {
   int16_t t;
   switch (rotation) {
   case 1:
@@ -115,17 +101,16 @@ bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
   return getRawPixel(x, y);
 }
 
-bool GFXcanvas1::getRawPixel(int16_t x, int16_t y) const {
+bool GFXcanvas4::getRawPixel(int16_t x, int16_t y) const {
   if ((x < 0) || (y < 0) || (x >= WIDTH) || (y >= HEIGHT))
     return 0;
   if (buffer) {
-    uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
-
-#ifdef __AVR__
-    return ((*ptr) & pgm_read_byte(&GFXsetBit[x & 7])) != 0;
-#else
-    return ((*ptr) & (0x80 >> (x & 7))) != 0;
-#endif
+    uint8_t *ptr = &buffer[(x / 2) + y * ((WIDTH + 1) / 2)];
+    if (x & 1) { // Odd column - lower nybble
+      return *ptr & 0xF;
+    } else { // Even column - upper nybble
+      return *ptr >> 4;
+    }
   }
   return 0;
 }
@@ -136,10 +121,9 @@ bool GFXcanvas1::getRawPixel(int16_t x, int16_t y) const {
     @param  color Binary (on or off) color to fill with
 */
 /**************************************************************************/
-void GFXcanvas1::fillScreen(uint16_t color) {
+void GFXcanvas4::fillScreen(uint16_t color) {
   if (buffer) {
-    uint16_t bytes = ((WIDTH + 7) / 8) * HEIGHT;
-    memset(buffer, color ? 0xFF : 0x00, bytes);
+    memset(buffer, (color & 0xF) * 0x11, ((WIDTH + 1) / 2) * HEIGHT);
   }
 }
 
@@ -148,11 +132,11 @@ void GFXcanvas1::fillScreen(uint16_t color) {
    @brief  Speed optimized vertical line drawing
    @param  x      Line horizontal start point
    @param  y      Line vertical start point
-   @param  h      Length of vertical line to be drawn, including first point
+   @param  h      Height of vertical line to draw, including first point
    @param  color  Color to fill with
 */
 /**************************************************************************/
-void GFXcanvas1::drawFastVLine(int16_t x, int16_t y, int16_t h,
+void GFXcanvas4::drawFastVLine(int16_t x, int16_t y, int16_t h,
                                uint16_t color) {
 
   if (h < 0) { // Convert negative heights to positive equivalent
@@ -204,11 +188,11 @@ void GFXcanvas1::drawFastVLine(int16_t x, int16_t y, int16_t h,
    @brief  Speed optimized horizontal line drawing
    @param  x      Line horizontal start point
    @param  y      Line vertical start point
-   @param  w      Length of horizontal line to be drawn, including first point
+   @param  w      Width of horizontal line to be drawn, including first point
    @param  color  Color to fill with
 */
 /**************************************************************************/
-void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
+void GFXcanvas4::drawFastHLine(int16_t x, int16_t y, int16_t w,
                                uint16_t color) {
   if (w < 0) { // Convert negative widths to positive equivalent
     w *= -1;
@@ -256,103 +240,64 @@ void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized vertical line drawing into the raw canvas buffer
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    h   length of vertical line to be drawn, including first point
-   @param    color   Binary (on or off) color to fill with
+   @brief  Speed optimized vertical line drawing into the raw canvas buffer
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  h      length of vertical line to be drawn, including first point
+   @param  color  Color to fill with
 */
 /**************************************************************************/
-void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+void GFXcanvas4::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  int16_t row_bytes = ((WIDTH + 7) / 8);
-  uint8_t *ptr = &buffer[(x / 8) + y * row_bytes];
+  int16_t row_bytes = ((WIDTH + 1) / 2);
+  uint8_t *ptr = &buffer[(x / 2) + y * row_bytes];
+  uint8_t mask;
 
-  if (color > 0) {
-#ifdef __AVR__
-    uint8_t bit_mask = pgm_read_byte(&GFXsetBit[x & 7]);
-#else
-    uint8_t bit_mask = (0x80 >> (x & 7));
-#endif
-    for (int16_t i = 0; i < h; i++) {
-      *ptr |= bit_mask;
-      ptr += row_bytes;
-    }
-  } else {
-#ifdef __AVR__
-    uint8_t bit_mask = pgm_read_byte(&GFXclrBit[x & 7]);
-#else
-    uint8_t bit_mask = ~(0x80 >> (x & 7));
-#endif
-    for (int16_t i = 0; i < h; i++) {
-      *ptr &= bit_mask;
-      ptr += row_bytes;
-    }
+  if (x & 1) { // Odd column - lower nybble
+    color &= 0xF;
+    mask = 0xF0;
+  } else { // Even column - upper nybble
+    color = (color & 0xF) << 4;
+    mask = 0x0F;
+  }
+  for (int16_t i = 0; i < h; i++) {
+    *ptr = (*ptr & mask) | color;
+    ptr += row_bytes;
   }
 }
 
 /**************************************************************************/
 /*!
-   @brief    Speed optimized horizontal line drawing into the raw canvas buffer
-   @param    x   Line horizontal start point
-   @param    y   Line vertical start point
-   @param    w   length of horizontal line to be drawn, including first point
-   @param    color   Binary (on or off) color to fill with
+   @brief  Speed optimized horizontal line drawing into the raw canvas buffer
+   @param  x      Line horizontal start point
+   @param  y      Line vertical start point
+   @param  w      length of horizontal line to be drawn, including first point
+   @param  color  Binary (on or off) color to fill with
 */
 /**************************************************************************/
-void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+void GFXcanvas4::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  int16_t rowBytes = ((WIDTH + 7) / 8);
-  uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
-  size_t remainingWidthBits = w;
+  int16_t rowBytes = ((WIDTH + 1) / 2);
+  uint8_t *ptr = &buffer[(x / 2) + y * rowBytes];
+  color &= 0xF;
 
   // check to see if first byte needs to be partially filled
-  if ((x & 7) > 0) {
-    // create bit mask for first byte
-    uint8_t startByteBitMask = 0x00;
-    for (int8_t i = (x & 7); ((i < 8) && (remainingWidthBits > 0)); i++) {
-#ifdef __AVR__
-      startByteBitMask |= pgm_read_byte(&GFXsetBit[i]);
-#else
-      startByteBitMask |= (0x80 >> i);
-#endif
-      remainingWidthBits--;
-    }
-    if (color > 0) {
-      *ptr |= startByteBitMask;
-    } else {
-      *ptr &= ~startByteBitMask;
-    }
-
-    ptr++;
+  if ((x & 1) > 0) { // If starting in odd column...
+    // Set lower nybble of first byte
+    *ptr = (*ptr & 0xF0) | color;
+    w--;   // Subtract 1 pixel from width
+    ptr++; // Advance pixel pointer to next byte
   }
 
-  // do the next remainingWidthBits bits
-  if (remainingWidthBits > 0) {
-    size_t remainingWholeBytes = remainingWidthBits / 8;
-    size_t lastByteBits = remainingWidthBits % 8;
-    uint8_t wholeByteColor = color > 0 ? 0xFF : 0x00;
-
-    memset(ptr, wholeByteColor, remainingWholeBytes);
-
-    if (lastByteBits > 0) {
-      uint8_t lastByteBitMask = 0x00;
-      for (size_t i = 0; i < lastByteBits; i++) {
-#ifdef __AVR__
-        lastByteBitMask |= pgm_read_byte(&GFXsetBit[i]);
-#else
-        lastByteBitMask |= (0x80 >> i);
-#endif
-      }
-      ptr += remainingWholeBytes;
-
-      if (color > 0) {
-        *ptr |= lastByteBitMask;
-      } else {
-        *ptr &= ~lastByteBitMask;
-      }
+  if (w > 0) {
+    // Fill remaining whole bytes...
+    memset(ptr, color * 0x11, w / 2);
+    // And upper nybble of last byte, if required...
+    if (w & 1) {
+      ptr += w / 2;
+      *ptr = (*ptr * 0x0F) | (color << 4);
     }
   }
 }

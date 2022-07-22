@@ -1,8 +1,22 @@
-// Font structures for newer Adafruit_GFX (1.1 and later).
-// Example fonts are included in 'Fonts' directory.
-// To use a font in your Arduino sketch, #include the corresponding .h
-// file and pass address of GFXfont struct to setFont().  Pass NULL to
-// revert to 'classic' fixed-space bitmap font.
+/*!
+ * @file gfxfont.h
+ *
+ * Part of Adafruit's GFX graphics library. Contains font structures
+ * used in library versions >= 1.1. Example fonts are included in 'Fonts'
+ * directory.
+ * To use a font in your Arduino sketch, include the corresponding .h
+ * file and pass address of GFXfont struct to setFont(). Pass NULL to
+ * revert to 'classic' fixed-space bitmap font.
+ *
+ * Adafruit invests time and resources providing this open source code,
+ * please support Adafruit and open-source hardware by purchasing
+ * products from Adafruit!
+ *
+ * Written by Limor "ladyada" Fried for Adafruit Industries,
+ * with contributions from the open source community.
+ *
+ * BSD license, all text here must be included in any redistribution.
+ */
 
 #pragma once
 

@@ -255,9 +255,9 @@ public:
   uint16_t read16(void);             // Read single 16-bit value
 
   // Most of these low-level functions were formerly macros in
-  // Adafruit_SPITFT_Macros.h. Some have been made into inline functions
-  // to avoid macro mishaps. Despite the addition of code for a parallel
-  // display interface, the names have been kept for backward
+  // Adafruit_SPITFT_Macros.h (file since removed). Some have been made into
+  // inline functions to avoid macro mishaps. Despite the addition of code
+  // for a parallel display interface, the names have been kept for backward
   // compatibility (some subclasses may be invoking these):
   void SPI_WRITE16(uint16_t w); // Not inline
   void SPI_WRITE32(uint32_t l); // Not inline

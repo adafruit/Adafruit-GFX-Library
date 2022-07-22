@@ -1,10 +1,6 @@
 /*!
  * @file Adafruit_SPITFT.cpp
  *
- * @mainpage Adafruit SPI TFT Displays (and some others)
- *
- * @section intro_sec Introduction
- *
  * Part of Adafruit's GFX graphics library. Originally this class was
  * written to handle a range of color TFT displays connected via SPI,
  * but over time this library and some display-specific subclasses have
@@ -14,19 +10,9 @@
  * Adafruit invests time and resources providing this open source code,
  * please support Adafruit and open-source hardware by purchasing
  * products from Adafruit!
-
- * @section dependencies Dependencies
- *
- * This library depends on <a href="https://github.com/adafruit/Adafruit_GFX">
- * Adafruit_GFX</a> being present on your system. Please make sure you have
- * installed the latest version before using this library.
- *
- * @section author Author
  *
  * Written by Limor "ladyada" Fried for Adafruit Industries,
  * with contributions from the open source community.
- *
- * @section license License
  *
  * BSD license, all text here must be included in any redistribution.
  */

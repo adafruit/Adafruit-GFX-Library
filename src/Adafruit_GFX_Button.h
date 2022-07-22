@@ -1,3 +1,19 @@
+/*!
+ * @file Adafruit_GFX_Button.h
+ *
+ * Part of Adafruit's GFX graphics library. Provides a basic UI button
+ * class for touchscreen displays.
+ *
+ * Adafruit invests time and resources providing this open source code,
+ * please support Adafruit and open-source hardware by purchasing
+ * products from Adafruit!
+ *
+ * Written by Limor "ladyada" Fried for Adafruit Industries,
+ * with contributions from the open source community.
+ *
+ * BSD license, all text here must be included in any redistribution.
+ */
+
 #pragma once
 
 #include "Adafruit_GFX.h"

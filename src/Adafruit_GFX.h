@@ -1,3 +1,19 @@
+/*!
+ * @file Adafruit_GFX.h
+ *
+ * Main header file for Adafruit's GFX graphics library, providing a base
+ * class for various small bitmapped displays.
+ *
+ * Adafruit invests time and resources providing this open source code,
+ * please support Adafruit and open-source hardware by purchasing
+ * products from Adafruit!
+ *
+ * Written by Limor "ladyada" Fried for Adafruit Industries,
+ * with contributions from the open source community.
+ *
+ * BSD license, all text here must be included in any redistribution.
+ */
+
 #pragma once
 
 #if ARDUINO >= 100
@@ -247,6 +263,8 @@ protected:
   GFXfont *gfxFont;     ///< Pointer to special font
 };
 
+#include "Adafruit_GFX_Button.h"
 #include "GFXcanvas1.h"
 #include "GFXcanvas16.h"
+#include "GFXcanvas4.h"
 #include "GFXcanvas8.h"

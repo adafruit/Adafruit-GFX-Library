@@ -1,8 +1,8 @@
 /*!
  * @file Adafruit_GrayOLED.h
  *
- * This is part of for Adafruit's GFX library, supplying generic support
- * for grayscale OLED displays: http://www.adafruit.com/category/63_98
+ * Part of Adafruit's GFX graphics library. Provides support for grayscale
+ * OLED displays: http://www.adafruit.com/category/63_98
  *
  * These displays use I2C or SPI to communicate. I2C requires 2 pins
  * (SCL+SDA) and optionally a RESET pin. SPI requires 4 pins (MOSI, SCK,
@@ -13,12 +13,10 @@
  * please support Adafruit and open-source hardware by purchasing
  * products from Adafruit!
  *
- * Written by Limor Fried/Ladyada for Adafruit Industries, with
- * contributions from the open source community.
+ * Written by Limor "ladyada" Fried for Adafruit Industries,
+ * with contributions from the open source community.
  *
- * BSD license, all text above, and the splash screen header file,
- * must be included in any redistribution.
- *
+ * BSD license, all text here must be included in any redistribution.
  */
 
 #pragma once
