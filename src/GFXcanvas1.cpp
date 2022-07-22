@@ -316,7 +316,6 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   int16_t rowBytes = ((WIDTH + 7) / 8);
   uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
-  int16_t remainingWidthBits = w;
 
   if ((x & 7) > 0) { // Partial fill on first byte?
     // create bit mask for first byte
