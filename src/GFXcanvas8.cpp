@@ -24,21 +24,19 @@
 */
 /**************************************************************************/
 GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = w * h;
-  if ((buffer = (uint8_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
-  }
+  // If allocation fails, no special action is performed here.
+  // Drawing functions check for valid buffer.
+  pixbuf = (uint8_t *)calloc(w * h, 1);
 }
 
-/**************************************************************************/
 /*!
-   @brief    Delete the canvas, free memory
+  @brief  GFXcanvas8 destructor. Frees memory associated with canvas.
 */
-/**************************************************************************/
 GFXcanvas8::~GFXcanvas8(void) {
-  if (buffer)
-    free(buffer);
-}
+  if (pixbuf) {
+    free(pixbuf);
+  }
+};
 
 /**************************************************************************/
 /*!
@@ -49,7 +47,7 @@ GFXcanvas8::~GFXcanvas8(void) {
 */
 /**************************************************************************/
 void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
-  if (buffer) {
+  if (pixbuf) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
@@ -71,8 +69,12 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
       break;
     }
 
-    buffer[x + y * WIDTH] = color;
+    pixbuf[x + y * WIDTH] = color;
   }
+}
+
+void GFXcanvas8::drawPixelRaw(int16_t x, int16_t y, uint16_t color) {
+  pixbuf[x + y * WIDTH] = color;
 }
 
 /**********************************************************************/
@@ -101,7 +103,7 @@ uint8_t GFXcanvas8::getPixel(int16_t x, int16_t y) const {
     y = HEIGHT - 1 - t;
     break;
   }
-  return getRawPixel(x, y);
+  return getPixelRaw(x, y);
 }
 
 /**********************************************************************/
@@ -114,11 +116,11 @@ uint8_t GFXcanvas8::getPixel(int16_t x, int16_t y) const {
         @returns  The desired pixel's 8-bit color value
 */
 /**********************************************************************/
-uint8_t GFXcanvas8::getRawPixel(int16_t x, int16_t y) const {
+uint8_t GFXcanvas8::getPixelRaw(int16_t x, int16_t y) const {
   if ((x < 0) || (y < 0) || (x >= WIDTH) || (y >= HEIGHT))
     return 0;
-  if (buffer) {
-    return buffer[x + y * WIDTH];
+  if (pixbuf) {
+    return pixbuf[x + y * WIDTH];
   }
   return 0;
 }
@@ -130,8 +132,8 @@ uint8_t GFXcanvas8::getRawPixel(int16_t x, int16_t y) const {
 */
 /**************************************************************************/
 void GFXcanvas8::fillScreen(uint16_t color) {
-  if (buffer) {
-    memset(buffer, color, WIDTH * HEIGHT);
+  if (pixbuf) {
+    memset(pixbuf, color, WIDTH * HEIGHT);
   }
 }
 
@@ -170,24 +172,24 @@ void GFXcanvas8::drawFastVLine(int16_t x, int16_t y, int16_t h,
   }
 
   if (getRotation() == 0) {
-    drawFastRawVLine(x, y, h, color);
+    drawFastVLineRaw(x, y, h, color);
   } else if (getRotation() == 1) {
     int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
     x -= h - 1;
-    drawFastRawHLine(x, y, h, color);
+    drawFastHLineRaw(x, y, h, color);
   } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
 
     y -= h - 1;
-    drawFastRawVLine(x, y, h, color);
+    drawFastVLineRaw(x, y, h, color);
   } else if (getRotation() == 3) {
     int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
-    drawFastRawHLine(x, y, h, color);
+    drawFastHLineRaw(x, y, h, color);
   }
 }
 
@@ -227,24 +229,24 @@ void GFXcanvas8::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 
   if (getRotation() == 0) {
-    drawFastRawHLine(x, y, w, color);
+    drawFastHLineRaw(x, y, w, color);
   } else if (getRotation() == 1) {
     int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
-    drawFastRawVLine(x, y, w, color);
+    drawFastVLineRaw(x, y, w, color);
   } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
 
     x -= w - 1;
-    drawFastRawHLine(x, y, w, color);
+    drawFastHLineRaw(x, y, w, color);
   } else if (getRotation() == 3) {
     int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
     y -= w - 1;
-    drawFastRawVLine(x, y, w, color);
+    drawFastVLineRaw(x, y, w, color);
   }
 }
 
@@ -258,10 +260,10 @@ void GFXcanvas8::drawFastHLine(int16_t x, int16_t y, int16_t w,
    used.
 */
 /**************************************************************************/
-void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+void GFXcanvas8::drawFastVLineRaw(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  uint8_t *buffer_ptr = buffer + y * WIDTH + x;
+  uint8_t *buffer_ptr = &pixbuf[y * WIDTH + x];
   for (int16_t i = 0; i < h; i++) {
     (*buffer_ptr) = color;
     buffer_ptr += WIDTH;
@@ -278,8 +280,8 @@ void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
    used.
 */
 /**************************************************************************/
-void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+void GFXcanvas8::drawFastHLineRaw(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  memset(buffer + y * WIDTH + x, color, w);
+  memset(pixbuf + y * WIDTH + x, color, w);
 }

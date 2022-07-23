@@ -1,6 +1,6 @@
 /***
 This example is intended to demonstrate the use of getPixel() versus
-getRawPixel() and the fast horizontal and vertical drawing routines
+getPixelRaw() and the fast horizontal and vertical drawing routines
 in the GFXcanvas family of classes,
 
 When using the GFXcanvas* classes as the image buffer for a hardware driver,
@@ -11,7 +11,7 @@ GFXcanvas* classes that allow fetching of specific pixel values.
 
   * getPixel(x, y)   : Gets the pixel color value at the rotated coordinates in
 the image.
-  * getRawPixel(x,y) : Gets the pixel color value at the unrotated coordinates
+  * getPixelRaw(x,y) : Gets the pixel color value at the unrotated coordinates
 in the image. This is useful for getting the pixel value to map to a hardware
 pixel location. This method was made protected as only the hardware driver
 should be accessing it.

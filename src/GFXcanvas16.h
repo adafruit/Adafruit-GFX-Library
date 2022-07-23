@@ -18,30 +18,26 @@
 
 #include "Adafruit_GFX.h"
 
-///  A GFX 16-bit canvas context for graphics
+// A 16-bit canvas for offscreen graphics in RAM.
 class GFXcanvas16 : public Adafruit_GFX {
 public:
   GFXcanvas16(uint16_t w, uint16_t h);
   ~GFXcanvas16(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
-  void fillScreen(uint16_t color);
-  void byteSwap(void);
+  uint16_t getPixel(int16_t x, int16_t y) const;
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  uint16_t getPixel(int16_t x, int16_t y) const;
-  /**********************************************************************/
+  void fillScreen(uint16_t color);
   /*!
-    @brief    Get a pointer to the internal buffer memory
-    @returns  A pointer to the allocated buffer
+    @brief   Get pointer to internal canvas memory.
+    @return  Pointer (uint16_t *) to start of canvas buffer.
   */
-  /**********************************************************************/
-  uint16_t *getBuffer(void) const { return buffer; }
-
+  uint16_t *getBuffer(void) const { return pixbuf; };
+  void byteSwap(void);
 protected:
-  uint16_t getRawPixel(int16_t x, int16_t y) const;
-  void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-private:
-  uint16_t *buffer;
+  uint16_t *pixbuf = NULL;
+  void drawPixelRaw(int16_t x, int16_t y, uint16_t color);
+  uint16_t getPixelRaw(int16_t x, int16_t y) const;
+  void drawFastVLineRaw(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastHLineRaw(int16_t x, int16_t y, int16_t w, uint16_t color);
 };

@@ -52,11 +52,11 @@ public:
   virtual void startWrite(void);
   virtual void writePixel(int16_t x, int16_t y, uint16_t color);
   virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
-                             uint16_t color);
+                     uint16_t color);
   virtual void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   virtual void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
   virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-                         uint16_t color);
+                 uint16_t color);
   virtual void endWrite(void);
 
   // CONTROL API
@@ -77,9 +77,9 @@ public:
   virtual void fillScreen(uint16_t color);
   // Optional and probably not necessary to change
   virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-                        uint16_t color);
+                uint16_t color);
   virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
-                        uint16_t color);
+                uint16_t color);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);

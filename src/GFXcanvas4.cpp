@@ -24,21 +24,19 @@
 */
 /**************************************************************************/
 GFXcanvas4::GFXcanvas4(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint16_t bytes = ((w + 1) / 2) * h; // Scanlines are byte-aligned
-  if ((buffer = (uint8_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
-  }
+  // Rows are byte-aligned. If allocation fails, no special action is
+  // performed here. Drawing functions check for valid buffer.
+  pixbuf = (uint8_t *)calloc(((w + 1) / 2) * h, 1);
 }
 
-/**************************************************************************/
 /*!
-   @brief  Delete the canvas, free memory
+  @brief  GFXcanvas4 destructor. Frees memory associated with canvas.
 */
-/**************************************************************************/
 GFXcanvas4::~GFXcanvas4(void) {
-  if (buffer)
-    free(buffer);
-}
+  if (pixbuf) {
+    free(pixbuf);
+  }
+};
 
 /**************************************************************************/
 /*!
@@ -49,7 +47,7 @@ GFXcanvas4::~GFXcanvas4(void) {
 */
 /**************************************************************************/
 void GFXcanvas4::drawPixel(int16_t x, int16_t y, uint16_t color) {
-  if (buffer) {
+  if (pixbuf) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
@@ -71,16 +69,29 @@ void GFXcanvas4::drawPixel(int16_t x, int16_t y, uint16_t color) {
       break;
     }
 
-    uint8_t *ptr = &buffer[(x / 2) + y * ((WIDTH + 1) / 2)];
-    if (x & 1) { // Odd column - lower nybble
-      *ptr = (*ptr & 0xF0) | (color & 0xF);
-    } else { // Even column - upper nybble
-      *ptr = (*ptr & 0x0F) | (color << 4);
-    }
+    drawPixelRaw(x, y, color);
   }
 }
 
-bool GFXcanvas4::getPixel(int16_t x, int16_t y) const {
+/*!
+  @brief  Draw a pixel to the canvas framebuffer. NO CLIPPING, ROTATION OR
+          VALIDATION OF CANVAS BUFFER IS PERFORMED, calling function must be
+          AWARE and WELL-BEHAVED. This is a protected function intended for
+          related class code, not user-facing.
+  @param  x      Pixel column (horizonal pos).
+  @param  y      Pixel row (vertical pos).
+  @param  color  Pixel draw color; thresholded to 0 or 1 (any nonzero input).
+*/
+void GFXcanvas4::drawPixelRaw(int16_t x, int16_t y, uint16_t color) {
+  uint8_t *ptr = &pixbuf[(x / 2) + y * ((WIDTH + 1) / 2)];
+  if (x & 1) { // Odd column - lower nybble
+    *ptr = (*ptr & 0xF0) | (color & 0xF);
+  } else { // Even column - upper nybble
+    *ptr = (*ptr & 0x0F) | (color << 4);
+  }
+}
+
+uint8_t GFXcanvas4::getPixel(int16_t x, int16_t y) const {
   int16_t t;
   switch (rotation) {
   case 1:
@@ -98,14 +109,14 @@ bool GFXcanvas4::getPixel(int16_t x, int16_t y) const {
     y = HEIGHT - 1 - t;
     break;
   }
-  return getRawPixel(x, y);
+  return getPixelRaw(x, y);
 }
 
-bool GFXcanvas4::getRawPixel(int16_t x, int16_t y) const {
+uint8_t GFXcanvas4::getPixelRaw(int16_t x, int16_t y) const {
   if ((x < 0) || (y < 0) || (x >= WIDTH) || (y >= HEIGHT))
     return 0;
-  if (buffer) {
-    uint8_t *ptr = &buffer[(x / 2) + y * ((WIDTH + 1) / 2)];
+  if (pixbuf) {
+    uint8_t *ptr = &pixbuf[(x / 2) + y * ((WIDTH + 1) / 2)];
     if (x & 1) { // Odd column - lower nybble
       return *ptr & 0xF;
     } else { // Even column - upper nybble
@@ -122,8 +133,8 @@ bool GFXcanvas4::getRawPixel(int16_t x, int16_t y) const {
 */
 /**************************************************************************/
 void GFXcanvas4::fillScreen(uint16_t color) {
-  if (buffer) {
-    memset(buffer, (color & 0xF) * 0x11, ((WIDTH + 1) / 2) * HEIGHT);
+  if (pixbuf) {
+    memset(pixbuf, (color & 0xF) * 0x11, ((WIDTH + 1) / 2) * HEIGHT);
   }
 }
 
@@ -162,24 +173,24 @@ void GFXcanvas4::drawFastVLine(int16_t x, int16_t y, int16_t h,
   }
 
   if (getRotation() == 0) {
-    drawFastRawVLine(x, y, h, color);
+    drawFastVLineRaw(x, y, h, color);
   } else if (getRotation() == 1) {
     int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
     x -= h - 1;
-    drawFastRawHLine(x, y, h, color);
+    drawFastHLineRaw(x, y, h, color);
   } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
 
     y -= h - 1;
-    drawFastRawVLine(x, y, h, color);
+    drawFastVLineRaw(x, y, h, color);
   } else if (getRotation() == 3) {
     int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
-    drawFastRawHLine(x, y, h, color);
+    drawFastHLineRaw(x, y, h, color);
   }
 }
 
@@ -217,24 +228,24 @@ void GFXcanvas4::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 
   if (getRotation() == 0) {
-    drawFastRawHLine(x, y, w, color);
+    drawFastHLineRaw(x, y, w, color);
   } else if (getRotation() == 1) {
     int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
-    drawFastRawVLine(x, y, w, color);
+    drawFastVLineRaw(x, y, w, color);
   } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
 
     x -= w - 1;
-    drawFastRawHLine(x, y, w, color);
+    drawFastHLineRaw(x, y, w, color);
   } else if (getRotation() == 3) {
     int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
     y -= w - 1;
-    drawFastRawVLine(x, y, w, color);
+    drawFastVLineRaw(x, y, w, color);
   }
 }
 
@@ -247,11 +258,11 @@ void GFXcanvas4::drawFastHLine(int16_t x, int16_t y, int16_t w,
    @param  color  Color to fill with
 */
 /**************************************************************************/
-void GFXcanvas4::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+void GFXcanvas4::drawFastVLineRaw(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
   int16_t row_bytes = ((WIDTH + 1) / 2);
-  uint8_t *ptr = &buffer[(x / 2) + y * row_bytes];
+  uint8_t *ptr = &pixbuf[(x / 2) + y * row_bytes];
   uint8_t mask;
 
   if (x & 1) { // Odd column - lower nybble
@@ -276,11 +287,11 @@ void GFXcanvas4::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
    @param  color  Binary (on or off) color to fill with
 */
 /**************************************************************************/
-void GFXcanvas4::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+void GFXcanvas4::drawFastHLineRaw(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
   int16_t rowBytes = ((WIDTH + 1) / 2);
-  uint8_t *ptr = &buffer[(x / 2) + y * rowBytes];
+  uint8_t *ptr = &pixbuf[(x / 2) + y * rowBytes];
   color &= 0xF;
 
   // check to see if first byte needs to be partially filled

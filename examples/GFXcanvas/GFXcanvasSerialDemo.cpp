@@ -22,7 +22,7 @@ void GFXcanvas1SerialDemo::print(bool rotated) {
       if (rotated) {
         pixel = this->getPixel(x, y);
       } else {
-        pixel = this->getRawPixel(x, y);
+        pixel = this->getPixelRaw(x, y);
       }
       sprintf(pixel_buffer, " %d", pixel);
       Serial.print(pixel_buffer);
@@ -52,7 +52,7 @@ void GFXcanvas8SerialDemo::print(bool rotated) {
       if (rotated) {
         pixel = this->getPixel(x, y);
       } else {
-        pixel = this->getRawPixel(x, y);
+        pixel = this->getPixelRaw(x, y);
       }
       sprintf(pixel_buffer, " %02x", pixel);
       Serial.print(pixel_buffer);
@@ -82,7 +82,7 @@ void GFXcanvas16SerialDemo::print(bool rotated) {
       if (rotated) {
         pixel = this->getPixel(x, y);
       } else {
-        pixel = this->getRawPixel(x, y);
+        pixel = this->getPixelRaw(x, y);
       }
       sprintf(pixel_buffer, " %04x", pixel);
       Serial.print(pixel_buffer);

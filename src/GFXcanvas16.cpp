@@ -24,21 +24,19 @@
 */
 /**************************************************************************/
 GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = w * h * 2;
-  if ((buffer = (uint16_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
-  }
+  // If allocation fails, no special action is performed here.
+  // Drawing functions check for valid buffer.
+  pixbuf = (uint16_t *)calloc(w * h * 2, 0);
 }
 
-/**************************************************************************/
 /*!
-   @brief    Delete the canvas, free memory
+  @brief  GFXcanvas16 destructor. Frees memory associated with canvas.
 */
-/**************************************************************************/
 GFXcanvas16::~GFXcanvas16(void) {
-  if (buffer)
-    free(buffer);
-}
+  if (pixbuf) {
+    free(pixbuf);
+  }
+};
 
 /**************************************************************************/
 /*!
@@ -49,7 +47,7 @@ GFXcanvas16::~GFXcanvas16(void) {
 */
 /**************************************************************************/
 void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
-  if (buffer) {
+  if (pixbuf) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
@@ -71,8 +69,12 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
       break;
     }
 
-    buffer[x + y * WIDTH] = color;
+    pixbuf[x + y * WIDTH] = color;
   }
+}
+
+void GFXcanvas16::drawPixelRaw(int16_t x, int16_t y, uint16_t color) {
+  pixbuf[x + y * WIDTH] = color;
 }
 
 /**********************************************************************/
@@ -101,7 +103,7 @@ uint16_t GFXcanvas16::getPixel(int16_t x, int16_t y) const {
     y = HEIGHT - 1 - t;
     break;
   }
-  return getRawPixel(x, y);
+  return getPixelRaw(x, y);
 }
 
 /**********************************************************************/
@@ -114,11 +116,11 @@ uint16_t GFXcanvas16::getPixel(int16_t x, int16_t y) const {
         @returns  The desired pixel's 16-bit 5-6-5 color value
 */
 /**********************************************************************/
-uint16_t GFXcanvas16::getRawPixel(int16_t x, int16_t y) const {
+uint16_t GFXcanvas16::getPixelRaw(int16_t x, int16_t y) const {
   if ((x < 0) || (y < 0) || (x >= WIDTH) || (y >= HEIGHT))
     return 0;
-  if (buffer) {
-    return buffer[x + y * WIDTH];
+  if (pixbuf) {
+    return pixbuf[x + y * WIDTH];
   }
   return 0;
 }
@@ -130,14 +132,14 @@ uint16_t GFXcanvas16::getRawPixel(int16_t x, int16_t y) const {
 */
 /**************************************************************************/
 void GFXcanvas16::fillScreen(uint16_t color) {
-  if (buffer) {
+  if (pixbuf) {
     uint8_t hi = color >> 8, lo = color & 0xFF;
     if (hi == lo) {
-      memset(buffer, lo, WIDTH * HEIGHT * 2);
+      memset(pixbuf, lo, WIDTH * HEIGHT * 2);
     } else {
       uint32_t i, pixels = WIDTH * HEIGHT;
       for (i = 0; i < pixels; i++)
-        buffer[i] = color;
+        pixbuf[i] = color;
     }
   }
 }
@@ -156,10 +158,10 @@ void GFXcanvas16::fillScreen(uint16_t color) {
 */
 /**************************************************************************/
 void GFXcanvas16::byteSwap(void) {
-  if (buffer) {
+  if (pixbuf) {
     uint32_t i, pixels = WIDTH * HEIGHT;
     for (i = 0; i < pixels; i++)
-      buffer[i] = __builtin_bswap16(buffer[i]);
+      pixbuf[i] = __builtin_bswap16(pixbuf[i]);
   }
 }
 
@@ -197,24 +199,24 @@ void GFXcanvas16::drawFastVLine(int16_t x, int16_t y, int16_t h,
   }
 
   if (getRotation() == 0) {
-    drawFastRawVLine(x, y, h, color);
+    drawFastVLineRaw(x, y, h, color);
   } else if (getRotation() == 1) {
     int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
     x -= h - 1;
-    drawFastRawHLine(x, y, h, color);
+    drawFastHLineRaw(x, y, h, color);
   } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
 
     y -= h - 1;
-    drawFastRawVLine(x, y, h, color);
+    drawFastVLineRaw(x, y, h, color);
   } else if (getRotation() == 3) {
     int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
-    drawFastRawHLine(x, y, h, color);
+    drawFastHLineRaw(x, y, h, color);
   }
 }
 
@@ -252,24 +254,24 @@ void GFXcanvas16::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 
   if (getRotation() == 0) {
-    drawFastRawHLine(x, y, w, color);
+    drawFastHLineRaw(x, y, w, color);
   } else if (getRotation() == 1) {
     int16_t t = x;
     x = WIDTH - 1 - y;
     y = t;
-    drawFastRawVLine(x, y, w, color);
+    drawFastVLineRaw(x, y, w, color);
   } else if (getRotation() == 2) {
     x = WIDTH - 1 - x;
     y = HEIGHT - 1 - y;
 
     x -= w - 1;
-    drawFastRawHLine(x, y, w, color);
+    drawFastHLineRaw(x, y, w, color);
   } else if (getRotation() == 3) {
     int16_t t = x;
     x = y;
     y = HEIGHT - 1 - t;
     y -= w - 1;
-    drawFastRawVLine(x, y, w, color);
+    drawFastVLineRaw(x, y, w, color);
   }
 }
 
@@ -282,10 +284,10 @@ void GFXcanvas16::drawFastHLine(int16_t x, int16_t y, int16_t w,
    @param    color   color 16-bit 5-6-5 Color to draw line with
 */
 /**************************************************************************/
-void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+void GFXcanvas16::drawFastVLineRaw(int16_t x, int16_t y, int16_t h,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  uint16_t *buffer_ptr = buffer + y * WIDTH + x;
+  uint16_t *buffer_ptr = &pixbuf[y * WIDTH + x];
   for (int16_t i = 0; i < h; i++) {
     (*buffer_ptr) = color;
     buffer_ptr += WIDTH;
@@ -301,11 +303,11 @@ void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
    @param    color   color 16-bit 5-6-5 Color to draw line with
 */
 /**************************************************************************/
-void GFXcanvas16::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
+void GFXcanvas16::drawFastHLineRaw(int16_t x, int16_t y, int16_t w,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
   uint32_t buffer_index = y * WIDTH + x;
   for (uint32_t i = buffer_index; i < buffer_index + w; i++) {
-    buffer[i] = color;
+    pixbuf[i] = color;
   }
 }

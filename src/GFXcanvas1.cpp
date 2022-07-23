@@ -31,92 +31,109 @@ const uint8_t PROGMEM GFXcanvas1::GFXclrBit[] = {0x7F, 0xBF, 0xDF, 0xEF,
   @param  h  Canvas height in pixels.
 */
 GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  buffer = (uint8_t *)calloc(((w + 7) / 8) * h, 1); // Rows are byte aligned
+  // Rows are byte-aligned. If allocation fails, no special action is
+  // performed here. Drawing functions check for valid buffer.
+  pixbuf = (uint8_t *)calloc(((w + 7) / 8) * h, 1);
 }
 
 /*!
-  @brief  Delete canvas, free memory.
+  @brief  GFXcanvas1 destructor. Frees memory associated with canvas.
 */
 GFXcanvas1::~GFXcanvas1(void) {
-  if (buffer)
-    free(buffer);
-}
+  if (pixbuf) {
+    free(pixbuf);
+  }
+};
 
 /*!
   @brief  Draw a pixel to the canvas framebuffer, applying clipping and/or
           rotation as appropriate.
   @param  x      Pixel column (horizonal pos).
   @param  y      Pixel row (vertical pos).
-  @param  color  Binary (on or off) color to set pixel.
+  @param  color  Pixel draw color. Range depends on canvas depth.
 */
 void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
   // Validate canvas buffer is valid & point is in bounds
-  if (buffer && (x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-    // Apply 'soft' rotation if needed
+  if (pixbuf && (x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    // Point is valid. Apply 'soft' rotation if needed.
     int16_t t;
-    switch (rotation) {
-    case 1:
+    switch (rotation) { // 0 can be ignored
+    case 1: // 90 degrees CW
       t = x;
       x = WIDTH - 1 - y;
       y = t;
       break;
-    case 2:
+    case 2: // 180 degrees
       x = WIDTH - 1 - x;
       y = HEIGHT - 1 - y;
       break;
-    case 3:
+    case 3: // 90 degrees CCW
       t = x;
       x = y;
       y = HEIGHT - 1 - t;
       break;
     }
 
-    // (x, y) now known in-bounds and in native coordinate system.
-    uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
-#ifdef __AVR__
-    if (color)
-      *ptr |= pgm_read_byte(&GFXsetBit[x & 7]);
-    else
-      *ptr &= pgm_read_byte(&GFXclrBit[x & 7]);
-#else
-    if (color)
-      *ptr |= 0x80 >> (x & 7);
-    else
-      *ptr &= ~(0x80 >> (x & 7));
-#endif
+    // (x, y) now known in-bounds and in canvas-native coordinate system.
+    drawPixelRaw(x, y, color);
   }
 }
 
 /*!
+  @brief  Draw a pixel to the canvas framebuffer. NO CLIPPING, ROTATION OR
+          VALIDATION OF CANVAS BUFFER IS PERFORMED, calling function must be
+          AWARE and WELL-BEHAVED. This is a protected function intended for
+          related class code, not user-facing.
+  @param  x      Pixel column (horizonal pos).
+  @param  y      Pixel row (vertical pos).
+  @param  color  Pixel draw color; thresholded to 0 or 1 (any nonzero input).
+*/
+void GFXcanvas1::drawPixelRaw(int16_t x, int16_t y, uint16_t color) {
+  uint8_t *ptr = &pixbuf[(x / 8) + y * ((WIDTH + 7) / 8)];
+#ifdef __AVR__
+  if (color)
+    *ptr |= pgm_read_byte(&GFXsetBit[x & 7]);
+  else
+    *ptr &= pgm_read_byte(&GFXclrBit[x & 7]);
+#else
+  if (color)
+    *ptr |= 0x80 >> (x & 7);
+  else
+    *ptr &= ~(0x80 >> (x & 7));
+#endif
+}
 
+/*!
   @brief   Retrieve pixel value from the canvas framebuffer, applying
            clipping and/or rotation as appropriate.
   @param   x  Pixel column (horizonal pos).
   @param   y  Pixel row (vertical pos).
-  @return  Pixel value (0 or 1) if coordinate is in-bounds. 0 if out-of-
-           bounds or if canvas buffer previously failed to allocate.
+  @return  Pixel value if coordinate is in-bounds. 0 if out-of-bounds
+           or if canvas buffer previously failed to allocate.
 */
 bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
-  if (buffer && (x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+  // Validate canvas buffer is valid & point is in bounds
+  if (pixbuf && (x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    // Point is valid. Apply 'soft' rotation if needed.
     int16_t t;
-    switch (rotation) {
-    case 1:
+    switch (rotation) { // 0 can be ignored
+    case 1: // 90 degrees CW
       t = x;
       x = WIDTH - 1 - y;
       y = t;
       break;
-    case 2:
+    case 2: // 180 degrees
       x = WIDTH - 1 - x;
       y = HEIGHT - 1 - y;
       break;
-    case 3:
+    case 3: // 90 degrees CCW
       t = x;
       x = y;
       y = HEIGHT - 1 - t;
       break;
     }
-    // (x, y) now known in-bounds and in native coordinate system.
-    return getRawPixel(x, y);
+    // (x, y) now known in-bounds and in canvas-native coordinate system.
+    return getPixelRaw(x, y);
   }
   return 0; // Coord out of bounds, or canvas buffer is invalid
 }
@@ -124,14 +141,15 @@ bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
 /*!
   @brief   Retrieve pixel value from the canvas framebuffer, where inputs
            are known valid in-bounds and in native unrotated coordinates.
-           NO CLIPPING OR VALIDATION OF CANVAS BUFFER IS PERFORMED,
-           calling function must be AWARE and WELL-BEHAVED.
+           NO CLIPPING, ROTATION OR VALIDATION OF CANVAS BUFFER IS PERFORMED,
+           calling function must be AWARE and WELL-BEHAVED. This is a
+           protected function intended for driver code, not user-facing.
   @param   x  Pixel column (horizonal pos).
   @param   y  Pixel row (vertical pos).
   @return  Pixel value (0 or 1).
 */
-bool GFXcanvas1::getRawPixel(int16_t x, int16_t y) const {
-  uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
+bool GFXcanvas1::getPixelRaw(int16_t x, int16_t y) const {
+  uint8_t *ptr = &pixbuf[(x / 8) + y * ((WIDTH + 7) / 8)];
 #ifdef __AVR__
   return ((*ptr) & pgm_read_byte(&GFXsetBit[x & 7])) != 0;
 #else
@@ -141,142 +159,78 @@ bool GFXcanvas1::getRawPixel(int16_t x, int16_t y) const {
 
 /*!
   @brief  Fill canvas completely with one color.
-  @param  color  Binary (on or off) color to fill with.
+  @param  color  Canvas fill color; thresholded to 0 or 1 (any nonzero input).
 */
 void GFXcanvas1::fillScreen(uint16_t color) {
-  if (buffer) {
-    memset(buffer, color ? 0xFF : 0x00, ((WIDTH + 7) / 8) * HEIGHT);
+  if (pixbuf) {
+    memset(pixbuf, color ? 0xFF : 0x00, ((WIDTH + 7) / 8) * HEIGHT);
   }
 }
 
 /*!
   @brief  Draw vertical line. May allow for optimizations compared to the
-          generalized drawLine().
+          generalized drawLine() function.
   @param  x      Column (horizontal position of start and end points)
   @param  y      Row (vertical pos) of start point.
   @param  h      Length of vertical line to be drawn, including first point.
-  @param  color  Binary (on or off) color to draw.
+  @param  color  Line draw color; thresholded to 0 or 1 (any nonzero input).
 */
 void GFXcanvas1::drawFastVLine(int16_t x, int16_t y, int16_t h,
                                uint16_t color) {
-
-  if (h < 0) { // Convert negative heights to positive equivalent
-    h = -h;
-    y -= h - 1;
-    if (y < 0) {
-      h += y;
-      y = 0;
-    }
-  }
-
-  // Edge rejection (no-draw if totally off canvas)
-  if ((x >= 0) && (x < _width) && (y < _height) && ((y + h - 1) >= 0)) {
-    if (y < 0) { // Clip top
-      h += y;
-      y = 0;
-    }
-    if (y + h > height()) { // Clip bottom
-      h = height() - y;
-    }
-
-    int16_t t;
-    switch (rotation) {
-    case 0:
-      drawFastRawVLine(x, y, h, color);
-      break;
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      x -= h - 1;
-      drawFastRawHLine(x, y, h, color);
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
+  if (pixbuf) {
+    if (h < 0) { // Convert negative heights to positive equivalent
+      h = -h;
       y -= h - 1;
-      drawFastRawVLine(x, y, h, color);
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      drawFastRawHLine(x, y, h, color);
-      break;
-    }
-  }
-}
-
-/*!
-  @brief  Draw horizontal line. May allow for optimizations compared to the
-          generalized drawLine().
-  @param  x      Column (horizontal position) of start point.
-  @param  y      Row (vertical position of start and end points)
-  @param  w      Width of vertical line to be drawn, including first point.
-  @param  color  Binary (on or off) color to draw.
-*/
-void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
-                               uint16_t color) {
-  if (w < 0) { // Convert negative widths to positive equivalent
-    w *= -1;
-    x -= w - 1;
-    if (x < 0) {
-      w += x;
-      x = 0;
-    }
-  }
-
-  // Edge rejection (no-draw if totally off canvas)
-  if ((y >= 0) && (y < _height) && (x < _width) && ((x + w - 1) >= 0)) {
-    if (x < 0) { // Clip left
-      w += x;
-      x = 0;
-    }
-    if (x + w >= width()) { // Clip right
-      w = width() - x;
+      if (y < 0) {
+        h += y;
+        y = 0;
+      }
     }
 
-    int16_t t;
-    switch (rotation) {
-    case 0:
-      drawFastRawHLine(x, y, w, color);
-      break;
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      drawFastRawVLine(x, y, w, color);
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      x -= w - 1;
-      drawFastRawHLine(x, y, w, color);
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      y -= w - 1;
-      drawFastRawVLine(x, y, w, color);
-      break;
+    // Reject off-canvas and zero-height lines
+    if ((h > 0) && (x >= 0) && (x < _width) && (y < _height) &&
+        ((y + h - 1) >= 0)) {
+      if (y < 0) { // Clip top
+        h += y;
+        y = 0;
+      }
+      if ((y + h) > _height) { // Clip bottom
+        h = _height - y;
+      }
+
+      switch (rotation) {
+      case 0: // No rotation
+        drawFastVLineRaw(x, y, h, color);
+        break;
+      case 1: // 90 degrees CW
+        drawFastHLineRaw(WIDTH - y - h, x, h, color);
+        break;
+      case 2: // 180 degrees
+        drawFastVLineRaw(WIDTH - 1 - x, HEIGHT - y - h, h, color);
+        break;
+      case 3: // 90 degrees CCW
+        drawFastHLineRaw(y, HEIGHT - 1 - x, h, color);
+        break;
+      }
     }
   }
 }
 
 /*!
   @brief  Draw vertical line into 'raw' canvas buffer. Inputs are assumed
-          valid and in native coordinates; NO CLIPPING, ROTATION OR BUFFER
-          VALIDATION IS PERFORMED.
+          valid and in native coordinates. NO CLIPPING, ROTATION OR
+          VALIDATION OF CANVAS BUFFER IS PERFORMED, calling function must
+          be AWARE and WELL-BEHAVED. This is a protected function intended
+          for related class code, not user-facing.
   @param  x      Column (horizontal position of start and end points)
   @param  y      Row (vertical pos) of start point.
   @param  h      Length of vertical line to be drawn, including first point.
-  @param  color  Binary (on or off) color to draw.
+  @param  color  Line draw color; thresholded to 0 or 1 (any nonzero input).
 */
-void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
+void GFXcanvas1::drawFastVLineRaw(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   int16_t row_bytes = ((WIDTH + 7) / 8); // Row-to-row increment
-  uint8_t *ptr = &buffer[(x / 8) + y * row_bytes];
+  uint8_t *ptr = &pixbuf[(x / 8) + y * row_bytes];
 
   if (color > 0) {
 #ifdef __AVR__
@@ -303,21 +257,112 @@ void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
 
 /*!
   @brief  Draw horizontal line. May allow for optimizations compared to the
-          generalized drawLine().
-  @brief  Draw horizontal line into 'raw' canvas buffer. Inputs are assumed
-          valid and in native coordinates; NO CLIPPING, ROTATION OR BUFFER
-          VALIDATION IS PERFORMED.
+          generalized drawLine() function.
   @param  x      Column (horizontal position) of start point.
   @param  y      Row (vertical position of start and end points)
   @param  w      Width of vertical line to be drawn, including first point.
-  @param  color  Binary (on or off) color to draw.
+  @param  color  Line draw color; thresholded to 0 or 1 (any nonzero input).
 */
-void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
-                                  uint16_t color) {
-  int16_t rowBytes = ((WIDTH + 7) / 8);
-  uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
+void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
+                               uint16_t color) {
+  if (pixbuf) {
+    if (w < 0) { // Convert negative widths to positive equivalent
+      w = -w;
+      x -= w - 1;
+      if (x < 0) {
+        w += x;
+        x = 0;
+      }
+    }
 
-  if ((x & 7) > 0) { // Partial fill on first byte?
+    // Reject off-canvas and zero-width lines
+    if ((w > 0) && (y >= 0) && (y < _height) && (x < _width) &&
+        ((x + w - 1) >= 0)) {
+      if (x < 0) { // Clip left
+        w += x;
+        x = 0;
+      }
+      if ((x + w) >= _width) { // Clip right
+        w = _width - x;
+      }
+
+      switch (rotation) {
+      case 0: // No rotation
+        drawFastHLineRaw(x, y, w, color);
+        break;
+      case 1: // 90 degrees CW
+        drawFastVLineRaw(WIDTH - 1 - y, x, w, color);
+        break;
+      case 2: // 180 degrees
+        drawFastHLineRaw(WIDTH - x - w, HEIGHT - 1 - y, w, color);
+        break;
+      case 3: // 90 degrees CCW
+        drawFastVLineRaw(y, HEIGHT - x - w, w, color);
+        break;
+      }
+    }
+  }
+}
+
+/*!
+  @brief  Draw horizontal line into 'raw' canvas buffer. Inputs are assumed
+          valid and in native coordinates. NO CLIPPING, ROTATION OR
+          VALIDATION OF CANVAS BUFFER IS PERFORMED, calling function must
+          be AWARE and WELL-BEHAVED. This is a protected function intended
+          for related class code, not user-facing.
+  @param  x      Column (horizontal position) of start point.
+  @param  y      Row (vertical position of start and end points)
+  @param  w      Width of vertical line to be drawn, including first point.
+  @param  color  Line draw color; thresholded to 0 or 1 (any nonzero input).
+*/
+void GFXcanvas1::drawFastHLineRaw(int16_t x, int16_t y, int16_t w,
+                                  uint16_t color) {
+  uint8_t *ptr = &pixbuf[(x / 8) + y * ((WIDTH + 7) / 8)];
+
+#if 0
+// Do partial fill on first byte; may be only byte needed
+// If more bytes...
+//   Fill the solid ones.
+//   If a lingering byte...
+//     Do partial fill on that
+  if (x & 7) { // Partial fill on first byte?
+
+x & 7 = first bit set in first byte
+(w & 7) + 1 ??? = number of bits set in first byte
+
+
+    mask = (0xFF >> (7 - (w & 7))) << (x & 7);
+    if ((color)) {
+      *ptr |= mask;
+    } else {
+      *ptr &= ~mask;
+    }
+    ptr++;
+w -= 
+
+  if (x & 7) {                     // Partial fill on first byte?
+    uint8_t mask = 0xFF >> mod;  // Consider bits from mod to end of 1st byte
+    foo = 8 - mod;               // Bits to end of 1st byte
+    if (w < foo) {               // If line width is less than this,
+      mask &= (0xFF << (foo - w));
+    }
+// wait - wh if I started with mask of w&7 bits?
+
+    *
+
+    if (w < mod) {
+        mask &= 0xFF << (mod - w);
+    }
+
+    w -= mod;
+  }
+
+
+if width is less than remainder, mask the mask
+
+
+
+
     // create bit mask for first byte
     uint8_t startByteBitMask = 0x00;
     for (int8_t i = (x & 7); ((i < 8) && (w > 0)); i++) {
@@ -360,4 +405,5 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
       }
     }
   }
+#endif
 }
