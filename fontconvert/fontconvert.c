@@ -93,7 +93,8 @@ int main(int argc, char *argv[]) {
   // If remap is given, "Custom" is appended to the font name.
 
   if (argc < 3) {
-    fprintf(stderr, "Usage: %s fontfile size [first] [last] [remap]\n", argv[0]);
+    fprintf(stderr, "Usage: %s fontfile size [first] [last] [remap]\n",
+            argv[0]);
     return 1;
   }
 
@@ -353,7 +354,8 @@ struct Remap *parse_remap(char *input) {
   }
   uint64_t char_to_replace = read_utf8(&input);
   if (!*input) {
-    fprintf(stderr, "Unexpected end of remap after: %s\n", to_utf8(char_to_replace));
+    fprintf(stderr, "Unexpected end of remap after: %s\n",
+            to_utf8(char_to_replace));
     exit(1);
   }
   uint64_t replace_with = read_utf8(&input);
