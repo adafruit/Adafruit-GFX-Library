@@ -436,9 +436,9 @@ protected:
       ADAGFX_PORT_t misoPinMask; ///< Bitmask for MISO
 #endif                           // end !KINETISK
 #endif                           // end USE_FAST_PINIO
-      int16_t _mosi;              ///< MOSI pin #
-      int16_t _miso;              ///< MISO pin #
-      int16_t _sck;               ///< SCK pin #
+      int16_t _mosi;             ///< MOSI pin #
+      int16_t _miso;             ///< MISO pin #
+      int16_t _sck;              ///< SCK pin #
     } swspi;                     ///< Software SPI values
     struct {                     //   Values specific to 8-bit parallel:
 #if defined(USE_FAST_PINIO)
@@ -480,9 +480,9 @@ protected:
       ADAGFX_PORT_t rdPinMaskClr; ///< Bitmask for read strobe CLEAR (AND)
 #endif                         // end HAS_PORT_SET_CLR
 #endif                         // end USE_FAST_PINIO
-      int16_t _d0;              ///< Data pin 0 #
-      int16_t _wr;              ///< Write strobe pin #
-      int16_t _rd;              ///< Read strobe pin # (or -1)
+      int16_t _d0;             ///< Data pin 0 #
+      int16_t _wr;             ///< Write strobe pin #
+      int16_t _rd;             ///< Read strobe pin # (or -1)
       bool wide = 0;           ///< If true, is 16-bit interface
     } tft8;                    ///< Parallel interface settings
 #if defined(__cplusplus) && (__cplusplus >= 201100)
@@ -514,9 +514,9 @@ protected:
 #endif                     // end HAS_PORT_SET_CLR
 #endif                     // end USE_FAST_PINIO
   uint8_t connection;      ///< TFT_HARD_SPI, TFT_SOFT_SPI, etc.
-  int16_t _rst;             ///< Reset pin # (or -1)
-  int16_t _cs;              ///< Chip select pin # (or -1)
-  int16_t _dc;              ///< Data/command pin #
+  int16_t _rst;            ///< Reset pin # (or -1)
+  int16_t _cs;             ///< Chip select pin # (or -1)
+  int16_t _dc;             ///< Data/command pin #
 
   int16_t _xstart = 0;          ///< Internal framebuffer X offset
   int16_t _ystart = 0;          ///< Internal framebuffer Y offset
