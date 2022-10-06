@@ -1179,6 +1179,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // drawChar() directly with 'bad' characters of font may cause mayhem!
 
     c -= (uint8_t)pgm_read_byte(&gfxFont->first);
+    uint8_t yAdvance = (uint8_t) pgm_read_byte(&gfxFont->yAdvance);
     GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c);
     uint8_t *bitmap = pgm_read_bitmap_ptr(gfxFont);
 
@@ -1220,9 +1221,9 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
         }
         if (bits & 0x80) {
           if (size_x == 1 && size_y == 1) {
-            writePixel(x + xo + xx, y + yo + yy, color);
+            writePixel(x + xo + xx, y + yo + yy + yAdvance, color);
           } else {
-            writeFillRect(x + (xo16 + xx) * size_x, y + (yo16 + yy) * size_y,
+            writeFillRect(x + (xo16 + xx) * size_x, y + (yo16 + yy) * size_y + yAdvance * size_y,
                           size_x, size_y, color);
           }
         }
