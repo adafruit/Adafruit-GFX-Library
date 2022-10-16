@@ -441,18 +441,18 @@ void Adafruit_GFX::fillPolygon(uint16_t color, uint16_t points, ...) {
 
 /**************************************************************************/
 /*!
-   @brief    draws a regular polygon from a center point, a radius a rotation and
-   whether it is circumscribed or inscribed
+   @brief    draws a regular polygon from a center point, a radius a rotation
+   and whether it is circumscribed or inscribed
    @param    color the color to draw the polygon
    @param    sides number of sides in the polygon
    @param    center_x the x-coordinate of the center point
    @param    center_y the y-coordinate of the center point
    @param    radius the radius of the polygon
-   @param    phase the rotation about the center in degrees. Zero means the first
-   point will be straight above the origin, 180/sides means the top edge will be horizontal.
+   @param    phase the rotation about the center in degrees. Zero means the
+   first point will be straight above the origin, 180/sides means the top edge
+   will be horizontal.
    @param    polyType whether the radius is from the center to the middle of
-             a side (REG_POLY_INSCRIBED) or to
-             a vertex (REG_POLY_CIRCUMSCRIBED) .
+   a side (REG_POLY_INSCRIBED) or to a vertex (REG_POLY_CIRCUMSCRIBED).
 */
 /**************************************************************************/
 void Adafruit_GFX::drawRegPolygon(uint16_t color, uint16_t sides,
@@ -478,18 +478,18 @@ void Adafruit_GFX::drawRegPolygon(uint16_t color, uint16_t sides,
 
 /**************************************************************************/
 /*!
-   @brief    draws a regular polygon from a center point, a radius a rotation and
-   whether it is circumscribed or inscribed
+   @brief    draws a regular polygon from a center point, a radius a rotation
+   and whether it is circumscribed or inscribed
    @param    color the color to draw the polygon
    @param    sides number of sides in the polygon
    @param    center_x the x-coordinate of the center point
    @param    center_y the y-coordinate of the center point
    @param    radius the radius of the polygon
-   @param    phase the rotation about the center in degrees. Zero means the first
-   point will be straight above the origin, 180/sides means the top edge will be horizontal.
+   @param    phase the rotation about the center in degrees. Zero means the
+   first point will be straight above the origin, 180/sides means the top edge
+   will be horizontal.
    @param    polyType whether the radius is from the center to the middle of
-             a side (REG_POLY_INSCRIBED) or to
-             a vertex (REG_POLY_CIRCUMSCRIBED) .
+   a side (REG_POLY_INSCRIBED) or to a vertex (REG_POLY_CIRCUMSCRIBED) .
 */
 /**************************************************************************/
 void Adafruit_GFX::fillRegPolygon(uint16_t color, uint16_t sides,
