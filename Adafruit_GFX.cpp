@@ -338,7 +338,7 @@ inline int8_t Adafruit_GFX::sign(int32_t val) {
 bool Adafruit_GFX::isRelevant(int16_t xp, int16_t yp, int16_t x1, int16_t y1,
                               int16_t x2, int16_t y2) {
   if (y1 > y2)
-    return (yp <= y1) && ( yp > y2);
+    return (yp <= y1) && (yp > y2);
   else if (y1 < y2)
     return (yp > y1) && (yp <= y2);
   else if (x1 > x2)
@@ -386,8 +386,8 @@ void Adafruit_GFX::drawPolygon(uint16_t color, uint16_t points, ...) {
 /**************************************************************************/
 void Adafruit_GFX::fillPolygon(uint16_t color, uint16_t points, ...) {
   va_list args;
-  int16_t (*p)[2] = (int16_t(*)[2])malloc(sizeof(*p) * points);
-  int16_t (*v)[2] = (int16_t(*)[2])malloc(sizeof(*p) * points);
+  int16_t(*p)[2] = (int16_t(*)[2])malloc(sizeof(*p) * points);
+  int16_t(*v)[2] = (int16_t(*)[2])malloc(sizeof(*p) * points);
   va_start(args, points);
   p[0][0] = va_arg(args, int);
   p[0][1] = va_arg(args, int);
@@ -415,7 +415,7 @@ void Adafruit_GFX::fillPolygon(uint16_t color, uint16_t points, ...) {
     int8_t startVals[points];
     for (uint8_t i = 0; i < points; i++) {
       startVals[i] =
-        sign(v[i][0] * (y - p[i][1]) - v[i][1] * (min_x - p[i][0]));
+          sign(v[i][0] * (y - p[i][1]) - v[i][1] * (min_x - p[i][0]));
     }
     for (int16_t x = min_x; x <= max_x; x++) {
       bool onLine = false;
@@ -424,7 +424,7 @@ void Adafruit_GFX::fillPolygon(uint16_t color, uint16_t points, ...) {
         if (isRelevant(x, y, p[i][0], p[i][1], p[(i + 1) % points][0],
                        p[(i + 1) % points][1])) {
           int8_t whichSide =
-            sign((v[i][0]) * (y - p[i][1]) - (v[i][1]) * (x - p[i][0]));
+              sign((v[i][0]) * (y - p[i][1]) - (v[i][1]) * (x - p[i][0]));
           onLine = (0 == whichSide);
           if (whichSide != startVals[i]) {
             inside++;
@@ -442,15 +442,14 @@ void Adafruit_GFX::fillPolygon(uint16_t color, uint16_t points, ...) {
 /**************************************************************************/
 /*!
    @brief    draws a regular polygon from a center point, a radius a rotation and
-             whether it is circumscribed or inscribed
+   whether it is circumscribed or inscribed
    @param    color the color to draw the polygon
    @param    sides number of sides in the polygon
    @param    center_x the x-coordinate of the center point
    @param    center_y the y-coordinate of the center point
    @param    radius the radius of the polygon
    @param    phase the rotation about the center in degrees. Zero means the first
-             point will be straight above the origin, 180/sides means the top edge
-             will be horizontal.
+   point will be straight above the origin, 180/sides means the top edge will be horizontal.
    @param    polyType whether the radius is from the center to the middle of
              a side (REG_POLY_INSCRIBED) or to
              a vertex (REG_POLY_CIRCUMSCRIBED) .
@@ -480,15 +479,14 @@ void Adafruit_GFX::drawRegPolygon(uint16_t color, uint16_t sides,
 /**************************************************************************/
 /*!
    @brief    draws a regular polygon from a center point, a radius a rotation and
-             whether it is circumscribed or inscribed
+   whether it is circumscribed or inscribed
    @param    color the color to draw the polygon
    @param    sides number of sides in the polygon
    @param    center_x the x-coordinate of the center point
    @param    center_y the y-coordinate of the center point
    @param    radius the radius of the polygon
    @param    phase the rotation about the center in degrees. Zero means the first
-             point will be straight above the origin, 180/sides means the top edge
-             will be horizontal.
+   point will be straight above the origin, 180/sides means the top edge will be horizontal.
    @param    polyType whether the radius is from the center to the middle of
              a side (REG_POLY_INSCRIBED) or to
              a vertex (REG_POLY_CIRCUMSCRIBED) .
