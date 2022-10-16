@@ -229,10 +229,11 @@ public:
   /************************************************************************/
   int16_t getCursorY(void) const { return cursor_y; }
 
-    /*! An enumeration on whether a polygon should be drawn circumscribed or inscribed. */
+  /*! An enumeration on whether a polygon should be drawn circumscribed or
+   * inscribed. */
   enum regPolyType {
-      REG_POLY_CIRCUMSCRIBED, /*!< given radius is for a circumscribed poly */
-      REG_POLY_INSCRIBED /*!< given radius is for an inscribed poly */
+    REG_POLY_CIRCUMSCRIBED, /*!< given radius is for a circumscribed poly */
+    REG_POLY_INSCRIBED      /*!< given radius is for an inscribed poly */
   };
 
   void drawPolygon(uint16_t, uint16_t, ...);
