@@ -308,6 +308,181 @@ void Adafruit_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 
 /**************************************************************************/
 /*!
+   @brief    internal function, returns the sign of an integer
+   @param    val the value to evaluate
+   @return    -1 if negative, 0 if 0, 1 if positive
+*/
+/**************************************************************************/
+inline int8_t Adafruit_GFX::sign(int32_t val) {
+  if (val < 0) return -1;
+  if (val == 0) return 0;
+  return 1;
+}
+
+/**************************************************************************/
+/*!
+   @brief    internal function, returns whether the line given is relevant for filling in the polygon at the given point
+   @param    xp x-coordinate for the given point
+   @param    yp y-coordinate for the given point
+   @param    x1 x-coordinate for the first point of the line
+   @param    y1 y-coordinate for the first point of the line
+   @param    x2 x-coordinate for the second point of the line
+   @param    y2 y-coordinate for the second point of the line
+   @return   true if we should consider the line for filling the point
+*/
+/**************************************************************************/
+bool Adafruit_GFX::isRelevant(int16_t xp, int16_t yp, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
+  if (y1 > y2) return (yp <= y1) && ( yp >= y2);
+  else if (y1 < y2) return (yp >= y1) && (yp <= y2);
+  else if (x1 > x2) return (xp <= x1) && (xp >= x2) && (yp == y1);
+  else return (xp >= x1) && (xp >= x2) && (yp == y1);
+}
+
+/**************************************************************************/
+/*!
+   @brief    draws a polygon from a set of vertices. Draws a line between the first and last vertices.
+   @param    color the color to draw the polygon
+   @param    points number of points in the polygon
+   @param    ... the x and y pairs of the vertices
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawPolygon(uint16_t color, uint16_t points, ...) {
+  va_list args;
+  va_start(args, points);
+  uint16_t old_x = va_arg(args, int);
+  uint16_t old_y = va_arg(args, int);
+  uint16_t first_x = old_x;
+  uint16_t first_y = old_y;
+  for (int i = 1; i < points; i++) {
+    uint16_t x = va_arg(args, int);
+    uint16_t y = va_arg(args, int);
+    drawLine(old_x, old_y, x, y, color);
+    old_x = x;
+    old_y = y;
+  }
+  drawLine(old_x, old_y, first_x, first_y, color);
+  va_end(args);
+}
+
+/**************************************************************************/
+/*!
+   @brief    draws a polygon from a set of vertices. Fills in the polygon using the scanning algorithm, fills in points when an odd number of lines have been crossed (or we are on a line)
+   @param    color the color to draw the polygon
+   @param    points number of points in the polygon
+   @param    ... the x and y pairs of the vertices
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillPolygon(uint16_t color, uint16_t points, ...) {
+  va_list args;
+  int16_t (*p)[2] = (int16_t (*)[2])malloc(sizeof(*p) * points);
+  int16_t (*v)[2] = (int16_t (*)[2])malloc(sizeof(*p) * points);
+  va_start(args, points);
+  p[0][0] = va_arg(args, int);
+  p[0][1] = va_arg(args, int);
+  int16_t max_x = p[0][0];
+  int16_t min_x = p[0][0];
+  int16_t max_y = p[0][1];
+  int16_t min_y = p[0][1];
+  for (uint16_t i = 1; i < points; i++) {
+    p[i][0] = va_arg(args, int);
+    p[i][1] = va_arg(args, int);
+    v[i - 1][0] = p[i][0] - p[i-1][0];
+    v[i - 1][1] = p[i][1] - p[i-1][1];
+    drawLine(p[i - 1][0], p[i - 1][1], p[i][0], p[i][1], color);
+    max_x = (max_x < p[i][0]) ? p[i][0] : max_x;
+    max_y = (max_y < p[i][1]) ? p[i][1] : max_y;
+    min_x = (min_x > p[i][0]) ? p[i][0] : min_x;
+    min_y = (min_y > p[i][1]) ? p[i][1] : min_y;
+  }
+  v[points - 1][0] = p[0][0] - p[points - 1][0];
+  v[points - 1][1] = p[0][1] - p[points - 1][1];
+  drawLine(p[points - 1][0], p[points - 1][1], p[0][0], p[0][1], color);
+  va_end(args);
+
+  for (int16_t y = min_y; y <= max_y; y++) {
+    int8_t startVals[points];
+    for (uint8_t i = 0; i < points; i++) {
+      startVals[i] = sign((v[i][0]) * (y - p[i][1]) - (v[i][1]) * (min_x - p[i][0]));
+    }
+    for (int16_t x = min_x; x <= max_x; x++) {
+      bool onLine = false;
+      uint8_t inside = 0;
+      for (uint8_t i = 0; !onLine && (i < points); i++) {
+        if (isRelevant(x, y, p[i][0], p[i][1], p[(i + 1) % points][0], p[(i + 1) % points][1])) {
+          int8_t whichSide = sign((v[i][0]) * (y - p[i][1]) - (v[i][1]) * (x - p[i][0]));
+          onLine = (0 == whichSide);
+          if (whichSide != startVals[i]) {
+              inside++;
+          }
+        }
+      }
+      if (onLine || (inside%2)) drawPixel(x, y, color);
+    }
+  }
+  free(p);
+  free(v);
+}
+
+/**************************************************************************/
+/*!
+   @brief    draws a regular polygon from a center point, a radius a rotation and whether it is circumscribed or inscribed
+   @param    color the color to draw the polygon
+   @param    sides number of sides in the polygon
+   @param    center_x the x-coordinate of the center point
+   @param    center_y the y-coordinate of the center point
+   @param    radius the radius of the polygon
+   @param    phase the rotation about the center in degrees. Zero means the first point will be straight above the origin, 180/sides means the top edge will be horizontal.
+   @param    polyType whether the radius is from the center to the middle of a side (REG_POLY_INSCRIBED) or to a vertex (REG_POLY_CIRCUMSCRIBED) .
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawRegPolygon(uint16_t color, uint16_t sides, int16_t center_x, int16_t center_y, uint16_t radius, float phase, regPolyType polyType) {
+  uint16_t r = radius;
+  int16_t old_x, old_y;
+  float anglePerSide = TWO_PI / (float)sides;
+  float phaseRads = phase * DEG_TO_RAD;
+  if (polyType == REG_POLY_INSCRIBED) r = radius / cos(anglePerSide / 2.0);
+  old_x = center_x + r * sin(phaseRads);
+  old_y = center_y - r * cos(phaseRads);
+  for (float i = 1; i <= sides; i++) {
+    int16_t x = center_x + r * sin(phaseRads + i * anglePerSide);
+    int16_t y = center_y - r * cos(phaseRads + i * anglePerSide);
+    drawLine(x, y, old_x, old_y, color);
+    old_x = x;
+    old_y = y;
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    draws a regular polygon from a center point, a radius a rotation and whether it is circumscribed or inscribed
+   @param    color the color to draw the polygon
+   @param    sides number of sides in the polygon
+   @param    center_x the x-coordinate of the center point
+   @param    center_y the y-coordinate of the center point
+   @param    radius the radius of the polygon
+   @param    phase the rotation about the center in degrees. Zero means the first point will be straight above the origin, 180/sides means the top edge will be horizontal.
+   @param    polyType whether the radius is from the center to the middle of a side (REG_POLY_INSCRIBED) or to a vertex (REG_POLY_CIRCUMSCRIBED) .
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillRegPolygon(uint16_t color, uint16_t sides, int16_t center_x, int16_t center_y, uint16_t radius, float phase, regPolyType polyType) {
+  uint16_t r = radius;
+  int16_t old_x, old_y;
+  float anglePerSide = TWO_PI / (float)sides;
+  float phaseRads = phase * DEG_TO_RAD;
+  if (polyType == REG_POLY_INSCRIBED) r = radius / cos(anglePerSide / 2.0);
+  old_x = center_x + r * sin(phaseRads);
+  old_y = center_y - r * cos(phaseRads);
+  for (float i = 1; i <= sides; i++) {
+    int16_t x = center_x + r * sin(phaseRads +  anglePerSide * i);
+    int16_t y = center_y - r * cos(phaseRads +  anglePerSide * i);
+    fillTriangle(center_x, center_y, old_x, old_y, x, y, color);
+    old_x = x;
+    old_y = y;
+  }
+}
+
+/**************************************************************************/
+/*!
    @brief    Fill the screen completely with one color. Update in subclasses if
    desired!
     @param    color 16-bit 5-6-5 Color to fill with
