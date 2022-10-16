@@ -227,15 +227,16 @@ public:
     @returns    Y coordinate in pixels
   */
   /************************************************************************/
-  int16_t getCursorY(void) const { return cursor_y; };
-    
+  int16_t getCursorY(void) const { return cursor_y; }
+
   enum regPolyType { REG_POLY_CIRCUMSCRIBED, REG_POLY_INSCRIBED };
-    
+
   void drawPolygon(uint16_t, uint16_t, ...);
   void fillPolygon(uint16_t, uint16_t, ...);
-  void drawRegPolygon(uint16_t, uint16_t, int16_t, int16_t, uint16_t, float, Adafruit_GFX::regPolyType);
-  void fillRegPolygon(uint16_t, uint16_t, int16_t, int16_t, uint16_t, float, Adafruit_GFX::regPolyType);
-
+  void drawRegPolygon(uint16_t, uint16_t, int16_t, int16_t, uint16_t, float,
+                      Adafruit_GFX::regPolyType);
+  void fillRegPolygon(uint16_t, uint16_t, int16_t, int16_t, uint16_t, float,
+                      Adafruit_GFX::regPolyType);
 
 protected:
   void charBounds(unsigned char c, int16_t *x, int16_t *y, int16_t *minx,
@@ -257,7 +258,6 @@ protected:
 private:
   inline int8_t sign(int32_t);
   bool isRelevant(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t);
-
 };
 
 /// A simple drawn button UI element
