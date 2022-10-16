@@ -33,6 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Adafruit_GFX.h"
 #include "glcdfont.c"
+#include <cstdarg>
 #ifdef __AVR__
 #include <avr/pgmspace.h>
 #elif defined(ESP8266) || defined(ESP32)
@@ -332,8 +333,8 @@ inline int8_t Adafruit_GFX::sign(int32_t val) {
 */
 /**************************************************************************/
 bool Adafruit_GFX::isRelevant(int16_t xp, int16_t yp, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
-  if (y1 > y2) return (yp <= y1) && ( yp >= y2);
-  else if (y1 < y2) return (yp >= y1) && (yp <= y2);
+  if (y1 > y2) return (yp <= y1) && ( yp > y2);
+  else if (y1 < y2) return (yp > y1) && (yp <= y2);
   else if (x1 > x2) return (xp <= x1) && (xp >= x2) && (yp == y1);
   else return (xp >= x1) && (xp >= x2) && (yp == y1);
 }
@@ -353,7 +354,7 @@ void Adafruit_GFX::drawPolygon(uint16_t color, uint16_t points, ...) {
   uint16_t old_y = va_arg(args, int);
   uint16_t first_x = old_x;
   uint16_t first_y = old_y;
-  for (int i = 1; i < points; i++) {
+  for (uint16_t i = 1; i < points; i++) {
     uint16_t x = va_arg(args, int);
     uint16_t y = va_arg(args, int);
     drawLine(old_x, old_y, x, y, color);
