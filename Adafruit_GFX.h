@@ -328,10 +328,9 @@ protected:
   bool getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  uint8_t *buffer; // protected (no longer private) for subclass flexibility
 
 private:
-  uint8_t *buffer;
-
 #ifdef __AVR__
   // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
   static const uint8_t PROGMEM GFXsetBit[], GFXclrBit[];
@@ -360,9 +359,7 @@ protected:
   uint8_t getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-private:
-  uint8_t *buffer;
+  uint8_t *buffer; // protected (no longer private) for subclass flexibility
 };
 
 ///  A GFX 16-bit canvas context for graphics
@@ -388,9 +385,7 @@ protected:
   uint16_t getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-
-private:
-  uint16_t *buffer;
+  uint16_t *buffer; // protected (no longer private) for subclass flexibility
 };
 
 #endif // _ADAFRUIT_GFX_H
