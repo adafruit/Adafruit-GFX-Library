@@ -1761,7 +1761,7 @@ const uint8_t PROGMEM GFXcanvas1::GFXclrBit[] = {0x7F, 0xBF, 0xDF, 0xEF,
 */
 /**************************************************************************/
 GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint16_t bytes = ((w + 7) / 8) * h;
+  uint32_t bytes = ((w + 7) / 8) * h;
   if ((buffer = (uint8_t *)malloc(bytes))) {
     memset(buffer, 0, bytes);
   }
@@ -1887,7 +1887,7 @@ bool GFXcanvas1::getRawPixel(int16_t x, int16_t y) const {
 /**************************************************************************/
 void GFXcanvas1::fillScreen(uint16_t color) {
   if (buffer) {
-    uint16_t bytes = ((WIDTH + 7) / 8) * HEIGHT;
+    uint32_t bytes = ((WIDTH + 7) / 8) * HEIGHT;
     memset(buffer, color ? 0xFF : 0x00, bytes);
   }
 }
