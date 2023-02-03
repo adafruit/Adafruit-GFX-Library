@@ -1205,7 +1205,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // may overlap).  To replace previously-drawn text when using a custom
     // font, use the getTextBounds() function to determine the smallest
     // rectangle encompassing a string, erase the area with fillRect(),
-    // then draw new text.  This WILL infortunately 'blink' the text, but
+    // then draw new text.  This WILL unfortunately 'blink' the text, but
     // is unavoidable.  Drawing 'background' pixels will NOT fix this,
     // only creates a new set of problems.  Have an idea to work around
     // this (a canvas object type for MCUs that can afford the RAM and
