@@ -107,10 +107,10 @@ public:
                      const uint8_t mask[], int16_t w, int16_t h);
   void drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, uint8_t *mask,
                      int16_t w, int16_t h);
-  void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-                uint16_t bg, uint8_t size);
-  void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-                uint16_t bg, uint8_t size_x, uint8_t size_y);
+  void drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color, uint16_t bg,
+                uint8_t size);
+  void drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color, uint16_t bg,
+                uint8_t size_x, uint8_t size_y);
   void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1,
                      int16_t *y1, uint16_t *w, uint16_t *h);
   void getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y,
@@ -120,6 +120,9 @@ public:
   void setTextSize(uint8_t s);
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
+
+  // Serial UTF-8 decoder
+  uint16_t decodeUTF8(uint8_t c);
 
   /**********************************************************************/
   /*!
@@ -179,6 +182,18 @@ public:
   */
   /**********************************************************************/
   void cp437(bool x = true) { _cp437 = x; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Enable (or disable) UTF-8-compatible charset in custom made fonts
+            By default, the font.h files boundled to the library use ASCII
+    charset as UTF-8 fonts need more memory as many AVR chips can offer. Pass
+    'true' to this function if you are willing to use UTF-8 fonts that you
+    generated whith fontconvert and also your board has enough free memory.
+    @param  x  true = enable (new behavior), false = disable (old behavior)
+  */
+  /**********************************************************************/
+  void utf8(boolean x = true) { _utf8 = x; }
 
   using Print::write;
 #if ARDUINO >= 100
@@ -245,7 +260,11 @@ protected:
   uint8_t rotation;     ///< Display rotation (0 thru 3)
   bool wrap;            ///< If set, 'wrap' text at right edge of display
   bool _cp437;          ///< If set, use correct CP437 charset (default is off)
+  bool _utf8;           ///< If set, use correct UTF-8 charset (default is off)
   GFXfont *gfxFont;     ///< Pointer to special font
+
+  uint8_t decoderState = 0; ///< UTF-8 decoder state
+  uint16_t decoderBuffer;   ///< Unicode code-point buffer
 };
 
 /// A simple drawn button UI element
