@@ -1,7 +1,6 @@
 #pragma once
 #include <Adafruit_GFX.h>
 
-
 // Picopixel by Sebastian Weber.  A tiny font
 // with all characters within a 6 pixel height.
 
