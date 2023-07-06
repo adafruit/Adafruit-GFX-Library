@@ -1356,10 +1356,10 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
             Broke this out as it's used by both the PROGMEM- and RAM-resident
             getTextBounds() functions.
     @param  c     The ASCII character in question
-    @param  x     Pointer to x cursor position of character. Value is modified by
-                  this function to advance to next character.
-    @param  y     Pointer to y cursor position of character. Value is modified by
-                  this function to advance to next character.
+    @param  x     Pointer to x cursor position of character. Value is modified
+                  by this function to advance to next character.
+    @param  y     Pointer to y cursor position of character. Value is modified
+                  by this function to advance to next character.
     @param  minx  Pointer to minimum X coordinate, passed in to AND returned
                   by this function -- this is used to incrementally build a
                   bounding rectangle for a string.
@@ -1444,7 +1444,8 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  yT   Top text boundary Y coordinate, returned by function
     @param  w    Text boundary width, returned by function
     @param  h    Text boundary height, returned by function
-    @param  xF   Ending cursor X (right side of baseline, last char), if not NULL
+    @param  xF   Ending cursor X (right side of baseline, last char), if not
+                 NULL
     @param  yF   Ending cursor Y (on baseline, last char), returned if not NULL
     @notes       The values of (x, y) on call to this function actually don't
                  matter to it; they are simply incremented past the string
@@ -1505,16 +1506,15 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
-                                 int16_t *xL, int16_t *yT,
-                                 uint16_t *w, uint16_t *h,
-                                 int16_t *xF, int16_t *yF) {
+                                 int16_t *xL, int16_t *yT, uint16_t *w,
+                                 uint16_t *h, int16_t *xF, int16_t *yF) {
 
   uint8_t c; // Current character
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
-  *xL = x;  // This initialization SHOULD be overwritten below after charBounds()
-  *yT = y;  //     is called. (Unless string is empty).
+  *xL = x; // This initialization SHOULD be overwritten below after charBounds()
+  *yT = y; //     is called. (Unless string is empty).
   *w = *h = 0; // Initial size is zero
 
   while ((c = *str++)) {
@@ -1528,7 +1528,7 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     *w = maxx - minx + 1; // And w to bound rect width
   }
 
-  if (maxy >= miny) {     // Same for height as for width
+  if (maxy >= miny) { // Same for height as for width
     *yT = miny;
     *h = maxy - miny + 1;
   }
@@ -1554,9 +1554,8 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
-                                 int16_t *xL, int16_t *yT,
-                                 uint16_t *w, uint16_t *h,
-                                 int16_t *xF, int16_t *yF) {
+                                 int16_t *xL, int16_t *yT, uint16_t *w,
+                                 uint16_t *h, int16_t *xF, int16_t *yF) {
   if (str.length() != 0) {
     getTextBounds(const_cast<char *>(str.c_str()), x, y, xL, yT, w, h, xF, yF);
   }
@@ -1577,8 +1576,8 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
                                  int16_t y, int16_t *xL, int16_t *yT,
-                                 uint16_t *w, uint16_t *h,
-                                 int16_t *xF, int16_t *yF) {
+                                 uint16_t *w, uint16_t *h, int16_t *xF,
+                                 int16_t *yF) {
   uint8_t *s = (uint8_t *)str, c;
 
   *xL = x;
