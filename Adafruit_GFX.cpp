@@ -1551,9 +1551,10 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     @param    yT      The top boundary Y coordinate, set by function
     @param    w       The boundary width, set by function
     @param    h       The boundary height, set by function
-    @param    xF      Ending cursor X (right side of baseline, last char), if not
+    @param    xF      Ending cursor X (right side of baseline, last char), if
+                      not NULL
+    @param    yF      Ending cursor Y (on baseline, last char), returned if not
                       NULL
-    @param    yF      Ending cursor Y (on baseline, last char), returned if not NULL
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
@@ -1575,9 +1576,10 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
     @param    yT      The top boundary Y coordinate, set by function
     @param    w       The boundary width, set by function
     @param    h       The boundary height, set by function
-    @param    xF      Ending cursor X (right side of baseline, last char), if not
+    @param    xF      Ending cursor X (right side of baseline, last char), if
+                      not NULL
+    @param    yF      Ending cursor Y (on baseline, last char), returned if not
                       NULL
-    @param    yF      Ending cursor Y (on baseline, last char), returned if not NULL
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
