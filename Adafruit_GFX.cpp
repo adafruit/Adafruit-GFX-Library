@@ -1447,7 +1447,7 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  xF   Ending cursor X (right side of baseline, last char), if not
                  NULL
     @param  yF   Ending cursor Y (on baseline, last char), returned if not NULL
-    @notes       The values of (x, y) on call to this function actually don't
+    @note        The values of (x, y) on call to this function actually don't
                  matter to it; they are simply incremented past the string
                  bounds. However, they COULD BE the CURSOR POSITION used in a
                  call to setCursor(). More often, the reason for calling this
@@ -1544,13 +1544,16 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
 /*!
     @brief    Helper to determine size of a string with current font/size. Pass
    string and a cursor position, returns UL corner and W,H.
-    @param    str    The ascii string to measure (as an arduino String() class)
-    @param    x      The current cursor X
-    @param    y      The current cursor Y
-    @param    xL     The left boundary X coordinate, set by function
-    @param    yT     The top boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    str     The ascii string to measure (as an arduino String() class)
+    @param    x       The current cursor X
+    @param    y       The current cursor Y
+    @param    xL      The left boundary X coordinate, set by function
+    @param    yT      The top boundary Y coordinate, set by function
+    @param    w       The boundary width, set by function
+    @param    h       The boundary height, set by function
+    @param    xF      Ending cursor X (right side of baseline, last char), if not
+                      NULL
+    @param    yF      Ending cursor Y (on baseline, last char), returned if not NULL
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
@@ -1570,8 +1573,11 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
     @param    y       The current cursor Y
     @param    xL      The left boundary X coordinate, set by function
     @param    yT      The top boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    w       The boundary width, set by function
+    @param    h       The boundary height, set by function
+    @param    xF      Ending cursor X (right side of baseline, last char), if not
+                      NULL
+    @param    yF      Ending cursor Y (on baseline, last char), returned if not NULL
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
