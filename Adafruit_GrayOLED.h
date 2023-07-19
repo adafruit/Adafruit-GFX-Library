@@ -72,6 +72,7 @@ public:
 
   void oled_command(uint8_t c);
   bool oled_commandList(const uint8_t *c, uint8_t n);
+  bool oled_commandAndArgsList(const uint8_t *c, uint8_t n);
 
 protected:
   bool _init(uint8_t i2caddr = 0x3C, bool reset = true);
