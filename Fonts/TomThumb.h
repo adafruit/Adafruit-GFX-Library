@@ -1,3 +1,6 @@
+#pragma once
+#include <Adafruit_GFX.h>
+
 /**
 ** The original 3x5 font is licensed under the 3-clause BSD license:
 **
