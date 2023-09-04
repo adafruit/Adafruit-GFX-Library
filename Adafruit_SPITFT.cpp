@@ -1037,6 +1037,17 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
   }
   return;
+#elif defined(ARDUINO_ARCH_SPRESENSE)
+  if (connection == TFT_HARD_SPI) {
+    if (!bigEndian) {
+      swapBytes(colors, len); // convert little-to-big endian for display
+    }
+    hwspi._spi->send16(colors, len);
+    if (!bigEndian) {
+      swapBytes(colors, len); // big-to-little endian to restore pixel buffer
+    }
+    return;
+  }
 #elif defined(USE_SPI_DMA) &&                                                  \
     (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
@@ -1215,6 +1226,25 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     while (len) {                              // While pixels remain
       xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
       writePixels((uint16_t *)temp, xferLen);
+      len -= xferLen;
+    }
+    return;
+  }
+#elif defined(ARDUINO_ARCH_SPRESENSE)
+  if (connection == TFT_HARD_SPI) {
+#define SPI_MAX_PIXELS_AT_ONCE 1024
+    static uint16_t temp[SPI_MAX_PIXELS_AT_ONCE];
+    uint16_t bufLen =
+        (len < SPI_MAX_PIXELS_AT_ONCE) ? len : SPI_MAX_PIXELS_AT_ONCE;
+    uint16_t xferLen;
+
+    for (uint32_t t = 0; t < bufLen; t++) {
+      temp[t] = color;
+    }
+    // Issue pixels in blocks from temp buffer
+    while (len) {                              // While pixels remain
+      xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
+      writePixels((uint16_t *)temp, xferLen, true, true);
       len -= xferLen;
     }
     return;
@@ -2426,6 +2456,8 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
     w = __builtin_bswap16(w);
     spi_write_blocking(pi_spi, (uint8_t *)&w, 2);
+#elif defined(ARDUINO_ARCH_SPRESENSE)
+    hwspi._spi->transfer16(w);
 #else
     // MSB, LSB because TFTs are generally big-endian
     hwspi._spi->transfer(w >> 8);
