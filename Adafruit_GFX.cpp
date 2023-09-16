@@ -43,9 +43,10 @@ POSSIBILITY OF SUCH DAMAGE.
 // for compatibility with existing PROGMEM-reading AVR code.
 // Do our own checks and defines here for good measure...
 
-#ifndef pgm_read_byte
+// #ifndef pgm_read_byte
+#undef pgm_read_byte
 #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
-#endif
+// #endif
 #ifndef pgm_read_word
 #define pgm_read_word(addr) (*(const unsigned short *)(addr))
 #endif
