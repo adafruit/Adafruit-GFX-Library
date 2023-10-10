@@ -2335,7 +2335,7 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortSet = 1;
-#else                                                // !KINETISK
+#else // !KINETISK
   *swspi.sckPortSet = swspi.sckPinMask;
 #endif
 #else  // !HAS_PORT_SET_CLR
@@ -2354,7 +2354,7 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortClr = 1;
-#else                                                // !KINETISK
+#else // !KINETISK
   *swspi.sckPortClr = swspi.sckPinMask;
 #endif
 #else  // !HAS_PORT_SET_CLR
