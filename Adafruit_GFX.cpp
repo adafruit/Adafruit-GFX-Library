@@ -101,7 +101,7 @@ inline uint8_t *pgm_read_bitmap_ptr(const GFXfont *gfxFont) {
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX context for graphics! Can only be done by a
+   @brief    Instantiate a GFX context for graphics! Can only be done by a
    superclass
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
@@ -121,7 +121,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) : WIDTH(w), HEIGHT(h) {
 
 /**************************************************************************/
 /*!
-   @brief    Write a line.  Bresenham's algorithm - thx wikpedia
+   @brief    Write a line.  Bresenham's algorithm - thx Wikipedia
     @param    x0  Start point x coordinate
     @param    y0  Start point y coordinate
     @param    x1  End point x coordinate
@@ -957,7 +957,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 /*!
    @brief   Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask
    (set bits = opaque, unset bits = clear) at the specified (x,y) position.
-   BOTH buffers (grayscale and mask) must be RAM-residentt, no mix-and-match
+   BOTH buffers (grayscale and mask) must be RAM-resident, no mix-and-match
    Specifically for 8-bit display devices such as IS31FL3731; no color
    reduction/expansion is performed.
     @param    x   Top left corner x coordinate
@@ -1106,7 +1106,7 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
     @param    c   The 8-bit font-indexed character (likely ascii)
-    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size  Font magnification level, 1 is 'original' size
@@ -1124,7 +1124,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
     @param    c   The 8-bit font-indexed character (likely ascii)
-    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size_x  Font magnification level in X-axis, 1 is 'original' size
@@ -1205,7 +1205,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // may overlap).  To replace previously-drawn text when using a custom
     // font, use the getTextBounds() function to determine the smallest
     // rectangle encompassing a string, erase the area with fillRect(),
-    // then draw new text.  This WILL infortunately 'blink' the text, but
+    // then draw new text.  This WILL unfortunately 'blink' the text, but
     // is unavoidable.  Drawing 'background' pixels will NOT fix this,
     // only creates a new set of problems.  Have an idea to work around
     // this (a canvas object type for MCUs that can afford the RAM and
@@ -1339,12 +1339,12 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   if (f) {          // Font struct pointer passed in?
     if (!gfxFont) { // And no current font struct?
       // Switching from classic to new font behavior.
-      // Move cursor pos down 6 pixels so it's on baseline.
+      // Move cursor pos down 6 pixels, so it's on baseline.
       cursor_y += 6;
     }
   } else if (gfxFont) { // NULL passed.  Current font struct defined?
     // Switching from new to classic font behavior.
-    // Move cursor pos up 6 pixels so it's at top-left of char.
+    // Move cursor pos up 6 pixels, so it's at top-left of char.
     cursor_y -= 6;
   }
   gfxFont = (GFXfont *)f;
@@ -1411,7 +1411,7 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     if (c == '\n') {        // Newline?
       *x = 0;               // Reset x to zero,
       *y += textsize_y * 8; // advance y one line
-      // min/max x/y unchaged -- that waits for next 'normal' character
+      // min/max x/y unchanged -- that waits for next 'normal' character
     } else if (c != '\r') { // Normal char; ignore carriage returns
       if (wrap && ((*x + textsize_x * 6) > _width)) { // Off right?
         *x = 0;                                       // Reset x to zero,
@@ -1450,8 +1450,7 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
                                  uint16_t *h) {
 
   uint8_t c; // Current character
-  int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
-  // Bound rect is intentionally initialized inverted, so 1st char sets it
+  int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect (initialized inverted, so 1st char sets it)
 
   *x1 = x; // Initial position is value passed in
   *y1 = y;
@@ -1557,8 +1556,8 @@ Adafruit_GFX_Button::Adafruit_GFX_Button(void) { _gfx = 0; }
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x       The X coordinate of the center of the button
    @param    y       The Y coordinate of the center of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1582,8 +1581,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x       The X coordinate of the center of the button
    @param    y       The Y coordinate of the center of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1610,8 +1609,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x1       The X coordinate of the Upper-Left corner of the button
    @param    y1       The Y coordinate of the Upper-Left corner of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1635,8 +1634,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x1       The X coordinate of the Upper-Left corner of the button
    @param    y1       The Y coordinate of the Upper-Left corner of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1732,15 +1731,15 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 // comfy with the implementation) provide 1-, 8- and 16-bit offscreen
 // canvases, the address of which can be passed to drawBitmap() or
 // pushColors() (the latter appears only in a couple of GFX-subclassed TFT
-// libraries at this time).  This is here mostly to help with the recently-
+// libraries at this time).  This is here mostly to help with the recently 
 // added proportionally-spaced fonts; adds a way to refresh a section of the
 // screen without a massive flickering clear-and-redraw...but maybe you'll
 // find other uses too.  VERY RAM-intensive, since the buffer is in MCU
 // memory and not the display driver...GXFcanvas1 might be minimally useful
-// on an Uno-class board, but this and the others are much more likely to
+// on a Uno-class board, but this and the others are much more likely to
 // require at least a Mega or various recent ARM-type boards (recommended,
 // as the text+bitmap draw can be pokey).  GFXcanvas1 requires 1 bit per
-// pixel (rounded up to nearest byte per scanline), GFXcanvas8 is 1 byte
+// pixel (rounded up to the nearest byte per scanline), GFXcanvas8 is 1 byte
 // per pixel (no scanline pad), and GFXcanvas16 uses 2 bytes per pixel (no
 // scanline pad).
 // NOT EXTENSIVELY TESTED YET.  MAY CONTAIN WORST BUGS KNOWN TO HUMANKIND.
@@ -1755,7 +1754,7 @@ const uint8_t PROGMEM GFXcanvas1::GFXclrBit[] = {0x7F, 0xBF, 0xDF, 0xEF,
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 1-bit canvas context for graphics
+   @brief    Instantiate a GFX 1-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
 */
@@ -1855,7 +1854,7 @@ bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
 
 /**********************************************************************/
 /*!
-        @brief    Get the pixel color value at a given, unrotated coordinate.
+        @brief    Get the pixel color value at a given, non-rotated coordinate.
               This method is intended for hardware drivers to get pixel value
               in physical coordinates.
         @param    x   x coordinate
@@ -2108,7 +2107,7 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 8-bit canvas context for graphics
+   @brief    Instantiate a GFX 8-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
 */
@@ -2196,7 +2195,7 @@ uint8_t GFXcanvas8::getPixel(int16_t x, int16_t y) const {
 
 /**********************************************************************/
 /*!
-        @brief    Get the pixel color value at a given, unrotated coordinate.
+        @brief    Get the pixel color value at a given, non-rotated coordinate.
               This method is intended for hardware drivers to get pixel value
               in physical coordinates.
         @param    x   x coordinate
@@ -2376,7 +2375,7 @@ void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 16-bit canvas context for graphics
+   @brief    Instantiate a GFX 16-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
 */
@@ -2464,7 +2463,7 @@ uint16_t GFXcanvas16::getPixel(int16_t x, int16_t y) const {
 
 /**********************************************************************/
 /*!
-        @brief    Get the pixel color value at a given, unrotated coordinate.
+        @brief    Get the pixel color value at a given, non-rotated coordinate.
               This method is intended for hardware drivers to get pixel value
               in physical coordinates.
         @param    x   x coordinate
