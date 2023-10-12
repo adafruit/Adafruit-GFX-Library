@@ -47,13 +47,13 @@
 class Adafruit_GrayOLED : public Adafruit_GFX {
 public:
   Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, TwoWire *twi = &Wire,
-                    int8_t rst_pin = -1, uint32_t preclk = 400000,
+                    uint8_t rst_pin = -1, uint32_t preclk = 400000,
                     uint32_t postclk = 100000);
-  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, int8_t mosi_pin,
-                    int8_t sclk_pin, int8_t dc_pin, int8_t rst_pin,
-                    int8_t cs_pin);
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, uint8_t mosi_pin,
+                    uint8_t sclk_pin, uint8_t dc_pin, uint8_t rst_pin,
+                    uint8_t cs_pin);
   Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, SPIClass *spi,
-                    int8_t dc_pin, int8_t rst_pin, int8_t cs_pin,
+                    uint8_t dc_pin, uint8_t rst_pin, uint8_t cs_pin,
                     uint32_t bitrate = 8000000UL);
 
   ~Adafruit_GrayOLED(void);
@@ -87,9 +87,9 @@ protected:
       window_x2,     ///< Dirty tracking window maximum x
       window_y2;     ///< Dirty tracking window maximum y
 
-  int dcPin,  ///< The Arduino pin connected to D/C (for SPI)
-      csPin,  ///< The Arduino pin connected to CS (for SPI)
-      rstPin; ///< The Arduino pin connected to reset (-1 if unused)
+  uint8_t dcPin, ///< The Arduino pin connected to D/C (for SPI)
+      csPin,     ///< The Arduino pin connected to CS (for SPI)
+      rstPin;    ///< The Arduino pin connected to reset (-1 if unused)
 
   uint8_t _bpp = 1; ///< Bits per pixel color for this display
 private:
