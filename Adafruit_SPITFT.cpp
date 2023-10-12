@@ -114,9 +114,9 @@ static const struct {
              need to call subclass' begin() function, which in turn calls
              this library's initSPI() function to initialize pins.
 */
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
-                                 int8_t mosi, int8_t sck, int8_t rst,
-                                 int8_t miso)
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
+                                 int16_t mosi, int16_t sck, int16_t rst,
+                                 int16_t miso)
     : Adafruit_GFX(w, h), connection(TFT_SOFT_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
   swspi._sck = sck;
@@ -235,15 +235,15 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
              this library's initSPI() function to initialize pins.
 */
 #if defined(ESP8266) // See notes below
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
-                                 int8_t rst)
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
+                                 int16_t rst)
     : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
   hwspi._spi = &SPI;
 }
 #else  // !ESP8266
-Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
-                                 int8_t rst)
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
+                                 int16_t rst)
     : Adafruit_SPITFT(w, h, &SPI, cs, dc, rst) {
   // This just invokes the hardware SPI constructor below,
   // passing the default SPI device (&SPI).
@@ -279,7 +279,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
              begin or init function. Unfortunate but unavoidable.
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
-                                 int8_t cs, int8_t dc, int8_t rst)
+                                 int16_t cs, int16_t dc, int16_t rst)
     : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(rst), _cs(cs),
       _dc(dc) {
   hwspi._spi = spiClass;
@@ -375,8 +375,8 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
              wanting to break existing code).
 */
 Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
-                                 int8_t d0, int8_t wr, int8_t dc, int8_t cs,
-                                 int8_t rst, int8_t rd)
+                                 int16_t d0, int16_t wr, int16_t dc, int16_t cs,
+                                 int16_t rst, int16_t rd)
     : Adafruit_GFX(w, h), connection(TFT_PARALLEL), _rst(rst), _cs(cs),
       _dc(dc) {
   tft8._d0 = d0;
