@@ -1731,8 +1731,8 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
    @brief	Set label to button object.
 */
 void Adafruit_GFX_Button::setLabel(char *label) {
-	 strncpy(_label, label, 9);
-	 _label[9]=0;
+  strncpy(_label, label, 9);
+  _label[9]=0;
 }
 
 // -------------------------------------------------------------------------
