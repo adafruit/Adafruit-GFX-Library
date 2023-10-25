@@ -272,8 +272,8 @@ public:
   void drawButton(bool inverted = false);
   bool contains(int16_t x, int16_t y);
   // Public methods to access button label to reuse the Button object.
-  char* getLabel() { return _label;}
-  void setLabel(char* label) {strncpy(_label, label, 9);_label[9]=0;}
+  char *getLabel() { return _label;}
+  void setLabel(char *label);
 
   /**********************************************************************/
   /*!
