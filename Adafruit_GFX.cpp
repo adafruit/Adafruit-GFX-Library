@@ -1732,7 +1732,7 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 */
 void Adafruit_GFX_Button::setLabel(char *label) {
   strncpy(_label, label, 9);
-  _label[9]=0;
+  _label[9] = 0;
 }
 
 // -------------------------------------------------------------------------
