@@ -1728,13 +1728,21 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 
 /**************************************************************************/
 /*!
-   @brief	Set label to button object.
+   @brief   Set label to button object.
+   @param   label char pointer to new button label
 */
 void Adafruit_GFX_Button::setLabel(char *label) {
   strncpy(_label, label, 9);
   _label[9] = 0;
 }
-
+/**************************************************************************/
+/*!
+   @brief   Get button label
+   @return  button label char pointer
+*/
+char *Adafruit_GFX_Button::getLabel() {
+	return _label;
+}
 // -------------------------------------------------------------------------
 
 // GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
