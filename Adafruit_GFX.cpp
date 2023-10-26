@@ -1742,7 +1742,7 @@ void Adafruit_GFX_Button::setLabel(char *label) {
    @return  button label char pointer
 */
 char *Adafruit_GFX_Button::getLabel() { return _label; }
-  
+
 /**********************************************************************/
 /*!
    @brief    Set the button to enable/disable
