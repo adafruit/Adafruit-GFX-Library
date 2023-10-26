@@ -1742,6 +1742,20 @@ void Adafruit_GFX_Button::setLabel(char *label) {
    @return  button label char pointer
 */
 char *Adafruit_GFX_Button::getLabel() { return _label; }
+  
+/**********************************************************************/
+/*!
+    @brief    Set the button to enable/disable
+    @param    enable boolean true to enable, false to disable
+	@param    fillColor uint16_t set button fillColor
+*/
+/**********************************************************************/
+  void Adafruit_GFX_Button::setEnabled(bool enable, uint16_t fillColor) {
+	_enabled = enable;
+	_fillcolor = fillColor;
+	drawButton();
+}
+
 // -------------------------------------------------------------------------
 
 // GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
