@@ -1729,7 +1729,7 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 /**************************************************************************/
 /*!
    @brief   Set label to button object.
-   @param   label char pointer to new button label
+    @param   label char pointer to new button label
 */
 void Adafruit_GFX_Button::setLabel(char *label) {
   strncpy(_label, label, 9);
@@ -1745,9 +1745,9 @@ char *Adafruit_GFX_Button::getLabel() { return _label; }
   
 /**********************************************************************/
 /*!
-    @brief    Set the button to enable/disable
+   @brief    Set the button to enable/disable
     @param    enable boolean true to enable, false to disable
-	@param    fillColor uint16_t set button fillColor
+    @param    fillColor uint16_t set button fillColor
 */
 /**********************************************************************/
 void Adafruit_GFX_Button::setEnabled(bool enable, uint16_t fillColor) {
