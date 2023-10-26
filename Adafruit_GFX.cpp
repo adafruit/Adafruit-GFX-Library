@@ -1750,11 +1750,11 @@ char *Adafruit_GFX_Button::getLabel() { return _label; }
 	@param    fillColor uint16_t set button fillColor
 */
 /**********************************************************************/
-  void Adafruit_GFX_Button::setEnabled(bool enable, uint16_t fillColor) {
-	_enabled = enable;
-	_fillcolor = fillColor;
-	currstate = (enable? currstate: false);
-	drawButton();
+void Adafruit_GFX_Button::setEnabled(bool enable, uint16_t fillColor) {
+  _enabled = enable;
+  _fillcolor = fillColor;
+  currstate = (enable? currstate: false);
+  drawButton();
 }
 
 // -------------------------------------------------------------------------
