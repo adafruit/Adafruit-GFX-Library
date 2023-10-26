@@ -1753,7 +1753,7 @@ char *Adafruit_GFX_Button::getLabel() { return _label; }
 void Adafruit_GFX_Button::setEnabled(bool enable, uint16_t fillColor) {
   _enabled = enable;
   _fillcolor = fillColor;
-  currstate = (enable? currstate: false);
+  currstate = (enable ? currstate : false);
   drawButton();
 }
 
