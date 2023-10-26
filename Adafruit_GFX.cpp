@@ -1740,9 +1740,7 @@ void Adafruit_GFX_Button::setLabel(char *label) {
    @brief   Get button label
    @return  button label char pointer
 */
-char *Adafruit_GFX_Button::getLabel() {
-	return _label;
-}
+char *Adafruit_GFX_Button::getLabel() { return _label; }
 // -------------------------------------------------------------------------
 
 // GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
