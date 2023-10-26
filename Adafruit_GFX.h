@@ -270,8 +270,7 @@ public:
                     uint16_t textcolor, char *label, uint8_t textsize_x,
                     uint8_t textsize_y);
   void drawButton(bool inverted = false);
-  bool contains(int16_t x, int16_t y);
- 
+  bool contains(int16_t x, int16_t y); 
   char *getLabel();
   void setLabel(char *label);
 
