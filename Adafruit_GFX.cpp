@@ -2015,6 +2015,10 @@ void GFXcanvas1::drawFastHLine(int16_t x, int16_t y, int16_t w,
 void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
+  if (!buffer) {
+    return;
+  }
+
   int16_t row_bytes = ((WIDTH + 7) / 8);
   uint8_t *ptr = &buffer[(x / 8) + y * row_bytes];
 
@@ -2053,6 +2057,10 @@ void GFXcanvas1::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
 void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
+  if (!buffer) {
+    return;
+  }
+
   int16_t rowBytes = ((WIDTH + 7) / 8);
   uint8_t *ptr = &buffer[(x / 8) + y * rowBytes];
   size_t remainingWidthBits = w;
@@ -2351,10 +2359,12 @@ void GFXcanvas8::drawFastHLine(int16_t x, int16_t y, int16_t w,
 void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  uint8_t *buffer_ptr = buffer + y * WIDTH + x;
-  for (int16_t i = 0; i < h; i++) {
-    (*buffer_ptr) = color;
-    buffer_ptr += WIDTH;
+  if (buffer) {
+    uint8_t *buffer_ptr = buffer + y * WIDTH + x;
+    for (int16_t i = 0; i < h; i++) {
+      (*buffer_ptr) = color;
+      buffer_ptr += WIDTH;
+    }
   }
 }
 
@@ -2371,7 +2381,9 @@ void GFXcanvas8::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
 void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                   uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  memset(buffer + y * WIDTH + x, color, w);
+  if (buffer) {
+    memset(buffer + y * WIDTH + x, color, w);
+  }
 }
 
 /**************************************************************************/
@@ -2643,10 +2655,12 @@ void GFXcanvas16::drawFastHLine(int16_t x, int16_t y, int16_t w,
 void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  uint16_t *buffer_ptr = buffer + y * WIDTH + x;
-  for (int16_t i = 0; i < h; i++) {
-    (*buffer_ptr) = color;
-    buffer_ptr += WIDTH;
+  if (buffer) {
+    uint16_t *buffer_ptr = buffer + y * WIDTH + x;
+    for (int16_t i = 0; i < h; i++) {
+      (*buffer_ptr) = color;
+      buffer_ptr += WIDTH;
+    }
   }
 }
 
@@ -2662,8 +2676,10 @@ void GFXcanvas16::drawFastRawVLine(int16_t x, int16_t y, int16_t h,
 void GFXcanvas16::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
                                    uint16_t color) {
   // x & y already in raw (rotation 0) coordinates, no need to transform.
-  uint32_t buffer_index = y * WIDTH + x;
-  for (uint32_t i = buffer_index; i < buffer_index + w; i++) {
-    buffer[i] = color;
+  if (buffer) {
+    uint32_t buffer_index = y * WIDTH + x;
+    for (uint32_t i = buffer_index; i < buffer_index + w; i++) {
+      buffer[i] = color;
+    }
   }
 }
