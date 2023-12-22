@@ -1833,14 +1833,12 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
 void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
                                     int16_t w, int16_t h, int16_t src_x,
                                     int16_t src_y, int16_t src_w) {
-  int16_t x2, y2;                  // Lower-right coord
-  if ((x >= _width)             || // Off-edge right
-      (src_x >= src_w)          ||
-      (y >= _height)            || // " bottom
-      ((x2 = (x + w - 1)) < 0)  || // " left
-      (src_x + src_w - 1 < 0)   ||
-      ((y2 = (y + h - 1)) < 0))    // " top
-    return; // " bottom
+  int16_t x2, y2;                                          // Lower-right coord
+  if ((x >= _width) ||                                     // Off-edge right
+      (src_x >= src_w) || (y >= _height) ||                // " bottom
+      ((x2 = (x + w - 1)) < 0) ||                          // " left
+      (src_x + src_w - 1 < 0) || ((y2 = (y + h - 1)) < 0)) // " top
+    return;                                                // " bottom
 
   if (x < 0) { // Clip left
     w += x;
