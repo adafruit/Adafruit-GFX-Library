@@ -1882,7 +1882,7 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
  */
 void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
                                     int16_t w, int16_t h) {
-  drawRGBBitmap(x, y, pcolors, w, h, x, y, w);
+  drawRGBBitmap(x, y, pcolors, w, h, 0, 0, w);
 }
 
 // -------------------------------------------------------------------------
