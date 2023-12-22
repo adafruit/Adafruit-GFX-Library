@@ -251,6 +251,8 @@ public:
   void pushColor(uint16_t color);
 
   using Adafruit_GFX::drawRGBBitmap; // Check base class first
+  void drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w,
+                     int16_t h, int16_t src_x, int16_t src_y, int16_t src_w);
   void drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors, int16_t w,
                      int16_t h);
 
