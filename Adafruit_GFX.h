@@ -294,7 +294,7 @@ public:
   /**********************************************************************/
   bool isPressed(void) { return currstate; };
 
-private:
+protected:
   Adafruit_GFX *_gfx;
   int16_t _x1, _y1; // Coordinates of top-left corner
   uint16_t _w, _h;
