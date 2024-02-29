@@ -245,7 +245,7 @@ public:
   int16_t getCursorY(void) const { return cursor_y; };
 
 protected:
-  void charBounds(unsigned char c, int16_t *x, int16_t *y, int16_t *minx,
+  void charBounds(uint16_t c, int16_t *x, int16_t *y, int16_t *minx,
                   int16_t *miny, int16_t *maxx, int16_t *maxy);
   int16_t WIDTH;        ///< This is the 'raw' display width - never changes
   int16_t HEIGHT;       ///< This is the 'raw' display height - never changes
