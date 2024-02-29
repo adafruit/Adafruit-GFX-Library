@@ -1430,7 +1430,7 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     @param  maxy  Pointer to maximum Y coord, passed in AND returned.
 */
 /**************************************************************************/
-void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
+void Adafruit_GFX::charBounds(uint16_t c, int16_t *x, int16_t *y,
                               int16_t *minx, int16_t *miny, int16_t *maxx,
                               int16_t *maxy) {
 
@@ -1511,7 +1511,7 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
                                  int16_t *x1, int16_t *y1, uint16_t *w,
                                  uint16_t *h) {
 
-  uint8_t c; // Current character
+  uint16_t c; // Current character
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
@@ -1520,6 +1520,14 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   *w = *h = 0; // Initial size is zero
 
   while ((c = *str++)) {
+    if (_utf8) {
+      c = decodeUTF8(c);
+    } else {
+      c = (uint16_t)c;
+    }
+    if (c == 0) {
+      continue;
+    }
     // charBounds() modifies x/y to advance for each character,
     // and min/max x/y are updated to incrementally build bounding rect.
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
