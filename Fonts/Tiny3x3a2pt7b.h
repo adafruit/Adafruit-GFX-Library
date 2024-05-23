@@ -1,3 +1,6 @@
+#pragma once
+#include <Adafruit_GFX.h>
+
 /**
 ** The FontStruction “Tiny3x3a”
 ** (https://fontstruct.com/fontstructions/show/670512) by “Michaelangel007” is

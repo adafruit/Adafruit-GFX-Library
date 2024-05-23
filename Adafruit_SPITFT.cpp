@@ -1172,6 +1172,19 @@ void Adafruit_SPITFT::dmaWait(void) {
 }
 
 /*!
+    @brief  Check if DMA transfer is active. Always returts false if DMA
+            is not enabled.
+    @return true if DMA is enabled and transmitting data, false otherwise.
+*/
+bool Adafruit_SPITFT::dmaBusy(void) const {
+#if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
+  return dma_busy;
+#else
+  return false;
+#endif
+}
+
+/*!
     @brief  Issue a series of pixels, all the same color. Not self-
             contained; should follow startWrite() and setAddrWindow() calls.
     @param  color  16-bit pixel color in '565' RGB format.
@@ -1335,7 +1348,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       if (pixelsThisPass > 50000)
         pixelsThisPass = 50000;
       len -= pixelsThisPass;
-      yield(); // Periodic yield() on long fills
+      delay(1); // Periodic delay on long fills
       while (pixelsThisPass--) {
         hwspi._spi->write(hi);
         hwspi._spi->write(lo);
@@ -2292,10 +2305,6 @@ inline void Adafruit_SPITFT::SPI_MOSI_HIGH(void) {
 #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
   digitalWrite(swspi._mosi, HIGH);
-#if defined(ESP32)
-  for (volatile uint8_t i = 0; i < 1; i++)
-    ;
-#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2315,10 +2324,6 @@ inline void Adafruit_SPITFT::SPI_MOSI_LOW(void) {
 #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
   digitalWrite(swspi._mosi, LOW);
-#if defined(ESP32)
-  for (volatile uint8_t i = 0; i < 1; i++)
-    ;
-#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2330,22 +2335,14 @@ inline void Adafruit_SPITFT::SPI_SCK_HIGH(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortSet = 1;
-#else                                                // !KINETISK
+#else // !KINETISK
   *swspi.sckPortSet = swspi.sckPinMask;
-#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
-  for (volatile uint8_t i = 0; i < 1; i++)
-    ;
-#endif
 #endif
 #else  // !HAS_PORT_SET_CLR
   *swspi.sckPort |= swspi.sckPinMaskSet;
 #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
   digitalWrite(swspi._sck, HIGH);
-#if defined(ESP32)
-  for (volatile uint8_t i = 0; i < 1; i++)
-    ;
-#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
@@ -2357,22 +2354,14 @@ inline void Adafruit_SPITFT::SPI_SCK_LOW(void) {
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
   *swspi.sckPortClr = 1;
-#else                                                // !KINETISK
+#else // !KINETISK
   *swspi.sckPortClr = swspi.sckPinMask;
-#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
-  for (volatile uint8_t i = 0; i < 1; i++)
-    ;
-#endif
 #endif
 #else  // !HAS_PORT_SET_CLR
   *swspi.sckPort &= swspi.sckPinMaskClr;
 #endif // end !HAS_PORT_SET_CLR
 #else  // !USE_FAST_PINIO
   digitalWrite(swspi._sck, LOW);
-#if defined(ESP32)
-  for (volatile uint8_t i = 0; i < 1; i++)
-    ;
-#endif // end ESP32
 #endif // end !USE_FAST_PINIO
 }
 
