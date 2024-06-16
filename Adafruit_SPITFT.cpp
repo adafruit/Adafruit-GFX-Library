@@ -130,18 +130,18 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
   swspi.sckPinMask = digitalPinToBitMask(sck);
   swspi.mosiPinMask = digitalPinToBitMask(mosi);
 #endif
-  dcPortSet = portSetRegister(dc);
-  dcPortClr = portClearRegister(dc);
-  swspi.sckPortSet = portSetRegister(sck);
-  swspi.sckPortClr = portClearRegister(sck);
-  swspi.mosiPortSet = portSetRegister(mosi);
-  swspi.mosiPortClr = portClearRegister(mosi);
+  dcPortSet = portSetRegister(digitalPinToPort(dc));
+  dcPortClr = portClearRegister(digitalPinToPort(dc));
+  swspi.sckPortSet = portSetRegister(digitalPinToPort(sck));
+  swspi.sckPortClr = portClearRegister(digitalPinToPort(sck));
+  swspi.mosiPortSet = portSetRegister(digitalPinToPort(mosi));
+  swspi.mosiPortClr = portClearRegister(digitalPinToPort(mosi));
   if (cs >= 0) {
 #if !defined(KINETISK)
     csPinMask = digitalPinToBitMask(cs);
 #endif
-    csPortSet = portSetRegister(cs);
-    csPortClr = portClearRegister(cs);
+    csPortSet = portSetRegister(digitalPinToPort(cs));
+    csPortClr = portClearRegister(digitalPinToPort(cs));
   } else {
 #if !defined(KINETISK)
     csPinMask = 0;
@@ -150,12 +150,12 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
     csPortClr = dcPortClr;
   }
   if (miso >= 0) {
-    swspi.misoPort = portInputRegister(miso);
+    swspi.misoPort = portInputRegister(digitalPinToPort(miso));
 #if !defined(KINETISK)
     swspi.misoPinMask = digitalPinToBitMask(miso);
 #endif
   } else {
-    swspi.misoPort = portInputRegister(dc);
+    swspi.misoPort = portInputRegister(digitalPinToPort(dc));
   }
 #else  // !CORE_TEENSY
   dcPinMask = digitalPinToBitMask(dc);
@@ -289,14 +289,14 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 #if !defined(KINETISK)
   dcPinMask = digitalPinToBitMask(dc);
 #endif
-  dcPortSet = portSetRegister(dc);
-  dcPortClr = portClearRegister(dc);
+  dcPortSet = portSetRegister(digitalPinToPort(dc));
+  dcPortClr = portClearRegister(digitalPinToPort(dc));
   if (cs >= 0) {
 #if !defined(KINETISK)
     csPinMask = digitalPinToBitMask(cs);
 #endif
-    csPortSet = portSetRegister(cs);
-    csPortClr = portClearRegister(cs);
+    csPortSet = portSetRegister(digitalPinToPort(cs));
+    csPortClr = portClearRegister(digitalPinToPort(cs));
   } else { // see comments below
 #if !defined(KINETISK)
     csPinMask = 0;
@@ -386,19 +386,19 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(CORE_TEENSY)
-  tft8.wrPortSet = portSetRegister(wr);
-  tft8.wrPortClr = portClearRegister(wr);
+  tft8.wrPortSet = portSetRegister(digitalPinToPort(wr));
+  tft8.wrPortClr = portClearRegister(digitalPinToPort(wr));
 #if !defined(KINETISK)
   dcPinMask = digitalPinToBitMask(dc);
 #endif
-  dcPortSet = portSetRegister(dc);
-  dcPortClr = portClearRegister(dc);
+  dcPortSet = portSetRegister(digitalPinToPort(dc));
+  dcPortClr = portClearRegister(digitalPinToPort(dc));
   if (cs >= 0) {
 #if !defined(KINETISK)
     csPinMask = digitalPinToBitMask(cs);
 #endif
-    csPortSet = portSetRegister(cs);
-    csPortClr = portClearRegister(cs);
+    csPortSet = portSetRegister(digitalPinToPort(cs));
+    csPortClr = portClearRegister(digitalPinToPort(cs));
   } else { // see comments below
 #if !defined(KINETISK)
     csPinMask = 0;
@@ -412,8 +412,8 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 #else // !KINETISK
     tft8.rdPinMask = digitalPinToBitMask(rd);
 #endif
-    tft8.rdPortSet = portSetRegister(rd);
-    tft8.rdPortClr = portClearRegister(rd);
+    tft8.rdPortSet = portSetRegister(digitalPinToPort(rd));
+    tft8.rdPortClr = portClearRegister(digitalPinToPort(rd));
   } else {
     tft8.rdPinMask = 0;
     tft8.rdPortSet = dcPortSet;
@@ -421,10 +421,10 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   }
   // These are all uint8_t* pointers -- elsewhere they're recast
   // as necessary if a 'wide' 16-bit interface is in use.
-  tft8.writePort = portOutputRegister(d0);
-  tft8.readPort = portInputRegister(d0);
-  tft8.dirSet = portModeRegister(d0);
-  tft8.dirClr = portModeRegister(d0);
+  tft8.writePort = portOutputRegister(digitalPinToPort(d0));
+  tft8.readPort = portInputRegister(digitalPinToPort(d0));
+  tft8.dirSet = portModeRegister(digitalPinToPort(d0));
+  tft8.dirClr = portModeRegister(digitalPinToPort(d0));
 #else  // !CORE_TEENSY
   tft8.wrPinMask = digitalPinToBitMask(wr);
   tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
