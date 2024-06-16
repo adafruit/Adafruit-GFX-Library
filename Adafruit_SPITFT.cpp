@@ -124,7 +124,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
   swspi._miso = miso;
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
-#if defined(CORE_TEENSY)
+#if defined(CORE_TEENSY) || defined(STM32_CORE_VERSION)
 #if !defined(KINETISK)
   dcPinMask = digitalPinToBitMask(dc);
   swspi.sckPinMask = digitalPinToBitMask(sck);
@@ -157,7 +157,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
   } else {
     swspi.misoPort = portInputRegister(digitalPinToPort(dc));
   }
-#else  // !CORE_TEENSY
+#else  // !CORE_TEENSY && !STM32_CORE_VERSION
   dcPinMask = digitalPinToBitMask(dc);
   swspi.sckPinMask = digitalPinToBitMask(sck);
   swspi.mosiPinMask = digitalPinToBitMask(mosi);
@@ -187,7 +187,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
     swspi.misoPinMask = 0;
     swspi.misoPort = (PORTreg_t)portInputRegister(digitalPinToPort(dc));
   }
-#endif // end !CORE_TEENSY
+#endif // end !CORE_TEENSY && !STM32_CORE_VERSION
 #else  // !HAS_PORT_SET_CLR
   dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
   dcPinMaskSet = digitalPinToBitMask(dc);
@@ -285,7 +285,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
   hwspi._spi = spiClass;
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
-#if defined(CORE_TEENSY)
+#if defined(CORE_TEENSY) || defined(STM32_CORE_VERSION)
 #if !defined(KINETISK)
   dcPinMask = digitalPinToBitMask(dc);
 #endif
@@ -304,7 +304,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     csPortSet = dcPortSet;
     csPortClr = dcPortClr;
   }
-#else  // !CORE_TEENSY
+#else  // !CORE_TEENSY && !STM32_CORE_VERSION
   dcPinMask = digitalPinToBitMask(dc);
   dcPortSet = &(PORT->Group[g_APinDescription[dc].ulPort].OUTSET.reg);
   dcPortClr = &(PORT->Group[g_APinDescription[dc].ulPort].OUTCLR.reg);
@@ -321,7 +321,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
     csPortClr = dcPortClr;
     csPinMask = 0;
   }
-#endif // end !CORE_TEENSY
+#endif // end !CORE_TEENSY && !STM32_CORE_VERSION
 #else  // !HAS_PORT_SET_CLR
   dcPort = (PORTreg_t)portOutputRegister(digitalPinToPort(dc));
   dcPinMaskSet = digitalPinToBitMask(dc);
@@ -385,7 +385,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   tft8.wide = (busWidth == tft16bitbus);
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
-#if defined(CORE_TEENSY)
+#if defined(CORE_TEENSY) || defined(STM32_CORE_VERSION)
   tft8.wrPortSet = portSetRegister(digitalPinToPort(wr));
   tft8.wrPortClr = portClearRegister(digitalPinToPort(wr));
 #if !defined(KINETISK)
@@ -425,7 +425,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   tft8.readPort = portInputRegister(digitalPinToPort(d0));
   tft8.dirSet = portModeRegister(digitalPinToPort(d0));
   tft8.dirClr = portModeRegister(digitalPinToPort(d0));
-#else  // !CORE_TEENSY
+#else  // !CORE_TEENSY && !STM32_CORE_VERSION
   tft8.wrPinMask = digitalPinToBitMask(wr);
   tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
   tft8.wrPortClr = &(PORT->Group[g_APinDescription[wr].ulPort].OUTCLR.reg);
@@ -466,7 +466,7 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   tft8.readPort = (volatile uint8_t *)&(p->IN.reg) + offset;
   tft8.dirSet = (volatile uint8_t *)&(p->DIRSET.reg) + offset;
   tft8.dirClr = (volatile uint8_t *)&(p->DIRCLR.reg) + offset;
-#endif // end !CORE_TEENSY
+#endif // end !CORE_TEENSY && !STM32_CORE_VERSION
 #else  // !HAS_PORT_SET_CLR
   tft8.wrPort = (PORTreg_t)portOutputRegister(digitalPinToPort(wr));
   tft8.wrPinMaskSet = digitalPinToBitMask(wr);
@@ -608,7 +608,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
       }
     }
 #elif defined(USE_FAST_PINIO)
-#if defined(CORE_TEENSY)
+#if defined(CORE_TEENSY) || defined(STM32_CORE_VERSION)
     if (!tft8.wide) {
       *tft8.dirSet = 0xFF;    // Set port to output
       *tft8.writePort = 0x00; // Write all 0s
@@ -616,7 +616,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
       *(volatile uint16_t *)tft8.dirSet = 0xFFFF;
       *(volatile uint16_t *)tft8.writePort = 0x0000;
     }
-#else  // !CORE_TEENSY
+#else  // !CORE_TEENSY && !STM32_CORE_VERSION
     uint8_t portNum = g_APinDescription[tft8._d0].ulPort, // d0 PORT #
         dBit = g_APinDescription[tft8._d0].ulPin,         // d0 bit in PORT
         lastBit = dBit + (tft8.wide ? 15 : 7);
@@ -628,7 +628,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
         digitalWrite(i, LOW);
       }
     }
-#endif // end !CORE_TEENSY
+#endif // end !CORE_TEENSY && !STM32_CORE_VERSION
 #endif
     pinMode(tft8._wr, OUTPUT);
     digitalWrite(tft8._wr, HIGH);
