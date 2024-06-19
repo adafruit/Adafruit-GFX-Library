@@ -62,7 +62,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #define pgm_read_pointer(addr) ((void *)pgm_read_word(addr))
 #endif
 
-inline GFXglyph *pgm_read_glyph_ptr(const GFXfont *gfxFont, uint8_t c) {
+inline GFXglyph *pgm_read_glyph_ptr(const GFXfont *gfxFont, uint16_t c) {
 #ifdef __AVR__
   return &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
 #else
