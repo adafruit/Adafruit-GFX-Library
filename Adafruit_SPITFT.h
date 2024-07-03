@@ -65,7 +65,7 @@ typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
 #endif                                     // end !ARM
 typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
 #define DEFAULT_SPI_FREQ 8000000L ///< Hardware SPI default speed
 #else
 #define DEFAULT_SPI_FREQ 16000000L ///< Hardware SPI default speed
