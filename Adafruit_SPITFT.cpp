@@ -31,7 +31,8 @@
  * BSD license, all text here must be included in any redistribution.
  */
 
-#if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
+// Not for ATtiny, at all
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 
 #include "Adafruit_SPITFT.h"
 
@@ -2558,4 +2559,4 @@ inline void Adafruit_SPITFT::TFT_RD_LOW(void) {
 #endif // end !USE_FAST_PINIO
 }
 
-#endif // end __AVR_ATtiny85__
+#endif // end __AVR_ATtiny85__ __AVR_ATtiny84__

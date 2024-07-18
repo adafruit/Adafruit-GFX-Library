@@ -24,7 +24,8 @@
 #ifndef _Adafruit_GRAYOLED_H_
 #define _Adafruit_GRAYOLED_H_
 
-#if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
+// Not for ATtiny, at all
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_I2CDevice.h>
@@ -96,5 +97,5 @@ private:
   TwoWire *_theWire = NULL; ///< The underlying hardware I2C
 };
 
-#endif // end __AVR_ATtiny85__
+#endif // end __AVR_ATtiny85__ __AVR_ATtiny84__
 #endif // _Adafruit_GrayOLED_H_
