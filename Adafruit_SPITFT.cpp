@@ -1024,20 +1024,22 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 
   return;
 #elif defined(ARDUINO_ARCH_RP2040)
-  spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+  if (connection == TFT_HARD_SPI) {
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
 
-  if (!bigEndian) {
-    // switch to 16-bit writes
-    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB,
-                    SPI_SSPCR0_DSS_BITS);
-    spi_write16_blocking(pi_spi, colors, len);
-    // switch back to 8-bit
-    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB,
-                    SPI_SSPCR0_DSS_BITS);
-  } else {
-    spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
+    if (!bigEndian) {
+      // switch to 16-bit writes
+      hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB,
+                      SPI_SSPCR0_DSS_BITS);
+      spi_write16_blocking(pi_spi, colors, len);
+      // switch back to 8-bit
+      hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB,
+                      SPI_SSPCR0_DSS_BITS);
+    } else {
+      spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
+    }
+    return;
   }
-  return;
 #elif defined(USE_SPI_DMA) &&                                                  \
     (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
@@ -1430,7 +1432,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     }
 #endif     // end !ESP8266
   } else { // PARALLEL
-    if (hi == lo) {
+    if (hi == lo || tft8.wide) {
 #if defined(__AVR__)
       len *= 2;
       *tft8.writePort = hi;
@@ -1455,13 +1457,9 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         TFT_WR_STROBE();
         *tft8.writePort = lo;
 #elif defined(USE_FAST_PINIO)
-        if (!tft8.wide) {
-          *tft8.writePort = hi;
-          TFT_WR_STROBE();
-          *tft8.writePort = lo;
-        } else {
-          *(volatile uint16_t *)tft8.writePort = color;
-        }
+        *tft8.writePort = hi;
+        TFT_WR_STROBE();
+        *tft8.writePort = lo;
 #endif
         TFT_WR_STROBE();
       }
@@ -2207,17 +2205,17 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
         *(volatile uint16_t *)tft8.dirSet = 0xFFFF; // Output state
-#else  // !HAS_PORT_SET_CLR
+#else                // !HAS_PORT_SET_CLR
         *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
         w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
-#endif // end !HAS_PORT_SET_CLR
+#endif               // end !HAS_PORT_SET_CLR
       }
-      TFT_RD_HIGH();                                 // Read line HIGH
-#endif // end !__AVR__
-#else  // !USE_FAST_PINIO
+#endif               // end !__AVR__
+      TFT_RD_HIGH(); // Read line HIGH
+#else                // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
-#endif // end !USE_FAST_PINIO
+#endif               // end !USE_FAST_PINIO
     }
     return w;
   }
