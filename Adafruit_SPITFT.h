@@ -20,7 +20,8 @@
 #ifndef _ADAFRUIT_SPITFT_H_
 #define _ADAFRUIT_SPITFT_H_
 
-#if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
+// Not for ATtiny, at all
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 
 #include "Adafruit_GFX.h"
 #include <SPI.h>
@@ -526,5 +527,5 @@ protected:
   uint32_t _freq = 0; ///< Dummy var to keep subclasses happy
 };
 
-#endif // end __AVR_ATtiny85__
+#endif // end __AVR_ATtiny85__ __AVR_ATtiny84__
 #endif // end _ADAFRUIT_SPITFT_H_
