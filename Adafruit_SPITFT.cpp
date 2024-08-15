@@ -957,8 +957,7 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
    colors. This is a clone of the Adafruit_GFX method but without a call to 
    setAddrWindow for each pixel. Instead the window is setup once, and then
    all pixels are written. This relies on the address auto-increment of the TFT.
-   Note that the image must fit within the display bounds, otherwise nothing is
-   done.
+   If the image does not fit within the display bounds, clipping is applied.
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
     @param    bitmap  byte array with monochrome bitmap
@@ -971,14 +970,26 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_SPITFT::drawBitmapFast(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
                               int16_t h, uint16_t color, uint16_t bg) {
 
-  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
-  uint8_t b = 0;
-  
-  if ((x >= 0) && (x < (_width - w + 1)) && (y >= 0) && (y < (_height - h + 1))) {
+  // Sanity check of X and Y position
+  if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    
+    int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+    uint8_t b = 0;
+    
+    int16_t wclip = w;
+    int16_t hclip = h;
+    
+    // Clipped width and height
+    if (((x + w - _width) > 0) && (x < _width))
+      wclip = _width - x;
+    
+    if (((y + h - _height) > 0) && (y < _height))
+      hclip = _height - y;
+    
     startWrite();
-    setAddrWindow(x, y, w, h);
-    for (int16_t j = 0; j < h; j++, y++) {
-      for (int16_t i = 0; i < w; i++) {
+    setAddrWindow(x, y, wclip, hclip);
+    for (int16_t j = 0; j < hclip; j++, y++) {
+      for (int16_t i = 0; i < wclip; i++) {
         if (i & 7)
           b <<= 1;
         else
