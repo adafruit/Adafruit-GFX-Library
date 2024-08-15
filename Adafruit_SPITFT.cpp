@@ -972,10 +972,8 @@ void Adafruit_SPITFT::drawBitmapFast(int16_t x, int16_t y, uint8_t *bitmap, int1
 
   // Sanity check of X and Y position
   if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-    
     int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
     uint8_t b = 0;
-    
     int16_t wclip = w;
     int16_t hclip = h;
     
