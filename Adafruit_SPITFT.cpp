@@ -976,13 +976,15 @@ void Adafruit_SPITFT::drawBitmapFast(int16_t x, int16_t y, uint8_t *bitmap, int1
     uint8_t b = 0;
     int16_t wclip = w;
     int16_t hclip = h;
+    int16_t wmax = _width - x;
+    int16_t hmax = _height - y;
     
     // Clipped width and height
-    if (((x + w - _width) > 0) && (x < _width))
-      wclip = _width - x;
+    if (w > wmax)
+      wclip = wmax;
     
-    if (((y + h - _height) > 0) && (y < _height))
-      hclip = _height - y;
+    if (h > hmax)
+      hclip = hmax;
     
     startWrite();
     setAddrWindow(x, y, wclip, hclip);
