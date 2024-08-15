@@ -969,34 +969,34 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 /**************************************************************************/
 void Adafruit_SPITFT::drawBitmapFast(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
                               int16_t h, uint16_t color, uint16_t bg) {
-
   // Sanity check of X and Y position
-  if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-    int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
-    uint8_t b = 0;
-    int16_t wclip = w;
-    int16_t hclip = h;
+  if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
+    return;
     
-    // Clipped width and height
-    if (w > (_width - x))
-      wclip = _width - x;
-    
-    if (h > (_height - y))
-      hclip = _height - y;
-    
-    startWrite();
-    setAddrWindow(x, y, wclip, hclip);
-    for (int16_t j = 0; j < hclip; j++, y++) {
-      for (int16_t i = 0; i < wclip; i++) {
-        if (i & 7)
-          b <<= 1;
-        else
-          b = bitmap[j * byteWidth + i / 8];
-        SPI_WRITE16((b & 0x80) ? color : bg);
-      }
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  uint8_t b = 0;
+  int16_t wclip = w;
+  int16_t hclip = h;
+  
+  // Clipped width and height
+  if (w > (_width - x))
+    wclip = _width - x;
+  
+  if (h > (_height - y))
+    hclip = _height - y;
+  
+  startWrite();
+  setAddrWindow(x, y, wclip, hclip);
+  for (int16_t j = 0; j < hclip; j++, y++) {
+    for (int16_t i = 0; i < wclip; i++) {
+      if (i & 7)
+        b <<= 1;
+      else
+        b = bitmap[j * byteWidth + i / 8];
+      SPI_WRITE16((b & 0x80) ? color : bg);
     }
-    endWrite();
   }
+  endWrite();
 }
 
 /*!
