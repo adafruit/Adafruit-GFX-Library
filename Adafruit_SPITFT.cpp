@@ -965,7 +965,7 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
     @param    bg 16-bit 5-6-5 Color to draw background with
 */
 /**************************************************************************/
-void Adafruit_SPITFT::drawBitmapAutoIncrement(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
+void Adafruit_SPITFT::drawBitmapFast(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
                               int16_t h, uint16_t color, uint16_t bg) {
 
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
