@@ -956,7 +956,7 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
    using the specified foreground (for set bits) and background (unset bits)
    colors. This is a clone of the Adafruit_GFX method but without a call to 
    setAddrWindow for each pixel. Instead the window is setup once, and then
-   all pixels are written. This relise on the address auto-increment of the TFT.
+   all pixels are written. This relies on the address auto-increment of the TFT.
    Note that the image must fit within the display bounds, otherwise nothing is
    done.
     @param    x   Top left corner x coordinate
