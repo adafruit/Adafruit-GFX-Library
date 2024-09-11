@@ -48,13 +48,13 @@
 class Adafruit_GrayOLED : public Adafruit_GFX {
 public:
   Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, TwoWire *twi = &Wire,
-                    int8_t rst_pin = -1, uint32_t preclk = 400000,
+                    int16_t rst_pin = -1, uint32_t preclk = 400000,
                     uint32_t postclk = 100000);
-  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, int8_t mosi_pin,
-                    int8_t sclk_pin, int8_t dc_pin, int8_t rst_pin,
-                    int8_t cs_pin);
+  Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, int16_t mosi_pin,
+                    int16_t sclk_pin, int16_t dc_pin, int16_t rst_pin,
+                    int16_t cs_pin);
   Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h, SPIClass *spi,
-                    int8_t dc_pin, int8_t rst_pin, int8_t cs_pin,
+                    int16_t dc_pin, int16_t rst_pin, int16_t cs_pin,
                     uint32_t bitrate = 8000000UL);
 
   ~Adafruit_GrayOLED(void);
