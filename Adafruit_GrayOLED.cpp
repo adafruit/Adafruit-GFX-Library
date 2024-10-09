@@ -199,6 +199,43 @@ bool Adafruit_GrayOLED::oled_commandList(const uint8_t *c, uint8_t n) {
   return true;
 }
 
+
+// Issue list of commands and args to GrayOLED
+/*!
+    @brief Issue list of commands and args to OLED, using I2C or hard/soft SPI as
+   needed.
+    @param c Pointer to the command and arg array, the array's elements should be
+             specified as (cmd0_len, cmd0_byte, cmd0_arg0, cmd0_arg1, .., cmd0_argn,
+             cmd1_len...)
+    @param n The number of bytes in the command and arg array
+    @returns True for success on ability to write the data in I2C.
+*/
+bool Adafruit_GrayOLED::oled_commandAndArgsList(const uint8_t *c, uint8_t n) {
+  uint8_t *end = (uint8_t *) c + n;
+
+  while (c < end) {
+    uint8_t command_len = *c;
+    ++c;
+
+    if (i2c_dev) {
+      uint8_t dc_byte = 0x00;
+      if (!i2c_dev->write((uint8_t *)c, command_len, true, &dc_byte, 1))
+        return false;
+    } else {
+      digitalWrite(dcPin, LOW);   // Command, D/C = 0
+      if (!spi_dev->write((uint8_t *) c, 1))
+        return false;
+      digitalWrite(dcPin, HIGH);  // Data, D/C = 1
+      if (!spi_dev->write((uint8_t *) (c+sizeof(uint8_t)), command_len-1))
+        return false;
+    }
+
+    c += command_len;
+  }
+
+  return true;
+}
+
 // ALLOCATE & INIT DISPLAY -------------------------------------------------
 
 /*!
