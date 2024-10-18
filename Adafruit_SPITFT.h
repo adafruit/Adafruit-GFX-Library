@@ -50,6 +50,10 @@ typedef uint8_t ADAGFX_PORT_t; ///< PORT values are 8-bit
 #endif
 #define USE_FAST_PINIO   ///< Use direct PORT register access
 #define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
+#elif defined(STM32_CORE_VERSION)
+typedef uint32_t ADAGFX_PORT_t;
+#define USE_FAST_PINIO   ///< Use direct PORT register access
+#define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
 #else
 // Arduino Due?
 typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
@@ -443,24 +447,11 @@ protected:
     } swspi;                     ///< Software SPI values
     struct {                     //   Values specific to 8-bit parallel:
 #if defined(USE_FAST_PINIO)
-
-#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
-      volatile uint32_t *writePort; ///< PORT register for DATA WRITE
-      volatile uint32_t *readPort;  ///< PORT (PIN) register for DATA READ
-#else
-      volatile uint8_t *writePort;  ///< PORT register for DATA WRITE
-      volatile uint8_t *readPort;   ///< PORT (PIN) register for DATA READ
-#endif
+      PORTreg_t writePort;  ///< PORT register for DATA WRITE
+      PORTreg_t readPort;   ///< PORT (PIN) register for DATA READ
 #if defined(HAS_PORT_SET_CLR)
-      // Port direction register pointers are always 8-bit regardless of
-      // PORTreg_t -- even if 32-bit port, we modify a byte-aligned 8 bits.
-#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
-      volatile uint32_t *dirSet; ///< PORT byte data direction SET
-      volatile uint32_t *dirClr; ///< PORT byte data direction CLEAR
-#else
-      volatile uint8_t *dirSet; ///< PORT byte data direction SET
-      volatile uint8_t *dirClr; ///< PORT byte data direction CLEAR
-#endif
+      PORTreg_t dirSet; ///< PORT byte data direction SET
+      PORTreg_t dirClr; ///< PORT byte data direction CLEAR
       PORTreg_t wrPortSet; ///< PORT register for write strobe SET
       PORTreg_t wrPortClr; ///< PORT register for write strobe CLEAR
       PORTreg_t rdPortSet; ///< PORT register for read strobe SET
@@ -470,9 +461,7 @@ protected:
 #endif                         // end !KINETISK
       ADAGFX_PORT_t rdPinMask; ///< Bitmask for read strobe
 #else                          // !HAS_PORT_SET_CLR
-      // Port direction register pointer is always 8-bit regardless of
-      // PORTreg_t -- even if 32-bit port, we modify a byte-aligned 8 bits.
-      volatile uint8_t *portDir;  ///< PORT direction register
+      PORTreg_t portDir;          ///< PORT direction register
       PORTreg_t wrPort;           ///< PORT register for write strobe
       PORTreg_t rdPort;           ///< PORT register for read strobe
       ADAGFX_PORT_t wrPinMaskSet; ///< Bitmask for write strobe SET (OR)
