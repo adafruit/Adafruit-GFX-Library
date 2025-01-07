@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
     ptr = &fontName[strlen(fontName)]; // If none, append
   // Insert font size and 7/8 bit.
   snprintf(ptr, sizeof(fontName) - (strlen(fontName) + 1), "%dpt%db", size,
-      (last > 127) ? 8 : 7);
+           (last > 127) ? 8 : 7);
   // Space and punctuation chars in name replaced w/ underscores.
   for (cp = fontName; *cp != '\0'; ++cp) {
     if (isspace(*cp) || ispunct(*cp))
