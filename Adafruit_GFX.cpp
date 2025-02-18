@@ -1758,12 +1758,21 @@ const uint8_t PROGMEM GFXcanvas1::GFXclrBit[] = {0x7F, 0xBF, 0xDF, 0xEF,
    @brief    Instatiate a GFX 1-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
+   @param    allocate_buffer If true, a buffer is allocated with malloc. If
+   false, the subclass must initialize the buffer before any drawing operation,
+   and free it in the destructor. If false (the default), the buffer is
+   allocated and freed by the library.
 */
 /**************************************************************************/
-GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = ((w + 7) / 8) * h;
-  if ((buffer = (uint8_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
+GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h, bool allocate_buffer)
+    : Adafruit_GFX(w, h), buffer_owned(allocate_buffer) {
+  if (allocate_buffer) {
+    uint32_t bytes = ((w + 7) / 8) * h;
+    if ((buffer = (uint8_t *)malloc(bytes))) {
+      memset(buffer, 0, bytes);
+    }
+  } else {
+    buffer = nullptr;
   }
 }
 
@@ -1773,7 +1782,7 @@ GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 */
 /**************************************************************************/
 GFXcanvas1::~GFXcanvas1(void) {
-  if (buffer)
+  if (buffer && buffer_owned)
     free(buffer);
 }
 
@@ -2111,13 +2120,21 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
    @brief    Instatiate a GFX 8-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
+   @param    allocate_buffer If true, a buffer is allocated with malloc. If
+   false, the subclass must initialize the buffer before any drawing operation,
+   and free it in the destructor. If false (the default), the buffer is
+   allocated and freed by the library.
 */
 /**************************************************************************/
-GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = w * h;
-  if ((buffer = (uint8_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
-  }
+GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h, bool allocate_buffer)
+    : Adafruit_GFX(w, h), buffer_owned(allocate_buffer) {
+  if (allocate_buffer) {
+    uint32_t bytes = w * h;
+    if ((buffer = (uint8_t *)malloc(bytes))) {
+      memset(buffer, 0, bytes);
+    }
+  } else
+    buffer = nullptr;
 }
 
 /**************************************************************************/
@@ -2126,7 +2143,7 @@ GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 */
 /**************************************************************************/
 GFXcanvas8::~GFXcanvas8(void) {
-  if (buffer)
+  if (buffer && buffer_owned)
     free(buffer);
 }
 
@@ -2379,12 +2396,21 @@ void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
    @brief    Instatiate a GFX 16-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
+   @param    allocate_buffer If true, a buffer is allocated with malloc. If
+   false, the subclass must initialize the buffer before any drawing operation,
+   and free it in the destructor. If false (the default), the buffer is
+   allocated and freed by the library.
 */
 /**************************************************************************/
-GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = w * h * 2;
-  if ((buffer = (uint16_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
+GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h, bool allocate_buffer)
+    : Adafruit_GFX(w, h), buffer_owned(allocate_buffer) {
+  if (allocate_buffer) {
+    uint32_t bytes = w * h * 2;
+    if ((buffer = (uint16_t *)malloc(bytes))) {
+      memset(buffer, 0, bytes);
+    }
+  } else {
+    buffer = nullptr;
   }
 }
 
@@ -2394,7 +2420,7 @@ GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 */
 /**************************************************************************/
 GFXcanvas16::~GFXcanvas16(void) {
-  if (buffer)
+  if (buffer && buffer_owned)
     free(buffer);
 }
 
