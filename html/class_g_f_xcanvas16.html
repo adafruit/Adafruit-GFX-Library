@@ -84,9 +84,9 @@ Inheritance diagram for GFXcanvas16:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1087f17778b9c60db81162e66220b600"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#a1087f17778b9c60db81162e66220b600">GFXcanvas16</a> (uint16_t w, uint16_t h)</td></tr>
-<tr class="memdesc:a1087f17778b9c60db81162e66220b600"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instatiate a GFX 16-bit canvas context for graphics.  <a href="#a1087f17778b9c60db81162e66220b600">More...</a><br /></td></tr>
-<tr class="separator:a1087f17778b9c60db81162e66220b600"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd1a355cc0a2cbf0f41ce1242d3fd1bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#afd1a355cc0a2cbf0f41ce1242d3fd1bc">GFXcanvas16</a> (uint16_t w, uint16_t h, bool allocate_buffer=true)</td></tr>
+<tr class="memdesc:afd1a355cc0a2cbf0f41ce1242d3fd1bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instatiate a GFX 16-bit canvas context for graphics.  <a href="#afd1a355cc0a2cbf0f41ce1242d3fd1bc">More...</a><br /></td></tr>
+<tr class="separator:afd1a355cc0a2cbf0f41ce1242d3fd1bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15a79ebb2f3d86cb6a6bdc4ab1f3e9b7"><td class="memItemLeft" align="right" valign="top"><a id="a15a79ebb2f3d86cb6a6bdc4ab1f3e9b7"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#a15a79ebb2f3d86cb6a6bdc4ab1f3e9b7">~GFXcanvas16</a> (void)</td></tr>
 <tr class="memdesc:a15a79ebb2f3d86cb6a6bdc4ab1f3e9b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the canvas, free memory. <br /></td></tr>
@@ -298,6 +298,8 @@ Protected Attributes</h2></td></tr>
 uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#a13e81bad95bdb3a36d24d2778deb075e">buffer</a></td></tr>
 <tr class="memdesc:a13e81bad95bdb3a36d24d2778deb075e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raster data: no longer private, allow subclass access. <br /></td></tr>
 <tr class="separator:a13e81bad95bdb3a36d24d2778deb075e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab69a44a5f62b4a6a0286323cc055ab2b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_f_xcanvas16.html#ab69a44a5f62b4a6a0286323cc055ab2b">buffer_owned</a></td></tr>
+<tr class="separator:ab69a44a5f62b4a6a0286323cc055ab2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___g_f_x"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___g_f_x')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a></td></tr>
 <tr class="memitem:aded338777abeac3c457660023f5c0724 inherit pro_attribs_class_adafruit___g_f_x"><td class="memItemLeft" align="right" valign="top"><a id="aded338777abeac3c457660023f5c0724"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aded338777abeac3c457660023f5c0724">WIDTH</a></td></tr>
@@ -359,8 +361,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A GFX 16-bit canvas context for graphics. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1087f17778b9c60db81162e66220b600"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1087f17778b9c60db81162e66220b600">&#9670;&nbsp;</a></span>GFXcanvas16()</h2>
+<a id="afd1a355cc0a2cbf0f41ce1242d3fd1bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd1a355cc0a2cbf0f41ce1242d3fd1bc">&#9670;&nbsp;</a></span>GFXcanvas16()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -375,7 +377,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>h</em>&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>allocate_buffer</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -390,6 +398,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <table class="params">
     <tr><td class="paramname">w</td><td>Display width, in pixels </td></tr>
     <tr><td class="paramname">h</td><td>Display height, in pixels </td></tr>
+    <tr><td class="paramname">allocate_buffer</td><td>If true, a buffer is allocated with malloc. If false, the subclass must initialize the buffer before any drawing operation, and free it in the destructor. If false (the default), the buffer is allocated and freed by the library. </td></tr>
   </table>
   </dd>
 </dl>
@@ -837,6 +846,30 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ab69a44a5f62b4a6a0286323cc055ab2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab69a44a5f62b4a6a0286323cc055ab2b">&#9670;&nbsp;</a></span>buffer_owned</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GFXcanvas16::buffer_owned</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>If true, destructor will free buffer, else it will do nothing </p>
 
 </div>
 </div>

@@ -7,7 +7,7 @@ var searchData=
   ['getrawpixel',['getRawPixel',['../class_g_f_xcanvas1.html#a4eb78de4421384fd916883d944bf3ae8',1,'GFXcanvas1::getRawPixel()'],['../class_g_f_xcanvas8.html#a4ba7ffdd7a75f7377f5856547e4e1391',1,'GFXcanvas8::getRawPixel()'],['../class_g_f_xcanvas16.html#af2ffc935a173c5f99e03b645cc883678',1,'GFXcanvas16::getRawPixel()']]],
   ['getrotation',['getRotation',['../class_adafruit___g_f_x.html#ab90e1378511b93189a7b557d7dda5d73',1,'Adafruit_GFX']]],
   ['gettextbounds',['getTextBounds',['../class_adafruit___g_f_x.html#a90983ed41807de26d48bcf588d7c9a19',1,'Adafruit_GFX::getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)'],['../class_adafruit___g_f_x.html#a97525abb71dbe38c6551e4d0da4052b8',1,'Adafruit_GFX::getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)'],['../class_adafruit___g_f_x.html#a4258c8e7e5e897a3e5e87748e4585579',1,'Adafruit_GFX::getTextBounds(const String &amp;str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)']]],
-  ['gfxcanvas1',['GFXcanvas1',['../class_g_f_xcanvas1.html#a3d8047501178f976fb6af095572eb5d0',1,'GFXcanvas1']]],
-  ['gfxcanvas16',['GFXcanvas16',['../class_g_f_xcanvas16.html#a1087f17778b9c60db81162e66220b600',1,'GFXcanvas16']]],
-  ['gfxcanvas8',['GFXcanvas8',['../class_g_f_xcanvas8.html#a57dcdb940a56a37cdfbb3a596f9e0ecd',1,'GFXcanvas8']]]
+  ['gfxcanvas1',['GFXcanvas1',['../class_g_f_xcanvas1.html#a423c6b2fcadeddd4c6a3bbca9c7187f0',1,'GFXcanvas1']]],
+  ['gfxcanvas16',['GFXcanvas16',['../class_g_f_xcanvas16.html#afd1a355cc0a2cbf0f41ce1242d3fd1bc',1,'GFXcanvas16']]],
+  ['gfxcanvas8',['GFXcanvas8',['../class_g_f_xcanvas8.html#a7f7c935cd0d8bc95d7c453404631f3c6',1,'GFXcanvas8']]]
 ];
