@@ -309,7 +309,7 @@ private:
 /// A GFX 1-bit canvas context for graphics
 class GFXcanvas1 : public Adafruit_GFX {
 public:
-  GFXcanvas1(uint16_t w, uint16_t h);
+  GFXcanvas1(uint16_t w, uint16_t h, bool allocate_buffer = true);
   ~GFXcanvas1(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
@@ -328,7 +328,9 @@ protected:
   bool getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  uint8_t *buffer; ///< Raster data: no longer private, allow subclass access
+  uint8_t *buffer;   ///< Raster data: no longer private, allow subclass access
+  bool buffer_owned; ///< If true, destructor will free buffer, else it will do
+                     ///< nothing
 
 private:
 #ifdef __AVR__
@@ -340,7 +342,7 @@ private:
 /// A GFX 8-bit canvas context for graphics
 class GFXcanvas8 : public Adafruit_GFX {
 public:
-  GFXcanvas8(uint16_t w, uint16_t h);
+  GFXcanvas8(uint16_t w, uint16_t h, bool allocate_buffer = true);
   ~GFXcanvas8(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
@@ -359,13 +361,15 @@ protected:
   uint8_t getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  uint8_t *buffer; ///< Raster data: no longer private, allow subclass access
+  uint8_t *buffer;   ///< Raster data: no longer private, allow subclass access
+  bool buffer_owned; ///< If true, destructor will free buffer, else it will do
+                     ///< nothing
 };
 
 ///  A GFX 16-bit canvas context for graphics
 class GFXcanvas16 : public Adafruit_GFX {
 public:
-  GFXcanvas16(uint16_t w, uint16_t h);
+  GFXcanvas16(uint16_t w, uint16_t h, bool allocate_buffer = true);
   ~GFXcanvas16(void);
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
@@ -385,7 +389,9 @@ protected:
   uint16_t getRawPixel(int16_t x, int16_t y) const;
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-  uint16_t *buffer; ///< Raster data: no longer private, allow subclass access
+  uint16_t *buffer;  ///< Raster data: no longer private, allow subclass access
+  bool buffer_owned; ///< If true, destructor will free buffer, else it will do
+                     ///< nothing
 };
 
 #endif // _ADAFRUIT_GFX_H

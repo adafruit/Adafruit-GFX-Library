@@ -879,7 +879,7 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
                   DMA_ADDRESS_INCREMENT_STEP_SIZE_1;
               descriptor[d].DSTADDR.reg = (uint32_t)tft8.writePort;
             }
-#endif      // __SAMD51
+#endif // __SAMD51
           } // end parallel-specific DMA setup
 
           lastFillColor = 0x0000;
@@ -887,13 +887,13 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
           dma.setCallback(dma_callback);
           return; // Success!
                   // else clean up any partial allocation...
-        }         // end descriptor memalign()
+        } // end descriptor memalign()
         free(pixelBuf[0]);
         pixelBuf[0] = pixelBuf[1] = NULL;
-      }         // end pixelBuf malloc()
-                // Don't currently have a descriptor delete function in
-                // ZeroDMA lib, but if we did, it would be called here.
-    }           // end addDescriptor()
+      } // end pixelBuf malloc()
+        // Don't currently have a descriptor delete function in
+        // ZeroDMA lib, but if we did, it would be called here.
+    } // end addDescriptor()
     dma.free(); // Deallocate DMA channel
   }
 #endif // end USE_SPI_DMA
@@ -1373,11 +1373,11 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       dma.trigger();
     while (dma_busy)
       ; // Wait for completion
-      // Unfortunately blocking is necessary. An earlier version returned
-      // immediately and checked dma_busy on startWrite() instead, but it
-      // turns out to be MUCH slower on many graphics operations (as when
-      // drawing lines, pixel-by-pixel), perhaps because it's a volatile
-      // type and doesn't cache. Working on this.
+        // Unfortunately blocking is necessary. An earlier version returned
+        // immediately and checked dma_busy on startWrite() instead, but it
+        // turns out to be MUCH slower on many graphics operations (as when
+        // drawing lines, pixel-by-pixel), perhaps because it's a volatile
+        // type and doesn't cache. Working on this.
 #if defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO)
     if (connection == TFT_HARD_SPI) {
       // SAMD51: SPI DMA seems to leave the SPI peripheral in a freaky
@@ -2089,9 +2089,9 @@ uint16_t Adafruit_SPITFT::readcommand16(uint16_t addr) {
     result = *(volatile uint16_t *)tft8.readPort; // 16-bit read
     *(volatile uint16_t *)tft8.dirSet = 0xFFFF;   // Output state
 #else                                             // !HAS_PORT_SET_CLR
-    *(volatile uint16_t *)tft8.portDir = 0x0000;    // Input state
-    result = *(volatile uint16_t *)tft8.readPort;   // 16-bit read
-    *(volatile uint16_t *)tft8.portDir = 0xFFFF;    // Output state
+    *(volatile uint16_t *)tft8.portDir = 0x0000;  // Input state
+    result = *(volatile uint16_t *)tft8.readPort; // 16-bit read
+    *(volatile uint16_t *)tft8.portDir = 0xFFFF;  // Output state
 #endif                                            // end !HAS_PORT_SET_CLR
     TFT_RD_HIGH();                                // Read line HIGH
     endWrite();
@@ -2246,17 +2246,17 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
       w = *tft8.readPort;   // Read value from port
       *tft8.portDir = 0xFF; // Restore port to output
 #else                       // !__AVR__
-      if (!tft8.wide) {                             // 8-bit TFT connection
+      if (!tft8.wide) { // 8-bit TFT connection
 #if defined(HAS_PORT_SET_CLR)
-        *tft8.dirClr = 0xFF;                        // Set port to input state
-        w = *tft8.readPort;                         // Read value from port
-        *tft8.dirSet = 0xFF;                        // Restore port to output
+        *tft8.dirClr = 0xFF; // Set port to input state
+        w = *tft8.readPort;  // Read value from port
+        *tft8.dirSet = 0xFF; // Restore port to output
 #else  // !HAS_PORT_SET_CLR
-        *tft8.portDir = 0x00;                        // Set port to input state
-        w = *tft8.readPort;                          // Read value from port
-        *tft8.portDir = 0xFF;                        // Restore port to output
+        *tft8.portDir = 0x00; // Set port to input state
+        w = *tft8.readPort;   // Read value from port
+        *tft8.portDir = 0xFF; // Restore port to output
 #endif // end HAS_PORT_SET_CLR
-      } else {                                      // 16-bit TFT connection
+      } else { // 16-bit TFT connection
 #if defined(HAS_PORT_SET_CLR)
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
@@ -2267,7 +2267,7 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
 #endif // end !HAS_PORT_SET_CLR
       }
-      TFT_RD_HIGH();                                 // Read line HIGH
+      TFT_RD_HIGH(); // Read line HIGH
 #endif // end !__AVR__
 #else  // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
