@@ -73,6 +73,11 @@ public:
   void fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
   void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
                         int16_t delta, uint16_t color);
+  void fillHollowCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color, 
+                        uint16_t t);
+  void fillHollowCircleHelper(int16_t x0, int16_t y0, int16_t r, 
+                        uint8_t corners, uint16_t t, int16_t delta, 
+                        uint16_t color);
   void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
                     int16_t y2, uint16_t color);
   void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
