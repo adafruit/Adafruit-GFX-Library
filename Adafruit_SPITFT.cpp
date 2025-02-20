@@ -1866,8 +1866,9 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
 }
 
 /*!
-    @brief  Draw a 16-bit image (565 RGB) at the specified (x,y) position.
-            For 16-bit display devices; no color reduction performed.
+    @brief  Draw a 16-bit image (565 RGB) at the specified (x,y) position from
+            the specified (src_x,src_y). For 16-bit display devices; no color
+            reduction performed.
             Adapted from https://github.com/PaulStoffregen/ILI9341_t3
             by Marc MERLIN. See examples/pictureEmbed to use this.
             5/6/2017: function name and arguments have changed for
@@ -1875,47 +1876,66 @@ void Adafruit_SPITFT::pushColor(uint16_t color) {
             problems in prior implementation.  Formerly drawBitmap() with
             arguments in different order. Handles its own transaction and
             edge clipping/rejection.
-    @param  x        Top left corner horizontal coordinate.
-    @param  y        Top left corner vertical coordinate.
+    @param  x        Top left corner horizontal coordinate to draw at.
+    @param  y        Top left corner vertical coordinate to draw at.
     @param  pcolors  Pointer to 16-bit array of pixel values.
-    @param  w        Width of bitmap in pixels.
-    @param  h        Height of bitmap in pixels.
+    @param  w        Width of the area of the bitmap to draw, in pixels.
+    @param  h        Height of the area of the bitmap to draw, in pixels.
+    @param  src_x    Top left corner horizontal coordinate to read from.
+    @param  src_y    Top left corner vertical coordinate to read from.
+    @param  src_w    Width of the source bitmap in pixels.
 */
 void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
-                                    int16_t w, int16_t h) {
+                                    int16_t w, int16_t h, int16_t src_x,
+                                    int16_t src_y, int16_t src_w) {
+  int16_t x2, y2;                                          // Lower-right coord
+  if ((x >= _width) ||                                     // Off-edge right
+      (src_x >= src_w) || (y >= _height) ||                // " bottom
+      ((x2 = (x + w - 1)) < 0) ||                          // " left
+      (src_x + src_w - 1 < 0) || ((y2 = (y + h - 1)) < 0)) // " top
+    return;                                                // " bottom
 
-  int16_t x2, y2;                 // Lower-right coord
-  if ((x >= _width) ||            // Off-edge right
-      (y >= _height) ||           // " top
-      ((x2 = (x + w - 1)) < 0) || // " left
-      ((y2 = (y + h - 1)) < 0))
-    return; // " bottom
-
-  int16_t bx1 = 0, by1 = 0, // Clipped top-left within bitmap
-      saveW = w;            // Save original bitmap width value
-  if (x < 0) {              // Clip left
+  if (x < 0) { // Clip left
     w += x;
-    bx1 = -x;
     x = 0;
   }
   if (y < 0) { // Clip top
     h += y;
-    by1 = -y;
     y = 0;
   }
+  if (src_x < 0) {
+    src_w += src_x;
+    src_x = -src_x;
+  }
+  if (src_y < 0)
+    src_y = -src_y;
   if (x2 >= _width)
     w = _width - x; // Clip right
   if (y2 >= _height)
     h = _height - y; // Clip bottom
 
-  pcolors += by1 * saveW + bx1; // Offset bitmap ptr to clipped top-left
+  pcolors += (src_y * src_w) + src_x; // Offset bitmap ptr to clipped top-left
   startWrite();
   setAddrWindow(x, y, w, h); // Clipped area
   while (h--) {              // For each (clipped) scanline...
     writePixels(pcolors, w); // Push one (clipped) row
-    pcolors += saveW;        // Advance pointer by one full (unclipped) line
+    pcolors += src_w;        // Advance pointer by one full (unclipped) line
   }
   endWrite();
+}
+
+/*!
+    @brief  Draw a 16-bit image (565 RGB) at the specified (x,y) position.
+            For 16-bit display devices; no color reduction performed.
+    @param  x        Top left corner horizontal coordinate.
+    @param  y        Top left corner vertical coordinate.
+    @param  pcolors  Pointer to 16-bit array of pixel values.
+    @param  w        Width of bitmap in pixels.
+    @param  h        Height of bitmap in pixels.
+ */
+void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
+                                    int16_t w, int16_t h) {
+  drawRGBBitmap(x, y, pcolors, w, h, 0, 0, w);
 }
 
 // -------------------------------------------------------------------------
