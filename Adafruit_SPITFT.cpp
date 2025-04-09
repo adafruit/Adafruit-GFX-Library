@@ -1032,7 +1032,7 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 
   return;
 #elif defined(ARDUINO_ARCH_RP2040)
-  spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+  spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
 
   if (!bigEndian) {
     // switch to 16-bit writes
@@ -1410,7 +1410,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       }
     } while (len);
 #elif defined(ARDUINO_ARCH_RP2040)
-    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
     color = __builtin_bswap16(color);
 
     while (len--)
@@ -2169,7 +2169,7 @@ void Adafruit_SPITFT::spiWrite(uint8_t b) {
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write(b);
 #elif defined(ARDUINO_ARCH_RP2040)
-    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
     spi_write_blocking(pi_spi, &b, 1);
 #else
     hwspi._spi->transfer(b);
@@ -2454,7 +2454,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write16(w);
 #elif defined(ARDUINO_ARCH_RP2040)
-    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
     w = __builtin_bswap16(w);
     spi_write_blocking(pi_spi, (uint8_t *)&w, 2);
 #elif defined(ARDUINO_ARCH_RTTHREAD)
@@ -2512,7 +2512,7 @@ void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write32(l);
 #elif defined(ARDUINO_ARCH_RP2040)
-    spi_inst_t *pi_spi = hwspi._spi == &SPI ? spi0 : spi1;
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
     l = __builtin_bswap32(l);
     spi_write_blocking(pi_spi, (uint8_t *)&l, 4);
 #elif defined(ARDUINO_ARCH_RTTHREAD)
