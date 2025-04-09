@@ -103,6 +103,16 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 /*! For first arg to parallel constructor */
 enum tftBusWidth { tft8bitbus, tft16bitbus };
 
+// SPI defaults for RP2040
+#if defined(ARDUINO_ARCH_RP2040)
+#ifndef __SPI0_DEVICE
+#define __SPI0_DEVICE spi0
+#endif
+#ifndef __SPI1_DEVICE
+#define __SPI1_DEVICE spi1
+#endif
+#endif
+
 // CLASS DEFINITION --------------------------------------------------------
 
 /*!
