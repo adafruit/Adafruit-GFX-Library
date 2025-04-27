@@ -512,6 +512,89 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 
 /**************************************************************************/
 /*!
+   @brief    Draw a hollow circle with filled color
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    r    Outer Radius of circle
+    @param    color 16-bit 5-6-5 Color to fill with
+    @param    t    Thickness of circle
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillHollowCircle(int16_t x0, int16_t y0, int16_t r,
+                              uint16_t color, uint16_t t) {
+  startWrite();
+  writeFastVLine(x0, y0 - r, t, color);
+  writeFastVLine(x0, y0 + r - t, t, color);
+  writeFastHLine(x0-r, y0, t, color);
+  writeFastHLine(x0+r-t, y0, t, color);
+  fillArcHelper(x0, y0, r, 3, t, 0, color);
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
+    @brief  Hollow circle drawer with fill, used to draw thick circles. 
+                     May also be able to be used for bold rectangles
+    @param  x0       Center-point x coordinate
+    @param  y0       Center-point y coordinate
+    @param  r        Outer Radius of circle
+    @param  corners  Mask bits indicating which quarters we're doing
+    @param  t	       Thickness of the circle
+    @param  delta    Offset from center-point, could be used for bold-rects
+    @param  color    16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillHollowCircleHelper(int16_t x0, int16_t y0, int16_t r,
+                                    uint8_t corners, uint16_t t, int16_t 
+						                        delta, uint16_t color) {
+
+  int16_t f = 1 - r;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * r;
+  int16_t x = 0;
+  int16_t y = r;
+
+  int16_t r2 = r-t;
+  int16_t f2 = 1 - r2;
+  int16_t ddF_x2 = 1;
+  int16_t ddF_y2 = -2 * r2;
+  int16_t x2 = 0;
+  int16_t y2 = r2;
+
+
+  while (x < y){
+    if (f >= 0) {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    if (f2 >= 0) {
+      y2--;
+      ddF_y2 += 2;
+      f2 += ddF_y2;
+    }
+    x2++;
+    ddF_x2 += 2;
+    f2 += ddF_x2;
+	
+        writeFastVLine(x0 + x, y0 - y, y-y2, color);
+        writeFastVLine(x0 + x2, y0 + y2, y-y2, color);
+	  writeFastVLine(x0 - x, y0 - y, y-y2, color);
+        writeFastVLine(x0 - x2, y0 + y2, y-y2, color);
+	writeFastHLine(x0 + y2, y0 - x, y-y2, color);
+        writeFastHLine(x0 + y2, y0 + x2, y-y2, color);
+	  writeFastHLine(x0 - y, y0 - x, y-y2, color);
+        writeFastHLine(x0 - y, y0 + x2, y-y2, color);
+
+    }
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a rectangle with no fill color
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
