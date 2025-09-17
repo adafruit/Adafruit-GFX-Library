@@ -430,14 +430,13 @@ void Adafruit_GFX::fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
 
   // region 1
   while ((twoRh2 * x) < (twoRw2 * y)) {
-    drawFastHLine(x0 - x, y0 + y, 2 * x + 1, color);
-    drawFastHLine(x0 - x, y0 - y, 2 * x + 1, color);
-
     x++;
     if (decision < 0) {
       decision += rh2 + (twoRh2 * x);
     } else {
       decision += rh2 + (twoRh2 * x) - (twoRw2 * y);
+      drawFastHLine(x0 - (x - 1), y0 + y, 2 * (x - 1) + 1, color);
+      drawFastHLine(x0 - (x - 1), y0 - y, 2 * (x - 1) + 1, color);
       y--;
     }
   }
@@ -445,6 +444,7 @@ void Adafruit_GFX::fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
   // region 2
   decision = ((rh2 * (2 * x + 1) * (2 * x + 1)) >> 2) +
              (rw2 * (y - 1) * (y - 1)) - (rw2 * rh2);
+  bool doneY = false;
   while (y >= 0) {
     drawFastHLine(x0 - x, y0 + y, 2 * x + 1, color);
     drawFastHLine(x0 - x, y0 - y, 2 * x + 1, color);
@@ -455,6 +455,7 @@ void Adafruit_GFX::fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
     } else {
       decision += rw2 + (twoRh2 * x) - (twoRw2 * y);
       x++;
+      doneY = false;
     }
   }
 
