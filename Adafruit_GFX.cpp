@@ -629,7 +629,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 /**************************************************************************/
 /*!
     @brief  Quarter-circle drawer with fill.
-	@param  useLegacy       uses the half-circle implementation if desired
+    @param  useLegacy       uses the half-circle implementation if desired
     @param  x0       Center-point x coordinate
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
@@ -652,14 +652,14 @@ void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0, int1
   int16_t py = y;
   
   if(useLegacy){
-	  fillCircleHelper(x0, y0, r, corners, delta, color);
-	  return;
+      fillCircleHelper(x0, y0, r, corners, delta, color);
+      return;
   }
   
   if (corners & (0x2 | 0x1))
-	writeFastVLine(x0, y0 - r, r + 1, color);
+    writeFastVLine(x0, y0 - r, r + 1, color);
   if (corners & (0x8 | 0x4))
-	writeFastVLine(x0, y0, r + 1, color);
+    writeFastVLine(x0, y0, r + 1, color);
 
   delta++; // Avoid some +1's in the loop
 
@@ -675,21 +675,21 @@ void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0, int1
     // These checks avoid double-drawing certain lines, important
     // for the SSD1306 library which has an INVERT drawing mode.
     if (x < (y + 1)) {
-	  if (corners & 0x4)
+      if (corners & 0x4)
         writeFastVLine(x0 + x, y0, y + delta, color);
       if (corners & 0x2)
         writeFastVLine(x0 + x, y0 - y, y + delta, color);
-	  if (corners & 0x8)
+      if (corners & 0x8)
         writeFastVLine(x0 - x, y0, y + delta, color);
       if (corners & 0x1)
         writeFastVLine(x0 - x, y0 - y, y + delta, color);
     }
     if (y != py) {
-	  if (corners & 0x4)
+      if (corners & 0x4)
         writeFastVLine(x0 + py, y0, px + delta, color);
       if (corners & 0x2)
         writeFastVLine(x0 + py, y0 - px, px + delta, color);
-	  if (corners & 0x8)
+      if (corners & 0x8)
         writeFastVLine(x0 - py, y0, px + delta, color);
       if (corners & 0x1)
         writeFastVLine(x0 - py, y0 - px, px + delta, color);
