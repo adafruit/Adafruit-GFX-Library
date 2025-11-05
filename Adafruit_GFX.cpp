@@ -514,8 +514,8 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
     @param    x0   Center-point x coordinate
     @param    y0   Center-point y coordinate
     @param    r   Radius of circle
-    @param    cornername  Mask bit #1, #2, #4, and #8 to indicate which quarters of
-   the circle we're doing
+    @param    cornername  Mask bit #1, #2, #4, and #8 to indicate which quarters
+   of the circle we're doing
     @param    color 16-bit 5-6-5 Color to draw with
 */
 /**************************************************************************/
@@ -578,8 +578,8 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
     @param  x0       Center-point x coordinate
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
-    @param  corners  Mask bits indicating which sides of the circle we are doing,
-                        left and/or right
+    @param  corners  Mask bits indicating which sides of the circle we are
+   doing, left and/or right
     @param  delta    Offset from center-point, used for round-rects
     @param  color    16-bit 5-6-5 Color to fill with
 */
@@ -635,12 +635,13 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     @param  r        Radius of circle
     @param  corners  Mask bit #1, #2, #4, and #8 to indicate which quarters of
    the circle we're doing
-    @param  delta    Offset from center-point. Elongates the horizontal face if desired.
+    @param  delta    Offset from center-point. Elongates the horizontal face if
+   desired.
     @param  color    16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
-void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0, int16_t r,
-                                    uint8_t corners, int16_t delta,
+void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0, 
+                                    int16_t r, uint8_t corners, int16_t delta,
                                     uint16_t color) {
 
   int16_t f = 1 - r;
@@ -652,8 +653,8 @@ void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0, int1
   int16_t py = y;
   
   if(useLegacy){
-      fillCircleHelper(x0, y0, r, corners, delta, color);
-      return;
+    fillCircleHelper(x0, y0, r, corners, delta, color);
+    return;
   }
   
   if (corners & (0x2 | 0x1))
