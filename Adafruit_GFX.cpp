@@ -651,12 +651,12 @@ void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0,
   int16_t y = r;
   int16_t px = x;
   int16_t py = y;
-  
+
   if (useLegacy) {
     fillCircleHelper(x0, y0, r, corners, delta, color);
     return;
   }
-  
+
   if (corners & (0x2 | 0x1))
     writeFastVLine(x0, y0 - r, r + 1, color);
   if (corners & (0x8 | 0x4))
