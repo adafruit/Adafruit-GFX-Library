@@ -640,7 +640,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     @param  color    16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
-void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0, 
+void Adafruit_GFX::fillCircleHelper(bool useLegacy, int16_t x0, int16_t y0,
                                     int16_t r, uint8_t corners, int16_t delta,
                                     uint16_t color) {
 
