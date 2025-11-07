@@ -712,8 +712,8 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
 */
 /**************************************************************************/
 void Adafruit_GFX::drawRotatedRectangle(int16_t cenX, int16_t cenY,
-                             int16_t width, int16_t height,
-                             int16_t angleDeg, uint16_t color) {
+                                        int16_t width, int16_t height,
+                                        int16_t angleDeg, uint16_t color) {
 
   int16_t halfW = width / 2.0;
   int16_t halfH = height / 2.0;
@@ -731,12 +731,11 @@ void Adafruit_GFX::drawRotatedRectangle(int16_t cenX, int16_t cenY,
   rotatePoint(x1, y1, cenX, cenY, angleDeg);
   rotatePoint(x2, y2, cenX, cenY, angleDeg);
   rotatePoint(x3, y3, cenX, cenY, angleDeg);
-  
+
   drawLine(x0, y0, x1, y1, color); // top left to top right
   drawLine(x0, y0, x2, y2, color); // top left to bottom left
   drawLine(x1, y1, x3, y3, color); // top right to bottom right
   drawLine(x2, y2, x3, y3, color); // bottom left to bottom right
-
 }
 
 /**************************************************************************/
@@ -751,8 +750,8 @@ void Adafruit_GFX::drawRotatedRectangle(int16_t cenX, int16_t cenY,
 */
 /**************************************************************************/
 void Adafruit_GFX::fillRotatedRectangle(int16_t cenX, int16_t cenY,
-                             int16_t width, int16_t height,
-                             int16_t angleDeg, uint16_t color) {
+                                        int16_t width, int16_t height,
+                                        int16_t angleDeg, uint16_t color) {
 
   int16_t halfW = width / 2.0;
   int16_t halfH = height / 2.0;
@@ -770,7 +769,7 @@ void Adafruit_GFX::fillRotatedRectangle(int16_t cenX, int16_t cenY,
   rotatePoint(x1, y1, cenX, cenY, angleDeg);
   rotatePoint(x2, y2, cenX, cenY, angleDeg);
   rotatePoint(x3, y3, cenX, cenY, angleDeg);
-  
+
   fillTriangle(x0, y0, x1, y1, x2, y2, color);
   fillTriangle(x1, y1, x2, y2, x3, y3, color);
 }
@@ -787,7 +786,8 @@ void Adafruit_GFX::fillRotatedRectangle(int16_t cenX, int16_t cenY,
     @param    angleDeg  angle of rotation of rectangle
 */
 /**************************************************************************/
-void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t orgX, int16_t orgY, int16_t angleDeg) {
+void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t orgX,
+                               int16_t orgY, int16_t angleDeg) {
   float angleRad = radians(angleDeg);
   float s = sin(angleRad);
   float c = cos(angleRad);
