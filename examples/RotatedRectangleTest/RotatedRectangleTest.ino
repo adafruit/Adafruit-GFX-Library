@@ -9,8 +9,8 @@
 #define SPI_SPEED             40000000
 #define ROTATION              1
 
-#define SCREEN_WIDTH          320
-#define SCREEN_HEIGHT         240
+#define SCREEN_WIDTH          128
+#define SCREEN_HEIGHT         128
 
 #define SERIAL_SPEED          9600
 
