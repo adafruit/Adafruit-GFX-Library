@@ -715,8 +715,8 @@ void Adafruit_GFX::drawRotatedRectangle(int16_t cenX, int16_t cenY,
                                         int16_t width, int16_t height,
                                         int16_t angleDeg, uint16_t color) {
 
-  int16_t halfW = width / 2.0;
-  int16_t halfH = height / 2.0;
+  int16_t halfW = width / 2;
+  int16_t halfH = height / 2;
 
   int16_t x0 = cenX - halfW; // top-left
   int16_t y0 = cenY - halfH; // top-left
@@ -753,8 +753,8 @@ void Adafruit_GFX::fillRotatedRectangle(int16_t cenX, int16_t cenY,
                                         int16_t width, int16_t height,
                                         int16_t angleDeg, uint16_t color) {
 
-  int16_t halfW = width / 2.0;
-  int16_t halfH = height / 2.0;
+  int16_t halfW = width / 2;
+  int16_t halfH = height / 2;
 
   int16_t x0 = cenX - halfW; // top-left
   int16_t y0 = cenY - halfH; // top-left
@@ -781,8 +781,8 @@ void Adafruit_GFX::fillRotatedRectangle(int16_t cenX, int16_t cenY,
                   and updated upon return
     @param    y0  y coordinate of point to rotate. This is passed by reference
                   and updated upon return
-    @param    orgX  width of rectangle
-    @param    orgY  height of rectangle
+    @param    orgX  x coordinate of point to be rotated around
+    @param    orgY  y coordinate of point to be rotated around
     @param    angleDeg  angle of rotation of rectangle
 */
 /**************************************************************************/
