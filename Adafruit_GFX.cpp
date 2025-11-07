@@ -702,6 +702,111 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
 
 /**************************************************************************/
 /*!
+   @brief     Draw a rotated rectangle
+    @param    cenX  x coordinate of center of rectangle
+    @param    cenY  y coordinate of center of rectangle
+    @param    width  width of rectangle
+    @param    height  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawRotatedRectangle(int16_t cenX, int16_t cenY,
+                             int16_t width, int16_t height,
+                             int16_t angleDeg, uint16_t color) {
+
+  int16_t halfW = width / 2.0;
+  int16_t halfH = height / 2.0;
+
+  int16_t x0 = cenX - halfW; // top-left
+  int16_t y0 = cenY - halfH; // top-left
+  int16_t x1 = cenX + halfW; // top-right
+  int16_t y1 = cenY - halfH; // top-right
+  int16_t x2 = cenX - halfW; // bottom-left
+  int16_t y2 = cenY + halfH; // bottom-left
+  int16_t x3 = cenX + halfW; // bottom-right
+  int16_t y3 = cenY + halfH; // bottom-right
+
+  rotatePoint(x0, y0, cenX, cenY, angleDeg);
+  rotatePoint(x1, y1, cenX, cenY, angleDeg);
+  rotatePoint(x2, y2, cenX, cenY, angleDeg);
+  rotatePoint(x3, y3, cenX, cenY, angleDeg);
+  
+  drawLine(x0, y0, x1, y1, color); // top left to top right
+  drawLine(x0, y0, x2, y2, color); // top left to bottom left
+  drawLine(x1, y1, x3, y3, color); // top right to bottom right
+  drawLine(x2, y2, x3, y3, color); // bottom left to bottom right
+
+}
+
+/**************************************************************************/
+/*!
+   @brief     Draw a filled rotated rectangle
+    @param    cenX  x coordinate of center of rectangle
+    @param    cenY  y coordinate of center of rectangle
+    @param    width  width of rectangle
+    @param    height  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillRotatedRectangle(int16_t cenX, int16_t cenY,
+                             int16_t width, int16_t height,
+                             int16_t angleDeg, uint16_t color) {
+
+  int16_t halfW = width / 2.0;
+  int16_t halfH = height / 2.0;
+
+  int16_t x0 = cenX - halfW; // top-left
+  int16_t y0 = cenY - halfH; // top-left
+  int16_t x1 = cenX + halfW; // top-right
+  int16_t y1 = cenY - halfH; // top-right
+  int16_t x2 = cenX - halfW; // bottom-left
+  int16_t y2 = cenY + halfH; // bottom-left
+  int16_t x3 = cenX + halfW; // bottom-right
+  int16_t y3 = cenY + halfH; // bottom-right
+
+  rotatePoint(x0, y0, cenX, cenY, angleDeg);
+  rotatePoint(x1, y1, cenX, cenY, angleDeg);
+  rotatePoint(x2, y2, cenX, cenY, angleDeg);
+  rotatePoint(x3, y3, cenX, cenY, angleDeg);
+  
+  fillTriangle(x0, y0, x1, y1, x2, y2, color);
+  fillTriangle(x1, y1, x2, y2, x3, y3, color);
+}
+
+/**************************************************************************/
+/*!
+   @brief     Rotate a point around another point
+    @param    x0  x coordinate of point to rotate. This is passed by reference
+                  and updated upon return
+    @param    y0  y coordinate of point to rotate. This is passed by reference
+                  and updated upon return
+    @param    orgX  width of rectangle
+    @param    orgY  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+*/
+/**************************************************************************/
+void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t orgX, int16_t orgY, int16_t angleDeg) {
+  float angleRad = radians(angleDeg);
+  float s = sin(angleRad);
+  float c = cos(angleRad);
+
+  // Translate to standard position
+  int16_t xStan = x0 - orgX;
+  int16_t yStan = y0 - orgY;
+
+  // Rotate point
+  int16_t xRot = (int16_t)((float)xStan * c - (float)yStan * s);
+  int16_t yRot = (int16_t)((float)xStan * s + (float)yStan * c);
+
+  // Translate back
+  x0 = xRot + orgX;
+  y0 = yRot + orgY;
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a triangle with no fill color
     @param    x0  Vertex #0 x coordinate
     @param    y0  Vertex #0 y coordinate
