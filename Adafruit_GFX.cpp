@@ -631,10 +631,11 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     @param  x0       Center-point x coordinate
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
-    @param  corners  Mask bit #1, #2, #4, and #8 to indicate which quarters of
-                     the circle we're doing
-    @param  delta    Offset from center-point. Elongates the horizontal face if
-                     desired.
+    @param  corners  Mask bits 0x1, 0x2, 0x4, and 0x8 to indicate which quarters
+                     of the circle to fill: 0x1 = top-left, 0x2 = top-right,
+                     0x4 = bottom-right, 0x8 = bottom-left
+    @param  delta    Offset from center-point. Elongates the horizontal face (by
+                     extending the vertical lines) if desired.
     @param  color    16-bit 5-6-5 Color to fill with
 */
 /**************************************************************************/
