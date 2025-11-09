@@ -85,10 +85,10 @@ public:
                      int16_t radius, uint16_t color);
   void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
                      int16_t radius, uint16_t color);
-  void drawRotatedRectangle(int16_t cenX, int16_t cenY, int16_t width,
-                            int16_t height, int16_t angleDeg, uint16_t color);
-  void fillRotatedRectangle(int16_t cenX, int16_t cenY, int16_t width,
-                            int16_t height, int16_t angleDeg, uint16_t color);
+  void drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                       int16_t h, int16_t angleDeg, uint16_t color);
+  void fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                       int16_t h, int16_t angleDeg, uint16_t color);
   void rotatePoint(int16_t &x0, int16_t &y0, int16_t orgX, int16_t orgY,
                    int16_t angleDeg);
   void drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w,
