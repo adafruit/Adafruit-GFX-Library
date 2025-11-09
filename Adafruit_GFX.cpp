@@ -711,9 +711,9 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
     @param    color 16-bit 5-6-5 Color to fill/draw with
 */
 /**************************************************************************/
-void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY,
-                                   int16_t w, int16_t h,
-                                   int16_t angleDeg, uint16_t color) {
+void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                                   int16_t h, int16_t angleDeg,
+                                   uint16_t color) {
 
   int16_t halfW = w / 2;
   int16_t halfH = h / 2;
@@ -749,9 +749,9 @@ void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY,
     @param    color 16-bit 5-6-5 Color to fill/draw with
 */
 /**************************************************************************/
-void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY,
-                                   int16_t w, int16_t h,
-                                   int16_t angleDeg, uint16_t color) {
+void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                                   int16_t h, int16_t angleDeg,
+                                   uint16_t color) {
 
   int16_t halfW = w / 2;
   int16_t halfH = h / 2;
