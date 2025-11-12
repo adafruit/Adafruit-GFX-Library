@@ -18,6 +18,7 @@ See notes at end for glyph nomenclature & other tidbits.
 */
 #ifndef ARDUINO
 
+#include <assert.h>
 #include <ctype.h>
 #include <ft2build.h>
 #include <stdint.h>
@@ -50,6 +51,18 @@ void enbit(uint8_t value) {
   }
 }
 
+struct Remap {
+  uint64_t char_to_replace;
+  uint64_t replace_with;
+  struct Remap *next;
+};
+
+struct Remap *parse_remap(char *input);
+uint64_t remap_char(struct Remap *remap, uint64_t in);
+
+char *to_utf8(uint64_t codepoint);
+uint64_t read_utf8(char **input_ptr);
+
 int main(int argc, char *argv[]) {
   int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
   char *fontName, c, *ptr;
@@ -60,16 +73,28 @@ int main(int argc, char *argv[]) {
   FT_BitmapGlyphRec *g;
   GFXglyph *table;
   uint8_t bit;
+  struct Remap *remap = NULL;
 
   // Parse command line.  Valid syntaxes are:
   //   fontconvert [filename] [size]
   //   fontconvert [filename] [size] [last char]
   //   fontconvert [filename] [size] [first char] [last char]
+  //   fontconvert [filename] [size] [first char] [last char] [remap]
   // Unless overridden, default first and last chars are
   // ' ' (space) and '~', respectively
+  //
+  // Remap is a string containing pairs of characters to remap.
+  // Example:
+  //   fontconvert myfont.ttf 16 48 58 :°
+  // creates a font which contains digits '0' to '9' and the degree symbol,
+  // with the degree symbol glyph is mapped to ASCII character ':' (58).
+  // Thus when drawing text "42:", one would get "42°".
+  //
+  // If remap is given, "Custom" is appended to the font name.
 
   if (argc < 3) {
-    fprintf(stderr, "Usage: %s fontfile size [first] [last]\n", argv[0]);
+    fprintf(stderr, "Usage: %s fontfile size [first] [last] [remap]\n",
+            argv[0]);
     return 1;
   }
 
@@ -80,6 +105,10 @@ int main(int argc, char *argv[]) {
   } else if (argc == 5) {
     first = atoi(argv[3]);
     last = atoi(argv[4]);
+  } else if (argc == 6) {
+    first = atoi(argv[3]);
+    last = atoi(argv[4]);
+    remap = parse_remap(argv[5]);
   }
 
   if (last < first) {
@@ -95,7 +124,7 @@ int main(int argc, char *argv[]) {
     ptr = argv[1]; // No path; font in local dir.
 
   // Allocate space for font name and glyph table
-  if ((!(fontName = malloc(strlen(ptr) + 20))) ||
+  if ((!(fontName = malloc(strlen(ptr) + 20 + (remap ? 6 : 0)))) ||
       (!(table = (GFXglyph *)malloc((last - first + 1) * sizeof(GFXglyph))))) {
     fprintf(stderr, "Malloc error\n");
     return 1;
@@ -114,6 +143,10 @@ int main(int argc, char *argv[]) {
   for (i = 0; (c = fontName[i]); i++) {
     if (isspace(c) || ispunct(c))
       fontName[i] = '_';
+  }
+
+  if (remap) {
+    strcat(fontName, "Custom");
   }
 
   // Init FreeType lib, load font
@@ -151,7 +184,7 @@ int main(int argc, char *argv[]) {
   for (i = first, j = 0; i <= last; i++, j++) {
     // MONO renderer provides clean image with perfect crop
     // (no wasted pixels) via bitmap struct.
-    if ((err = FT_Load_Char(face, i, FT_LOAD_TARGET_MONO))) {
+    if ((err = FT_Load_Char(face, remap_char(remap, i), FT_LOAD_TARGET_MONO))) {
       fprintf(stderr, "Error %d loading char '%c'\n", err, i);
       continue;
     }
@@ -215,14 +248,14 @@ int main(int argc, char *argv[]) {
     if (i < last) {
       printf(",   // 0x%02X", i);
       if ((i >= ' ') && (i <= '~')) {
-        printf(" '%c'", i);
+        printf(" '%s'", to_utf8(remap_char(remap, i)));
       }
       putchar('\n');
     }
   }
   printf(" }; // 0x%02X", last);
   if ((last >= ' ') && (last <= '~'))
-    printf(" '%c'", last);
+    printf(" '%s'", to_utf8(remap_char(remap, last)));
   printf("\n\n");
 
   // Output font structure
@@ -243,6 +276,105 @@ int main(int argc, char *argv[]) {
   FT_Done_FreeType(library);
 
   return 0;
+}
+
+char *to_utf8(uint64_t codepoint) {
+  static char buf[7];
+  memset(buf, 0, 7);
+  if (codepoint <= 0x7F) {
+    buf[0] = codepoint & 0xFF;
+  } else if (codepoint <= 0x7FF) {
+    buf[0] = 0b11000000 + (codepoint >> 6 & 0b11111);
+    buf[1] = 0b10000000 + (codepoint & 0b111111);
+  } else if (codepoint <= 0xFFFF) {
+    buf[0] = 0b11100000 + (codepoint >> 12 & 0b1111);
+    buf[1] = 0b10000000 + (codepoint >> 6 & 0b111111);
+    buf[2] = 0b10000000 + (codepoint & 0b111111);
+  } else if (codepoint <= 0x1FFFFF) {
+    buf[0] = 0b11110000 + (codepoint >> 18 & 0b111);
+    buf[1] = 0b10000000 + (codepoint >> 12 & 0b111111);
+    buf[2] = 0b10000000 + (codepoint >> 6 & 0b111111);
+    buf[3] = 0b10000000 + (codepoint & 0b111111);
+  } else if (codepoint <= 0x3FFFFFF) {
+    buf[0] = 0b11111000 + (codepoint >> 24 & 0b11);
+    buf[1] = 0b10000000 + (codepoint >> 18 & 0b111111);
+    buf[2] = 0b10000000 + (codepoint >> 12 & 0b111111);
+    buf[3] = 0b10000000 + (codepoint >> 6 & 0b111111);
+    buf[4] = 0b10000000 + (codepoint & 0b111111);
+  } else {
+    buf[0] = 0b11111100 + (codepoint >> 30 & 0b1);
+    buf[1] = 0b10000000 + (codepoint >> 24 & 0b111111);
+    buf[2] = 0b10000000 + (codepoint >> 18 & 0b111111);
+    buf[3] = 0b10000000 + (codepoint >> 12 & 0b111111);
+    buf[4] = 0b10000000 + (codepoint >> 6 & 0b111111);
+    buf[5] = 0b10000000 + (codepoint & 0b111111);
+  }
+  return buf;
+}
+
+uint64_t read_utf8(char **input_ptr) {
+  char *input = *input_ptr;
+  uint64_t codepoint = 0;
+  int n_bytes = 0;
+  if ((*input & 0b11111100) == 0b11111100) {
+    n_bytes = 5;
+    codepoint = *input & 1;
+  } else if ((*input & 0b11111000) == 0b11111000) {
+    n_bytes = 4;
+    codepoint = *input & 0b11;
+  } else if ((*input & 0b11110000) == 0b11110000) {
+    n_bytes = 3;
+    codepoint = *input & 0b111;
+  } else if ((*input & 0b11100000) == 0b11100000) {
+    n_bytes = 2;
+    codepoint = *input & 0b1111;
+  } else if ((*input & 0b11000000) == 0b11000000) {
+    n_bytes = 1;
+    codepoint = *input & 0b11111;
+  } else {
+    n_bytes = 0;
+    codepoint = *input;
+  }
+  input++;
+  while (n_bytes > 0) {
+    assert(*input);
+    codepoint = (codepoint << 6) + (*input & 0b111111);
+    input++;
+    n_bytes--;
+  }
+
+  *input_ptr = input;
+
+  return codepoint;
+}
+
+struct Remap *parse_remap(char *input) {
+  if (!*input) { // end of string.
+    return NULL;
+  }
+  uint64_t char_to_replace = read_utf8(&input);
+  if (!*input) {
+    fprintf(stderr, "Unexpected end of remap after: %s\n",
+            to_utf8(char_to_replace));
+    exit(1);
+  }
+  uint64_t replace_with = read_utf8(&input);
+
+  struct Remap *result = malloc(sizeof(struct Remap));
+  result->char_to_replace = char_to_replace;
+  result->replace_with = replace_with;
+  result->next = parse_remap(input);
+  return result;
+}
+
+uint64_t remap_char(struct Remap *remap, uint64_t in) {
+  if (!remap) {
+    return in;
+  }
+  if (remap->char_to_replace == in) {
+    return remap->replace_with;
+  }
+  return remap_char(remap->next, in);
 }
 
 /* -------------------------------------------------------------------------
