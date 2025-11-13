@@ -39,6 +39,22 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <pgmspace.h>
 #endif
 
+/*!
+   Expensive drawing operations normally call yield() to reset the watchdog
+   on the ESP8266 platform. Defined as a weak symbol to allow customization
+   of that behavior in applications with different scheduling.
+   Example, in some "myApp.cpp":
+
+     // (overriding yield behavior app-wide)
+     void Adafruit_GFX_yield() { if (okToYield) yield(); }
+*/
+void Adafruit_GFX_yield() __attribute__((weak));
+void Adafruit_GFX_yield() {
+#if defined(ESP8266)
+  yield();
+#endif
+}
+
 // Many (but maybe not all) non-AVR board installs define macros
 // for compatibility with existing PROGMEM-reading AVR code.
 // Do our own checks and defines here for good measure...
@@ -131,9 +147,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) : WIDTH(w), HEIGHT(h) {
 /**************************************************************************/
 void Adafruit_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                              uint16_t color) {
-#if defined(ESP8266)
-  yield();
-#endif
+  Adafruit_GFX_yield();
   int16_t steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
     _swap_int16_t(x0, y0);
@@ -471,9 +485,7 @@ void Adafruit_GFX::fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
 /**************************************************************************/
 void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
                               uint16_t color) {
-#if defined(ESP8266)
-  yield();
-#endif
+  Adafruit_GFX_yield();
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
   int16_t ddF_y = -2 * r;
