@@ -22,10 +22,10 @@
 
 #define SERIAL_SPEED          9600
 
-#define DRAW_CIRCLE_TOP       44
-#define DRAW_CIRCLE_LEFT      44
-#define FILL_CIRCLE_TOP       84
-#define FILL_CIRCLE_LEFT      84
+#define DRAW_CIRCLE_X         44
+#define DRAW_CIRCLE_Y         44
+#define FILL_CIRCLE_X         84
+#define FILL_CIRCLE_Y         84
 #define WIDTH                 40
 #define HEIGHT                30
 #define BLACK                 0x0000
@@ -48,8 +48,8 @@ void setup(void)
 void loop()
 {
   canvas.fillScreen(BLACK);
-  canvas.drawRotatedRect(DRAW_CIRCLE_TOP, DRAW_CIRCLE_TOP, WIDTH, HEIGHT, angle, WHITE);
-  canvas.fillRotatedRect(DRAW_CIRCLE_TOP, DRAW_CIRCLE_TOP, WIDTH, HEIGHT, angle, GREEN);
+  canvas.drawRotatedRect(DRAW_CIRCLE_X, DRAW_CIRCLE_Y, WIDTH, HEIGHT, angle, WHITE);
+  canvas.fillRotatedRect(FILL_CIRCLE_X, FILL_CIRCLE_Y, WIDTH, HEIGHT, angle, GREEN);
   //Un-comment to display the rotated rectangles on your display
   //tft.drawRGBBitmap(0, 0, canvas.getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
   ++angle %= 360;
