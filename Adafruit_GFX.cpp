@@ -715,27 +715,43 @@ void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
                                    int16_t h, int16_t angleDeg,
                                    uint16_t color) {
 
-  int16_t halfW = w / 2;
-  int16_t halfH = h / 2;
+  if (w < 1 || h < 1) return; // We don't draw zero dimensioned objects
 
-  int16_t x0 = cenX - halfW; // top-left
-  int16_t y0 = cenY - halfH; // top-left
-  int16_t x1 = cenX + halfW; // top-right
-  int16_t y1 = cenY - halfH; // top-right
-  int16_t x2 = cenX - halfW; // bottom-left
-  int16_t y2 = cenY + halfH; // bottom-left
-  int16_t x3 = cenX + halfW; // bottom-right
-  int16_t y3 = cenY + halfH; // bottom-right
+  int16_t W = w - 1;
+  int16_t H = h - 1;
+  
+  int16_t halfW = (W / 2); // Midpoint should always be integer
+  int16_t halfH = (H / 2); // Midpoint should always be integer
 
-  rotatePoint(x0, y0, cenX, cenY, angleDeg);
-  rotatePoint(x1, y1, cenX, cenY, angleDeg);
-  rotatePoint(x2, y2, cenX, cenY, angleDeg);
-  rotatePoint(x3, y3, cenX, cenY, angleDeg);
+  int16_t x0 = W - halfW; // bottom-right
+  int16_t y0 = H - halfH; // bottom-right
+  int16_t x1 = -halfW;    // bottom-left
+  int16_t y1 = H - halfH; // bottom-left
+  int16_t x2 = -halfW;    // top-left
+  int16_t y2 = -halfH;    // top-left
+  int16_t x3 = W - halfW; // top-right
+  int16_t y3 = -halfH;    // top-right
 
-  drawLine(x0, y0, x1, y1, color); // top left to top right
-  drawLine(x0, y0, x2, y2, color); // top left to bottom left
-  drawLine(x1, y1, x3, y3, color); // top right to bottom right
-  drawLine(x2, y2, x3, y3, color); // bottom left to bottom right
+  rotatePoint(x0, y0, angleDeg);
+  rotatePoint(x1, y1, angleDeg);
+  rotatePoint(x2, y2, angleDeg);
+  rotatePoint(x3, y3, angleDeg);
+  
+  x0 += cenX;
+  x1 += cenX;
+  x2 += cenX;
+  x3 += cenX;
+  
+  y0 += cenY;
+  y1 += cenY;
+  y2 += cenY;
+  y3 += cenY;
+  
+
+  drawLine(x0, y0, x1, y1, color); // bottom right to bottom left
+  drawLine(x1, y1, x2, y2, color); // bottom left to top left
+  drawLine(x2, y2, x3, y3, color); // top left to top right
+  drawLine(x3, y3, x0, y0, color); // top right to bottom right
 }
 
 /**************************************************************************/
@@ -753,56 +769,63 @@ void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
                                    int16_t h, int16_t angleDeg,
                                    uint16_t color) {
 
-  int16_t halfW = w / 2;
-  int16_t halfH = h / 2;
+  if (w < 1 || h < 1) return; // We don't draw zero dimensioned objects
 
-  int16_t x0 = cenX - halfW; // top-left
-  int16_t y0 = cenY - halfH; // top-left
-  int16_t x1 = cenX + halfW; // top-right
-  int16_t y1 = cenY - halfH; // top-right
-  int16_t x2 = cenX - halfW; // bottom-left
-  int16_t y2 = cenY + halfH; // bottom-left
-  int16_t x3 = cenX + halfW; // bottom-right
-  int16_t y3 = cenY + halfH; // bottom-right
+  int16_t W = w - 1;
+  int16_t H = h - 1;
+  
+  int16_t halfW = (W / 2); // Midpoint should always be integer
+  int16_t halfH = (H / 2); // Midpoint should always be integer
 
-  rotatePoint(x0, y0, cenX, cenY, angleDeg);
-  rotatePoint(x1, y1, cenX, cenY, angleDeg);
-  rotatePoint(x2, y2, cenX, cenY, angleDeg);
-  rotatePoint(x3, y3, cenX, cenY, angleDeg);
+  int16_t x0 = W - halfW; // bottom-right
+  int16_t y0 = H - halfH; // bottom-right
+  int16_t x1 = -halfW;    // bottom-left
+  int16_t y1 = H - halfH; // bottom-left
+  int16_t x2 = -halfW;    // top-left
+  int16_t y2 = -halfH;    // top-left
+  int16_t x3 = W - halfW; // top-right
+  int16_t y3 = -halfH;    // top-right
+
+  rotatePoint(x0, y0, angleDeg);
+  rotatePoint(x1, y1, angleDeg);
+  rotatePoint(x2, y2, angleDeg);
+  rotatePoint(x3, y3, angleDeg);
+  
+  x0 += cenX;
+  x1 += cenX;
+  x2 += cenX;
+  x3 += cenX;
+  
+  y0 += cenY;
+  y1 += cenY;
+  y2 += cenY;
+  y3 += cenY;
 
   fillTriangle(x0, y0, x1, y1, x2, y2, color);
-  fillTriangle(x1, y1, x2, y2, x3, y3, color);
+  fillTriangle(x2, y2, x3, y3, x0, y0, color);
 }
 
 /**************************************************************************/
 /*!
-   @brief     Rotate a point around another point
+   @brief     Rotate a point in standard position
     @param    x0  x coordinate of point to rotate. This is passed by reference
                   and updated upon return
     @param    y0  y coordinate of point to rotate. This is passed by reference
                   and updated upon return
-    @param    orgX  x coordinate of point to be rotated around
-    @param    orgY  y coordinate of point to be rotated around
     @param    angleDeg  angle of rotation of rectangle
 */
 /**************************************************************************/
-void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t orgX,
-                               int16_t orgY, int16_t angleDeg) {
+void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t angleDeg) {
   float angleRad = radians(angleDeg);
   float s = sin(angleRad);
   float c = cos(angleRad);
-
-  // Translate to standard position
-  int16_t xStan = x0 - orgX;
-  int16_t yStan = y0 - orgY;
+  
+  float x = x0;
+  float y = y0;
 
   // Rotate point
-  int16_t xRot = (int16_t)((float)xStan * c - (float)yStan * s);
-  int16_t yRot = (int16_t)((float)xStan * s + (float)yStan * c);
-
-  // Translate back
-  x0 = xRot + orgX;
-  y0 = yRot + orgY;
+  x0 = (int16_t)((x * c) - (y * s));
+  y0 = (int16_t)((x * s) + (y * c));
 }
 
 /**************************************************************************/
