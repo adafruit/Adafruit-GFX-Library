@@ -48,11 +48,31 @@ void setup(void)
 void loop()
 {
   canvas.fillScreen(BLACK);
-  canvas.drawRotatedRect(DRAW_CIRCLE_X, DRAW_CIRCLE_Y, WIDTH, HEIGHT, angle, WHITE);
-  canvas.fillRotatedRect(FILL_CIRCLE_X, FILL_CIRCLE_Y, WIDTH, HEIGHT, angle, GREEN);
+  canvas.fillRect(0, 10, 10, 1, GREEN);
+  canvas.fillRotatedRect(14, 10, 10, 1, angle, GREEN);
+  canvas.fillRect(20, 10, 10, 2, GREEN);
+  canvas.fillRotatedRect(34, 10, 10, 2, angle, GREEN);
+  canvas.fillRect(40, 10, 10, 3, GREEN);
+  canvas.fillRotatedRect(54, 11, 10, 3, angle, GREEN);
+  canvas.fillRect(60, 10, 10, 4, GREEN);
+  canvas.fillRotatedRect(74, 11, 10, 4, angle, GREEN);
+  canvas.fillRect(80, 10, 10, 5, GREEN);
+  canvas.fillRotatedRect(94, 12, 10, 5, angle, GREEN);
   //Un-comment to display the rotated rectangles on your display
   //tft.drawRGBBitmap(0, 0, canvas.getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
-  ++angle %= 360;
+  delay(10000);
+
+  for( int scale = 0; scale < HEIGHT; scale++)
+  {
+    for(int angle = 0; angle < 360; angle++)
+    {
+      canvas.fillScreen(BLACK);
+      canvas.drawRotatedRect(DRAW_CIRCLE_X, DRAW_CIRCLE_Y, WIDTH - scale, HEIGHT - scale, angle, WHITE);
+      canvas.fillRotatedRect(FILL_CIRCLE_X, FILL_CIRCLE_Y, WIDTH - scale, HEIGHT - scale, angle, GREEN);
+      //Un-comment to display the rotated rectangles on your display
+      //tft.drawRGBBitmap(0, 0, canvas.getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
+  }
 }
 
 void initializeTFT(void)
