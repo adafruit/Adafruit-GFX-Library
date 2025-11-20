@@ -715,11 +715,12 @@ void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
                                    int16_t h, int16_t angleDeg,
                                    uint16_t color) {
 
-  if (w < 1 || h < 1) return; // We don't draw zero dimensioned objects
+  if (w < 1 || h < 1)
+    return; // We don't draw zero dimensioned objects
 
   int16_t W = w - 1;
   int16_t H = h - 1;
-  
+
   int16_t halfW = (W / 2); // Midpoint should always be integer
   int16_t halfH = (H / 2); // Midpoint should always be integer
 
@@ -736,17 +737,16 @@ void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
   rotatePoint(x1, y1, angleDeg);
   rotatePoint(x2, y2, angleDeg);
   rotatePoint(x3, y3, angleDeg);
-  
+
   x0 += cenX;
   x1 += cenX;
   x2 += cenX;
   x3 += cenX;
-  
+
   y0 += cenY;
   y1 += cenY;
   y2 += cenY;
   y3 += cenY;
-  
 
   drawLine(x0, y0, x1, y1, color); // bottom right to bottom left
   drawLine(x1, y1, x2, y2, color); // bottom left to top left
@@ -769,11 +769,12 @@ void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
                                    int16_t h, int16_t angleDeg,
                                    uint16_t color) {
 
-  if (w < 1 || h < 1) return; // We don't draw zero dimensioned objects
+  if (w < 1 || h < 1)
+    return; // We don't draw zero dimensioned objects
 
   int16_t W = w - 1;
   int16_t H = h - 1;
-  
+
   int16_t halfW = (W / 2); // Midpoint should always be integer
   int16_t halfH = (H / 2); // Midpoint should always be integer
 
@@ -790,12 +791,12 @@ void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
   rotatePoint(x1, y1, angleDeg);
   rotatePoint(x2, y2, angleDeg);
   rotatePoint(x3, y3, angleDeg);
-  
+
   x0 += cenX;
   x1 += cenX;
   x2 += cenX;
   x3 += cenX;
-  
+
   y0 += cenY;
   y1 += cenY;
   y2 += cenY;
@@ -819,7 +820,7 @@ void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t angleDeg) {
   float angleRad = radians(angleDeg);
   float s = sin(angleRad);
   float c = cos(angleRad);
-  
+
   float x = x0;
   float y = y0;
 
