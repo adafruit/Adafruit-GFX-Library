@@ -125,6 +125,41 @@ public:
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
 
+  /*! @brief Alignment settings for fillTextRect() */
+  enum AlignType {
+    TOP_LEFT = 0x00,
+    TOP_CENTER = 0x01,
+    TOP_RIGHT = 0x02,
+    MID_LEFT = 0x10,
+    MID_CENTER = 0x11,
+    MID_RIGHT = 0x12,
+    BOT_LEFT = 0x20,
+    BOT_CENTER = 0x21,
+    BOT_RIGHT = 0x22,
+    CENTER = 0x01,
+    RIGHT = 0x02,
+    MIDDLE = 0x10,
+    BOTTOM = 0x20
+  };
+
+  /**********************************************************************/
+  /*!
+    @brief  Draw text with alignment inside a filled rectangle.
+            This handles background filling also for custom fonts.
+            Any part of text that extends beyond the rectangle is clipped.
+    @param  str     Null-terminated string to draw, can be multiline.
+    @param  x       Filled area left edge X coordinate
+    @param  y       Filled area top edge Y coordinate
+    @param  w       Filled area width
+    @param  h       Filled area height
+    @param  align   Alignment edge, e.g. Adafruit_GFX::MID_CENTER
+    @param  fgcolor Color for text
+    @param  bgcolor Color for background
+  */
+  /**********************************************************************/
+  void fillTextRect(const char *str, int16_t x, int16_t y, int16_t w, int16_t h,
+                    AlignType align, uint16_t fgcolor, uint16_t bgcolor);
+
   /**********************************************************************/
   /*!
     @brief  Set text cursor location
