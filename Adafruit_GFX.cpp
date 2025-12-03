@@ -1293,9 +1293,9 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // Character is assumed previously filtered by write() to eliminate
     // newlines, returns, non-printable characters, etc.  Calling
     // drawChar() directly with 'bad' characters of font may cause mayhem!
-
-    c -= (uint8_t)pgm_read_byte(&gfxFont->first);
-    GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c);
+    const GFXglyph *glyph = getGlyph(c);
+    if (glyph == nullptr) 
+      return;
     uint8_t *bitmap = pgm_read_bitmap_ptr(gfxFont);
 
     uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
@@ -1378,9 +1378,8 @@ size_t Adafruit_GFX::write(uint8_t c) {
       cursor_y +=
           (int16_t)textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
     } else if (c != '\r') {
-      uint8_t first = pgm_read_byte(&gfxFont->first);
-      if ((c >= first) && (c <= (uint8_t)pgm_read_byte(&gfxFont->last))) {
-        GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c - first);
+      const  GFXglyph *glyph = getGlyph(c);
+      if (glyph) {
         uint8_t w = pgm_read_byte(&glyph->width),
                 h = pgm_read_byte(&glyph->height);
         if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
@@ -1468,6 +1467,24 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
 
 /**************************************************************************/
 /*!
+    @brief  helper to lookup glyph from gfxFont
+    @param  code   The codepoint (ASCII or unicode) character in question
+    @returns  GFXglyph * if found, else nullptr
+*/
+
+const GFXglyph *Adafruit_GFX::getGlyph(uint16_t codepoint)
+{
+  if (gfxFont) {
+    uint16_t first = pgm_read_word(&gfxFont->first);
+    uint16_t  last = pgm_read_word(&gfxFont->last);
+    if ((codepoint >= first) && (codepoint <= last)) // Char present in this font?
+      return pgm_read_glyph_ptr(gfxFont, codepoint - first);
+  }
+  return nullptr;
+}
+	
+/**************************************************************************/
+/*!
     @brief  Helper to determine size of a character with current font/size.
             Broke this out as it's used by both the PROGMEM- and RAM-resident
             getTextBounds() functions.
@@ -1494,10 +1511,8 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
       *x = 0;        // Reset x to zero, advance y by one line
       *y += textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
     } else if (c != '\r') { // Not a carriage return; is normal char
-      uint8_t first = pgm_read_byte(&gfxFont->first),
-              last = pgm_read_byte(&gfxFont->last);
-      if ((c >= first) && (c <= last)) { // Char present in this font?
-        GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c - first);
+      const GFXglyph *glyph = getGlyph(c);
+      if (glyph) { // Char present in this font?
         uint8_t gw = pgm_read_byte(&glyph->width),
                 gh = pgm_read_byte(&glyph->height),
                 xa = pgm_read_byte(&glyph->xAdvance);

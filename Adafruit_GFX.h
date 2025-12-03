@@ -124,7 +124,7 @@ public:
   void setTextSize(uint8_t s);
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
-
+  const GFXglyph *getGlyph(uint16_t codepoint);
   /**********************************************************************/
   /*!
     @brief  Set text cursor location
