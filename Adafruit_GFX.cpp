@@ -1468,7 +1468,7 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
 /**************************************************************************/
 /*!
     @brief  helper to lookup glyph from gfxFont
-    @param  code   The codepoint (ASCII or unicode) character in question
+    @param  codepoint The codepoint (ASCII or unicode) character in question
     @returns  GFXglyph * if found, else nullptr
 */
 
