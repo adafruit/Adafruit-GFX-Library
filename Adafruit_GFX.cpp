@@ -1294,7 +1294,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // newlines, returns, non-printable characters, etc.  Calling
     // drawChar() directly with 'bad' characters of font may cause mayhem!
     const GFXglyph *glyph = getGlyph(c);
-    if (glyph == nullptr) 
+    if (glyph == nullptr)
       return;
     uint8_t *bitmap = pgm_read_bitmap_ptr(gfxFont);
 
@@ -1378,7 +1378,7 @@ size_t Adafruit_GFX::write(uint8_t c) {
       cursor_y +=
           (int16_t)textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
     } else if (c != '\r') {
-      const  GFXglyph *glyph = getGlyph(c);
+      const GFXglyph *glyph = getGlyph(c);
       if (glyph) {
         uint8_t w = pgm_read_byte(&glyph->width),
                 h = pgm_read_byte(&glyph->height);
@@ -1472,17 +1472,17 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     @returns  GFXglyph * if found, else nullptr
 */
 
-const GFXglyph *Adafruit_GFX::getGlyph(uint16_t codepoint)
-{
+const GFXglyph *Adafruit_GFX::getGlyph(uint16_t codepoint) {
   if (gfxFont) {
     uint16_t first = pgm_read_word(&gfxFont->first);
-    uint16_t  last = pgm_read_word(&gfxFont->last);
-    if ((codepoint >= first) && (codepoint <= last)) // Char present in this font?
+    uint16_t last = pgm_read_word(&gfxFont->last);
+    if ((codepoint >= first) &&
+        (codepoint <= last)) // Char present in this font?
       return pgm_read_glyph_ptr(gfxFont, codepoint - first);
   }
   return nullptr;
 }
-	
+
 /**************************************************************************/
 /*!
     @brief  Helper to determine size of a character with current font/size.
