@@ -352,6 +352,81 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 }
 #endif // end !ESP8266
 
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
+                                 int8_t cs, ExpanderPin *dc, ExpanderPin *rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(-1), _cs(cs), _dc(-1) {
+  hwspi._spi = spiClass;
+#if !defined(SPI_HAS_TRANSACTION)
+  hwspi._freq = 0;
+  hwspi._mode = SPI_MODE0;
+#endif
+  _dcExp = dc;
+  _rstExp = rst;
+}
+
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
+                                 int8_t cs, int8_t dc, ExpanderPin *rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(-1), _cs(cs), _dc(dc) {
+  hwspi._spi = spiClass;
+#if !defined(SPI_HAS_TRANSACTION)
+  hwspi._freq = 0;
+  hwspi._mode = SPI_MODE0;
+#endif
+  _rstExp = rst;
+}
+
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
+                                 ExpanderPin *cs, ExpanderPin *dc,
+                                 ExpanderPin *rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(-1), _cs(-1), _dc(-1) {
+  hwspi._spi = spiClass;
+#if !defined(SPI_HAS_TRANSACTION)
+  hwspi._freq = 0;
+  hwspi._mode = SPI_MODE0;
+#endif
+  _csExp = cs;
+  _dcExp = dc;
+  _rstExp = rst;
+}
+
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs,
+                                 ExpanderPin *dc, ExpanderPin *rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(-1), _cs(cs), _dc(-1) {
+  hwspi._spi = &SPI;
+#if !defined(SPI_HAS_TRANSACTION)
+  hwspi._freq = 0;
+  hwspi._mode = SPI_MODE0;
+#endif
+  _dcExp = dc;
+  _rstExp = rst;
+}
+
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
+                                 ExpanderPin *rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(-1), _cs(cs), _dc(dc) {
+  hwspi._spi = &SPI;
+#if !defined(SPI_HAS_TRANSACTION)
+  hwspi._freq = 0;
+  hwspi._mode = SPI_MODE0;
+#endif
+  _rstExp = rst;
+}
+
+Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, ExpanderPin *cs,
+                                 ExpanderPin *dc, ExpanderPin *rst)
+    : Adafruit_GFX(w, h), connection(TFT_HARD_SPI), _rst(-1), _cs(-1), _dc(-1) {
+  hwspi._spi = &SPI;
+#if !defined(SPI_HAS_TRANSACTION)
+  hwspi._freq = 0;
+  hwspi._mode = SPI_MODE0;
+#endif
+  _csExp = cs;
+  _dcExp = dc;
+  _rstExp = rst;
+}
+#endif
+
 /*!
     @brief   Adafruit_SPITFT constructor for parallel display connection.
     @param   w         Display width in pixels at default rotation (0).
@@ -543,8 +618,23 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     pinMode(_cs, OUTPUT);
     digitalWrite(_cs, HIGH); // Deselect
   }
-  pinMode(_dc, OUTPUT);
-  digitalWrite(_dc, HIGH); // Data mode
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+  if (_csExp) {
+    pinMode(*_csExp, OUTPUT);
+    digitalWrite(*_csExp, HIGH);
+  }
+#endif
+
+  if (_dc >= 0) {
+    pinMode(_dc, OUTPUT);
+    digitalWrite(_dc, HIGH); // Data mode
+  }
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+  if (_dcExp) {
+    pinMode(*_dcExp, OUTPUT);
+    digitalWrite(*_dcExp, HIGH);
+  }
+#endif
 
   if (connection == TFT_HARD_SPI) {
 
@@ -657,6 +747,17 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     digitalWrite(_rst, HIGH);
     delay(200);
   }
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+  if (_rstExp) {
+    pinMode(*_rstExp, OUTPUT);
+    digitalWrite(*_rstExp, HIGH);
+    delay(100);
+    digitalWrite(*_rstExp, LOW);
+    delay(100);
+    digitalWrite(*_rstExp, HIGH);
+    delay(200);
+  }
+#endif
 
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&

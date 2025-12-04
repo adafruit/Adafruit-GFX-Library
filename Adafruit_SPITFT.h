@@ -26,6 +26,10 @@
 #include "Adafruit_GFX.h"
 #include <SPI.h>
 
+// #if defined(ARDUINO_ARDUINO_NESSO_N1)
+// class ExpanderPin;
+// #endif
+
 // HARDWARE CONFIG ---------------------------------------------------------
 
 #if defined(__AVR__)
@@ -156,6 +160,23 @@ public:
   Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs,
                   int8_t dc, int8_t rst = -1);
 #endif // end !ESP8266
+
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+  // Hardware SPI constructor using default or an arbitrary SPI peripheral
+  // and ExpanderPin for cs, dc, rst
+  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs,
+                  ExpanderPin *dc, ExpanderPin *rst = NULL);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs,
+                  int8_t dc, ExpanderPin *rst = NULL);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, ExpanderPin *cs,
+                  ExpanderPin *dc, ExpanderPin *rst = NULL);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, ExpanderPin *dc,
+                  ExpanderPin *rst = NULL);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
+                  ExpanderPin *rst = NULL);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, ExpanderPin *cs, ExpanderPin *dc,
+                  ExpanderPin *rst = NULL);
+#endif
 
   // Parallel constructor: expects width & height (rotation 0), flag
   // indicating whether 16-bit (true) or 8-bit (false) interface, 3 signal
@@ -300,6 +321,12 @@ public:
               connection is parallel.
   */
   void SPI_CS_HIGH(void) {
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+    if (_csExp) {
+      digitalWrite(*_csExp, HIGH);
+      return;
+    }
+#endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
@@ -322,6 +349,12 @@ public:
               connection is parallel.
   */
   void SPI_CS_LOW(void) {
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+    if (_csExp) {
+      digitalWrite(*_csExp, LOW);
+      return;
+    }
+#endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
@@ -341,6 +374,12 @@ public:
       @brief  Set the data/command line HIGH (data mode).
   */
   void SPI_DC_HIGH(void) {
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+    if (_dcExp) {
+      digitalWrite(*_dcExp, HIGH);
+      return;
+    }
+#endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
@@ -360,6 +399,12 @@ public:
       @brief  Set the data/command line LOW (command mode).
   */
   void SPI_DC_LOW(void) {
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+    if (_dcExp) {
+      digitalWrite(*_dcExp, LOW);
+      return;
+    }
+#endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(KINETISK)
@@ -528,6 +573,11 @@ protected:
   int8_t _rst;             ///< Reset pin # (or -1)
   int8_t _cs;              ///< Chip select pin # (or -1)
   int8_t _dc;              ///< Data/command pin #
+#if defined(ARDUINO_ARDUINO_NESSO_N1)
+  ExpanderPin *_rstExp = NULL;
+  ExpanderPin *_csExp = NULL;
+  ExpanderPin *_dcExp = NULL;
+#endif
 
   int16_t _xstart = 0;          ///< Internal framebuffer X offset
   int16_t _ystart = 0;          ///< Internal framebuffer Y offset
