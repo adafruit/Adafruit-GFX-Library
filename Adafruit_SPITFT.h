@@ -26,9 +26,9 @@
 #include "Adafruit_GFX.h"
 #include <SPI.h>
 
-#if defined(ARDUINO_ARDUINO_NESSO_N1)
-class ExpanderPin;
-#endif
+// #if defined(ARDUINO_ARDUINO_NESSO_N1)
+// class ExpanderPin;
+// #endif
 
 // HARDWARE CONFIG ---------------------------------------------------------
 
