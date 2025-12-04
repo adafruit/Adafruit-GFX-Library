@@ -168,8 +168,8 @@ public:
                   ExpanderPin *dc, ExpanderPin *rst = NULL);
   Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs,
                   int8_t dc, ExpanderPin *rst = NULL);
-  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
-                  ExpanderPin *cs, ExpanderPin *dc, ExpanderPin *rst = NULL);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, ExpanderPin *cs,
+                  ExpanderPin *dc, ExpanderPin *rst = NULL);
   Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, ExpanderPin *dc,
                   ExpanderPin *rst = NULL);
   Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
@@ -189,7 +189,7 @@ public:
 
   // DESTRUCTOR ----------------------------------------------------------
 
-  ~Adafruit_SPITFT(){};
+  ~Adafruit_SPITFT() {};
 
   // CLASS MEMBER FUNCTIONS ----------------------------------------------
 
