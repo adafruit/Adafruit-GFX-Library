@@ -106,6 +106,8 @@ public:
   void drawRGBBitmap(int16_t x, int16_t y, const uint16_t bitmap[], int16_t w,
                      int16_t h);
   void drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w,
+                     int16_t h, int16_t src_x, int16_t src_y, int16_t src_w);
+  void drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w,
                      int16_t h);
   void drawRGBBitmap(int16_t x, int16_t y, const uint16_t bitmap[],
                      const uint8_t mask[], int16_t w, int16_t h);
