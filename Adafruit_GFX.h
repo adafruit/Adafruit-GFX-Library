@@ -67,6 +67,7 @@ public:
                         uint16_t color);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
+  void drawPentagram(int16_t x0, int16_t y0, int16_t radius, uint16_t color);
   void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
   void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
                         uint16_t color);

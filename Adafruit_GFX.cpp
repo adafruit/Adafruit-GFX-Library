@@ -2809,3 +2809,37 @@ void GFXcanvas16::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
     buffer[i] = color;
   }
 }
+
+/**************************************************************************/
+/*!
+   @brief    Draw a pentagram (5-pointed star)
+    @param    x0   Center x coordinate
+    @param    y0   Center y coordinate
+    @param    radius   Radius
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawPentagram(int16_t x0, int16_t y0, int16_t radius, uint16_t color) {
+    int16_t x[5], y[5];
+    
+    x[0] = x0;
+    y[0] = y0 - radius;
+    
+    x[1] = x0 + (int16_t)(radius * 0.951);
+    y[1] = y0 - (int16_t)(radius * 0.309);
+    
+    x[2] = x0 + (int16_t)(radius * 0.588);
+    y[2] = y0 + (int16_t)(radius * 0.809);
+    
+    x[3] = x0 - (int16_t)(radius * 0.588);
+    y[3] = y0 + (int16_t)(radius * 0.809);
+    
+    x[4] = x0 - (int16_t)(radius * 0.951);
+    y[4] = y0 - (int16_t)(radius * 0.309);
+    
+    drawLine(x[0], y[0], x[2], y[2], color);
+    drawLine(x[2], y[2], x[4], y[4], color);
+    drawLine(x[4], y[4], x[1], y[1], color);
+    drawLine(x[1], y[1], x[3], y[3], color);
+    drawLine(x[3], y[3], x[0], y[0], color);
+}
