@@ -81,6 +81,8 @@ public:
                     int16_t y2, uint16_t color);
   void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
                     int16_t y2, uint16_t color);
+  void drawHexagon(int16_t x0, int16_t y0, int16_t r, uint16_t color);
+  void fillHexagon(int16_t x0, int16_t y0, int16_t r, uint16_t color);
   void drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
                      int16_t radius, uint16_t color);
   
