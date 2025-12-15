@@ -816,6 +816,98 @@ void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
   endWrite();
 }
 
+// CUSTOM GEOMETRIC SHAPES - Added for IoT Lab ---------------------
+
+/**************************************************************************/
+/*!
+   @brief    Draw a five-pointed star (pentagram) outline
+    @param    x0     Center x coordinate
+    @param    y0     Center y coordinate
+    @param    radius Outer radius of the star
+    @param    color  16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawPentagram(int16_t x0, int16_t y0, int16_t radius,
+                                 uint16_t color) {
+#if defined(ESP8266)
+  yield();
+#endif
+  // Calculate the 5 outer points and 5 inner points of the pentagram
+  // Outer points are at 72 degree intervals starting from top (-90 degrees)
+  // Inner points are at 36 degree offset and scaled to ~0.382 of outer radius
+  
+  float angleStep = 72.0 * 3.14159265 / 180.0;  // 72 degrees in radians
+  float startAngle = -90.0 * 3.14159265 / 180.0; // Start from top
+  float innerRadius = radius * 0.382; // Inner radius ratio for pentagram
+  
+  int16_t outerX[5], outerY[5];
+  int16_t innerX[5], innerY[5];
+  
+  // Calculate outer and inner vertices
+  for (int i = 0; i < 5; i++) {
+    float outerAngle = startAngle + i * angleStep;
+    float innerAngle = startAngle + i * angleStep + angleStep / 2.0;
+    
+    outerX[i] = x0 + (int16_t)(radius * cos(outerAngle));
+    outerY[i] = y0 + (int16_t)(radius * sin(outerAngle));
+    
+    innerX[i] = x0 + (int16_t)(innerRadius * cos(innerAngle));
+    innerY[i] = y0 + (int16_t)(innerRadius * sin(innerAngle));
+  }
+  
+  // Draw the star by connecting vertices in order: outer->inner->outer...
+  startWrite();
+  for (int i = 0; i < 5; i++) {
+    int next = (i + 1) % 5;
+    writeLine(outerX[i], outerY[i], innerX[i], innerY[i], color);
+    writeLine(innerX[i], innerY[i], outerX[next], outerY[next], color);
+  }
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
+   @brief    Draw a filled five-pointed star (pentagram)
+    @param    x0     Center x coordinate
+    @param    y0     Center y coordinate
+    @param    radius Outer radius of the star
+    @param    color  16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillPentagram(int16_t x0, int16_t y0, int16_t radius,
+                                 uint16_t color) {
+#if defined(ESP8266)
+  yield();
+#endif
+  
+  float angleStep = 72.0 * 3.14159265 / 180.0;
+  float startAngle = -90.0 * 3.14159265 / 180.0;
+  float innerRadius = radius * 0.382;
+  
+  int16_t outerX[5], outerY[5];
+  int16_t innerX[5], innerY[5];
+  
+  for (int i = 0; i < 5; i++) {
+    float outerAngle = startAngle + i * angleStep;
+    float innerAngle = startAngle + i * angleStep + angleStep / 2.0;
+    
+    outerX[i] = x0 + (int16_t)(radius * cos(outerAngle));
+    outerY[i] = y0 + (int16_t)(radius * sin(outerAngle));
+    
+    innerX[i] = x0 + (int16_t)(innerRadius * cos(innerAngle));
+    innerY[i] = y0 + (int16_t)(innerRadius * sin(innerAngle));
+  }
+  
+  // Fill the star by drawing filled triangles
+  startWrite();
+  for (int i = 0; i < 5; i++) {
+    int next = (i + 1) % 5;
+    fillTriangle(x0, y0, outerX[i], outerY[i], innerX[i], innerY[i], color);
+    fillTriangle(x0, y0, innerX[i], innerY[i], outerX[next], outerY[next], color);
+  }
+  endWrite();
+}
+
 // BITMAP / XBITMAP / GRAYSCALE / RGB BITMAP FUNCTIONS ---------------------
 
 /**************************************************************************/
