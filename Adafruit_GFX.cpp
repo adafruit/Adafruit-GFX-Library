@@ -722,6 +722,64 @@ void Adafruit_GFX::drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 
 /**************************************************************************/
 /*!
+   @brief    Draw a regular hexagon outline
+    @param    x0  Center x coordinate
+    @param    y0  Center y coordinate
+    @param    r   Radius (distance from center to vertex)
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawHexagon(int16_t x0, int16_t y0, int16_t r,
+                               uint16_t color) {
+  // Calculate the 6 vertices of the hexagon
+  // Vertices are at angles: 0°, 60°, 120°, 180°, 240°, 300°
+  int16_t x[6], y[6];
+  
+  for (int i = 0; i < 6; i++) {
+    float angle = 3.14159265359 / 3.0 * i; // 60 degrees in radians
+    x[i] = x0 + r * cos(angle);
+    y[i] = y0 + r * sin(angle);
+  }
+  
+  // Draw lines connecting all vertices
+  for (int i = 0; i < 6; i++) {
+    int next = (i + 1) % 6;
+    drawLine(x[i], y[i], x[next], y[next], color);
+  }
+}
+
+/**************************************************************************/
+/*!
+   @brief    Draw a filled regular hexagon
+    @param    x0  Center x coordinate
+    @param    y0  Center y coordinate
+    @param    r   Radius (distance from center to vertex)
+    @param    color 16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillHexagon(int16_t x0, int16_t y0, int16_t r,
+                               uint16_t color) {
+  // Calculate the 6 vertices of the hexagon
+  int16_t x[6], y[6];
+  
+  for (int i = 0; i < 6; i++) {
+    float angle = 3.14159265359 / 3.0 * i; // 60 degrees in radians
+    x[i] = x0 + r * cos(angle);
+    y[i] = y0 + r * sin(angle);
+  }
+  
+  // Fill hexagon by drawing 4 triangles from center
+  // Triangle fan from center to each pair of adjacent vertices
+  fillTriangle(x0, y0, x[0], y[0], x[1], y[1], color);
+  fillTriangle(x0, y0, x[1], y[1], x[2], y[2], color);
+  fillTriangle(x0, y0, x[2], y[2], x[3], y[3], color);
+  fillTriangle(x0, y0, x[3], y[3], x[4], y[4], color);
+  fillTriangle(x0, y0, x[4], y[4], x[5], y[5], color);
+  fillTriangle(x0, y0, x[5], y[5], x[0], y[0], color);
+}
+
+/**************************************************************************/
+/*!
    @brief     Draw a triangle with color-fill
     @param    x0  Vertex #0 x coordinate
     @param    y0  Vertex #0 y coordinate
@@ -812,6 +870,98 @@ void Adafruit_GFX::fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     if (a > b)
       _swap_int16_t(a, b);
     writeFastHLine(a, y, b - a + 1, color);
+  }
+  endWrite();
+}
+
+// CUSTOM GEOMETRIC SHAPES - Added for IoT Lab ---------------------
+
+/**************************************************************************/
+/*!
+   @brief    Draw a five-pointed star (pentagram) outline
+    @param    x0     Center x coordinate
+    @param    y0     Center y coordinate
+    @param    radius Outer radius of the star
+    @param    color  16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawPentagram(int16_t x0, int16_t y0, int16_t radius,
+                                 uint16_t color) {
+#if defined(ESP8266)
+  yield();
+#endif
+  // Calculate the 5 outer points and 5 inner points of the pentagram
+  // Outer points are at 72 degree intervals starting from top (-90 degrees)
+  // Inner points are at 36 degree offset and scaled to ~0.382 of outer radius
+  
+  float angleStep = 72.0 * 3.14159265 / 180.0;  // 72 degrees in radians
+  float startAngle = -90.0 * 3.14159265 / 180.0; // Start from top
+  float innerRadius = radius * 0.382; // Inner radius ratio for pentagram
+  
+  int16_t outerX[5], outerY[5];
+  int16_t innerX[5], innerY[5];
+  
+  // Calculate outer and inner vertices
+  for (int i = 0; i < 5; i++) {
+    float outerAngle = startAngle + i * angleStep;
+    float innerAngle = startAngle + i * angleStep + angleStep / 2.0;
+    
+    outerX[i] = x0 + (int16_t)(radius * cos(outerAngle));
+    outerY[i] = y0 + (int16_t)(radius * sin(outerAngle));
+    
+    innerX[i] = x0 + (int16_t)(innerRadius * cos(innerAngle));
+    innerY[i] = y0 + (int16_t)(innerRadius * sin(innerAngle));
+  }
+  
+  // Draw the star by connecting vertices in order: outer->inner->outer...
+  startWrite();
+  for (int i = 0; i < 5; i++) {
+    int next = (i + 1) % 5;
+    writeLine(outerX[i], outerY[i], innerX[i], innerY[i], color);
+    writeLine(innerX[i], innerY[i], outerX[next], outerY[next], color);
+  }
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
+   @brief    Draw a filled five-pointed star (pentagram)
+    @param    x0     Center x coordinate
+    @param    y0     Center y coordinate
+    @param    radius Outer radius of the star
+    @param    color  16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillPentagram(int16_t x0, int16_t y0, int16_t radius,
+                                 uint16_t color) {
+#if defined(ESP8266)
+  yield();
+#endif
+  
+  float angleStep = 72.0 * 3.14159265 / 180.0;
+  float startAngle = -90.0 * 3.14159265 / 180.0;
+  float innerRadius = radius * 0.382;
+  
+  int16_t outerX[5], outerY[5];
+  int16_t innerX[5], innerY[5];
+  
+  for (int i = 0; i < 5; i++) {
+    float outerAngle = startAngle + i * angleStep;
+    float innerAngle = startAngle + i * angleStep + angleStep / 2.0;
+    
+    outerX[i] = x0 + (int16_t)(radius * cos(outerAngle));
+    outerY[i] = y0 + (int16_t)(radius * sin(outerAngle));
+    
+    innerX[i] = x0 + (int16_t)(innerRadius * cos(innerAngle));
+    innerY[i] = y0 + (int16_t)(innerRadius * sin(innerAngle));
+  }
+  
+  // Fill the star by drawing filled triangles
+  startWrite();
+  for (int i = 0; i < 5; i++) {
+    int next = (i + 1) % 5;
+    fillTriangle(x0, y0, outerX[i], outerY[i], innerX[i], innerY[i], color);
+    fillTriangle(x0, y0, innerX[i], innerY[i], outerX[next], outerY[next], color);
   }
   endWrite();
 }
