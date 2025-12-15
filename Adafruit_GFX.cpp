@@ -370,43 +370,137 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
     endWrite();
 }
 
-// Draw a Pentagram
+// Draw a Pentagram (five-pointed star outline)
+// (x0, y0): center position, r0: outer radius
 void Adafruit_GFX::drawPentagram(int16_t x0, int16_t y0,
         int16_t r0, uint16_t color) {
-	int xa, ya;
-    int xb, yb;
-    int xc, yc;
-    int xd, yd;
-    int xe, ye;
+    int16_t xa, ya, xb, yb, xc, yc, xd, yd, xe, ye;
+
+    // Calculate 5 vertices of the pentagram
     xa = x0;
     ya = y0 - r0;
     xb = x0 - r0 * sin(PI / 180 * 72);
-    yb = y0 + r0 * -(cos(PI / 180 * 72));
-    xc = x0 - r0 * -(sin(PI / 180 * 36));
-    yc = y0 - r0 * -(cos(PI / 180 * 36));
-    xd = x0 + r0 * -(sin(PI / 180 * 36));
-    yd = y0 - r0 * -(cos(PI / 180 * 36));
+    yb = y0 - r0 * cos(PI / 180 * 72);
+    xc = x0 - r0 * sin(PI / 180 * 36);
+    yc = y0 + r0 * cos(PI / 180 * 36);
+    xd = x0 + r0 * sin(PI / 180 * 36);
+    yd = y0 + r0 * cos(PI / 180 * 36);
     xe = x0 + r0 * sin(PI / 180 * 72);
-    ye = y0 + r0 * -(cos(PI / 180 * 72));
+    ye = y0 - r0 * cos(PI / 180 * 72);
+
+    // Draw the 5 lines connecting every other vertex
     drawLine(xa, ya, xc, yc, color);
-    drawLine(xa, ya, xd, yd, color);
-    drawLine(xb, yb, xc, yc, color);
-	drawLine(xb, yb, xe, ye, color);
-	drawLine(xd, yd, xe, ye, color);
+    drawLine(xc, yc, xe, ye, color);
+    drawLine(xe, ye, xb, yb, color);
+    drawLine(xb, yb, xd, yd, color);
+    drawLine(xd, yd, xa, ya, color);
 }
 
-// Draw a ellipse outline
-void Adafruit_GFX::drawEllipse(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t a, uint16_t color) {
-    int16_t max_x = ((x1 > x2 ? x1 : x2) + a > 128 ? (x1 > x2 ? x1 : x2) + a : 128);
-    int16_t max_y = ((y1 > y2 ? y1 : y2) + a > 64 ? (y1 > y2 ? y1 : y2) + a : 64);
-    for (int16_t x = ((x1 > x2 ? x2 : x1) - a > 0 ? (x1 > x2 ? x2 : x1) - a : 0 ); x <= max_x; x++) {
-        for (int16_t y = ((y1 > y2 ? y2 : y1) - a > 0 ? (y1 > y2 ? y2 : y1) - a : 0); y <= max_y; y++) {
-            int32_t distance = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1)) + sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
-            if (distance-a == a) {
-                writePixel(x, y, color);
-            }
+// Fill a Pentagram (five-pointed star)
+void Adafruit_GFX::fillPentagram(int16_t x0, int16_t y0,
+        int16_t r0, uint16_t color) {
+    int16_t xa, ya, xb, yb, xc, yc, xd, yd, xe, ye;
+
+    // Calculate 5 outer vertices
+    xa = x0;
+    ya = y0 - r0;
+    xb = x0 - r0 * sin(PI / 180 * 72);
+    yb = y0 - r0 * cos(PI / 180 * 72);
+    xc = x0 - r0 * sin(PI / 180 * 36);
+    yc = y0 + r0 * cos(PI / 180 * 36);
+    xd = x0 + r0 * sin(PI / 180 * 36);
+    yd = y0 + r0 * cos(PI / 180 * 36);
+    xe = x0 + r0 * sin(PI / 180 * 72);
+    ye = y0 - r0 * cos(PI / 180 * 72);
+
+    // Fill the pentagram using 5 triangles from center
+    fillTriangle(x0, y0, xa, ya, xc, yc, color);
+    fillTriangle(x0, y0, xc, yc, xe, ye, color);
+    fillTriangle(x0, y0, xe, ye, xb, yb, color);
+    fillTriangle(x0, y0, xb, yb, xd, yd, color);
+    fillTriangle(x0, y0, xd, yd, xa, ya, color);
+
+    // Draw outline
+    drawPentagram(x0, y0, r0, color);
+}
+
+// Draw an ellipse outline using midpoint algorithm
+// (x0, y0): center position, rx: horizontal radius, ry: vertical radius
+void Adafruit_GFX::drawEllipse(int16_t x0, int16_t y0, int16_t rx, int16_t ry, uint16_t color) {
+    if (rx < 1 || ry < 1) return;
+
+    int16_t x, y;
+    int32_t rx2 = (int32_t)rx * rx;
+    int32_t ry2 = (int32_t)ry * ry;
+    int32_t fx2 = 4 * rx2;
+    int32_t fy2 = 4 * ry2;
+    int32_t s;
+
+    startWrite();
+
+    // Region 1
+    for (x = 0, y = ry, s = 2*ry2 + rx2*(1-2*ry); ry2*x <= rx2*y; x++) {
+        writePixel(x0 + x, y0 + y, color);
+        writePixel(x0 - x, y0 + y, color);
+        writePixel(x0 + x, y0 - y, color);
+        writePixel(x0 - x, y0 - y, color);
+        if (s >= 0) {
+            s += fx2 * (1 - y);
+            y--;
         }
+        s += ry2 * ((4 * x) + 6);
     }
+
+    // Region 2
+    for (x = rx, y = 0, s = 2*rx2 + ry2*(1-2*rx); rx2*y <= ry2*x; y++) {
+        writePixel(x0 + x, y0 + y, color);
+        writePixel(x0 - x, y0 + y, color);
+        writePixel(x0 + x, y0 - y, color);
+        writePixel(x0 - x, y0 - y, color);
+        if (s >= 0) {
+            s += fy2 * (1 - x);
+            x--;
+        }
+        s += rx2 * ((4 * y) + 6);
+    }
+
+    endWrite();
+}
+
+// Fill an ellipse using midpoint algorithm
+void Adafruit_GFX::fillEllipse(int16_t x0, int16_t y0, int16_t rx, int16_t ry, uint16_t color) {
+    if (rx < 1 || ry < 1) return;
+
+    int16_t x, y;
+    int32_t rx2 = (int32_t)rx * rx;
+    int32_t ry2 = (int32_t)ry * ry;
+    int32_t fx2 = 4 * rx2;
+    int32_t fy2 = 4 * ry2;
+    int32_t s;
+
+    startWrite();
+
+    // Draw horizontal lines for the filled ellipse
+    for (x = 0, y = ry, s = 2*ry2 + rx2*(1-2*ry); ry2*x <= rx2*y; x++) {
+        writeFastHLine(x0 - x, y0 - y, 2 * x + 1, color);
+        writeFastHLine(x0 - x, y0 + y, 2 * x + 1, color);
+        if (s >= 0) {
+            s += fx2 * (1 - y);
+            y--;
+        }
+        s += ry2 * ((4 * x) + 6);
+    }
+
+    for (x = rx, y = 0, s = 2*rx2 + ry2*(1-2*rx); rx2*y <= ry2*x; y++) {
+        writeFastHLine(x0 - x, y0 - y, 2 * x + 1, color);
+        writeFastHLine(x0 - x, y0 + y, 2 * x + 1, color);
+        if (s >= 0) {
+            s += fy2 * (1 - x);
+            x--;
+        }
+        s += rx2 * ((4 * y) + 6);
+    }
+
     endWrite();
 }
 
