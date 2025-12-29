@@ -66,6 +66,16 @@ public:
   virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
                         uint16_t color);
 
+  /************************************************************************/
+  /*!
+    @brief   Query whether the object is fully constructed and ready to use.
+    Subclasses that manage a memory buffer or other properties that may
+    fail to be initialized should override this method.
+    @returns true if the object is ready to use, false otherwise.
+  */
+  /************************************************************************/
+  virtual bool isValid(void) const { return true; }
+
   // These exist only with Adafruit_GFX (no subclass overrides)
   void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
   void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
@@ -319,6 +329,7 @@ public:
   void fillScreen(uint16_t color);
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  bool isValid(void) const { return buffer != NULL; }
   bool getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
@@ -352,6 +363,7 @@ public:
   void fillScreen(uint16_t color);
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  bool isValid(void) const { return buffer != NULL; }
   uint8_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
@@ -380,6 +392,7 @@ public:
   void byteSwap(void);
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  bool isValid(void) const { return buffer != NULL; }
   uint16_t getPixel(int16_t x, int16_t y) const;
   /**********************************************************************/
   /*!
