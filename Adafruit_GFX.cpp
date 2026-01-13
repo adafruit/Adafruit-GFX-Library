@@ -988,6 +988,44 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
 
 /**************************************************************************/
 /*!
+   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP.
+   Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+   C Array can be directly used with this function.
+   There is no RAM-resident version of this function; if generating bitmaps
+   in RAM, use the format defined by drawBitmap() and call that instead.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw pixels with
+    @param    bg 16-bit 5-6-5 Color to draw background with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
+                               int16_t w, int16_t h, uint16_t color,
+                               uint16_t bg) {
+
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  uint8_t byte = 0;
+
+  startWrite();
+  for (int16_t j = 0; j < h; j++, y++) {
+    for (int16_t i = 0; i < w; i++) {
+      if (i & 7)
+        byte >>= 1;
+      else
+        byte = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
+      // Nearly identical to drawBitmap(), only the bit order
+      // is reversed here (left-to-right = LSB to MSB):
+      writePixel(x + i, y, (byte & 0x01) ? color : bg);
+    }
+  }
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified
    (x,y) pos. Specifically for 8-bit display devices such as IS31FL3731; no
    color reduction/expansion is performed.
