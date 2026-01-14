@@ -231,7 +231,21 @@ public:
     @returns    Y coordinate in pixels
   */
   /************************************************************************/
-  int16_t getCursorY(void) const { return cursor_y; };
+  int16_t getCursorY(void) const { return cursor_y; }
+
+  /*! An enumeration on whether a polygon should be drawn circumscribed or
+   * inscribed. */
+  enum regPolyType {
+    REG_POLY_CIRCUMSCRIBED, /*!< given radius is for a circumscribed poly */
+    REG_POLY_INSCRIBED      /*!< given radius is for an inscribed poly */
+  };
+
+  void drawPolygon(uint16_t, uint16_t, ...);
+  void fillPolygon(uint16_t, uint16_t, ...);
+  void drawRegPolygon(uint16_t, uint16_t, int16_t, int16_t, uint16_t, float,
+                      Adafruit_GFX::regPolyType);
+  void fillRegPolygon(uint16_t, uint16_t, int16_t, int16_t, uint16_t, float,
+                      Adafruit_GFX::regPolyType);
 
 protected:
   void charBounds(unsigned char c, int16_t *x, int16_t *y, int16_t *minx,
@@ -250,6 +264,9 @@ protected:
   bool wrap;            ///< If set, 'wrap' text at right edge of display
   bool _cp437;          ///< If set, use correct CP437 charset (default is off)
   GFXfont *gfxFont;     ///< Pointer to special font
+private:
+  inline int8_t sign(int32_t);
+  bool isRelevant(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t);
 };
 
 /// A simple drawn button UI element
