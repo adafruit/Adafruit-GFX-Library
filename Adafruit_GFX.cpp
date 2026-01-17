@@ -514,8 +514,8 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
     @param    x0   Center-point x coordinate
     @param    y0   Center-point y coordinate
     @param    r   Radius of circle
-    @param    cornername  Mask bit #1 or bit #2 to indicate which quarters of
-   the circle we're doing
+    @param    cornername  Mask bit #1, #2, #4, and #8 to indicate which quarters
+              of the circle we're doing
     @param    color 16-bit 5-6-5 Color to draw with
 */
 /**************************************************************************/
@@ -574,11 +574,12 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
 
 /**************************************************************************/
 /*!
-    @brief  Quarter-circle drawer with fill, used for circles and roundrects
+    @brief  Half-circle drawer with fill, used for circles and roundrects
     @param  x0       Center-point x coordinate
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
-    @param  corners  Mask bits indicating which quarters we're doing
+    @param  corners  Mask bits indicating which sides of the circle we are
+                     doing, left (1) and/or right (2)
     @param  delta    Offset from center-point, used for round-rects
     @param  color    16-bit 5-6-5 Color to fill with
 */
