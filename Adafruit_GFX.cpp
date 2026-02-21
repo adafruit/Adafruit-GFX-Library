@@ -1263,20 +1263,34 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       c++; // Handle 'classic' charset behavior
 
     startWrite();
-    for (int8_t i = 0; i < 5; i++) { // Char bitmap = 5 columns
+    int8_t rp, rb; // Count sequential FG and BG pixels in column
+    for (int8_t i = 0; i < 5; i++, rp = 0, rb = 0) { // Char bitmap = 5 columns
       uint8_t line = pgm_read_byte(&font[c * 5 + i]);
       for (int8_t j = 0; j < 8; j++, line >>= 1) {
         if (line & 1) {
-          if (size_x == 1 && size_y == 1)
-            writePixel(x + i, y + j, color);
-          else
-            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y,
-                          color);
+          rp++;
+          if (!(1 & (line >> 1)) ||
+              j == 7) { // write sequential pixels with writeFillRect
+            if (rp == 1 && size_x == 1 && size_y == 1) {
+              writePixel(x + i, y + j, color);
+            } else if (rp > 0) {
+              writeFillRect(x + i * size_x, y + (j - (rp - 1)) * size_y, size_x,
+                            size_y * rp, color);
+            }
+            rp = 0;
+          }
         } else if (bg != color) {
-          if (size_x == 1 && size_y == 1)
-            writePixel(x + i, y + j, bg);
-          else
-            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y, bg);
+          rb++;
+          if (1 & (line >> 1) ||
+              j == 7) { // write sequential pixels with writeFillRect
+            if (rb == 1 && size_x == 1 && size_y == 1) {
+              writePixel(x + i, y + j, bg);
+            } else if (rb > 0) {
+              writeFillRect(x + i * size_x, y + (j - (rb - 1)) * size_y, size_x,
+                            size_y * rb, bg);
+            }
+            rb = 0;
+          }
         }
       }
     }
