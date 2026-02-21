@@ -1020,6 +1020,17 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     }
     return;
   }
+#elif defined(ESP8266)
+  if (connection == TFT_HARD_SPI) {
+    if (!bigEndian) {
+      swapBytes(colors, len); // convert little-to-big endian for display
+    }
+    hwspi._spi->writeBytes((uint8_t *)colors, len * 2);
+    if (!bigEndian) {
+      swapBytes(colors, len); // big-to-little endian to restore pixel buffer
+    }
+    return;
+  }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
   if (!bigEndian) {
