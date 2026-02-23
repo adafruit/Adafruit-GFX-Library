@@ -1768,6 +1768,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        uint8_t textsize_x, uint8_t textsize_y) {
   _x1 = x1;
   _y1 = y1;
+  Bitmap_Progmem_tru = NULL;
+  Mask_Progmem_tru = NULL;
   _w = w;
   _h = h;
   _outlinecolor = outline;
@@ -1776,9 +1778,36 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
   _textsize_x = textsize_x;
   _textsize_y = textsize_y;
   _gfx = gfx;
+  Last_Time_Used_millis = millis();
   strncpy(_label, label, 9);
   _label[9] = 0; // strncpy does not place a null at the end.
                  // When 'label' is >9 characters, _label is not terminated.
+}
+void Adafruit_GFX_Button::initButton(int16_t mid_x, int16_t mid_y, const uint16_t bitmap_progmem_tru[], const uint8_t mask_progmem_tru[],
+    const uint16_t bitmap_progmem_fal[], const uint8_t mask_progmem_fal[], int16_t width, int16_t height, Adafruit_GFX *gfx){
+  _x1 = mid_x - (width/2);                          /// mask controls transparency, if mask_progmem_pointer points to NULL, there is no
+  _y1 = mid_y - (height/2);                          /// transarency and different drawing function is used (possibly faster)
+  Bitmap_Progmem_tru = bitmap_progmem_tru;          /// 16-bit image (RGB 5/6/5) with a 1-bit mask (set bits = opaque, unset bits = clear)
+  Mask_Progmem_tru = mask_progmem_tru;
+  Bitmap_Progmem_fal = bitmap_progmem_fal;
+  Mask_Progmem_fal = mask_progmem_fal;
+  _w = width;
+  _h = height;
+  _gfx = gfx;
+  Last_Time_Used_millis = millis();
+}
+                                                                  ///For 1 bit per pixel(monochrome bitmaps)
+void Adafruit_GFX_Button::initButton(int16_t mid_x, int16_t mid_y, const uint8_t mon_bitmap_progmem[], uint16_t color_true, uint16_t color_false, int16_t width, int16_t height, Adafruit_GFX *gfx){
+  _x1 = mid_x - (width/2);
+  _y1 = mid_y - (height/2);
+  Bitmap_Progmem_tru = NULL;
+  Mask_Progmem_tru = mon_bitmap_progmem;
+  _fillcolor = color_true;
+  _textcolor = color_false;
+  _w = width;
+  _h = height;
+  _gfx = gfx;
+  Last_Time_Used_millis = millis();
 }
 
 /**************************************************************************/
@@ -1790,12 +1819,39 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
 /**************************************************************************/
 void Adafruit_GFX_Button::drawButton(bool inverted) {
   uint16_t fill, outline, text;
+  Last_Time_Used_millis = millis();
 
   if (!inverted) {
+    if (Bitmap_Progmem_tru != NULL){
+      if (Mask_Progmem_tru != NULL){
+        _gfx->drawRGBBitmap(_x1, _y1, Bitmap_Progmem_fal, Mask_Progmem_fal, _w, _h);   //bitmap with mask
+      }
+      else{
+        _gfx->drawRGBBitmap(_x1, _y1, Bitmap_Progmem_fal, _w, _h);     //bitmap
+      }
+      return;
+    }
+    else if (Mask_Progmem_tru != NULL){
+      _gfx->drawBitmap(_x1, _y1, Mask_Progmem_tru, _w, _h, _textcolor);  //mask
+      return;
+    }
     fill = _fillcolor;
     outline = _outlinecolor;
     text = _textcolor;
   } else {
+      if (Bitmap_Progmem_tru != NULL){
+        if (Mask_Progmem_tru != NULL){
+          _gfx->drawRGBBitmap(_x1, _y1, Bitmap_Progmem_tru, Mask_Progmem_tru, _w, _h);   //bitmap with mask
+        }
+        else{
+          _gfx->drawRGBBitmap(_x1, _y1, Bitmap_Progmem_tru, _w, _h);     //bitmap
+        }
+        return;
+      }
+      else if (Mask_Progmem_tru != NULL){
+        _gfx->drawBitmap(_x1, _y1, Mask_Progmem_tru, _w, _h, _fillcolor);  //mask
+        return;
+      }
     fill = _textcolor;
     outline = _outlinecolor;
     text = _fillcolor;
@@ -1810,6 +1866,12 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
   _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
   _gfx->print(_label);
+  return;
+}
+
+void Adafruit_GFX_Button::Change_Position(int16_t mid_x, int16_t mid_y){
+  _x1 = mid_x - (_w/2);
+  _y1 = mid_y - (_h/2);
 }
 
 /**************************************************************************/
