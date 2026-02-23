@@ -1466,6 +1466,193 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   gfxFont = (GFXfont *)f;
 }
 
+/**********************************************************************/
+/*!
+  @brief  Draw text with alignment inside a filled rectangle.
+          This handles background filling also for custom fonts.
+  @param  x       Filled area left edge X coordinate
+  @param  y       Filled area top edge Y coordinate
+  @param  w       Filled area width
+  @param  h       Filled area height
+  @param  align   Alignment edge, e.g. ALIGN_MIDDLE
+  @param  fgcolor Color for text
+  @param  bgcolor Color for background
+*/
+/**********************************************************************/
+void Adafruit_GFX::fillTextRect(const char *str, int16_t x, int16_t y,
+                                int16_t w, int16_t h, AlignType align,
+                                uint16_t fgcolor, uint16_t bgcolor) {
+  // Currently this function does not support text wrapping or scaling
+  wrap = false;
+  textsize_x = 1;
+  textsize_y = 1;
+
+  // Keep track of cleared area.
+  // The whole width of the rectangle has been filled between y to bg_maxy.
+  // The current row of the rectangle has been filled (x, bg_maxy) to (bg_maxx,
+  // row_maxy).
+  int16_t bg_maxx = x, bg_maxy = y, row_maxy = y;
+
+  // Figure out bounding box for text and align it vertically and to left edge.
+  // If horizontal alignment is requested, it is computed per each line later.
+  cursor_x = x;
+  cursor_y = y;
+  {
+    int16_t x1, y1;
+    uint16_t w1, h1;
+    getTextBounds(str, 0, 0, &x1, &y1, &w1, &h1);
+
+    // Subtract the offset on top and left sides
+    cursor_y = y - y1;
+    cursor_x = x - x1;
+
+    // Add adjustment for vertical position
+    if (align & BOTTOM)
+      cursor_y += (h - (int16_t)h1);
+    else if (align & MIDDLE)
+      cursor_y += (h - (int16_t)h1) / 2;
+
+    // Fill area above top edge
+    if (cursor_y + y1 > y) {
+      row_maxy = bg_maxy = cursor_y + y1;
+      fillRect(x, y, w, bg_maxy - y, bgcolor);
+    }
+  }
+
+  // Draw glyphs
+  char c = '\n';
+  int16_t linestart_x = cursor_x;
+  do {
+    // Check if this is the start of a new line and compute
+    // width of each individual line for center or right alignment
+    if (c == '\n' && (align & (CENTER | RIGHT))) {
+      int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -0x7FFF, maxy = -0x7FFF;
+      int16_t cx = 0, cy = 0;
+      const char *p = str;
+      while (*p != '\0' && *p != '\n') {
+        charBounds(*p++, &cx, &cy, &minx, &miny, &maxx, &maxy);
+      }
+
+      if (align & CENTER)
+        cursor_x = x - minx + (w - (maxx - minx)) / 2;
+      else
+        cursor_x = x + w - maxx - 1;
+    }
+
+    // Take the next character from string
+    c = *str++;
+    if (c == '\r')
+      continue;
+
+    // Store the old values, we need it when drawing the glyph
+    int16_t char_x = cursor_x, char_y = cursor_y;
+
+    // Get glyph rectangle, this also updates cursor position.
+    int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -0x7FFF, maxy = -0x7FFF;
+    charBounds(c, &cursor_x, &cursor_y, &minx, &miny, &maxx, &maxy);
+    if (c == '\n' || c == '\0') {
+      // Fill background to the end of the line
+      fillRect(bg_maxx, bg_maxy, x + w - bg_maxx, row_maxy - bg_maxy, bgcolor);
+      bg_maxy = row_maxy;
+      bg_maxx = x;
+      cursor_x = linestart_x;
+      continue;
+    }
+
+    // Check for glyphs outside the bounding box or missing from font
+    if (minx >= x + w || miny >= y + h || maxx < x || maxy < y) {
+      continue;
+    }
+
+    // Check for empty glyphs (space)
+    if (maxx < minx) {
+      continue;
+    }
+
+    // Extend by 1 pixel to get end coordinate and clip to bounding box
+    maxx += 1;
+    maxy += 1;
+    if (maxx > x + w)
+      maxx = x + w;
+    if (maxy > y + h)
+      maxy = y + h;
+    if (minx < x)
+      minx = x;
+    if (miny < y)
+      miny = y;
+
+    // Fill any area left between previous row and this glyph
+    if (miny > bg_maxy) {
+      // Fill area above this glyph
+      fillRect(bg_maxx, bg_maxy, maxx - bg_maxx, miny - bg_maxy, bgcolor);
+    }
+
+    // Fill any area left between previous glyph and this one
+    if (minx > bg_maxx) {
+      fillRect(bg_maxx, bg_maxy, minx - bg_maxx, row_maxy - bg_maxy, bgcolor);
+      bg_maxx = minx;
+    }
+
+    // If this glyph is deeper than previous ones on this row, fill the bottom
+    // edge
+    if (maxy > row_maxy) {
+      fillRect(x, row_maxy, bg_maxx - x, maxy - row_maxy, bgcolor);
+      row_maxy = maxy;
+    }
+
+    // Fill any area below this glyph
+    if (row_maxy > maxy) {
+      fillRect(bg_maxx, maxy, maxx - bg_maxx, row_maxy - maxy, bgcolor);
+    }
+
+    // Draw the glyph and simultaneously fill the character background
+    // from (bg_maxx, bg_maxy) to (maxx, maxy).
+    if (!gfxFont) {
+      // drawChar() draws background for default font
+      drawChar(char_x, char_y, c, fgcolor, bgcolor, 1);
+    } else {
+      // Draw background for custom font glyph, as long as it doesn't overlap
+      // already drawn area.
+      uint8_t index = c - (uint8_t)pgm_read_byte(&gfxFont->first);
+      GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, index);
+      uint8_t *bitmap = pgm_read_bitmap_ptr(gfxFont);
+
+      uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
+      uint8_t cw = pgm_read_byte(&glyph->width),
+              ch = pgm_read_byte(&glyph->height);
+      int8_t xo = pgm_read_byte(&glyph->xOffset),
+             yo = pgm_read_byte(&glyph->yOffset);
+      uint8_t xx, yy, bits = 0, bit = 0;
+
+      startWrite();
+      for (yy = 0; yy < ch; yy++) {
+        for (xx = 0; xx < cw; xx++) {
+          if (!(bit++ & 7)) {
+            bits = pgm_read_byte(&bitmap[bo++]);
+          }
+          int16_t px_x = char_x + xo + xx;
+          int16_t px_y = char_y + yo + yy;
+
+          if (px_x >= x && px_x < x + w && px_y >= y && px_y < y + h) {
+            if (bits & 0x80) {
+              writePixel(px_x, px_y, fgcolor);
+            } else if (px_x >= bg_maxx && px_y >= bg_maxy) {
+              writePixel(px_x, px_y, bgcolor);
+            }
+          }
+          bits <<= 1;
+        }
+      }
+      endWrite();
+    }
+
+    bg_maxx = maxx;
+  } while (c != '\0');
+
+  // Fill the remaining area below the text
+  fillRect(x, bg_maxy, w, y + h - bg_maxy, bgcolor);
+}
+
 /**************************************************************************/
 /*!
     @brief  Helper to determine size of a character with current font/size.
