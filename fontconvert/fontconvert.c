@@ -10,10 +10,6 @@ For UNIX-like systems.  Outputs to stdout; redirect to header file, e.g.:
 
 REQUIRES FREETYPE LIBRARY.  www.freetype.org
 
-Currently this only extracts the printable 7-bit ASCII chars of a font.
-Will eventually extend with some int'l chars a la ftGFX, not there yet.
-Keep 7-bit fonts around as an option in that case, more compact.
-
 See notes at end for glyph nomenclature & other tidbits.
 */
 #ifndef ARDUINO
@@ -51,7 +47,7 @@ void enbit(uint8_t value) {
 }
 
 int main(int argc, char *argv[]) {
-  int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
+  int i, j, err, size, first = 32, last = 127, bitmapOffset = 0, x, y, byte;
   char *fontName, c, *ptr;
   FT_Library library;
   FT_Face face;
@@ -66,10 +62,12 @@ int main(int argc, char *argv[]) {
   //   fontconvert [filename] [size] [last char]
   //   fontconvert [filename] [size] [first char] [last char]
   // Unless overridden, default first and last chars are
-  // ' ' (space) and '~', respectively
+  // 32 (space) and 127 (DEL), respectively. For 8b font, use 0 255.
 
   if (argc < 3) {
     fprintf(stderr, "Usage: %s fontfile size [first] [last]\n", argv[0]);
+    fprintf(stderr, "       Default: first=32 last=127 (7b ASCII)\n");
+    fprintf(stderr, "       For 8b font: first=0 last=255\n");
     return 1;
   }
 
@@ -109,7 +107,7 @@ int main(int argc, char *argv[]) {
     ptr = &fontName[strlen(fontName)]; // If none, append
   // Insert font size and 7/8 bit.  fontName was alloc'd w/extra
   // space to allow this, we're not sprintfing into Forbidden Zone.
-  sprintf(ptr, "%dpt%db", size, (last > 127) ? 8 : 7);
+  sprintf(ptr, "%dpt%db", size, (last > 127 || first < 32) ? 8 : 7);
   // Space and punctuation chars in name replaced w/ underscores.
   for (i = 0; (c = fontName[i]); i++) {
     if (isspace(c) || ispunct(c))
