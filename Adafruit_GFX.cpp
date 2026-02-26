@@ -703,6 +703,135 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
 
 /**************************************************************************/
 /*!
+   @brief     Draw a rotated rectangle
+    @param    cenX  x coordinate of center of rectangle
+    @param    cenY  y coordinate of center of rectangle
+    @param    w  width of rectangle
+    @param    h  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                                   int16_t h, int16_t angleDeg,
+                                   uint16_t color) {
+
+  if (w < 1 || h < 1)
+    return; // We don't draw zero dimensioned objects
+
+  int16_t W = w - 1;
+  int16_t H = h - 1;
+
+  int16_t halfW = (W / 2); // Midpoint should always be integer
+  int16_t halfH = (H / 2); // Midpoint should always be integer
+
+  int16_t x0 = W - halfW; // bottom-right
+  int16_t y0 = H - halfH; // bottom-right
+  int16_t x1 = -halfW;    // bottom-left
+  int16_t y1 = H - halfH; // bottom-left
+  int16_t x2 = -halfW;    // top-left
+  int16_t y2 = -halfH;    // top-left
+  int16_t x3 = W - halfW; // top-right
+  int16_t y3 = -halfH;    // top-right
+
+  rotatePoint(x0, y0, angleDeg);
+  rotatePoint(x1, y1, angleDeg);
+  rotatePoint(x2, y2, angleDeg);
+  rotatePoint(x3, y3, angleDeg);
+
+  x0 += cenX;
+  x1 += cenX;
+  x2 += cenX;
+  x3 += cenX;
+
+  y0 += cenY;
+  y1 += cenY;
+  y2 += cenY;
+  y3 += cenY;
+
+  drawLine(x0, y0, x1, y1, color); // bottom right to bottom left
+  drawLine(x1, y1, x2, y2, color); // bottom left to top left
+  drawLine(x2, y2, x3, y3, color); // top left to top right
+  drawLine(x3, y3, x0, y0, color); // top right to bottom right
+}
+
+/**************************************************************************/
+/*!
+   @brief     Draw a filled rotated rectangle
+    @param    cenX  x coordinate of center of rectangle
+    @param    cenY  y coordinate of center of rectangle
+    @param    w  width of rectangle
+    @param    h  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                                   int16_t h, int16_t angleDeg,
+                                   uint16_t color) {
+
+  if (w < 1 || h < 1)
+    return; // We don't draw zero dimensioned objects
+
+  int16_t W = w - 1;
+  int16_t H = h - 1;
+
+  int16_t halfW = (W / 2); // Midpoint should always be integer
+  int16_t halfH = (H / 2); // Midpoint should always be integer
+
+  int16_t x0 = W - halfW; // bottom-right
+  int16_t y0 = H - halfH; // bottom-right
+  int16_t x1 = -halfW;    // bottom-left
+  int16_t y1 = H - halfH; // bottom-left
+  int16_t x2 = -halfW;    // top-left
+  int16_t y2 = -halfH;    // top-left
+  int16_t x3 = W - halfW; // top-right
+  int16_t y3 = -halfH;    // top-right
+
+  rotatePoint(x0, y0, angleDeg);
+  rotatePoint(x1, y1, angleDeg);
+  rotatePoint(x2, y2, angleDeg);
+  rotatePoint(x3, y3, angleDeg);
+
+  x0 += cenX;
+  x1 += cenX;
+  x2 += cenX;
+  x3 += cenX;
+
+  y0 += cenY;
+  y1 += cenY;
+  y2 += cenY;
+  y3 += cenY;
+
+  fillTriangle(x0, y0, x1, y1, x2, y2, color);
+  fillTriangle(x2, y2, x3, y3, x0, y0, color);
+}
+
+/**************************************************************************/
+/*!
+   @brief     Rotate a point in standard position
+    @param    x0  x coordinate of point to rotate. This is passed by reference
+                  and updated upon return
+    @param    y0  y coordinate of point to rotate. This is passed by reference
+                  and updated upon return
+    @param    angleDeg  angle of rotation of rectangle
+*/
+/**************************************************************************/
+void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t angleDeg) {
+  float angleRad = radians(angleDeg);
+  float s = sin(angleRad);
+  float c = cos(angleRad);
+
+  float x = x0;
+  float y = y0;
+
+  // Rotate point
+  x0 = (int16_t)((x * c) - (y * s));
+  y0 = (int16_t)((x * s) + (y * c));
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a triangle with no fill color
     @param    x0  Vertex #0 x coordinate
     @param    y0  Vertex #0 y coordinate
