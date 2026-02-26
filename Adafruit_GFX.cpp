@@ -628,6 +628,74 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 
 /**************************************************************************/
 /*!
+    @brief  Quarter-circle drawer with fill.
+    @param  x0       Center-point x coordinate
+    @param  y0       Center-point y coordinate
+    @param  r        Radius of circle
+    @param  corners  Mask bits 0x1, 0x2, 0x4, and 0x8 to indicate which quarters
+                     of the circle to fill: 0x1 = top-left, 0x2 = top-right,
+                     0x4 = bottom-right, 0x8 = bottom-left
+    @param  delta    Offset from center-point. Elongates the horizontal face (by
+                     extending the vertical lines) if desired.
+    @param  color    16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillQuarterCircle(int16_t x0, int16_t y0, int16_t r,
+                                     uint8_t corners, int16_t delta,
+                                     uint16_t color) {
+
+  int16_t f = 1 - r;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * r;
+  int16_t x = 0;
+  int16_t y = r;
+  int16_t px = x;
+  int16_t py = y;
+
+  if (corners & (0x2 | 0x1))
+    writeFastVLine(x0, y0 - r, r + 1, color);
+  if (corners & (0x8 | 0x4))
+    writeFastVLine(x0, y0, r + 1, color);
+
+  delta++;
+
+  while (x < y) {
+    if (f >= 0) {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    if (x < (y + 1)) {
+      if (corners & 0x4)
+        writeFastVLine(x0 + x, y0, y + delta, color);
+      if (corners & 0x2)
+        writeFastVLine(x0 + x, y0 - y, y + delta, color);
+      if (corners & 0x8)
+        writeFastVLine(x0 - x, y0, y + delta, color);
+      if (corners & 0x1)
+        writeFastVLine(x0 - x, y0 - y, y + delta, color);
+    }
+    if (y != py) {
+      if (corners & 0x4)
+        writeFastVLine(x0 + py, y0, px + delta, color);
+      if (corners & 0x2)
+        writeFastVLine(x0 + py, y0 - px, px + delta, color);
+      if (corners & 0x8)
+        writeFastVLine(x0 - py, y0, px + delta, color);
+      if (corners & 0x1)
+        writeFastVLine(x0 - py, y0 - px, px + delta, color);
+      py = y;
+    }
+    px = x;
+  }
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a rectangle with no fill color
     @param    x   Top left corner x coordinate
     @param    y   Top left corner y coordinate
