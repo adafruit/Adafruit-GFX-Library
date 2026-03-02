@@ -25,7 +25,7 @@ See notes at end for glyph nomenclature & other tidbits.
 #include FT_GLYPH_H
 #include FT_MODULE_H
 #include FT_TRUETYPE_DRIVER_H
-#include "../gfxfont.h" // Adafruit_GFX font structures
+#include "gfxfont.h" // Adafruit_GFX font structures
 
 #define DPI 141 // Approximate res. of Adafruit 2.8" TFT
 
@@ -50,75 +50,109 @@ void enbit(uint8_t value) {
   }
 }
 
+#define NUMCHARS 0xff
+static GFXglyph table[NUMCHARS];
+static char used[NUMCHARS];
+static char fontName[256];
+
 int main(int argc, char *argv[]) {
-  int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
-  char *fontName, c, *ptr;
+  int i, j, k, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
+  char *cp, *ptr, *fn;
   FT_Library library;
   FT_Face face;
   FT_Glyph glyph;
   FT_Bitmap *bitmap;
   FT_BitmapGlyphRec *g;
-  GFXglyph *table;
   uint8_t bit;
 
   // Parse command line.  Valid syntaxes are:
   //   fontconvert [filename] [size]
   //   fontconvert [filename] [size] [last char]
   //   fontconvert [filename] [size] [first char] [last char]
+  //   fontconvert [filename] [size] char1 char2 char2 ...
   // Unless overridden, default first and last chars are
   // ' ' (space) and '~', respectively
+  // When specific characters are used specs from the minimally
+  // sized space character is substitute at a cost of 6 bytes each
+  //
+  // Examples:
+  //   # Output ., /, and 0-9
+  //   fontconvert comic.ttf 20 46 57
+  //   # Output ., and 0-9 (/ is included but renders as ' ')
+  //   fontconvert comic.ttf 20 46 47 48 49 50 51 52 53 54 55 56 57
 
   if (argc < 3) {
     fprintf(stderr, "Usage: %s fontfile size [first] [last]\n", argv[0]);
+    fprintf(stderr, "       %s fontfile size char1 char2 char3 ...\n", argv[0]);
     return 1;
   }
 
+  fn = argv[1];
   size = atoi(argv[2]);
 
-  if (argc == 4) {
-    last = atoi(argv[3]);
-  } else if (argc == 5) {
-    first = atoi(argv[3]);
-    last = atoi(argv[4]);
+  if (argc >= 3 && argc <= 5) {
+    // (Optinally) pick first and last characters
+    if (argc == 4) {
+      last = atoi(argv[3]);
+    } else if (argc == 5) {
+      first = atoi(argv[3]);
+      last = atoi(argv[4]);
+    }
+
+    if (last < first) {
+      i = first;
+      first = last;
+      last = i;
+    }
+
+    // Populate the used array
+    for (i = first; i <= last; ++i) {
+      used[i] = 1;
+    }
+  } else {
+    // Pick specific characters
+    first = 0x1ff;
+    last = 0;
+    for (i = 3; i < argc; ++i) {
+      j = atoi(argv[i]);
+      if (j < 0 || j > NUMCHARS) {
+        fprintf(stderr, "Invalid specific character %d\n", j);
+        return 1;
+      }
+      used[j] = 1;
+      if (first > j) {
+        first = j;
+      }
+      if (last < j) {
+        last = j;
+      }
+    }
   }
 
-  if (last < first) {
-    i = first;
-    first = last;
-    last = i;
-  }
-
-  ptr = strrchr(argv[1], '/'); // Find last slash in filename
+  ptr = strrchr(fn, '/'); // Find last slash in filename
   if (ptr)
     ptr++; // First character of filename (path stripped)
   else
-    ptr = argv[1]; // No path; font in local dir.
-
-  // Allocate space for font name and glyph table
-  if ((!(fontName = malloc(strlen(ptr) + 20))) ||
-      (!(table = (GFXglyph *)malloc((last - first + 1) * sizeof(GFXglyph))))) {
-    fprintf(stderr, "Malloc error\n");
-    return 1;
-  }
+    ptr = fn; // No path; font in local dir.
 
   // Derive font table names from filename.  Period (filename
   // extension) is truncated and replaced with the font size & bits.
-  strcpy(fontName, ptr);
+  strlcpy(fontName, ptr, sizeof(fontName));
   ptr = strrchr(fontName, '.'); // Find last period (file ext)
   if (!ptr)
     ptr = &fontName[strlen(fontName)]; // If none, append
-  // Insert font size and 7/8 bit.  fontName was alloc'd w/extra
-  // space to allow this, we're not sprintfing into Forbidden Zone.
-  sprintf(ptr, "%dpt%db", size, (last > 127) ? 8 : 7);
+  // Insert font size and 7/8 bit.
+  snprintf(ptr, sizeof(fontName) - (strlen(fontName) + 1), "%dpt%db", size,
+           (last > 127) ? 8 : 7);
   // Space and punctuation chars in name replaced w/ underscores.
-  for (i = 0; (c = fontName[i]); i++) {
-    if (isspace(c) || ispunct(c))
-      fontName[i] = '_';
+  for (cp = fontName; *cp != '\0'; ++cp) {
+    if (isspace(*cp) || ispunct(*cp))
+      *cp = '_';
   }
 
   // Init FreeType lib, load font
   if ((err = FT_Init_FreeType(&library))) {
-    fprintf(stderr, "FreeType init error: %d", err);
+    fprintf(stderr, "FreeType init error: %d\n", err);
     return err;
   }
 
@@ -130,8 +164,8 @@ int main(int argc, char *argv[]) {
   FT_Property_Set(library, "truetype", "interpreter-version",
                   &interpreter_version);
 
-  if ((err = FT_New_Face(library, argv[1], 0, &face))) {
-    fprintf(stderr, "Font load error: %d", err);
+  if ((err = FT_New_Face(library, fn, 0, &face))) {
+    fprintf(stderr, "Font load error: %d\n", err);
     FT_Done_FreeType(library);
     return err;
   }
@@ -145,13 +179,26 @@ int main(int argc, char *argv[]) {
   // the right symbols, and that's not done yet.
   // fprintf(stderr, "%ld glyphs\n", face->num_glyphs);
 
+  // Output the command line as a comment */
+  cp = strrchr(argv[0], '/');
+  if (cp == NULL)
+    cp = argv[0];
+  else
+    ++cp;
+  printf("/* %s", cp);
+  for (i = 1; i < argc; ++i) {
+    printf(" %s", argv[i]);
+  }
+  printf(" */\n");
   printf("const uint8_t %sBitmaps[] PROGMEM = {\n  ", fontName);
 
   // Process glyphs and output huge bitmap data array
   for (i = first, j = 0; i <= last; i++, j++) {
+    // Use minimal sized blank for unused characters
+    k = used[i] ? i : ' ';
     // MONO renderer provides clean image with perfect crop
     // (no wasted pixels) via bitmap struct.
-    if ((err = FT_Load_Char(face, i, FT_LOAD_TARGET_MONO))) {
+    if ((err = FT_Load_Char(face, k, FT_LOAD_TARGET_MONO))) {
       fprintf(stderr, "Error %d loading char '%c'\n", err, i);
       continue;
     }
@@ -215,7 +262,7 @@ int main(int argc, char *argv[]) {
     if (i < last) {
       printf(",   // 0x%02X", i);
       if ((i >= ' ') && (i <= '~')) {
-        printf(" '%c'", i);
+        printf(" '%c'", used[i] ? i : ' ');
       }
       putchar('\n');
     }
@@ -231,11 +278,13 @@ int main(int argc, char *argv[]) {
   printf("  (GFXglyph *)%sGlyphs,\n", fontName);
   if (face->size->metrics.height == 0) {
     // No face height info, assume fixed width and get from a glyph.
-    printf("  0x%02X, 0x%02X, %d };\n\n", first, last, table[0].height);
+    printf("  0x%02X, 0x%02X, %d ", first, last, table[0].height);
   } else {
-    printf("  0x%02X, 0x%02X, %ld };\n\n", first, last,
+    printf("  0x%02X, 0x%02X, %ld ", first, last,
            face->size->metrics.height >> 6);
   }
+  // Make braces match
+  printf("};\n\n");
   printf("// Approx. %d bytes\n", bitmapOffset + (last - first + 1) * 7 + 7);
   // Size estimate is based on AVR struct and pointer sizes;
   // actual size may vary.
