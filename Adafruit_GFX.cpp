@@ -1127,6 +1127,37 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, const uint16_t bitmap[],
 
 /**************************************************************************/
 /*!
+   @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) or sub-section thereof
+   at the specified (x,y) position, from the specified (src_x,src_y) position.
+   For 16-bit display devices; no color reduction performed.
+    @param    x   Top left corner x coordinate to draw at
+    @param    y   Top left corner y coordinate to draw at
+    @param    bitmap  byte array with 16-bit color bitmap
+    @param    w   Width of the area in the bitmap to draw, in pixels
+    @param    h   Height of the area in the bitmap to draw, in pixels
+    @param    src_x Top left corner x coordinate in the bitmap to read from
+    @param    src_y Top left corner y coordinate in the bitmap to read from
+    @param    src_w Width of the bitmap in pixels. Set to zero if w already
+    contains the bitmap's width.
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
+                                 int16_t w, int16_t h, int16_t src_x,
+                                 int16_t src_y, int16_t src_w) {
+  if (src_w == 0)
+    src_w = w;
+
+  startWrite();
+  for (int16_t j = 0; j < h; j++, y++) {
+    for (int16_t i = 0; i < w; i++) {
+      writePixel(x + i, y, bitmap[((j + src_y) * src_w) + src_x + i]);
+    }
+  }
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a RAM-resident 16-bit image (RGB 5/6/5) at the specified (x,y)
    position. For 16-bit display devices; no color reduction performed.
     @param    x   Top left corner x coordinate
@@ -1138,13 +1169,7 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, const uint16_t bitmap[],
 /**************************************************************************/
 void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
                                  int16_t w, int16_t h) {
-  startWrite();
-  for (int16_t j = 0; j < h; j++, y++) {
-    for (int16_t i = 0; i < w; i++) {
-      writePixel(x + i, y, bitmap[j * w + i]);
-    }
-  }
-  endWrite();
+  drawRGBBitmap(x, y, bitmap, w, h, 0, 0, 0);
 }
 
 /**************************************************************************/
