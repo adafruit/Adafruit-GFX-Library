@@ -298,16 +298,21 @@ public:
   /**********************************************************************/
   bool isPressed(void) { return currstate; };
 
-private:
-  Adafruit_GFX *_gfx;
-  int16_t _x1, _y1; // Coordinates of top-left corner
-  uint16_t _w, _h;
-  uint8_t _textsize_x;
-  uint8_t _textsize_y;
-  uint16_t _outlinecolor, _fillcolor, _textcolor;
-  char _label[10];
+protected:
+  Adafruit_GFX *_gfx;     ///< gfx display pointer
+  int16_t _x1;            ///< x Coordinate of top-left corner
+  int16_t _y1;            ///< y Coordinate of top-left corner
+  uint16_t _w;            ///< width of button
+  uint16_t _h;            ///< height of button
+  uint8_t _textsize_x;    ///< width of text character in pixels
+  uint8_t _textsize_y;    ///< height of text character in pixels
+  uint16_t _outlinecolor; ///< button outline color
+  uint16_t _fillcolor;    ///< button fill color
+  uint16_t _textcolor;    ///< text color
+  char _label[10];        ///< text label on button
 
-  bool currstate, laststate;
+  bool currstate; ///< current pressed state
+  bool laststate; ///< previous pressed state
 };
 
 /// A GFX 1-bit canvas context for graphics
