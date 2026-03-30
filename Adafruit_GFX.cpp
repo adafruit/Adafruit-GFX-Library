@@ -704,8 +704,14 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
 /**************************************************************************/
 /*!
    @brief     Draw a rotated rectangle
-    @param    cenX  x coordinate of center of rectangle
-    @param    cenY  y coordinate of center of rectangle
+    @param    cenX  x coordinate of center of rectangle.
+                    For even width rectangles, this point
+                    represents the pixel to the left of
+                    true center.
+    @param    cenY  y coordinate of center of rectangle.
+                    For even height rectangles, this point
+                    represents the pixel above
+                    true center.
     @param    w  width of rectangle
     @param    h  height of rectangle
     @param    angleDeg  angle of rotation of rectangle
@@ -758,8 +764,14 @@ void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
 /**************************************************************************/
 /*!
    @brief     Draw a filled rotated rectangle
-    @param    cenX  x coordinate of center of rectangle
-    @param    cenY  y coordinate of center of rectangle
+    @param    cenX  x coordinate of center of rectangle.
+                    For even width rectangles, this point
+                    represents the pixel to the left of
+                    true center.
+    @param    cenY  y coordinate of center of rectangle.
+                    For even height rectangles, this point
+                    represents the pixel above
+                    true center.
     @param    w  width of rectangle
     @param    h  height of rectangle
     @param    angleDeg  angle of rotation of rectangle
@@ -814,7 +826,7 @@ void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
                   and updated upon return
     @param    y0  y coordinate of point to rotate. This is passed by reference
                   and updated upon return
-    @param    angleDeg  angle of rotation of rectangle
+    @param    angleDeg  angle to rotate the point by (degrees)
 */
 /**************************************************************************/
 void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t angleDeg) {
