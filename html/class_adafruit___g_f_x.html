@@ -168,6 +168,15 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a78dc59f6a508bcd3d5ac7af957b8b1ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a78dc59f6a508bcd3d5ac7af957b8b1ac">fillRoundRect</a> (int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, uint16_t color)</td></tr>
 <tr class="memdesc:a78dc59f6a508bcd3d5ac7af957b8b1ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a rounded rectangle with fill color.  <a href="#a78dc59f6a508bcd3d5ac7af957b8b1ac">More...</a><br /></td></tr>
 <tr class="separator:a78dc59f6a508bcd3d5ac7af957b8b1ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4adb5e976b9a1b59884e71b7c20b84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#afe4adb5e976b9a1b59884e71b7c20b84">drawRotatedRect</a> (int16_t cenX, int16_t cenY, int16_t w, int16_t h, int16_t angleDeg, uint16_t color)</td></tr>
+<tr class="memdesc:afe4adb5e976b9a1b59884e71b7c20b84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a rotated rectangle.  <a href="#afe4adb5e976b9a1b59884e71b7c20b84">More...</a><br /></td></tr>
+<tr class="separator:afe4adb5e976b9a1b59884e71b7c20b84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fcf339763e3abe587a1ec518d97333e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a3fcf339763e3abe587a1ec518d97333e">fillRotatedRect</a> (int16_t cenX, int16_t cenY, int16_t w, int16_t h, int16_t angleDeg, uint16_t color)</td></tr>
+<tr class="memdesc:a3fcf339763e3abe587a1ec518d97333e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a filled rotated rectangle.  <a href="#a3fcf339763e3abe587a1ec518d97333e">More...</a><br /></td></tr>
+<tr class="separator:a3fcf339763e3abe587a1ec518d97333e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f2908758216da179caacb59bb0e95f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a3f2908758216da179caacb59bb0e95f5">rotatePoint</a> (int16_t &amp;x0, int16_t &amp;y0, int16_t angleDeg)</td></tr>
+<tr class="memdesc:a3f2908758216da179caacb59bb0e95f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotate a point in standard position.  <a href="#a3f2908758216da179caacb59bb0e95f5">More...</a><br /></td></tr>
+<tr class="separator:a3f2908758216da179caacb59bb0e95f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805a15f1b3ea9eff5d1666b8e6db1c56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56">drawBitmap</a> (int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color)</td></tr>
 <tr class="memdesc:a805a15f1b3ea9eff5d1666b8e6db1c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground color (unset bits are transparent).  <a href="#a805a15f1b3ea9eff5d1666b8e6db1c56">More...</a><br /></td></tr>
 <tr class="separator:a805a15f1b3ea9eff5d1666b8e6db1c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1772,6 +1781,180 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">h</td><td>Height in pixels </td></tr>
     <tr><td class="paramname">r</td><td>Radius of corner rounding </td></tr>
     <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw/fill with </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afe4adb5e976b9a1b59884e71b7c20b84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe4adb5e976b9a1b59884e71b7c20b84">&#9670;&nbsp;</a></span>drawRotatedRect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::drawRotatedRect </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>cenX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>cenY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>angleDeg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw a rotated rectangle. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cenX</td><td>x coordinate of center of rectangle. For even width rectangles, this point represents the pixel to the left of true center. </td></tr>
+    <tr><td class="paramname">cenY</td><td>y coordinate of center of rectangle. For even height rectangles, this point represents the pixel above true center. </td></tr>
+    <tr><td class="paramname">w</td><td>width of rectangle </td></tr>
+    <tr><td class="paramname">h</td><td>height of rectangle </td></tr>
+    <tr><td class="paramname">angleDeg</td><td>angle of rotation of rectangle </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill/draw with </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3fcf339763e3abe587a1ec518d97333e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fcf339763e3abe587a1ec518d97333e">&#9670;&nbsp;</a></span>fillRotatedRect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::fillRotatedRect </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>cenX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>cenY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>angleDeg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw a filled rotated rectangle. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cenX</td><td>x coordinate of center of rectangle. For even width rectangles, this point represents the pixel to the left of true center. </td></tr>
+    <tr><td class="paramname">cenY</td><td>y coordinate of center of rectangle. For even height rectangles, this point represents the pixel above true center. </td></tr>
+    <tr><td class="paramname">w</td><td>width of rectangle </td></tr>
+    <tr><td class="paramname">h</td><td>height of rectangle </td></tr>
+    <tr><td class="paramname">angleDeg</td><td>angle of rotation of rectangle </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to fill/draw with </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3f2908758216da179caacb59bb0e95f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f2908758216da179caacb59bb0e95f5">&#9670;&nbsp;</a></span>rotatePoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::rotatePoint </td>
+          <td>(</td>
+          <td class="paramtype">int16_t &amp;&#160;</td>
+          <td class="paramname"><em>x0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t &amp;&#160;</td>
+          <td class="paramname"><em>y0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>angleDeg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Rotate a point in standard position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x0</td><td>x coordinate of point to rotate. This is passed by reference and updated upon return </td></tr>
+    <tr><td class="paramname">y0</td><td>y coordinate of point to rotate. This is passed by reference and updated upon return </td></tr>
+    <tr><td class="paramname">angleDeg</td><td>angle to rotate the point by (degrees) </td></tr>
   </table>
   </dd>
 </dl>
