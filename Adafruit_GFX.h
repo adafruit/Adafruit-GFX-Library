@@ -129,6 +129,18 @@ public:
   void setTextSize(uint8_t s);
   void setTextSize(uint8_t sx, uint8_t sy);
   void setFont(const GFXfont *f = NULL);
+  const GFXfont *getFont();
+
+  /**********************************************************************/
+  /*!
+    @brief   Set a clipping window for text
+    @note    Affects calls to write() only, and hence also to print()
+             Calls to drawChar() are not affected
+  */
+  /**********************************************************************/
+  void setTextWindow(int16_t x, int16_t y, int16_t w, int16_t h);
+  void removeTextWindow();
+  uint16_t getFontHeight();
 
   /**********************************************************************/
   /*!
@@ -172,6 +184,14 @@ public:
   */
   /**********************************************************************/
   void setTextWrap(bool w) { wrap = w; }
+  
+  /************************************************************************/
+  /*!
+    @brief      Get the text wrapping setting
+    @returns    True if text wrapping is enabled
+  */
+  /************************************************************************/
+  bool getTextWrap() { return wrap; }
 
   /**********************************************************************/
   /*!
@@ -255,6 +275,11 @@ protected:
   bool wrap;            ///< If set, 'wrap' text at right edge of display
   bool _cp437;          ///< If set, use correct CP437 charset (default is off)
   GFXfont *gfxFont;     ///< Pointer to special font
+  bool textWindowed;    ///< Should text windowing be applied
+  int16_t textX;        ///< Left side of text window
+  int16_t textW;        ///< Width of text window
+  int16_t textY;        ///< Top of text window
+  int16_t textH;        ///< Height of text window
 };
 
 /// A simple drawn button UI element
