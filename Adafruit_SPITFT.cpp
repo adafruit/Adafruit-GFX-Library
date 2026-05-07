@@ -958,6 +958,55 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
+/**************************************************************************/
+/*!
+   @brief      Draw a RAM-resident 1-bit image at the specified (x,y) position,
+   using the specified foreground (for set bits) and background (unset bits)
+   colors. This is a clone of the Adafruit_GFX method but without a call to 
+   setAddrWindow for each pixel. Instead the window is setup once, and then
+   all pixels are written. This relies on the address auto-increment of the TFT.
+   If the image does not fit within the display bounds, clipping is applied.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw pixels with
+    @param    bg 16-bit 5-6-5 Color to draw background with
+*/
+/**************************************************************************/
+void Adafruit_SPITFT::drawBitmapFast(int16_t x, int16_t y, uint8_t *bitmap, int16_t w,
+                              int16_t h, uint16_t color, uint16_t bg) {
+  // Sanity check of X and Y position
+  if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
+    return;
+    
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  uint8_t b = 0;
+  int16_t wclip = w;
+  int16_t hclip = h;
+  
+  // Clipped width and height
+  if (w > (_width - x))
+    wclip = _width - x;
+  
+  if (h > (_height - y))
+    hclip = _height - y;
+  
+  startWrite();
+  setAddrWindow(x, y, wclip, hclip);
+  for (int16_t j = 0; j < hclip; j++, y++) {
+    for (int16_t i = 0; i < wclip; i++) {
+      if (i & 7)
+        b <<= 1;
+      else
+        b = bitmap[j * byteWidth + i / 8];
+      SPI_WRITE16((b & 0x80) ? color : bg);
+    }
+  }
+  endWrite();
+}
+
 /*!
     @brief  Swap bytes in an array of pixels; converts little-to-big or
             big-to-little endian. Used by writePixels() below in some
