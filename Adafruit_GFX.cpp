@@ -639,7 +639,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 */
 /**************************************************************************/
 void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
-                                     uint8_t corners, uint16_t color) {
+                                    uint8_t corners, uint16_t color) {
 
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
