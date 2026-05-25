@@ -79,9 +79,18 @@ This command will, eventually, create a "fontconvert.exe" file inside fontconver
 
 Now that you have an executable file, you can use it to create your own fonts to work with Adafruit GFX lib.
 So, if we suppose that you already have a .ttf file with your favorite fonts, jump to the command prompt and type:
+
+**7-bit font (default, ASCII 32-127):**
 ```
 ./fontconvert yourfonts.ttf 9 > yourfonts9pt7b.h
 ```
+
+**8-bit font (full 0-255 range):**
+```
+./fontconvert yourfonts.ttf 9 0 255 > yourfonts9pt8b.h
+```
+This will generate a font header with all 256 glyphs (0-255). Make sure your font file supports the full range.
+
 You can read more details at: [learn.adafruit](https://learn.adafruit.com/adafruit-gfx-graphics-library/using-fonts).
 
 Taraaaaaammm !! you've just created your new font header file. Put it inside the "Fonts" folder, grab a cup of coffee
