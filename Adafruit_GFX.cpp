@@ -1806,7 +1806,10 @@ void Adafruit_GFX::invertDisplay(bool i) {
    @brief    Create a simple drawn button UI element
 */
 /**************************************************************************/
-Adafruit_GFX_Button::Adafruit_GFX_Button(void) { _gfx = 0; }
+Adafruit_GFX_Button::Adafruit_GFX_Button(void) {
+  _gfx = 0;
+  currstate = laststate = false;
+}
 
 /**************************************************************************/
 /*!
