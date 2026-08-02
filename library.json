@@ -1,0 +1,16 @@
+{
+  "name": "Adafruit GFX Library",
+  "version": "1.12.6",
+  "description": "Adafruit GFX graphics core library, with an explicit Adafruit BusIO dependency declaration for ESPHome's native ESP-IDF library converter (which ignores library.properties depends=)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adafruit/Adafruit-GFX-Library.git"
+  },
+  "dependencies": [
+    {
+      "owner": "adafruit",
+      "name": "Adafruit BusIO",
+      "version": "^1.17.0"
+    }
+  ]
+}
