@@ -1693,10 +1693,10 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
   _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
   // System font is drawn from the upper left, but custom fonts are
-  // drawn from the lower left. Adjust by the Y returned from getTextBounds().
-  _gfx->getTextBounds(_label, _x1, _y1, &x, &y, &w, &h);
-  _gfx->setCursor(_x1 + (_w / 2) - (w / 2),
-                  _y1 + (_h / 2) - (h / 2) + (_y1 - y));
+  // drawn from the lower left. Measure at (0,0) so a button near the
+  // right edge doesn't predict a wrap, then offset by the returned x/y.
+  _gfx->getTextBounds(_label, 0, 0, &x, &y, &w, &h);
+  _gfx->setCursor(_x1 + (_w / 2) - (w / 2) - x, _y1 + (_h / 2) - (h / 2) - y);
   _gfx->print(_label);
 }
 
