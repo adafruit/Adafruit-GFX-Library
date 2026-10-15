@@ -1934,6 +1934,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
 /**************************************************************************/
 void Adafruit_GFX_Button::drawButton(bool inverted) {
   uint16_t fill, outline, text;
+  int16_t x, y;
+  uint16_t w, h;
 
   if (!inverted) {
     fill = _fillcolor;
@@ -1948,11 +1950,13 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
   uint8_t r = min(_w, _h) / 4; // Corner radius
   _gfx->fillRoundRect(_x1, _y1, _w, _h, r, fill);
   _gfx->drawRoundRect(_x1, _y1, _w, _h, r, outline);
-
-  _gfx->setCursor(_x1 + (_w / 2) - (strlen(_label) * 3 * _textsize_x),
-                  _y1 + (_h / 2) - (4 * _textsize_y));
   _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
+  // System font is drawn from the upper left, but custom fonts are
+  // drawn from the lower left. Measure at (0,0) so a button near the
+  // right edge doesn't predict a wrap, then offset by the returned x/y.
+  _gfx->getTextBounds(_label, 0, 0, &x, &y, &w, &h);
+  _gfx->setCursor(_x1 + (_w / 2) - (w / 2) - x, _y1 + (_h / 2) - (h / 2) - y);
   _gfx->print(_label);
 }
 
