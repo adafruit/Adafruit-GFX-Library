@@ -20,7 +20,7 @@ Recent Arduino IDE releases include the Library Manager for easy installation. O
 
 - 'Fonts' folder contains bitmap fonts for use with recent (1.1 and later) Adafruit_GFX. To use a font in your Arduino sketch, \#include the corresponding .h file and pass address of GFXfont struct to setFont(). Pass NULL to revert to 'classic' fixed-space bitmap font.
 
-- 'fontconvert' folder contains a command-line tool for converting TTF fonts to Adafruit_GFX header format.
+- 'fontconvert' folder contains a command-line tool for converting TTF fonts to Adafruit_GFX header format. It supports both 7-bit (ASCII) and 8-bit (full 0-255) font generation.
 
 - You can also use [this GFX Font Customiser tool](https://github.com/tchapi/Adafruit-GFX-Font-Customiser) (_web version [here](https://tchapi.github.io/Adafruit-GFX-Font-Customiser/)_) to customize or correct the output from [fontconvert](https://github.com/adafruit/Adafruit-GFX-Library/tree/master/fontconvert), and create fonts with only a subset of characters to optimize size.
 
