@@ -51,7 +51,7 @@ void enbit(uint8_t value) {
 }
 
 int main(int argc, char *argv[]) {
-  int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
+  int i, j, err, size, f, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
   char *fontName, c, *ptr;
   FT_Library library;
   FT_Face face;
@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
   //   fontconvert [filename] [size]
   //   fontconvert [filename] [size] [last char]
   //   fontconvert [filename] [size] [first char] [last char]
+  // Fractional points (1/64 pt) are used if size ends with 'f'
   // Unless overridden, default first and last chars are
   // ' ' (space) and '~', respectively
 
@@ -74,6 +75,7 @@ int main(int argc, char *argv[]) {
   }
 
   size = atoi(argv[2]);
+  f = argv[2][strlen(argv[2]) - 1] == 'f';
 
   if (argc == 4) {
     last = atoi(argv[3]);
@@ -109,7 +111,7 @@ int main(int argc, char *argv[]) {
     ptr = &fontName[strlen(fontName)]; // If none, append
   // Insert font size and 7/8 bit.  fontName was alloc'd w/extra
   // space to allow this, we're not sprintfing into Forbidden Zone.
-  sprintf(ptr, "%dpt%db", size, (last > 127) ? 8 : 7);
+  sprintf(ptr, "%d%spt%db", size, f ? "f" : "", (last > 127) ? 8 : 7);
   // Space and punctuation chars in name replaced w/ underscores.
   for (i = 0; (c = fontName[i]); i++) {
     if (isspace(c) || ispunct(c))
@@ -137,7 +139,7 @@ int main(int argc, char *argv[]) {
   }
 
   // << 6 because '26dot6' fixed-point format
-  FT_Set_Char_Size(face, size << 6, 0, DPI, 0);
+  FT_Set_Char_Size(face, f ? size : size << 6, 0, DPI, 0);
 
   // Currently all symbols from 'first' to 'last' are processed.
   // Fonts may contain WAY more glyphs than that, but this code
