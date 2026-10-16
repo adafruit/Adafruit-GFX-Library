@@ -1436,7 +1436,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       if (pixelsThisPass > 20000)
         pixelsThisPass = 20000;
       len -= pixelsThisPass;
-      yield(); // Periodic yield() on long fills
+      optimistic_yield(10000); // Yield if 10 ms since last yield
       while (pixelsThisPass--) {
         for (uint16_t bit = 0, x = color; bit < 16; bit++) {
           if (x & 0x8000)
