@@ -1403,7 +1403,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       if (pixelsThisPass > 50000)
         pixelsThisPass = 50000;
       len -= pixelsThisPass;
-      delay(1); // Periodic delay on long fills
+      optimistic_yield(10000); // Yield if 10 ms since last yield
       while (pixelsThisPass--) {
         hwspi._spi->write(hi);
         hwspi._spi->write(lo);
