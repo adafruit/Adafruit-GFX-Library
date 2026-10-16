@@ -190,7 +190,7 @@ public:
       @param  w  Width of area to be drawn, in pixels (MUST be >0 and,
                  added to x, within display bounds at current rotation).
       @param  h  Height of area to be drawn, in pixels (MUST be >0 and,
-                 added to x, within display bounds at current rotation).
+                 added to y, within display bounds at current rotation).
   */
   virtual void setAddrWindow(uint16_t x, uint16_t y, uint16_t w,
                              uint16_t h) = 0;
