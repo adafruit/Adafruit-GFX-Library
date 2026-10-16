@@ -2034,6 +2034,9 @@ GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h, bool allocate_buffer)
     uint32_t bytes = ((w + 7) / 8) * h;
     if ((buffer = (uint8_t *)malloc(bytes))) {
       memset(buffer, 0, bytes);
+    } else {
+      // No buffer: make the canvas 0x0 so every draw call clips out.
+      WIDTH = HEIGHT = _width = _height = 0;
     }
   } else {
     buffer = nullptr;
@@ -2396,6 +2399,9 @@ GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h, bool allocate_buffer)
     uint32_t bytes = w * h;
     if ((buffer = (uint8_t *)malloc(bytes))) {
       memset(buffer, 0, bytes);
+    } else {
+      // No buffer: make the canvas 0x0 so every draw call clips out.
+      WIDTH = HEIGHT = _width = _height = 0;
     }
   } else
     buffer = nullptr;
@@ -2672,6 +2678,9 @@ GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h, bool allocate_buffer)
     uint32_t bytes = w * h * 2;
     if ((buffer = (uint16_t *)malloc(bytes))) {
       memset(buffer, 0, bytes);
+    } else {
+      // No buffer: make the canvas 0x0 so every draw call clips out.
+      WIDTH = HEIGHT = _width = _height = 0;
     }
   } else {
     buffer = nullptr;
