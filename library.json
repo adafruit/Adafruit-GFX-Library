@@ -1,0 +1,27 @@
+{
+  "name": "Adafruit GFX Library",
+  "version": "1.12.6",
+  "description": "Adafruit GFX graphics core library, this is the 'core' class that all our other graphics libraries derive from. Install this library in addition to the display library for your hardware.",
+  "keywords": "display, graphics",
+  "authors": [
+    {
+      "name": "Adafruit",
+      "email": "info@adafruit.com",
+      "maintainer": true
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adafruit/Adafruit-GFX-Library.git"
+  },
+  "license": "BSD-2-Clause",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "dependencies": [
+    {
+      "owner": "adafruit",
+      "name": "Adafruit BusIO",
+      "version": "^1.17.0"
+    }
+  ]
+}
