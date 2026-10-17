@@ -1033,15 +1033,16 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
   }
 #elif defined(ARDUINO_NRF52_ADAFRUIT) &&                                       \
     defined(NRF52840_XXAA) // Adafruit nRF52 use SPIM3 DMA at 32Mhz
-  if (!bigEndian) {
-    swapBytes(colors, len); // convert little-to-big endian for display
+  if (connection == TFT_HARD_SPI) {
+    if (!bigEndian) {
+      swapBytes(colors, len); // convert little-to-big endian for display
+    }
+    hwspi._spi->transfer(colors, NULL, 2 * len); // NULL RX to avoid overwrite
+    if (!bigEndian) {
+      swapBytes(colors, len); // big-to-little endian to restore pixel buffer
+    }
+    return;
   }
-  hwspi._spi->transfer(colors, NULL, 2 * len); // NULL RX to avoid overwrite
-  if (!bigEndian) {
-    swapBytes(colors, len); // big-to-little endian to restore pixel buffer
-  }
-
-  return;
 #elif defined(ARDUINO_ARCH_RP2040)
   spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
 
@@ -1252,10 +1253,12 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     defined(NRF52840_XXAA) // Adafruit nRF52840 use SPIM3 DMA at 32Mhz
   // at most 2 scan lines
   uint32_t const pixbufcount = min(len, ((uint32_t)2 * width()));
-  uint16_t *pixbuf = (uint16_t *)rtos_malloc(2 * pixbufcount);
+  uint16_t *pixbuf = (connection == TFT_HARD_SPI)
+                         ? (uint16_t *)rtos_malloc(2 * pixbufcount)
+                         : NULL;
 
-  // use SPI3 DMA if we could allocate buffer, else fall back to writing each
-  // pixel loop below
+  // use SPI3 DMA if hardware SPI and we could allocate buffer, else fall back
+  // to writing each pixel loop below
   if (pixbuf) {
     uint16_t const swap_color = __builtin_bswap16(color);
 
