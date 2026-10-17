@@ -1444,8 +1444,8 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 #if defined(ESP8266)
     do {
       uint32_t pixelsThisPass = len;
-      if (pixelsThisPass > 20000)
-        pixelsThisPass = 20000;
+      if (pixelsThisPass > 5000) // About 0.4 s, well under the soft WDT
+        pixelsThisPass = 5000;
       len -= pixelsThisPass;
       optimistic_yield(10000); // Yield if 10 ms since last yield
       while (pixelsThisPass--) {
