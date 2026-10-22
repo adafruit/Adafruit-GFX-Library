@@ -226,6 +226,8 @@ public:
   // before ending the transaction. It's more efficient than starting a
   // transaction every time.
   void writePixel(int16_t x, int16_t y, uint16_t color);
+  void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+                 uint16_t color);
   void writePixels(uint16_t *colors, uint32_t len, bool block = true,
                    bool bigEndian = false);
   void writeColor(uint16_t color, uint32_t len);
