@@ -37,8 +37,6 @@ HARNESS = r"""
 #include <iostream>
 #include <vector>
 
-#define _swap_int16_t(a, b) do { int16_t t = (a); (a) = (b); (b) = t; } while (0)
-
 struct LineCall {
   int16_t x, y, length;
 };

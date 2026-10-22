@@ -974,13 +974,21 @@ void Adafruit_SPITFT::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 #endif
   bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
-    _swap_int16_t(x0, y0);
-    _swap_int16_t(x1, y1);
+    int16_t temp = x0;
+    x0 = y0;
+    y0 = temp;
+    temp = x1;
+    x1 = y1;
+    y1 = temp;
   }
 
   if (x0 > x1) {
-    _swap_int16_t(x0, x1);
-    _swap_int16_t(y0, y1);
+    int16_t temp = x0;
+    x0 = x1;
+    x1 = temp;
+    temp = y0;
+    y0 = y1;
+    y1 = temp;
   }
 
   int16_t dx = x1 - x0;
