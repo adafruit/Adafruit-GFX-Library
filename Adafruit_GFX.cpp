@@ -1450,7 +1450,8 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
                                  uint16_t *h) {
 
   uint8_t c; // Current character
-  int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect (initialized inverted, so 1st char sets it)
+  int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
+  // Bound rect is intentionally initialized inverted, so 1st char sets it
 
   *x1 = x; // Initial position is value passed in
   *y1 = y;
@@ -1731,7 +1732,7 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 // comfy with the implementation) provide 1-, 8- and 16-bit offscreen
 // canvases, the address of which can be passed to drawBitmap() or
 // pushColors() (the latter appears only in a couple of GFX-subclassed TFT
-// libraries at this time).  This is here mostly to help with the recently 
+// libraries at this time).  This is here mostly to help with the recently-
 // added proportionally-spaced fonts; adds a way to refresh a section of the
 // screen without a massive flickering clear-and-redraw...but maybe you'll
 // find other uses too.  VERY RAM-intensive, since the buffer is in MCU
