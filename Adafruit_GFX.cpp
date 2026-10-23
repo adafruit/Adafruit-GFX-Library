@@ -1147,7 +1147,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       c++; // Handle 'classic' charset behavior
 
     startWrite();
-    int8_t rp, rb; // Count sequential FG and BG pixels in column
+    int8_t rp = 0, rb = 0; // Count sequential FG and BG pixels in column
     for (int8_t i = 0; i < 5; i++, rp = 0, rb = 0) { // Char bitmap = 5 columns
       uint8_t line = pgm_read_byte(&font[c * 5 + i]);
       for (int8_t j = 0; j < 8; j++, line >>= 1) {
