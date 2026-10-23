@@ -294,7 +294,7 @@ public:
   /**********************************************************************/
   /*!
     @brief    Get the label text
-    @returns  the const char pointer of the buttoś label
+    @returns  the const char pointer of the button label
   */
   /**********************************************************************/
   const char *getLabel(void) const { return _label; };
