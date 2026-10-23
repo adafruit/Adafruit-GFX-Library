@@ -430,10 +430,18 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
   }
   // These are all uint8_t* pointers -- elsewhere they're recast
   // as necessary if a 'wide' 16-bit interface is in use.
+#if defined(STM32_CORE_VERSION)
+  // STM32 core returns 32-bit register pointers; cast to match uint8_t* members
+  tft8.writePort = (volatile uint8_t *)portOutputRegister(digitalPinToPort(d0));
+  tft8.readPort = (volatile uint8_t *)portInputRegister(digitalPinToPort(d0));
+  tft8.dirSet = (volatile uint8_t *)portModeRegister(digitalPinToPort(d0));
+  tft8.dirClr = (volatile uint8_t *)portModeRegister(digitalPinToPort(d0));
+#else
   tft8.writePort = portOutputRegister(digitalPinToPort(d0));
   tft8.readPort = portInputRegister(digitalPinToPort(d0));
   tft8.dirSet = portModeRegister(digitalPinToPort(d0));
   tft8.dirClr = portModeRegister(digitalPinToPort(d0));
+#endif
 #else  // !CORE_TEENSY && !STM32_CORE_VERSION
   tft8.wrPinMask = digitalPinToBitMask(wr);
   tft8.wrPortSet = &(PORT->Group[g_APinDescription[wr].ulPort].OUTSET.reg);
