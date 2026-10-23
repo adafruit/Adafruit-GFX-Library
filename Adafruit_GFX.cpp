@@ -527,6 +527,7 @@ void Adafruit_GFX::drawCircleHelper(int16_t x0, int16_t y0, int16_t r,
   int16_t x = 0;
   int16_t y = r;
 
+  startWrite();
   while (x < y) {
     if (f >= 0) {
       y--;
@@ -553,6 +554,7 @@ void Adafruit_GFX::drawCircleHelper(int16_t x0, int16_t y0, int16_t r,
       writePixel(x0 - x, y0 - y, color);
     }
   }
+  endWrite();
 }
 
 /**************************************************************************/
@@ -568,8 +570,8 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
                               uint16_t color) {
   startWrite();
   writeFastVLine(x0, y0 - r, 2 * r + 1, color);
-  fillCircleHelper(x0, y0, r, 3, 0, color);
   endWrite();
+  fillCircleHelper(x0, y0, r, 3, 0, color);
 }
 
 /**************************************************************************/
@@ -598,6 +600,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 
   delta++; // Avoid some +1's in the loop
 
+  startWrite();
   while (x < y) {
     if (f >= 0) {
       y--;
@@ -624,6 +627,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     }
     px = x;
   }
+  endWrite();
 }
 
 /**************************************************************************/
@@ -668,12 +672,12 @@ void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
   writeFastHLine(x + r, y + h - 1, w - 2 * r, color); // Bottom
   writeFastVLine(x, y + r, h - 2 * r, color);         // Left
   writeFastVLine(x + w - 1, y + r, h - 2 * r, color); // Right
-  // draw four corners
+  endWrite();
+  // draw four corners (helpers open their own transaction)
   drawCircleHelper(x + r, y + r, r, 1, color);
   drawCircleHelper(x + w - r - 1, y + r, r, 2, color);
   drawCircleHelper(x + w - r - 1, y + h - r - 1, r, 4, color);
   drawCircleHelper(x + r, y + h - r - 1, r, 8, color);
-  endWrite();
 }
 
 /**************************************************************************/
@@ -695,10 +699,10 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
   // smarter version
   startWrite();
   writeFillRect(x + r, y, w - 2 * r, h, color);
-  // draw four corners
+  endWrite();
+  // draw four corners (helpers open their own transaction)
   fillCircleHelper(x + w - r - 1, y + r, r, 1, h - 2 * r - 1, color);
   fillCircleHelper(x + r, y + r, r, 2, h - 2 * r - 1, color);
-  endWrite();
 }
 
 /**************************************************************************/
