@@ -23,6 +23,9 @@ jobs:
       run: |
         git clone --quiet https://github.com/adafruit/Adafruit_ILI9341.git /home/runner/Arduino/libraries/Adafruit_ILI9341
 
+    - name: SPITFT line unit test
+      run: python3 tests/test_spitft_write_line.py
+
     - name: test platforms
       run: python3 ci/build_platform.py main_platforms
 

@@ -959,6 +959,81 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 }
 
 /*!
+    @brief  Write a line using horizontal or vertical runs where possible.
+            Not self-contained; should follow a startWrite() call.
+    @param  x0     Start point x coordinate.
+    @param  y0     Start point y coordinate.
+    @param  x1     End point x coordinate.
+    @param  y1     End point y coordinate.
+    @param  color  16-bit line color in '565' RGB format.
+*/
+void Adafruit_SPITFT::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+                                uint16_t color) {
+#if defined(ESP8266)
+  optimistic_yield(10000);
+#endif
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
+  if (steep) {
+    int16_t temp = x0;
+    x0 = y0;
+    y0 = temp;
+    temp = x1;
+    x1 = y1;
+    y1 = temp;
+  }
+
+  if (x0 > x1) {
+    int16_t temp = x0;
+    x0 = x1;
+    x1 = temp;
+    temp = y0;
+    y0 = y1;
+    y1 = temp;
+  }
+
+  int16_t dx = x1 - x0;
+  int16_t dy = abs(y1 - y0);
+  int16_t err = dx / 2;
+  int16_t ystep = (y0 < y1) ? 1 : -1;
+  int16_t segmentStart = x0;
+
+  for (; x0 < x1; x0++) {
+    err -= dy;
+    if (err < 0) {
+      int16_t segmentLength = x0 - segmentStart + 1;
+      if (segmentLength == 1) {
+        if (steep) {
+          writePixel(y0, segmentStart, color);
+        } else {
+          writePixel(segmentStart, y0, color);
+        }
+      } else if (steep) {
+        writeFastVLine(y0, segmentStart, segmentLength, color);
+      } else {
+        writeFastHLine(segmentStart, y0, segmentLength, color);
+      }
+      y0 += ystep;
+      err += dx;
+      segmentStart = x0 + 1;
+    }
+  }
+
+  // Include x1 in the final run without incrementing an INT16_MAX endpoint.
+  int16_t segmentLength = x1 - segmentStart + 1;
+  if (segmentLength == 1) {
+    if (steep) {
+      writePixel(y0, segmentStart, color);
+    } else {
+      writePixel(segmentStart, y0, color);
+    }
+  } else if (segmentLength > 1 && steep) {
+    writeFastVLine(y0, segmentStart, segmentLength, color);
+  } else if (segmentLength > 1) {
+    writeFastHLine(segmentStart, y0, segmentLength, color);
+  }
+}
+
+/*!
     @brief  Swap bytes in an array of pixels; converts little-to-big or
             big-to-little endian. Used by writePixels() below in some
             situations, but may also be helpful for user code occasionally.
