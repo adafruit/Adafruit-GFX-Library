@@ -15,7 +15,8 @@
  *
  */
 
-#if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
+// Not for ATtiny, at all
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 
 #include "Adafruit_GrayOLED.h"
 #include <Adafruit_GFX.h>
@@ -61,7 +62,7 @@
             allocation is performed there!
 */
 Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
-                                     TwoWire *twi, int8_t rst_pin,
+                                     TwoWire *twi, int16_t rst_pin,
                                      uint32_t clkDuring, uint32_t clkAfter)
     : Adafruit_GFX(w, h), i2c_preclk(clkDuring), i2c_postclk(clkAfter),
       buffer(NULL), dcPin(-1), csPin(-1), rstPin(rst_pin), _bpp(bpp) {
@@ -97,9 +98,9 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
             allocation is performed there!
 */
 Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
-                                     int8_t mosi_pin, int8_t sclk_pin,
-                                     int8_t dc_pin, int8_t rst_pin,
-                                     int8_t cs_pin)
+                                     int16_t mosi_pin, int16_t sclk_pin,
+                                     int16_t dc_pin, int16_t rst_pin,
+                                     int16_t cs_pin)
     : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
       _bpp(bpp) {
 
@@ -133,8 +134,8 @@ Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
             allocation is performed there!
 */
 Adafruit_GrayOLED::Adafruit_GrayOLED(uint8_t bpp, uint16_t w, uint16_t h,
-                                     SPIClass *spi, int8_t dc_pin,
-                                     int8_t rst_pin, int8_t cs_pin,
+                                     SPIClass *spi, int16_t dc_pin,
+                                     int16_t rst_pin, int16_t cs_pin,
                                      uint32_t bitrate)
     : Adafruit_GFX(w, h), dcPin(dc_pin), csPin(cs_pin), rstPin(rst_pin),
       _bpp(bpp) {

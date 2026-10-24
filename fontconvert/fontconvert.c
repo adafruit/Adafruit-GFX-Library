@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 
   // Init FreeType lib, load font
   if ((err = FT_Init_FreeType(&library))) {
-    fprintf(stderr, "FreeType init error: %d", err);
+    fprintf(stderr, "FreeType init error: %d\n", err);
     return err;
   }
 
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
                   &interpreter_version);
 
   if ((err = FT_New_Face(library, argv[1], 0, &face))) {
-    fprintf(stderr, "Font load error: %d", err);
+    fprintf(stderr, "Font load error: %d\n", err);
     FT_Done_FreeType(library);
     return err;
   }
