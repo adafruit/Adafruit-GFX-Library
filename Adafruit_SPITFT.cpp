@@ -41,13 +41,6 @@
 #if defined(__AVR_XMEGA__) // only tested with __AVR_ATmega4809__
 #define AVR_WRITESPI(x)                                                        \
   for (SPI0_DATA = (x); (!(SPI0_INTFLAGS & _BV(SPI_IF_bp)));)
-#elif defined(__LGT8F__)
-#define AVR_WRITESPI(x)                                                        \
-  SPDR = (x);                                                                  \
-  asm volatile("nop");                                                         \
-  while ((SPFR & _BV(RDEMPT)))                                                 \
-    ;                                                                          \
-  SPFR = _BV(RDEMPT) | _BV(WREMPT)
 #else
 #define AVR_WRITESPI(x) for (SPDR = (x); (!(SPSR & _BV(SPIF)));)
 #endif
@@ -1431,7 +1424,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
       spi_write_blocking(pi_spi, (uint8_t *)&color, 2);
 #else // !ESP8266 && !ARDUINO_ARCH_RP2040
     while (len--) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
       AVR_WRITESPI(hi);
       AVR_WRITESPI(lo);
 #elif defined(ESP32)
@@ -2178,7 +2171,7 @@ inline void Adafruit_SPITFT::SPI_END_TRANSACTION(void) {
 */
 void Adafruit_SPITFT::spiWrite(uint8_t b) {
   if (connection == TFT_HARD_SPI) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(b);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write(b);
@@ -2462,7 +2455,7 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
 */
 void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
   if (connection == TFT_HARD_SPI) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(w >> 8);
     AVR_WRITESPI(w);
 #elif defined(ESP8266) || defined(ESP32)
@@ -2518,7 +2511,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
 */
 void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
   if (connection == TFT_HARD_SPI) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(l >> 24);
     AVR_WRITESPI(l >> 16);
     AVR_WRITESPI(l >> 8);
