@@ -21,5 +21,5 @@ var searchData=
   ['drawrotatedrect',['drawRotatedRect',['../class_adafruit___g_f_x.html#afe4adb5e976b9a1b59884e71b7c20b84',1,'Adafruit_GFX']]],
   ['drawroundrect',['drawRoundRect',['../class_adafruit___g_f_x.html#ab496b247abec724ef80e17a30257972b',1,'Adafruit_GFX']]],
   ['drawtriangle',['drawTriangle',['../class_adafruit___g_f_x.html#a49284b9cea16ecf8c15dfd0b51a841e6',1,'Adafruit_GFX']]],
-  ['drawxbitmap',['drawXBitmap',['../class_adafruit___g_f_x.html#aa7797117fef7d18592d352c14fa7d820',1,'Adafruit_GFX']]]
+  ['drawxbitmap',['drawXBitmap',['../class_adafruit___g_f_x.html#aa7797117fef7d18592d352c14fa7d820',1,'Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color)'],['../class_adafruit___g_f_x.html#aa562a6f4744a9bf440fd4238126626f1',1,'Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color, uint16_t bg)']]]
 ];
