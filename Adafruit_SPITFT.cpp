@@ -105,6 +105,19 @@ static const struct {
 #define TFT_SOFT_SPI 1 ///< Display interface = software SPI
 #define TFT_PARALLEL 2 ///< Display interface = 8- or 16-bit parallel
 
+#if defined(STM32_CORE_VERSION) &&                                             \
+    (defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx))
+// These have no BRR. The lower half of BSRR sets pins and the upper half
+// clears them, so point set and clear at the two 16-bit halves.
+#define SPITFT_SET_REG(pin) ((PORTreg_t) & (digitalPinToPort(pin)->BSRR))
+#define SPITFT_CLR_REG(pin) (SPITFT_SET_REG(pin) + 1)
+#define SPITFT_IN_REG(pin) ((PORTreg_t)portInputRegister(digitalPinToPort(pin)))
+#else
+#define SPITFT_SET_REG(pin) portSetRegister(digitalPinToPort(pin))
+#define SPITFT_CLR_REG(pin) portClearRegister(digitalPinToPort(pin))
+#define SPITFT_IN_REG(pin) portInputRegister(digitalPinToPort(pin))
+#endif
+
 // CONSTRUCTORS ------------------------------------------------------------
 
 /*!
@@ -139,18 +152,18 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
   swspi.sckPinMask = digitalPinToBitMask(sck);
   swspi.mosiPinMask = digitalPinToBitMask(mosi);
 #endif
-  dcPortSet = portSetRegister(digitalPinToPort(dc));
-  dcPortClr = portClearRegister(digitalPinToPort(dc));
-  swspi.sckPortSet = portSetRegister(digitalPinToPort(sck));
-  swspi.sckPortClr = portClearRegister(digitalPinToPort(sck));
-  swspi.mosiPortSet = portSetRegister(digitalPinToPort(mosi));
-  swspi.mosiPortClr = portClearRegister(digitalPinToPort(mosi));
+  dcPortSet = SPITFT_SET_REG(dc);
+  dcPortClr = SPITFT_CLR_REG(dc);
+  swspi.sckPortSet = SPITFT_SET_REG(sck);
+  swspi.sckPortClr = SPITFT_CLR_REG(sck);
+  swspi.mosiPortSet = SPITFT_SET_REG(mosi);
+  swspi.mosiPortClr = SPITFT_CLR_REG(mosi);
   if (cs >= 0) {
 #if !defined(KINETISK)
     csPinMask = digitalPinToBitMask(cs);
 #endif
-    csPortSet = portSetRegister(digitalPinToPort(cs));
-    csPortClr = portClearRegister(digitalPinToPort(cs));
+    csPortSet = SPITFT_SET_REG(cs);
+    csPortClr = SPITFT_CLR_REG(cs);
   } else {
 #if !defined(KINETISK)
     csPinMask = 0;
@@ -159,12 +172,12 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
     csPortClr = dcPortClr;
   }
   if (miso >= 0) {
-    swspi.misoPort = portInputRegister(digitalPinToPort(miso));
+    swspi.misoPort = SPITFT_IN_REG(miso);
 #if !defined(KINETISK)
     swspi.misoPinMask = digitalPinToBitMask(miso);
 #endif
   } else {
-    swspi.misoPort = portInputRegister(digitalPinToPort(dc));
+    swspi.misoPort = SPITFT_IN_REG(dc);
   }
 #else  // !CORE_TEENSY && !STM32_CORE_VERSION
   dcPinMask = digitalPinToBitMask(dc);
@@ -298,14 +311,14 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass,
 #if !defined(KINETISK)
   dcPinMask = digitalPinToBitMask(dc);
 #endif
-  dcPortSet = portSetRegister(digitalPinToPort(dc));
-  dcPortClr = portClearRegister(digitalPinToPort(dc));
+  dcPortSet = SPITFT_SET_REG(dc);
+  dcPortClr = SPITFT_CLR_REG(dc);
   if (cs >= 0) {
 #if !defined(KINETISK)
     csPinMask = digitalPinToBitMask(cs);
 #endif
-    csPortSet = portSetRegister(digitalPinToPort(cs));
-    csPortClr = portClearRegister(digitalPinToPort(cs));
+    csPortSet = SPITFT_SET_REG(cs);
+    csPortClr = SPITFT_CLR_REG(cs);
   } else { // see comments below
 #if !defined(KINETISK)
     csPinMask = 0;
@@ -395,19 +408,19 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if defined(CORE_TEENSY) || defined(STM32_CORE_VERSION)
-  tft8.wrPortSet = portSetRegister(digitalPinToPort(wr));
-  tft8.wrPortClr = portClearRegister(digitalPinToPort(wr));
+  tft8.wrPortSet = SPITFT_SET_REG(wr);
+  tft8.wrPortClr = SPITFT_CLR_REG(wr);
 #if !defined(KINETISK)
   dcPinMask = digitalPinToBitMask(dc);
 #endif
-  dcPortSet = portSetRegister(digitalPinToPort(dc));
-  dcPortClr = portClearRegister(digitalPinToPort(dc));
+  dcPortSet = SPITFT_SET_REG(dc);
+  dcPortClr = SPITFT_CLR_REG(dc);
   if (cs >= 0) {
 #if !defined(KINETISK)
     csPinMask = digitalPinToBitMask(cs);
 #endif
-    csPortSet = portSetRegister(digitalPinToPort(cs));
-    csPortClr = portClearRegister(digitalPinToPort(cs));
+    csPortSet = SPITFT_SET_REG(cs);
+    csPortClr = SPITFT_CLR_REG(cs);
   } else { // see comments below
 #if !defined(KINETISK)
     csPinMask = 0;
@@ -421,8 +434,8 @@ Adafruit_SPITFT::Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth,
 #else // !KINETISK
     tft8.rdPinMask = digitalPinToBitMask(rd);
 #endif
-    tft8.rdPortSet = portSetRegister(digitalPinToPort(rd));
-    tft8.rdPortClr = portClearRegister(digitalPinToPort(rd));
+    tft8.rdPortSet = SPITFT_SET_REG(rd);
+    tft8.rdPortClr = SPITFT_CLR_REG(rd);
   } else {
     tft8.rdPinMask = 0;
     tft8.rdPortSet = dcPortSet;

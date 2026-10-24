@@ -51,7 +51,11 @@ typedef uint8_t ADAGFX_PORT_t; ///< PORT values are 8-bit
 #define USE_FAST_PINIO   ///< Use direct PORT register access
 #define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
 #elif defined(STM32_CORE_VERSION)
+#if defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx)
+typedef uint16_t ADAGFX_PORT_t; ///< 16-bit halves of BSRR, see SPITFT_SET_REG
+#else
 typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
+#endif
 #define USE_FAST_PINIO   ///< Use direct PORT register access
 #define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
 #else
@@ -172,7 +176,7 @@ public:
 
   // DESTRUCTOR ----------------------------------------------------------
 
-  ~Adafruit_SPITFT(){};
+  ~Adafruit_SPITFT() {};
 
   // CLASS MEMBER FUNCTIONS ----------------------------------------------
 
