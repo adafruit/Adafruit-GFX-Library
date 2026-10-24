@@ -109,12 +109,18 @@ static const struct {
     (defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx))
 // These have no BRR. The lower half of BSRR sets pins and the upper half
 // clears them, so point set and clear at the two 16-bit halves.
+/// Register that sets a pin when its bit mask is written
 #define SPITFT_SET_REG(pin) ((PORTreg_t) & (digitalPinToPort(pin)->BSRR))
+/// Register that clears a pin when its bit mask is written
 #define SPITFT_CLR_REG(pin) (SPITFT_SET_REG(pin) + 1)
+/// Register that reads a pin
 #define SPITFT_IN_REG(pin) ((PORTreg_t)portInputRegister(digitalPinToPort(pin)))
 #else
+/// Register that sets a pin when its bit mask is written
 #define SPITFT_SET_REG(pin) portSetRegister(digitalPinToPort(pin))
+/// Register that clears a pin when its bit mask is written
 #define SPITFT_CLR_REG(pin) portClearRegister(digitalPinToPort(pin))
+/// Register that reads a pin
 #define SPITFT_IN_REG(pin) portInputRegister(digitalPinToPort(pin))
 #endif
 
