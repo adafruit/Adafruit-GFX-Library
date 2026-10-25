@@ -648,6 +648,8 @@ void Adafruit_GFX::fillQuarterCircle(int16_t x0, int16_t y0, int16_t r,
   int16_t y = r;
   int16_t px = x;
   int16_t py = y;
+  
+  startWrite();
 
   if (corners & (0x2 | 0x1))
     writeFastVLine(x0, y0 - r, r + 1, color);
@@ -687,6 +689,8 @@ void Adafruit_GFX::fillQuarterCircle(int16_t x0, int16_t y0, int16_t r,
     }
     px = x;
   }
+  
+  endWrite();
 }
 
 /**************************************************************************/
