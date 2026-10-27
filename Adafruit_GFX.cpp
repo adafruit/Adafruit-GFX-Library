@@ -1796,9 +1796,8 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     @param  maxy  Pointer to maximum Y coord, passed in AND returned.
 */
 /**************************************************************************/
-void Adafruit_GFX::charBounds(uint16_t c, int16_t *x, int16_t *y,
-                              int16_t *minx, int16_t *miny, int16_t *maxx,
-                              int16_t *maxy) {
+void Adafruit_GFX::charBounds(uint16_t c, int16_t *x, int16_t *y, int16_t *minx,
+                              int16_t *miny, int16_t *maxx, int16_t *maxy) {
 
   if (gfxFont) {
 
