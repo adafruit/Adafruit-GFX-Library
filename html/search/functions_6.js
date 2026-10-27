@@ -3,6 +3,7 @@ var searchData=
   ['fillcircle',['fillCircle',['../class_adafruit___g_f_x.html#a623e031e58492fb41e9fde6a05d97c12',1,'Adafruit_GFX']]],
   ['fillcirclehelper',['fillCircleHelper',['../class_adafruit___g_f_x.html#a2242d3560b08c6480084152b6660052a',1,'Adafruit_GFX']]],
   ['fillellipse',['fillEllipse',['../class_adafruit___g_f_x.html#a7aa8220cae8064810a3d9c2f2421e5d4',1,'Adafruit_GFX']]],
+  ['fillquartercircle',['fillQuarterCircle',['../class_adafruit___g_f_x.html#a8cdd70191c1f2310f5686196e9fc0e2c',1,'Adafruit_GFX']]],
   ['fillrect',['fillRect',['../class_adafruit___g_f_x.html#aa43cf1dfe6c17d040a0f1fd5ffbe9d69',1,'Adafruit_GFX::fillRect()'],['../class_adafruit___s_p_i_t_f_t.html#a5964fdb249fb43869c649198e13b727b',1,'Adafruit_SPITFT::fillRect()']]],
   ['fillrotatedrect',['fillRotatedRect',['../class_adafruit___g_f_x.html#a3fcf339763e3abe587a1ec518d97333e',1,'Adafruit_GFX']]],
   ['fillroundrect',['fillRoundRect',['../class_adafruit___g_f_x.html#a78dc59f6a508bcd3d5ac7af957b8b1ac',1,'Adafruit_GFX']]],
