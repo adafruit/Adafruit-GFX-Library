@@ -329,6 +329,8 @@ public:
                     uint8_t textsize_y);
   void drawButton(bool inverted = false);
   bool contains(int16_t x, int16_t y);
+  char *getLabel();
+  void setLabel(char *label);
 
   /**********************************************************************/
   /*!
@@ -338,7 +340,7 @@ public:
   /**********************************************************************/
   void press(bool p) {
     laststate = currstate;
-    currstate = p;
+    currstate = p & _enabled;
   }
 
   bool justPressed();
@@ -352,6 +354,16 @@ public:
   /**********************************************************************/
   bool isPressed(void) { return currstate; };
 
+  /**********************************************************************/
+  /*!
+    @brief    Check whether the button is enabled
+    @returns  True if enabled
+  */
+  /**********************************************************************/
+  bool isEnabled(void) { return _enabled; }
+
+  void setEnabled(bool enable, uint16_t fillColor);
+
 private:
   Adafruit_GFX *_gfx;
   int16_t _x1, _y1; // Coordinates of top-left corner
@@ -361,7 +373,7 @@ private:
   uint16_t _outlinecolor, _fillcolor, _textcolor;
   char _label[10];
 
-  bool currstate, laststate;
+  bool currstate, laststate, _enabled = true;
 };
 
 /// A GFX 1-bit canvas context for graphics
