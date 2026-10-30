@@ -4,6 +4,7 @@ var searchData=
   ['getcursorx',['getCursorX',['../class_adafruit___g_f_x.html#a0d1d15f5f15cad95b4c20f0e9ac9c74b',1,'Adafruit_GFX']]],
   ['getcursory',['getCursorY',['../class_adafruit___g_f_x.html#a81c8558cfcb717c4cfbd5475998daed1',1,'Adafruit_GFX']]],
   ['getfont',['getFont',['../class_adafruit___g_f_x.html#a2fbafafc14c7b5eb63aaa31198995ae1',1,'Adafruit_GFX']]],
+  ['getlabel',['getLabel',['../class_adafruit___g_f_x___button.html#ac7733ccda8c5f27b982a6e3e5afe8122',1,'Adafruit_GFX_Button']]],
   ['getpixel',['getPixel',['../class_g_f_xcanvas1.html#aa27bc364e3d34442f28d76621dbdb530',1,'GFXcanvas1::getPixel()'],['../class_g_f_xcanvas8.html#a596d92a61af6e59c69f132f1670ee62c',1,'GFXcanvas8::getPixel()'],['../class_g_f_xcanvas16.html#aa0debb25a92095f1b069b649eb3e795e',1,'GFXcanvas16::getPixel()'],['../class_adafruit___gray_o_l_e_d.html#a4fe49c5ae9285c483ccd0c4ff41b8b82',1,'Adafruit_GrayOLED::getPixel()']]],
   ['getrawpixel',['getRawPixel',['../class_g_f_xcanvas1.html#a4eb78de4421384fd916883d944bf3ae8',1,'GFXcanvas1::getRawPixel()'],['../class_g_f_xcanvas8.html#a4ba7ffdd7a75f7377f5856547e4e1391',1,'GFXcanvas8::getRawPixel()'],['../class_g_f_xcanvas16.html#af2ffc935a173c5f99e03b645cc883678',1,'GFXcanvas16::getRawPixel()']]],
   ['getrotation',['getRotation',['../class_adafruit___g_f_x.html#ab90e1378511b93189a7b557d7dda5d73',1,'Adafruit_GFX']]],

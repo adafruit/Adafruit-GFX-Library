@@ -86,7 +86,7 @@ Inheritance diagram for Adafruit_GFX:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6f6f1abccf677eac244fa17d105133ea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6f6f1abccf677eac244fa17d105133ea">Adafruit_GFX</a> (int16_t w, int16_t h)</td></tr>
-<tr class="memdesc:a6f6f1abccf677eac244fa17d105133ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instatiate a GFX context for graphics! Can only be done by a superclass.  <a href="#a6f6f1abccf677eac244fa17d105133ea">More...</a><br /></td></tr>
+<tr class="memdesc:a6f6f1abccf677eac244fa17d105133ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantiate a GFX context for graphics! Can only be done by a superclass.  <a href="#a6f6f1abccf677eac244fa17d105133ea">More...</a><br /></td></tr>
 <tr class="separator:a6f6f1abccf677eac244fa17d105133ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7fbf72885c873266f9c7eb53b5c8896"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab7fbf72885c873266f9c7eb53b5c8896">drawPixel</a> (int16_t x, int16_t y, uint16_t color)=0</td></tr>
 <tr class="memdesc:ab7fbf72885c873266f9c7eb53b5c8896"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw to the screen/framebuffer/etc. Must be overridden in subclass.  <a href="#ab7fbf72885c873266f9c7eb53b5c8896">More...</a><br /></td></tr>
@@ -108,12 +108,20 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:ad85469e8be73f90932058fba1d4e5cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a perfectly horizontal line, overwrite in subclasses if startWrite is defined!  <a href="#ad85469e8be73f90932058fba1d4e5cbd">More...</a><br /></td></tr>
 <tr class="separator:ad85469e8be73f90932058fba1d4e5cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1e5204b9251a04a57c821f69a8e638b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ae1e5204b9251a04a57c821f69a8e638b">writeLine</a> (int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)</td></tr>
-<tr class="memdesc:ae1e5204b9251a04a57c821f69a8e638b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a line. Bresenham's algorithm - thx wikpedia.  <a href="#ae1e5204b9251a04a57c821f69a8e638b">More...</a><br /></td></tr>
+<tr class="memdesc:ae1e5204b9251a04a57c821f69a8e638b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a line. Bresenham's algorithm - thx Wikipedia.  <a href="#ae1e5204b9251a04a57c821f69a8e638b">More...</a><br /></td></tr>
 <tr class="separator:ae1e5204b9251a04a57c821f69a8e638b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9be8787f3683151e86c1f3b5c8685d6"><td class="memItemLeft" align="right" valign="top"><a id="ab9be8787f3683151e86c1f3b5c8685d6"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab9be8787f3683151e86c1f3b5c8685d6">endWrite</a> (void)</td></tr>
 <tr class="memdesc:ab9be8787f3683151e86c1f3b5c8685d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">End a display-writing routine, overwrite in subclasses if startWrite is defined! <br /></td></tr>
 <tr class="separator:ab9be8787f3683151e86c1f3b5c8685d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab881232133f9946d62c3e81a3a96e1e5"><td class="memItemLeft" align="right" valign="top"><a id="ab881232133f9946d62c3e81a3a96e1e5"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#ab881232133f9946d62c3e81a3a96e1e5">clearDisplay</a> (void)</td></tr>
+<tr class="memdesc:ab881232133f9946d62c3e81a3a96e1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the display, overwrite in subclasses. <br /></td></tr>
+<tr class="separator:ab881232133f9946d62c3e81a3a96e1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43a9e6c1f30874e294d0a755b03f0251"><td class="memItemLeft" align="right" valign="top"><a id="a43a9e6c1f30874e294d0a755b03f0251"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a43a9e6c1f30874e294d0a755b03f0251">display</a> (void)</td></tr>
+<tr class="memdesc:a43a9e6c1f30874e294d0a755b03f0251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the display, overwrite in subclasses. <br /></td></tr>
+<tr class="separator:a43a9e6c1f30874e294d0a755b03f0251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ac337c49876cee23ed062a928724675"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a6ac337c49876cee23ed062a928724675">setRotation</a> (uint8_t r)</td></tr>
 <tr class="memdesc:a6ac337c49876cee23ed062a928724675"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set rotation setting for display.  <a href="#a6ac337c49876cee23ed062a928724675">More...</a><br /></td></tr>
 <tr class="separator:a6ac337c49876cee23ed062a928724675"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,7 +216,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a880b422ce35d0e3956dcd00638a421e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a PROGMEM-resident 8-bit image (grayscale) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (grayscale and mask) must be PROGMEM-resident. Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.  <a href="#a880b422ce35d0e3956dcd00638a421e4">More...</a><br /></td></tr>
 <tr class="separator:a880b422ce35d0e3956dcd00638a421e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7543eee2c983daea5eb46a0c2db92692"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a7543eee2c983daea5eb46a0c2db92692">drawGrayscaleBitmap</a> (int16_t x, int16_t y, uint8_t *bitmap, uint8_t *mask, int16_t w, int16_t h)</td></tr>
-<tr class="memdesc:a7543eee2c983daea5eb46a0c2db92692"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (grayscale and mask) must be RAM-residentt, no mix-and-match Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.  <a href="#a7543eee2c983daea5eb46a0c2db92692">More...</a><br /></td></tr>
+<tr class="memdesc:a7543eee2c983daea5eb46a0c2db92692"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (grayscale and mask) must be RAM-resident, no mix-and-match Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed.  <a href="#a7543eee2c983daea5eb46a0c2db92692">More...</a><br /></td></tr>
 <tr class="separator:a7543eee2c983daea5eb46a0c2db92692"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af90e317367f3ac6dae3aa46d549ca535"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#af90e317367f3ac6dae3aa46d549ca535">drawRGBBitmap</a> (int16_t x, int16_t y, const uint16_t bitmap[], int16_t w, int16_t h)</td></tr>
 <tr class="memdesc:af90e317367f3ac6dae3aa46d549ca535"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a PROGMEM-resident 16-bit image (RGB 5/6/5) at the specified (x,y) position. For 16-bit display devices; no color reduction performed.  <a href="#af90e317367f3ac6dae3aa46d549ca535">More...</a><br /></td></tr>
@@ -389,7 +397,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>Instatiate a GFX context for graphics! Can only be done by a superclass. </p>
+<p>Instantiate a GFX context for graphics! Can only be done by a superclass. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">w</td><td>Display width, in pixels </td></tr>
@@ -751,7 +759,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Write a line. Bresenham's algorithm - thx wikpedia. </p>
+<p>Write a line. Bresenham's algorithm - thx Wikipedia. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x0</td><td>Start point x coordinate </td></tr>
@@ -2682,7 +2690,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (grayscale and mask) must be RAM-residentt, no mix-and-match Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed. </p>
+<p>Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask (set bits = opaque, unset bits = clear) at the specified (x,y) position. BOTH buffers (grayscale and mask) must be RAM-resident, no mix-and-match Specifically for 8-bit display devices such as IS31FL3731; no color reduction/expansion is performed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>Top left corner x coordinate </td></tr>
@@ -2999,7 +3007,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">x</td><td>Bottom left corner x coordinate </td></tr>
     <tr><td class="paramname">y</td><td>Bottom left corner y coordinate </td></tr>
     <tr><td class="paramname">c</td><td>The 8-bit font-indexed character (likely ascii) </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw chraracter with </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw character with </td></tr>
     <tr><td class="paramname">bg</td><td>16-bit 5-6-5 Color to fill background with (if same as color, no background) </td></tr>
     <tr><td class="paramname">size</td><td>Font magnification level, 1 is 'original' size </td></tr>
   </table>
@@ -3070,7 +3078,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">x</td><td>Bottom left corner x coordinate </td></tr>
     <tr><td class="paramname">y</td><td>Bottom left corner y coordinate </td></tr>
     <tr><td class="paramname">c</td><td>The 8-bit font-indexed character (likely ascii) </td></tr>
-    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw chraracter with </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 Color to draw character with </td></tr>
     <tr><td class="paramname">bg</td><td>16-bit 5-6-5 Color to fill background with (if same as color, no background) </td></tr>
     <tr><td class="paramname">size_x</td><td>Font magnification level in X-axis, 1 is 'original' size </td></tr>
     <tr><td class="paramname">size_y</td><td>Font magnification level in Y-axis, 1 is 'original' size </td></tr>
