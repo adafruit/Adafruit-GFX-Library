@@ -1897,7 +1897,8 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
                                     int16_t w, int16_t h) {
 
   int16_t x2, y2;                 // Lower-right coord
-  if ((x >= _width) ||            // Off-edge right
+  if (!pcolors ||                 // No buffer (e.g. canvas alloc failed)
+      (x >= _width) ||            // Off-edge right
       (y >= _height) ||           // " top
       ((x2 = (x + w - 1)) < 0) || // " left
       ((y2 = (y + h - 1)) < 0))
