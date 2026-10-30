@@ -369,9 +369,6 @@ class GFXcanvas1 : public Adafruit_GFX {
 public:
   GFXcanvas1(uint16_t w, uint16_t h, bool allocate_buffer = true);
   ~GFXcanvas1(void);
-  // No copies: the copy and the original would both free the buffer
-  GFXcanvas1(const GFXcanvas1 &) = delete;
-  GFXcanvas1 &operator=(const GFXcanvas1 &) = delete;
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
@@ -394,6 +391,9 @@ protected:
                      ///< nothing
 
 private:
+  // No copies: the copy and the original would both free the buffer
+  GFXcanvas1(const GFXcanvas1 &) = delete;
+  GFXcanvas1 &operator=(const GFXcanvas1 &) = delete;
 #ifdef __AVR__
   // Bitmask tables of 0x80>>X and ~(0x80>>X), because X>>Y is slow on AVR
   static const uint8_t PROGMEM GFXsetBit[], GFXclrBit[];
@@ -405,9 +405,6 @@ class GFXcanvas8 : public Adafruit_GFX {
 public:
   GFXcanvas8(uint16_t w, uint16_t h, bool allocate_buffer = true);
   ~GFXcanvas8(void);
-  // No copies: the copy and the original would both free the buffer
-  GFXcanvas8(const GFXcanvas8 &) = delete;
-  GFXcanvas8 &operator=(const GFXcanvas8 &) = delete;
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
@@ -428,6 +425,11 @@ protected:
   uint8_t *buffer;   ///< Raster data: no longer private, allow subclass access
   bool buffer_owned; ///< If true, destructor will free buffer, else it will do
                      ///< nothing
+
+private:
+  // No copies: the copy and the original would both free the buffer
+  GFXcanvas8(const GFXcanvas8 &) = delete;
+  GFXcanvas8 &operator=(const GFXcanvas8 &) = delete;
 };
 
 ///  A GFX 16-bit canvas context for graphics
@@ -435,9 +437,6 @@ class GFXcanvas16 : public Adafruit_GFX {
 public:
   GFXcanvas16(uint16_t w, uint16_t h, bool allocate_buffer = true);
   ~GFXcanvas16(void);
-  // No copies: the copy and the original would both free the buffer
-  GFXcanvas16(const GFXcanvas16 &) = delete;
-  GFXcanvas16 &operator=(const GFXcanvas16 &) = delete;
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void fillScreen(uint16_t color);
   void byteSwap(void);
@@ -459,6 +458,11 @@ protected:
   uint16_t *buffer;  ///< Raster data: no longer private, allow subclass access
   bool buffer_owned; ///< If true, destructor will free buffer, else it will do
                      ///< nothing
+
+private:
+  // No copies: the copy and the original would both free the buffer
+  GFXcanvas16(const GFXcanvas16 &) = delete;
+  GFXcanvas16 &operator=(const GFXcanvas16 &) = delete;
 };
 
 #endif // _ADAFRUIT_GFX_H
