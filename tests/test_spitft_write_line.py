@@ -12,7 +12,7 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "Adafruit_SPITFT.cpp"
+SOURCE = ROOT / "src" / "Adafruit_SPITFT.cpp"
 MARKER = "void Adafruit_SPITFT::writeLine("
 
 
