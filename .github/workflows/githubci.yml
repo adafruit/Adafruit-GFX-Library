@@ -21,7 +21,7 @@ jobs:
 
     - name: extra libraries
       run: |
-        git clone --quiet https://github.com/adafruit/Adafruit_ILI9341.git /home/runner/Arduino/libraries/Adafruit_ILI9341
+        git clone --quiet https://github.com/adafruit/Adafruit_ILI9341.git $HOME/Arduino/libraries/Adafruit_ILI9341
 
     - name: test platforms
       run: python3 ci/build_platform.py main_platforms
