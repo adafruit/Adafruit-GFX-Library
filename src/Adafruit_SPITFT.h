@@ -344,7 +344,12 @@ public:
   }
 
 protected:
-  void writeColorHardSPI(uint16_t color, uint32_t len); ///< Family solid fill
+  /*!
+      @brief  Family-specific hardware SPI solid fill.
+      @param  color  16-bit pixel color in '565' RGB format.
+      @param  len    Number of pixels to fill.
+  */
+  void writeColorHardSPI(uint16_t color, uint32_t len);
   // A few more low-level member functions -- some may have previously
   // been macros. Shouldn't have a need to access these externally, so
   // they've been moved to the protected section. Additionally, they're
