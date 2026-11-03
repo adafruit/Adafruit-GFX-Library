@@ -344,6 +344,7 @@ public:
   }
 
 protected:
+  void writeColorHardSPI(uint16_t color, uint32_t len); ///< Family solid fill
   // A few more low-level member functions -- some may have previously
   // been macros. Shouldn't have a need to access these externally, so
   // they've been moved to the protected section. Additionally, they're

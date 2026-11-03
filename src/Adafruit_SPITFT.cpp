@@ -53,6 +53,8 @@
 #endif
 #endif
 
+#include "arch/arch_fill.h"
+
 #if defined(PORT_IOBUS)
 // On SAMD21, redefine digitalPinToPort() to use the slightly-faster
 // PORT_IOBUS rather than PORT (not needed on SAMD51).
@@ -1488,38 +1490,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
   // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
 
   if (connection == TFT_HARD_SPI) {
-#if defined(ESP8266)
-    do {
-      uint32_t pixelsThisPass = len;
-      if (pixelsThisPass > 50000)
-        pixelsThisPass = 50000;
-      len -= pixelsThisPass;
-      optimistic_yield(10000); // Yield if 10 ms since last yield
-      while (pixelsThisPass--) {
-        hwspi._spi->write(hi);
-        hwspi._spi->write(lo);
-      }
-    } while (len);
-#elif defined(ARDUINO_ARCH_RP2040)
-    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
-    color = __builtin_bswap16(color);
-
-    while (len--)
-      spi_write_blocking(pi_spi, (uint8_t *)&color, 2);
-#else // !ESP8266 && !ARDUINO_ARCH_RP2040
-    while (len--) {
-#if defined(__AVR__)
-      AVR_WRITESPI(hi);
-      AVR_WRITESPI(lo);
-#elif defined(ESP32)
-      hwspi._spi->write(hi);
-      hwspi._spi->write(lo);
-#else
-      hwspi._spi->transfer(hi);
-      hwspi._spi->transfer(lo);
-#endif
-    }
-#endif // end !ESP8266
+    writeColorHardSPI(color, len);
   } else if (connection == TFT_SOFT_SPI) {
 #if defined(ESP8266)
     do {
