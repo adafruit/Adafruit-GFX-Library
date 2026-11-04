@@ -1440,8 +1440,8 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  str  ASCII string to measure
     @param  x    Starting cursor X (left side, first character)
     @param  y    Starting cursor Y (on baseline, first character)
-    @param  xL   Left text boundary X coordinate, returned by function
-    @param  yT   Top text boundary Y coordinate, returned by function
+    @param  x1   Left text boundary X coordinate, returned by function
+    @param  y1   Top text boundary Y coordinate, returned by function
     @param  w    Text boundary width, returned by function
     @param  h    Text boundary height, returned by function
     @param  xF   Ending cursor X (right side of baseline, last char), if not
@@ -1455,24 +1455,24 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
                  position can be adjusted (e.g. for center alignment), so the
                  cursor position is unknown when this function is called, and
                  (x, y) can really just be arbitrary values.
-                 Since the returned (xL, yT) values are the coords of the upper
+                 Since the returned (x1, y1) values are the coords of the upper
                  left corner of the text boundary box, then the correct CURSOR
                  position to use with setCursor() when printing the text, if
                  the upper-left corner of the text is to be at position (X1,Y1)
                  (which may or may not equal the (x, y) arguments to this
                  function), is:
-                      (X1+x-xL, Y1+y-yT)
+                      (X1+x-x1, Y1+y-y1)
                  Suppose (x, y) are indeed set to (X1, Y1) when calling this
-                 function. In that case (x-XL) and (y-yT) will evaluate to a
+                 function. In that case (x-x1) and (y-y1) will evaluate to a
                  small positive or negative integer, possibly 0 but not always
                  0, and adding that small integer to X1 and Y1 will move them
                  slightly so they can be used in a call to setCursor(). The
                  cursor position is NOT the upper-left corner of the next
                  character to be printed. Rather, it is a position on the TEXT
                  BASELINE (bottom of characters that don't have descenders on
-                 them), used to align the character font data. (y-yT) will
+                 them), used to align the character font data. (y-y1) will
                  almost always be a positive value that is the distance from
-                 the top of the text (yT) to the text baseline. Note that the
+                 the top of the text (y1) to the text baseline. Note that the
                  text baseline is NOT Y1+h, because h includes the full string
                  height including descenders on characters.
                  If instead of the above setting, the cursor position for
@@ -1484,37 +1484,37 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
                  The optional arguments xF and yF provide a way to discover
                  where to start adding more characters after the string, if
                  desired. The final cursor position is returned in (xF, yF).
-                 This is NOT the same as (xL+w, yT+h). Instead, XF might be
+                 This is NOT the same as (x1+w, y1+h). Instead, XF might be
                  slightly more or less than that, while yF is probably the same
                  as the y value given at the start (unless there was text
                  wrapping). The final CURSOR position to use to print additional
                  text after the string, if the upper-left corner of the text is
                  at position (X1, Y1), is:
-                      (X1+xF-xL, Y1+yF-yT)
+                      (X1+xF-x1, Y1+yF-y1)
                  The position of the lower-right corner of the bounding box,
                  (X2, Y2), is of course:
                       (X1+w, Y1+h)
                  If another character is printed after the string, using the
-                 starting cursor position (X1+xF-xL, Y1+yF-yT), and that new
+                 starting cursor position (X1+xF-x1, Y1+yF-y1), and that new
                  character has top-left bound box offset (dX, dY) and width
                  W and height H, then the new lower-right corner of the bounding
                  box (X2, Y2) is:
-                      (X1+xF-xL+dX+W, Y1+yF-yT+max(0, dY+H))
+                      (X1+xF-x1+dX+W, Y1+yF-y1+max(0, dY+H))
                  and so the new total text string width and height are:
-                      new w = xF-xL+dX+W = new X2 - X1
-                      new h = yF-yT+max(0, dY+H) = new Y2 - Y1
+                      new w = xF-x1+dX+W = new X2 - X1
+                      new h = yF-y1+max(0, dY+H) = new Y2 - Y1
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
-                                 int16_t *xL, int16_t *yT, uint16_t *w,
+                                 int16_t *x1, int16_t *y1, uint16_t *w,
                                  uint16_t *h, int16_t *xF, int16_t *yF) {
 
   uint8_t c; // Current character
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
-  *xL = x; // This initialization SHOULD be overwritten below after charBounds()
-  *yT = y; //     is called. (Unless string is empty).
+  *x1 = x; // This initialization SHOULD be overwritten below after charBounds()
+  *y1 = y; //     is called. (Unless string is empty).
   *w = *h = 0; // Initial size is zero
 
   while ((c = *str++)) {
@@ -1524,12 +1524,12 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   }
 
   if (maxx >= minx) {     // If legit string bounds were found...
-    *xL = minx;           // Update xL to least X coord,
+    *x1 = minx;           // Update x1 to least X coord,
     *w = maxx - minx + 1; // And w to bound rect width
   }
 
   if (maxy >= miny) { // Same for height as for width
-    *yT = miny;
+    *y1 = miny;
     *h = maxy - miny + 1;
   }
 
@@ -1547,8 +1547,8 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     @param    str     The ascii string to measure (as an arduino String() class)
     @param    x       The current cursor X
     @param    y       The current cursor Y
-    @param    xL      The left boundary X coordinate, set by function
-    @param    yT      The top boundary Y coordinate, set by function
+    @param    x1      The left boundary X coordinate, set by function
+    @param    y1      The top boundary Y coordinate, set by function
     @param    w       The boundary width, set by function
     @param    h       The boundary height, set by function
     @param    xF      Ending cursor X (right side of baseline, last char), if
@@ -1558,10 +1558,10 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
-                                 int16_t *xL, int16_t *yT, uint16_t *w,
+                                 int16_t *x1, int16_t *y1, uint16_t *w,
                                  uint16_t *h, int16_t *xF, int16_t *yF) {
   if (str.length() != 0) {
-    getTextBounds(const_cast<char *>(str.c_str()), x, y, xL, yT, w, h, xF, yF);
+    getTextBounds(const_cast<char *>(str.c_str()), x, y, x1, y1, w, h, xF, yF);
   }
 }
 
@@ -1572,8 +1572,8 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
     @param    str     The flash-memory ascii string to measure
     @param    x       The current cursor X
     @param    y       The current cursor Y
-    @param    xL      The left boundary X coordinate, set by function
-    @param    yT      The top boundary Y coordinate, set by function
+    @param    x1      The left boundary X coordinate, set by function
+    @param    y1      The top boundary Y coordinate, set by function
     @param    w       The boundary width, set by function
     @param    h       The boundary height, set by function
     @param    xF      Ending cursor X (right side of baseline, last char), if
@@ -1583,13 +1583,13 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
-                                 int16_t y, int16_t *xL, int16_t *yT,
+                                 int16_t y, int16_t *x1, int16_t *y1,
                                  uint16_t *w, uint16_t *h, int16_t *xF,
                                  int16_t *yF) {
   uint8_t *s = (uint8_t *)str, c;
 
-  *xL = x;
-  *yT = y;
+  *x1 = x;
+  *y1 = y;
   *w = *h = 0;
 
   int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
@@ -1598,11 +1598,11 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
 
   if (maxx >= minx) {
-    *xL = minx;
+    *x1 = minx;
     *w = maxx - minx + 1;
   }
   if (maxy >= miny) {
-    *yT = miny;
+    *y1 = miny;
     *h = maxy - miny + 1;
   }
 
