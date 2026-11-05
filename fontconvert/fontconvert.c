@@ -52,6 +52,8 @@ void enbit(uint8_t value) {
 
 int main(int argc, char *argv[]) {
   int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
+  FT_Int32 load_flags = FT_LOAD_TARGET_MONO;
+  char hinting[11];
   char *fontName, c, *ptr;
   FT_Library library;
   FT_Face face;
@@ -69,11 +71,33 @@ int main(int argc, char *argv[]) {
   // ' ' (space) and '~', respectively
 
   if (argc < 3) {
-    fprintf(stderr, "Usage: %s fontfile size [first] [last]\n", argv[0]);
+    fprintf(stderr, "Usage: %s fontfile size [first] [last] [hinting]\n",
+            argv[0]);
     return 1;
   }
 
   size = atoi(argv[2]);
+
+  ptr = argv[argc - 1];
+  if (isalpha(*ptr)) {
+    if (strcasecmp(ptr, "no") == 0) {
+      // No any hinting
+      load_flags = FT_LOAD_NO_HINTING;
+      strcpy(hinting, "no");
+    } else if (strcasecmp(ptr, "mono") == 0) {
+      // MONO renderer provides clean image with perfect crop
+      // (no wasted pixels) via bitmap struct.
+      load_flags = FT_LOAD_TARGET_MONO;
+      strcpy(hinting, "");
+    } else if (strcasecmp(ptr, "auto") == 0) {
+      load_flags = FT_LOAD_TARGET_MONO | FT_LOAD_FORCE_AUTOHINT;
+      strcpy(hinting, "auto");
+    } else {
+      fprintf(stderr, "Incorrect hinting value!\n");
+      return 1;
+    }
+    argc--;
+  }
 
   if (argc == 4) {
     last = atoi(argv[3]);
@@ -95,7 +119,7 @@ int main(int argc, char *argv[]) {
     ptr = argv[1]; // No path; font in local dir.
 
   // Allocate space for font name and glyph table
-  if ((!(fontName = malloc(strlen(ptr) + 20))) ||
+  if ((!(fontName = malloc(strlen(ptr) + 40))) ||
       (!(table = (GFXglyph *)malloc((last - first + 1) * sizeof(GFXglyph))))) {
     fprintf(stderr, "Malloc error\n");
     return 1;
@@ -109,7 +133,11 @@ int main(int argc, char *argv[]) {
     ptr = &fontName[strlen(fontName)]; // If none, append
   // Insert font size and 7/8 bit.  fontName was alloc'd w/extra
   // space to allow this, we're not sprintfing into Forbidden Zone.
-  sprintf(ptr, "%dpt%db", size, (last > 127) ? 8 : 7);
+  if (load_flags == FT_LOAD_TARGET_MONO)
+    sprintf(ptr, "%dpt%db", size, (last > 127) ? 8 : 7);
+  else {
+    sprintf(ptr, "%dpt%db_hinting%s", size, (last > 127) ? 8 : 7, hinting);
+  }
   // Space and punctuation chars in name replaced w/ underscores.
   for (i = 0; (c = fontName[i]); i++) {
     if (isspace(c) || ispunct(c))
@@ -149,9 +177,7 @@ int main(int argc, char *argv[]) {
 
   // Process glyphs and output huge bitmap data array
   for (i = first, j = 0; i <= last; i++, j++) {
-    // MONO renderer provides clean image with perfect crop
-    // (no wasted pixels) via bitmap struct.
-    if ((err = FT_Load_Char(face, i, FT_LOAD_TARGET_MONO))) {
+    if ((err = FT_Load_Char(face, i, load_flags))) {
       fprintf(stderr, "Error %d loading char '%c'\n", err, i);
       continue;
     }
