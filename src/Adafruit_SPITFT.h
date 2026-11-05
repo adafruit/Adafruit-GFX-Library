@@ -134,7 +134,7 @@ public:
 
   // DESTRUCTOR ----------------------------------------------------------
 
-  ~Adafruit_SPITFT(){};
+  ~Adafruit_SPITFT() {};
 
   // CLASS MEMBER FUNCTIONS ----------------------------------------------
 
