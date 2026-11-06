@@ -46,6 +46,8 @@
 #endif
 #endif
 
+#include "arch/arch_fill.h"
+
 #if defined(PORT_IOBUS)
 // On SAMD21, redefine digitalPinToPort() to use the slightly-faster
 // PORT_IOBUS rather than PORT (not needed on SAMD51).
@@ -952,6 +954,81 @@ void Adafruit_SPITFT::writePixel(int16_t x, int16_t y, uint16_t color) {
 }
 
 /*!
+    @brief  Write a line using horizontal or vertical runs where possible.
+            Not self-contained; should follow a startWrite() call.
+    @param  x0     Start point x coordinate.
+    @param  y0     Start point y coordinate.
+    @param  x1     End point x coordinate.
+    @param  y1     End point y coordinate.
+    @param  color  16-bit line color in '565' RGB format.
+*/
+void Adafruit_SPITFT::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+                                uint16_t color) {
+#if defined(ESP8266)
+  optimistic_yield(10000);
+#endif
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
+  if (steep) {
+    int16_t temp = x0;
+    x0 = y0;
+    y0 = temp;
+    temp = x1;
+    x1 = y1;
+    y1 = temp;
+  }
+
+  if (x0 > x1) {
+    int16_t temp = x0;
+    x0 = x1;
+    x1 = temp;
+    temp = y0;
+    y0 = y1;
+    y1 = temp;
+  }
+
+  int16_t dx = x1 - x0;
+  int16_t dy = abs(y1 - y0);
+  int16_t err = dx / 2;
+  int16_t ystep = (y0 < y1) ? 1 : -1;
+  int16_t segmentStart = x0;
+
+  for (; x0 < x1; x0++) {
+    err -= dy;
+    if (err < 0) {
+      int16_t segmentLength = x0 - segmentStart + 1;
+      if (segmentLength == 1) {
+        if (steep) {
+          writePixel(y0, segmentStart, color);
+        } else {
+          writePixel(segmentStart, y0, color);
+        }
+      } else if (steep) {
+        writeFastVLine(y0, segmentStart, segmentLength, color);
+      } else {
+        writeFastHLine(segmentStart, y0, segmentLength, color);
+      }
+      y0 += ystep;
+      err += dx;
+      segmentStart = x0 + 1;
+    }
+  }
+
+  // Include x1 in the final run without incrementing an INT16_MAX endpoint.
+  int16_t segmentLength = x1 - segmentStart + 1;
+  if (segmentLength == 1) {
+    if (steep) {
+      writePixel(y0, segmentStart, color);
+    } else {
+      writePixel(segmentStart, y0, color);
+    }
+  } else if (segmentLength > 1 && steep) {
+    writeFastVLine(y0, segmentStart, segmentLength, color);
+  } else if (segmentLength > 1) {
+    writeFastHLine(segmentStart, y0, segmentLength, color);
+  }
+}
+
+/*!
     @brief  Swap bytes in an array of pixels; converts little-to-big or
             big-to-little endian. Used by writePixels() below in some
             situations, but may also be helpful for user code occasionally.
@@ -1037,20 +1114,22 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     return;
   }
 #elif defined(ARDUINO_ARCH_RP2040)
-  spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
+  if (connection == TFT_HARD_SPI) {
+    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
 
-  if (!bigEndian) {
-    // switch to 16-bit writes
-    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB,
-                    SPI_SSPCR0_DSS_BITS);
-    spi_write16_blocking(pi_spi, colors, len);
-    // switch back to 8-bit
-    hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB,
-                    SPI_SSPCR0_DSS_BITS);
-  } else {
-    spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
+    if (!bigEndian) {
+      // switch to 16-bit writes
+      hw_write_masked(&spi_get_hw(pi_spi)->cr0, 15 << SPI_SSPCR0_DSS_LSB,
+                      SPI_SSPCR0_DSS_BITS);
+      spi_write16_blocking(pi_spi, colors, len);
+      // switch back to 8-bit
+      hw_write_masked(&spi_get_hw(pi_spi)->cr0, 7 << SPI_SSPCR0_DSS_LSB,
+                      SPI_SSPCR0_DSS_BITS);
+    } else {
+      spi_write_blocking(pi_spi, (uint8_t *)colors, len * 2);
+    }
+    return;
   }
-  return;
 #elif defined(ARDUINO_ARCH_RTTHREAD)
   if (!bigEndian) {
     swapBytes(colors, len); // convert little-to-big endian for display
@@ -1404,38 +1483,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
   // All other cases (non-DMA hard SPI, bitbang SPI, parallel)...
 
   if (connection == TFT_HARD_SPI) {
-#if defined(ESP8266)
-    do {
-      uint32_t pixelsThisPass = len;
-      if (pixelsThisPass > 50000)
-        pixelsThisPass = 50000;
-      len -= pixelsThisPass;
-      optimistic_yield(10000); // Yield if 10 ms since last yield
-      while (pixelsThisPass--) {
-        hwspi._spi->write(hi);
-        hwspi._spi->write(lo);
-      }
-    } while (len);
-#elif defined(ARDUINO_ARCH_RP2040)
-    spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
-    color = __builtin_bswap16(color);
-
-    while (len--)
-      spi_write_blocking(pi_spi, (uint8_t *)&color, 2);
-#else // !ESP8266 && !ARDUINO_ARCH_RP2040
-    while (len--) {
-#if defined(__AVR__) && !defined(__LGT8F__)
-      AVR_WRITESPI(hi);
-      AVR_WRITESPI(lo);
-#elif defined(ESP32)
-      hwspi._spi->write(hi);
-      hwspi._spi->write(lo);
-#else
-      hwspi._spi->transfer(hi);
-      hwspi._spi->transfer(lo);
-#endif
-    }
-#endif // end !ESP8266
+    writeColorHardSPI(color, len);
   } else if (connection == TFT_SOFT_SPI) {
 #if defined(ESP8266)
     do {
@@ -1491,7 +1539,7 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     }
 #endif     // end !ESP8266
   } else { // PARALLEL
-    if (hi == lo) {
+    if (hi == lo || tft8.wide) {
 #if defined(__AVR__)
       len *= 2;
       *tft8.writePort = hi;
@@ -1516,13 +1564,9 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
         TFT_WR_STROBE();
         *tft8.writePort = lo;
 #elif defined(USE_FAST_PINIO)
-        if (!tft8.wide) {
-          *tft8.writePort = hi;
-          TFT_WR_STROBE();
-          *tft8.writePort = lo;
-        } else {
-          *(volatile uint16_t *)tft8.writePort = color;
-        }
+        *tft8.writePort = hi;
+        TFT_WR_STROBE();
+        *tft8.writePort = lo;
 #endif
         TFT_WR_STROBE();
       }
@@ -1892,7 +1936,8 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
                                     int16_t w, int16_t h) {
 
   int16_t x2, y2;                 // Lower-right coord
-  if ((x >= _width) ||            // Off-edge right
+  if (!pcolors ||                 // No buffer (e.g. canvas alloc failed)
+      (x >= _width) ||            // Off-edge right
       (y >= _height) ||           // " top
       ((x2 = (x + w - 1)) < 0) || // " left
       ((y2 = (y + h - 1)) < 0))
@@ -2268,17 +2313,17 @@ uint8_t Adafruit_SPITFT::spiRead(void) {
         *(volatile uint16_t *)tft8.dirClr = 0xFFFF; // Input state
         w = *(volatile uint16_t *)tft8.readPort;    // 16-bit read
         *(volatile uint16_t *)tft8.dirSet = 0xFFFF; // Output state
-#else  // !HAS_PORT_SET_CLR
+#else                // !HAS_PORT_SET_CLR
         *(volatile uint16_t *)tft8.portDir = 0x0000; // Input state
         w = *(volatile uint16_t *)tft8.readPort;     // 16-bit read
         *(volatile uint16_t *)tft8.portDir = 0xFFFF; // Output state
-#endif // end !HAS_PORT_SET_CLR
+#endif               // end !HAS_PORT_SET_CLR
       }
+#endif               // end !__AVR__
       TFT_RD_HIGH(); // Read line HIGH
-#endif // end !__AVR__
-#else  // !USE_FAST_PINIO
+#else                // !USE_FAST_PINIO
       w = 0; // Parallel TFT is NOT SUPPORTED without USE_FAST_PINIO
-#endif // end !USE_FAST_PINIO
+#endif               // end !USE_FAST_PINIO
     }
     return w;
   }

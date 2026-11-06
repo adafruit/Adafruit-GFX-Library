@@ -25,7 +25,7 @@ See notes at end for glyph nomenclature & other tidbits.
 #include FT_GLYPH_H
 #include FT_MODULE_H
 #include FT_TRUETYPE_DRIVER_H
-#include "../gfxfont.h" // Adafruit_GFX font structures
+#include "../src/gfxfont.h" // Adafruit_GFX font structures
 
 #define DPI 141 // Approximate res. of Adafruit 2.8" TFT
 
@@ -174,9 +174,17 @@ int main(int argc, char *argv[]) {
     // fully bit-packed; no per-scanline pad, though end of
     // each character may be padded to next byte boundary
     // when needed.  16-bit offset means 64K max for bitmaps,
-    // code currently doesn't check for overflow.  (Doesn't
+    // so stop if a glyph would start past that.  (Doesn't
     // check that size & offsets are within bounds either for
     // that matter...please convert fonts responsibly.)
+    if (bitmapOffset > 0xFFFF) {
+      fprintf(stderr,
+              "Bitmap data passes 64 KB at char '%c' (0x%02X); "
+              "use a smaller size or a shorter char range\n",
+              i, i);
+      FT_Done_FreeType(library);
+      return 1;
+    }
     table[j].bitmapOffset = bitmapOffset;
     table[j].width = bitmap->width;
     table[j].height = bitmap->rows;

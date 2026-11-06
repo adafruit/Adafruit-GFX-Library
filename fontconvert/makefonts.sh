@@ -14,7 +14,7 @@
 
 convert=./fontconvert
 inpath=~/Desktop/freefont/
-outpath=../Fonts/
+outpath=../src/Fonts/
 fonts=(FreeMono FreeSans FreeSerif)
 styles=("" Bold Italic BoldItalic Oblique BoldOblique)
 sizes=(9 12 18 24)
