@@ -412,6 +412,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a7ccdd2251f32aee8aa28c2e4e53d1d67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a7ccdd2251f32aee8aa28c2e4e53d1d67">writeColorHardSPI</a> (uint16_t color, uint32_t len)</td></tr>
+<tr class="memdesc:a7ccdd2251f32aee8aa28c2e4e53d1d67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Family-specific hardware SPI solid fill.  <a href="#a7ccdd2251f32aee8aa28c2e4e53d1d67">More...</a><br /></td></tr>
+<tr class="separator:a7ccdd2251f32aee8aa28c2e4e53d1d67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88f3c607cb9a5bd1d7f55881a1f3dc95"><td class="memItemLeft" align="right" valign="top"><a id="a88f3c607cb9a5bd1d7f55881a1f3dc95"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a88f3c607cb9a5bd1d7f55881a1f3dc95">SPI_MOSI_HIGH</a> (void)</td></tr>
 <tr class="memdesc:a88f3c607cb9a5bd1d7f55881a1f3dc95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the software (bitbang) SPI MOSI line HIGH. <br /></td></tr>
@@ -2396,6 +2399,51 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
+<a id="a7ccdd2251f32aee8aa28c2e4e53d1d67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ccdd2251f32aee8aa28c2e4e53d1d67">&#9670;&nbsp;</a></span>writeColorHardSPI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::writeColorHardSPI </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Family-specific hardware SPI solid fill. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">color</td><td>16-bit pixel color in '565' RGB format. </td></tr>
+    <tr><td class="paramname">len</td><td>Number of pixels to fill. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a9d4982ab4b15c7b3bc30c553e1abf279"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9d4982ab4b15c7b3bc30c553e1abf279">&#9670;&nbsp;</a></span>SPI_MISO_READ()</h2>
 
@@ -2444,8 +2492,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li><a class="el" href="_adafruit___s_p_i_t_f_t_8h_source.html">Adafruit_SPITFT.h</a></li>
-<li><a class="el" href="_adafruit___s_p_i_t_f_t_8cpp.html">Adafruit_SPITFT.cpp</a></li>
+<li>src/<a class="el" href="_adafruit___s_p_i_t_f_t_8h_source.html">Adafruit_SPITFT.h</a></li>
+<li>src/<a class="el" href="_adafruit___s_p_i_t_f_t_8cpp.html">Adafruit_SPITFT.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
