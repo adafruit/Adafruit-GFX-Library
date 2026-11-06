@@ -28,42 +28,8 @@
 
 // HARDWARE CONFIG ---------------------------------------------------------
 
-#if defined(__AVR__)
-typedef uint8_t ADAGFX_PORT_t;       ///< PORT values are 8-bit
-#define USE_FAST_PINIO               ///< Use direct PORT register access
-#elif defined(ARDUINO_STM32_FEATHER) // WICED
-typedef class HardwareSPI SPIClass; ///< SPI is a bit odd on WICED
-typedef uint32_t ADAGFX_PORT_t;     ///< PORT values are 32-bit
-#elif defined(__arm__)
-#if defined(ARDUINO_ARCH_SAMD)
-// Adafruit M0, M4
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-#define USE_FAST_PINIO   ///< Use direct PORT register access
-#define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
-#elif defined(CORE_TEENSY)
-// PJRC Teensy 4.x
-#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-                                // PJRC Teensy 3.x
-#else
-typedef uint8_t ADAGFX_PORT_t; ///< PORT values are 8-bit
-#endif
-#define USE_FAST_PINIO   ///< Use direct PORT register access
-#define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
-#else
-// Arduino Due?
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-// USE_FAST_PINIO not available here (yet)...Due has a totally different
-// GPIO register set and will require some changes elsewhere (e.g. in
-// constructors especially).
-#endif
-#else                                      // !ARM
-// Probably ESP8266 or ESP32. USE_FAST_PINIO is not available here (yet)
-// but don't worry about it too much...the digitalWrite() implementation
-// on these platforms is reasonably efficient and already RAM-resident,
-// only gotcha then is no parallel connection support for now.
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-#endif                                     // end !ARM
+#include "arch/arch.h"
+
 typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 
 #if defined(__AVR__) && !defined(__LGT8F__)
@@ -168,7 +134,7 @@ public:
 
   // DESTRUCTOR ----------------------------------------------------------
 
-  ~Adafruit_SPITFT(){};
+  ~Adafruit_SPITFT() {};
 
   // CLASS MEMBER FUNCTIONS ----------------------------------------------
 
@@ -226,6 +192,8 @@ public:
   // before ending the transaction. It's more efficient than starting a
   // transaction every time.
   void writePixel(int16_t x, int16_t y, uint16_t color);
+  void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+                 uint16_t color);
   void writePixels(uint16_t *colors, uint32_t len, bool block = true,
                    bool bigEndian = false);
   void writeColor(uint16_t color, uint32_t len);
@@ -376,6 +344,12 @@ public:
   }
 
 protected:
+  /*!
+      @brief  Family-specific hardware SPI solid fill.
+      @param  color  16-bit pixel color in '565' RGB format.
+      @param  len    Number of pixels to fill.
+  */
+  void writeColorHardSPI(uint16_t color, uint32_t len);
   // A few more low-level member functions -- some may have previously
   // been macros. Shouldn't have a need to access these externally, so
   // they've been moved to the protected section. Additionally, they're
