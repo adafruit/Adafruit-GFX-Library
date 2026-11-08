@@ -13,7 +13,7 @@ inline void Adafruit_SPITFT::writeColorHardSPI(uint16_t color, uint32_t len) {
   uint8_t hi = color >> 8, lo = color;
 
   while (len--) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(hi);
     AVR_WRITESPI(lo);
 #elif defined(ESP32)
