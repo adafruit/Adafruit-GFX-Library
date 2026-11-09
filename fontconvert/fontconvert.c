@@ -53,7 +53,7 @@ void enbit(uint8_t value) {
 int main(int argc, char *argv[]) {
   int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
   FT_Int32 ft_load_flags = FT_LOAD_TARGET_MONO;
-  int no_hinting = 0;
+  int autohint = 0;
   char *fontName, c, *ptr;
   FT_Library library;
   FT_Face face;
@@ -65,24 +65,26 @@ int main(int argc, char *argv[]) {
 
   // Parse command line.  Valid syntaxes are:
   //   fontconvert [filename] [size]
-  //   fontconvert [filename] [size] -n
+  //   fontconvert [filename] [size] -a
   //   fontconvert [filename] [size] [last char]
-  //   fontconvert [filename] [size] [last char] -n
+  //   fontconvert [filename] [size] [last char] -a
   //   fontconvert [filename] [size] [first char] [last char]
-  //   fontconvert [filename] [size] [first char] [last char] -n
+  //   fontconvert [filename] [size] [first char] [last char] -a
   // Unless overridden, default first and last chars are
-  // ' ' (space) and '~', respectively
+  // ' ' (space) and '~', respectively.
+  // -a forces the FreeType auto-hinter, which can look better than the
+  // font's own hinting at small sizes (e.g. Noto).
 
   if (argc < 3) {
-    fprintf(stderr, "Usage: %s fontfile size [first] [last] [-n]\n", argv[0]);
+    fprintf(stderr, "Usage: %s fontfile size [first] [last] [-a]\n", argv[0]);
     return 1;
   }
 
   size = atoi(argv[2]);
 
   if (argc > 3) {
-    if (strcmp(argv[argc - 1], "-n") == 0) {
-      no_hinting = 1;
+    if (strcmp(argv[argc - 1], "-a") == 0) {
+      autohint = 1;
       --argc;
     }
   }
@@ -94,8 +96,8 @@ int main(int argc, char *argv[]) {
     last = atoi(argv[4]);
   }
 
-  if (no_hinting)
-    ft_load_flags = FT_LOAD_NO_HINTING;
+  if (autohint)
+    ft_load_flags |= FT_LOAD_FORCE_AUTOHINT;
 
   if (last < first) {
     i = first;
