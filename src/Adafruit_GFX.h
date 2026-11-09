@@ -362,6 +362,8 @@ public:
   /**********************************************************************/
   const char *getLabel(void) const { return _label; };
 
+  void setLabel(const char *label);
+
 private:
   Adafruit_GFX *_gfx;
   int16_t _x1, _y1; // Coordinates of top-left corner

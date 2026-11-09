@@ -2132,6 +2132,17 @@ bool Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
 /**************************************************************************/
 bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 
+/**************************************************************************/
+/*!
+   @brief    Change the button label. Call drawButton() to show it.
+   @param    label  New label text, up to 9 characters (longer is cut off)
+*/
+/**************************************************************************/
+void Adafruit_GFX_Button::setLabel(const char *label) {
+  strncpy(_label, label, 9);
+  _label[9] = 0; // strncpy does not place a null at the end.
+}
+
 // -------------------------------------------------------------------------
 
 // GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
