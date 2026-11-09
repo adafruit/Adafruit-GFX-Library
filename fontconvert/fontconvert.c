@@ -52,6 +52,8 @@ void enbit(uint8_t value) {
 
 int main(int argc, char *argv[]) {
   int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
+  FT_Int32 ft_load_flags = FT_LOAD_TARGET_MONO;
+  int no_hinting = 0;
   char *fontName, c, *ptr;
   FT_Library library;
   FT_Face face;
@@ -63,17 +65,27 @@ int main(int argc, char *argv[]) {
 
   // Parse command line.  Valid syntaxes are:
   //   fontconvert [filename] [size]
+  //   fontconvert [filename] [size] -n
   //   fontconvert [filename] [size] [last char]
+  //   fontconvert [filename] [size] [last char] -n
   //   fontconvert [filename] [size] [first char] [last char]
+  //   fontconvert [filename] [size] [first char] [last char] -n
   // Unless overridden, default first and last chars are
   // ' ' (space) and '~', respectively
 
   if (argc < 3) {
-    fprintf(stderr, "Usage: %s fontfile size [first] [last]\n", argv[0]);
+    fprintf(stderr, "Usage: %s fontfile size [first] [last] [-n]\n", argv[0]);
     return 1;
   }
 
   size = atoi(argv[2]);
+
+  if (argc > 3) {
+    if (strcmp(argv[argc - 1], "-n") == 0) {
+      no_hinting = 1;
+      --argc;
+    }
+  }
 
   if (argc == 4) {
     last = atoi(argv[3]);
@@ -81,6 +93,9 @@ int main(int argc, char *argv[]) {
     first = atoi(argv[3]);
     last = atoi(argv[4]);
   }
+
+  if (no_hinting)
+    ft_load_flags = FT_LOAD_NO_HINTING;
 
   if (last < first) {
     i = first;
@@ -151,7 +166,7 @@ int main(int argc, char *argv[]) {
   for (i = first, j = 0; i <= last; i++, j++) {
     // MONO renderer provides clean image with perfect crop
     // (no wasted pixels) via bitmap struct.
-    if ((err = FT_Load_Char(face, i, FT_LOAD_TARGET_MONO))) {
+    if ((err = FT_Load_Char(face, i, ft_load_flags))) {
       fprintf(stderr, "Error %d loading char '%c'\n", err, i);
       continue;
     }
