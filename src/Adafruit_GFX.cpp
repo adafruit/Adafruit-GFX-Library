@@ -1838,10 +1838,10 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  str  The ASCII string to measure
     @param  x    The current cursor X
     @param  y    The current cursor Y
-    @param  x1   The boundary X coordinate, returned by function
-    @param  y1   The boundary Y coordinate, returned by function
-    @param  w    The boundary width, returned by function
-    @param  h    The boundary height, returned by function
+    @param  x1   The boundary X coordinate, returned by function (may be NULL)
+    @param  y1   The boundary Y coordinate, returned by function (may be NULL)
+    @param  w    The boundary width, returned by function (may be NULL)
+    @param  h    The boundary height, returned by function (may be NULL)
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
@@ -1852,9 +1852,8 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
-  *x1 = x; // Initial position is value passed in
-  *y1 = y;
-  *w = *h = 0; // Initial size is zero
+  int16_t bx = x, by = y;  // Initial position is value passed in
+  uint16_t bw = 0, bh = 0; // Initial size is zero
 
   while ((c = *str++)) {
     // charBounds() modifies x/y to advance for each character,
@@ -1863,13 +1862,23 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   }
 
   if (maxx >= minx) {     // If legit string bounds were found...
-    *x1 = minx;           // Update x1 to least X coord,
-    *w = maxx - minx + 1; // And w to bound rect width
+    bx = minx;            // Update x1 to least X coord,
+    bw = maxx - minx + 1; // And w to bound rect width
   }
   if (maxy >= miny) { // Same for height
-    *y1 = miny;
-    *h = maxy - miny + 1;
+    by = miny;
+    bh = maxy - miny + 1;
   }
+
+  // Any of the outputs may be NULL if the caller doesn't need it
+  if (x1)
+    *x1 = bx;
+  if (y1)
+    *y1 = by;
+  if (w)
+    *w = bw;
+  if (h)
+    *h = bh;
 }
 
 /**************************************************************************/
@@ -1879,10 +1888,10 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     @param    str    The ascii string to measure (as an arduino String() class)
     @param    x      The current cursor X
     @param    y      The current cursor Y
-    @param    x1     The boundary X coordinate, set by function
-    @param    y1     The boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    x1     The boundary X coordinate, set by function (may be NULL)
+    @param    y1     The boundary Y coordinate, set by function (may be NULL)
+    @param    w      The boundary width, set by function (may be NULL)
+    @param    h      The boundary height, set by function (may be NULL)
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
@@ -1900,10 +1909,10 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
     @param    str     The flash-memory ascii string to measure
     @param    x       The current cursor X
     @param    y       The current cursor Y
-    @param    x1      The boundary X coordinate, set by function
-    @param    y1      The boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    x1      The boundary X coordinate, set by function (may be NULL)
+    @param    y1      The boundary Y coordinate, set by function (may be NULL)
+    @param    w      The boundary width, set by function (may be NULL)
+    @param    h      The boundary height, set by function (may be NULL)
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
@@ -1911,9 +1920,8 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
                                  uint16_t *w, uint16_t *h) {
   uint8_t *s = (uint8_t *)str, c;
 
-  *x1 = x;
-  *y1 = y;
-  *w = *h = 0;
+  int16_t bx = x, by = y;
+  uint16_t bw = 0, bh = 0;
 
   int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
 
@@ -1921,13 +1929,23 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
 
   if (maxx >= minx) {
-    *x1 = minx;
-    *w = maxx - minx + 1;
+    bx = minx;
+    bw = maxx - minx + 1;
   }
   if (maxy >= miny) {
-    *y1 = miny;
-    *h = maxy - miny + 1;
+    by = miny;
+    bh = maxy - miny + 1;
   }
+
+  // Any of the outputs may be NULL if the caller doesn't need it
+  if (x1)
+    *x1 = bx;
+  if (y1)
+    *y1 = by;
+  if (w)
+    *w = bw;
+  if (h)
+    *h = bh;
 }
 
 /**************************************************************************/
