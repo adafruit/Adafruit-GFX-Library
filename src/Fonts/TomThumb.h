@@ -52,7 +52,9 @@
 ** Andreas Merkle (web@blue-andi.de)
 */
 
+#ifndef TOMTHUMB_USE_EXTENDED
 #define TOMTHUMB_USE_EXTENDED 0
+#endif
 
 const uint8_t TomThumbBitmaps[] PROGMEM = {
     0x00,             /* 0x20 space */
@@ -361,6 +363,41 @@ const GFXglyph TomThumbGlyphs[] PROGMEM = {
     {173, 3, 5, 4, 0, -5}, /* 0x7D braceright */
     {175, 3, 2, 4, 0, -5}, /* 0x7E asciitilde */
 #if (TOMTHUMB_USE_EXTENDED)
+    // 0x7F-0xA0 have no glyphs; blanks keep later chars at c - first.
+    {0, 1, 1, 2, 0, -5},   /* 0x7F */
+    {0, 1, 1, 2, 0, -5},   /* 0x80 */
+    {0, 1, 1, 2, 0, -5},   /* 0x81 */
+    {0, 1, 1, 2, 0, -5},   /* 0x82 */
+    {0, 1, 1, 2, 0, -5},   /* 0x83 */
+    {0, 1, 1, 2, 0, -5},   /* 0x84 */
+    {0, 1, 1, 2, 0, -5},   /* 0x85 */
+    {0, 1, 1, 2, 0, -5},   /* 0x86 */
+    {0, 1, 1, 2, 0, -5},   /* 0x87 */
+    {0, 1, 1, 2, 0, -5},   /* 0x88 */
+    {0, 1, 1, 2, 0, -5},   /* 0x89 */
+    {0, 1, 1, 2, 0, -5},   /* 0x8A */
+    {0, 1, 1, 2, 0, -5},   /* 0x8B */
+    {0, 1, 1, 2, 0, -5},   /* 0x8C */
+    {0, 1, 1, 2, 0, -5},   /* 0x8D */
+    {0, 1, 1, 2, 0, -5},   /* 0x8E */
+    {0, 1, 1, 2, 0, -5},   /* 0x8F */
+    {0, 1, 1, 2, 0, -5},   /* 0x90 */
+    {0, 1, 1, 2, 0, -5},   /* 0x91 */
+    {0, 1, 1, 2, 0, -5},   /* 0x92 */
+    {0, 1, 1, 2, 0, -5},   /* 0x93 */
+    {0, 1, 1, 2, 0, -5},   /* 0x94 */
+    {0, 1, 1, 2, 0, -5},   /* 0x95 */
+    {0, 1, 1, 2, 0, -5},   /* 0x96 */
+    {0, 1, 1, 2, 0, -5},   /* 0x97 */
+    {0, 1, 1, 2, 0, -5},   /* 0x98 */
+    {0, 1, 1, 2, 0, -5},   /* 0x99 */
+    {0, 1, 1, 2, 0, -5},   /* 0x9A */
+    {0, 1, 1, 2, 0, -5},   /* 0x9B */
+    {0, 1, 1, 2, 0, -5},   /* 0x9C */
+    {0, 1, 1, 2, 0, -5},   /* 0x9D */
+    {0, 1, 1, 2, 0, -5},   /* 0x9E */
+    {0, 1, 1, 2, 0, -5},   /* 0x9F */
+    {0, 1, 1, 2, 0, -5},   /* 0xA0 */
     {176, 1, 5, 2, 0, -5}, /* 0xA1 exclamdown */
     {177, 3, 5, 4, 0, -5}, /* 0xA2 cent */
     {179, 3, 5, 4, 0, -5}, /* 0xA3 sterling */
@@ -473,5 +510,12 @@ const GFXglyph TomThumbGlyphs[] PROGMEM = {
 #endif                     /* (TOMTHUMB_USE_EXTENDED) */
 };
 
+#if (TOMTHUMB_USE_EXTENDED)
+#define TOMTHUMB_LAST 0xFF // glyphs past 0xFF can't be reached by a char
+#else
+#define TOMTHUMB_LAST 0x7E
+#endif
+
 const GFXfont TomThumb PROGMEM = {(uint8_t *)TomThumbBitmaps,
-                                  (GFXglyph *)TomThumbGlyphs, 0x20, 0x7E, 6};
+                                  (GFXglyph *)TomThumbGlyphs, 0x20,
+                                  TOMTHUMB_LAST, 6};
