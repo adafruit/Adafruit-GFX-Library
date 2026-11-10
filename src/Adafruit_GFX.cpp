@@ -1738,13 +1738,13 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   if (f) {          // Font struct pointer passed in?
     if (!gfxFont) { // And no current font struct?
       // Switching from classic to new font behavior.
-      // Move cursor pos down 6 pixels, so it's on baseline.
-      cursor_y += 6;
+      // Move cursor down to the classic font baseline (6 rows, scaled).
+      cursor_y += 6 * textsize_y;
     }
   } else if (gfxFont) { // NULL passed.  Current font struct defined?
     // Switching from new to classic font behavior.
-    // Move cursor pos up 6 pixels, so it's at top-left of char.
-    cursor_y -= 6;
+    // Move cursor up to the top-left of a classic char (6 rows, scaled).
+    cursor_y -= 6 * textsize_y;
   }
   gfxFont = (GFXfont *)f;
 }
