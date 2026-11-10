@@ -595,7 +595,7 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
     @param  corners  Mask bits indicating which sides of the circle we are
-                     doing, left (1) and/or right (2)
+                     doing, right (1) and/or left (2)
     @param  delta    Offset from center-point, used for round-rects
     @param  color    16-bit 5-6-5 Color to fill with
 */
