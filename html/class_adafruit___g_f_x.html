@@ -266,6 +266,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:aaf96a40cad0f34dd8ec73494b3866c33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#aaf96a40cad0f34dd8ec73494b3866c33">setCursor</a> (int16_t x, int16_t y)</td></tr>
 <tr class="memdesc:aaf96a40cad0f34dd8ec73494b3866c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text cursor location.  <a href="#aaf96a40cad0f34dd8ec73494b3866c33">More...</a><br /></td></tr>
 <tr class="separator:aaf96a40cad0f34dd8ec73494b3866c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fe3c8288ef9f4393839fee7edf00e67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a0fe3c8288ef9f4393839fee7edf00e67">setCursorX</a> (int16_t x)</td></tr>
+<tr class="memdesc:a0fe3c8288ef9f4393839fee7edf00e67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text cursor X location, leaving Y as is.  <a href="#a0fe3c8288ef9f4393839fee7edf00e67">More...</a><br /></td></tr>
+<tr class="separator:a0fe3c8288ef9f4393839fee7edf00e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a346154739798339825342187ff7e8eef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a346154739798339825342187ff7e8eef">setCursorY</a> (int16_t y)</td></tr>
+<tr class="memdesc:a346154739798339825342187ff7e8eef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text cursor Y location, leaving X as is.  <a href="#a346154739798339825342187ff7e8eef">More...</a><br /></td></tr>
+<tr class="separator:a346154739798339825342187ff7e8eef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59178a0e0c845a14a39b457c43567dd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___g_f_x.html#a59178a0e0c845a14a39b457c43567dd9">setTextColor</a> (uint16_t c)</td></tr>
 <tr class="memdesc:a59178a0e0c845a14a39b457c43567dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text font color with transparant background.  <a href="#a59178a0e0c845a14a39b457c43567dd9">More...</a><br /></td></tr>
 <tr class="separator:a59178a0e0c845a14a39b457c43567dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -3517,6 +3523,74 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>X coordinate in pixels </td></tr>
+    <tr><td class="paramname">y</td><td>Y coordinate in pixels </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0fe3c8288ef9f4393839fee7edf00e67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fe3c8288ef9f4393839fee7edf00e67">&#9670;&nbsp;</a></span>setCursorX()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setCursorX </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set text cursor X location, leaving Y as is. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>X coordinate in pixels </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a346154739798339825342187ff7e8eef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a346154739798339825342187ff7e8eef">&#9670;&nbsp;</a></span>setCursorY()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_GFX::setCursorY </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set text cursor Y location, leaving X as is. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
     <tr><td class="paramname">y</td><td>Y coordinate in pixels </td></tr>
   </table>
   </dd>
