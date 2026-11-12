@@ -179,6 +179,22 @@ public:
 
   /**********************************************************************/
   /*!
+    @brief  Set text cursor X location, leaving Y as is
+    @param  x    X coordinate in pixels
+  */
+  /**********************************************************************/
+  void setCursorX(int16_t x) { cursor_x = x; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Set text cursor Y location, leaving X as is
+    @param  y    Y coordinate in pixels
+  */
+  /**********************************************************************/
+  void setCursorY(int16_t y) { cursor_y = y; }
+
+  /**********************************************************************/
+  /*!
     @brief   Set text font color with transparant background
     @param   c   16-bit 5-6-5 Color to draw text with
     @note    For 'transparent' background, background and foreground
