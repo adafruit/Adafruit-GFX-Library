@@ -295,8 +295,7 @@ public:
     @param  y  Pointer to y coordinate, converted in place
   */
   /************************************************************************/
-  __attribute__((always_inline)) void applyRotation(int16_t *x,
-                                                    int16_t *y) const {
+  [[gnu::always_inline]] void applyRotation(int16_t *x, int16_t *y) const {
     int16_t t;
     switch (rotation) {
     case 1:
