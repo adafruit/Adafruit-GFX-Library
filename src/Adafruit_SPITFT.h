@@ -232,6 +232,11 @@ public:
   using Adafruit_GFX::drawRGBBitmap; // Check base class first
   void drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors, int16_t w,
                      int16_t h);
+  using Adafruit_GFX::drawBitmap; // Check base class first
+  void drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w,
+                  int16_t h, uint16_t color, uint16_t bg);
+  void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h,
+                  uint16_t color, uint16_t bg);
 
   void invertDisplay(bool i);
   uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
@@ -344,6 +349,9 @@ public:
   }
 
 protected:
+  void writeBitmapClipped(int16_t x, int16_t y, const uint8_t *bitmap,
+                          bool progmem, int16_t w, int16_t h, uint16_t color,
+                          uint16_t bg);
   /*!
       @brief  Family-specific hardware SPI solid fill.
       @param  color  16-bit pixel color in '565' RGB format.

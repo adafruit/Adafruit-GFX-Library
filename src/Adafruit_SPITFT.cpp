@@ -2000,6 +2000,102 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
   endWrite();
 }
 
+/*!
+    @brief  Draw a PROGMEM-resident 1-bit image with foreground and
+            background colors. Same result as the Adafruit_GFX version, but
+            sets the address window once for the whole (clipped) image
+            instead of once per pixel.
+    @param  x       Top left corner horizontal coordinate.
+    @param  y       Top left corner vertical coordinate.
+    @param  bitmap  Byte array with monochrome bitmap, rows padded to whole
+                    bytes, most significant bit first.
+    @param  w       Width of bitmap in pixels.
+    @param  h       Height of bitmap in pixels.
+    @param  color   16-bit 5-6-5 color for set bits.
+    @param  bg      16-bit 5-6-5 color for unset bits.
+*/
+void Adafruit_SPITFT::drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
+                                 int16_t w, int16_t h, uint16_t color,
+                                 uint16_t bg) {
+  writeBitmapClipped(x, y, bitmap, true, w, h, color, bg);
+}
+
+/*!
+    @brief  Draw a RAM-resident 1-bit image with foreground and background
+            colors, for example a GFXcanvas1 buffer. Same result as the
+            Adafruit_GFX version, but sets the address window once for the
+            whole (clipped) image instead of once per pixel.
+    @param  x       Top left corner horizontal coordinate.
+    @param  y       Top left corner vertical coordinate.
+    @param  bitmap  Byte array with monochrome bitmap, rows padded to whole
+                    bytes, most significant bit first.
+    @param  w       Width of bitmap in pixels.
+    @param  h       Height of bitmap in pixels.
+    @param  color   16-bit 5-6-5 color for set bits.
+    @param  bg      16-bit 5-6-5 color for unset bits.
+*/
+void Adafruit_SPITFT::drawBitmap(int16_t x, int16_t y, uint8_t *bitmap,
+                                 int16_t w, int16_t h, uint16_t color,
+                                 uint16_t bg) {
+  writeBitmapClipped(x, y, bitmap, false, w, h, color, bg);
+}
+
+/*!
+    @brief  Clip a 1-bit image to the display, then stream it through one
+            address window.
+    @param  x        Top left corner horizontal coordinate.
+    @param  y        Top left corner vertical coordinate.
+    @param  bitmap   Byte array with monochrome bitmap.
+    @param  progmem  true if bitmap is in PROGMEM, false if in RAM.
+    @param  w        Width of bitmap in pixels.
+    @param  h        Height of bitmap in pixels.
+    @param  color    16-bit 5-6-5 color for set bits.
+    @param  bg       16-bit 5-6-5 color for unset bits.
+*/
+void Adafruit_SPITFT::writeBitmapClipped(int16_t x, int16_t y,
+                                         const uint8_t *bitmap, bool progmem,
+                                         int16_t w, int16_t h, uint16_t color,
+                                         uint16_t bg) {
+  int16_t x2, y2;                 // Lower-right coord
+  if (!bitmap ||                  // No buffer (e.g. canvas alloc failed)
+      (x >= _width) ||            // Off-edge right
+      (y >= _height) ||           // " bottom
+      ((x2 = (x + w - 1)) < 0) || // " left
+      ((y2 = (y + h - 1)) < 0))
+    return; // " top
+
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  int16_t bx1 = 0, by1 = 0;        // Clipped top-left within bitmap
+  if (x < 0) {                     // Clip left
+    w += x;
+    bx1 = -x;
+    x = 0;
+  }
+  if (y < 0) { // Clip top
+    h += y;
+    by1 = -y;
+    y = 0;
+  }
+  if (x2 >= _width)
+    w = _width - x; // Clip right
+  if (y2 >= _height)
+    h = _height - y; // Clip bottom
+
+  startWrite();
+  setAddrWindow(x, y, w, h); // Clipped area
+  for (int16_t j = 0; j < h; j++) {
+    const uint8_t *row = bitmap + (int32_t)(by1 + j) * byteWidth;
+    uint8_t b = 0;
+    for (int16_t i = bx1; i < bx1 + w; i++) {
+      if ((i == bx1) || !(i & 7)) // First pixel of row, or next byte
+        b = (progmem ? pgm_read_byte(&row[i / 8]) : row[i / 8]) << (i & 7);
+      SPI_WRITE16((b & 0x80) ? color : bg);
+      b <<= 1;
+    }
+  }
+  endWrite();
+}
+
 // -------------------------------------------------------------------------
 // Miscellaneous class member functions that don't draw anything.
 
