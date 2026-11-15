@@ -261,15 +261,16 @@ public:
 
   /**********************************************************************/
   /*!
-    @brief  Enable (or disable) UTF-8-compatible charset in custom made fonts
-            By default, the font.h files boundled to the library use ASCII
-    charset as UTF-8 fonts need more memory as many AVR chips can offer. Pass
-    'true' to this function if you are willing to use UTF-8 fonts that you
-    generated whith fontconvert and also your board has enough free memory.
-    @param  x  true = enable (new behavior), false = disable (old behavior)
+    @brief  Turn UTF-8 decoding of printed text on or off. Off by default.
+            Code points up to U+FFFF (the Basic Multilingual Plane) are
+            drawn. Others, and invalid bytes, draw nothing. Use a custom
+            font made with fontconvert that covers the code points. A font
+            holds every code point from its first to its last, and at most
+            64 KB of glyph bitmaps.
+    @param  x  true to decode UTF-8, false for one byte per character
   */
   /**********************************************************************/
-  void utf8(boolean x = true) { _utf8 = x; }
+  void utf8(bool x = true) { _utf8 = x; }
 
   using Print::write;
 #if ARDUINO >= 100
@@ -397,7 +398,7 @@ protected:
   GFXfont *gfxFont;     ///< Pointer to special font
 
   uint8_t decoderState = 0; ///< UTF-8 decoder state
-  uint16_t decoderBuffer;   ///< Unicode code-point buffer
+  uint32_t decoderBuffer = 0; ///< Code point being decoded
 };
 
 /// A simple drawn button UI element

@@ -1486,8 +1486,9 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
    @brief   Draw a single character
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
-    @param    c   The 16-bit font-indexed character (likely ascii)
-    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    c   The font-indexed character (likely ascii, or a code
+                  point with utf8() on)
+    @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size  Font magnification level, 1 is 'original' size
@@ -1504,8 +1505,9 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color,
    @brief   Draw a single character
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
-    @param    c   The 16-bit font-indexed character (likely ascii)
-    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    c   The font-indexed character (likely ascii, or a code
+                  point with utf8() on)
+    @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size_x  Font magnification level in X-axis, 1 is 'original' size
@@ -1641,61 +1643,45 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color,
 
 /**************************************************************************/
 /*!
-    @brief  Serial UTF-8 decoder
-    @param  c  8 bit value from encoded stream
-    @returns   0 if decoding is not complete yet, 16 bit code point
-               otherwise. Can cast to 8 bits for ASCII range (0-255)
+    @brief  Decode UTF-8 one byte at a time.
+    @param  c  The next byte of UTF-8 text.
+    @returns   The code point once a character is complete. 0 while more
+               bytes are needed, and for code points above U+FFFF or invalid
+               bytes, which draw nothing.
 */
 /**************************************************************************/
-
 uint16_t Adafruit_GFX::decodeUTF8(uint8_t c) {
-  // 7 bit Unicode Code Point
-  if ((c & 0x80) == 0x00) {
+  if (c < 0x80) { // ASCII
     decoderState = 0;
-    return (uint16_t)c;
+    return c;
   }
-
-  if (decoderState == 0) {
-    // 11 bit Unicode Code Point
-    if ((c & 0xE0) == 0xC0) {
-      decoderBuffer = ((c & 0x1F) << 6); // Save first 5 bits
-      decoderState = 1;
-      return 0;
-    }
-
-    // 16 bit Unicode Code Point
-    if ((c & 0xF0) == 0xE0) {
-      decoderBuffer = ((c & 0x0F) << 12); // Save first 4 bits
-      decoderState = 2;
-      return 0;
-    }
-
-    // 21 bit Unicode  Code Point not supported so fall-back to extended ASCII
-    if ((c & 0xF8) == 0xF0)
-      return (uint16_t)c;
-  } else {
-    if (decoderState == 2) {
-      decoderBuffer |=
-          ((c & 0x3F) << 6); // Add next 6 bits of 16 bit code point
-      decoderState--;
-      return 0;
-    } else // decoderState must be == 1
-    {
-      decoderBuffer |= (c & 0x3F); // Add last 6 bits of code point
-      decoderState = 0;
-      return decoderBuffer;
-    }
+  if ((c & 0xC0) == 0x80) { // Continuation byte
+    if (decoderState == 0)
+      return 0; // Not part of a character
+    decoderBuffer = (decoderBuffer << 6) | (c & 0x3F);
+    if (--decoderState)
+      return 0; // More bytes to come
+    return (decoderBuffer > 0xFFFF) ? 0 : decoderBuffer;
   }
-
-  decoderState = 0;
-
-  return (uint16_t)c; // fall-back to extended ASCII
+  if ((c & 0xE0) == 0xC0) { // Start of a 2-byte character
+    decoderBuffer = c & 0x1F;
+    decoderState = 1;
+  } else if ((c & 0xF0) == 0xE0) { // 3 bytes
+    decoderBuffer = c & 0x0F;
+    decoderState = 2;
+  } else if ((c & 0xF8) == 0xF0) { // 4 bytes, above U+FFFF
+    decoderBuffer = c & 0x07;
+    decoderState = 3;
+  } else { // Not valid in UTF-8
+    decoderState = 0;
+  }
+  return 0;
 }
 
 /**************************************************************************/
 /*!
     @brief  Print one byte/character of data, used to support print()
-    @param  data  The 8-bit UTF-8 or ascii character to write
+    @param  data  The next byte of text, ascii or UTF-8 with utf8() on
 */
 /**************************************************************************/
 size_t Adafruit_GFX::write(uint8_t data) {
@@ -1878,7 +1864,7 @@ void Adafruit_GFX::charBounds(uint16_t c, int16_t *x, int16_t *y, int16_t *minx,
       *x = 0;               // Reset x to zero,
       *y += textsize_y * 8; // advance y one line
       // min/max x/y unchanged -- that waits for next 'normal' character
-    } else if (c != '\r') { // Normal char; ignore carriage returns
+    } else if ((c != '\r') && (c <= 255)) { // Skip CR, as write() does
       if (wrap && ((*x + textsize_x * 6) > _width)) { // Off right?
         *x = 0;                                       // Reset x to zero,
         *y += textsize_y * 8;                         // advance y one line
@@ -1994,8 +1980,11 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
 
   int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
 
-  while ((c = pgm_read_byte(s++)))
-    charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
+  while ((c = pgm_read_byte(s++))) {
+    uint16_t code = _utf8 ? decodeUTF8(c) : c;
+    if (code)
+      charBounds(code, &x, &y, &minx, &miny, &maxx, &maxy);
+  }
 
   if (maxx >= minx) {
     bx = minx;
