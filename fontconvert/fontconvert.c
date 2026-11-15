@@ -25,7 +25,7 @@ See notes at end for glyph nomenclature & other tidbits.
 #include FT_GLYPH_H
 #include FT_MODULE_H
 #include FT_TRUETYPE_DRIVER_H
-#include "../gfxfont.h" // Adafruit_GFX font structures
+#include "../src/gfxfont.h" // Adafruit_GFX font structures
 
 #define DPI 141 // Approximate res. of Adafruit 2.8" TFT
 
@@ -52,6 +52,8 @@ void enbit(uint8_t value) {
 
 int main(int argc, char *argv[]) {
   int i, j, err, size, first = ' ', last = '~', bitmapOffset = 0, x, y, byte;
+  FT_Int32 ft_load_flags = FT_LOAD_TARGET_MONO;
+  int autohint = 0;
   char *fontName, c, *ptr;
   FT_Library library;
   FT_Face face;
@@ -63,17 +65,29 @@ int main(int argc, char *argv[]) {
 
   // Parse command line.  Valid syntaxes are:
   //   fontconvert [filename] [size]
+  //   fontconvert [filename] [size] -a
   //   fontconvert [filename] [size] [last char]
+  //   fontconvert [filename] [size] [last char] -a
   //   fontconvert [filename] [size] [first char] [last char]
+  //   fontconvert [filename] [size] [first char] [last char] -a
   // Unless overridden, default first and last chars are
-  // ' ' (space) and '~', respectively
+  // ' ' (space) and '~', respectively.
+  // -a forces the FreeType auto-hinter, which can look better than the
+  // font's own hinting at small sizes (e.g. Noto).
 
   if (argc < 3) {
-    fprintf(stderr, "Usage: %s fontfile size [first] [last]\n", argv[0]);
+    fprintf(stderr, "Usage: %s fontfile size [first] [last] [-a]\n", argv[0]);
     return 1;
   }
 
   size = atoi(argv[2]);
+
+  if (argc > 3) {
+    if (strcmp(argv[argc - 1], "-a") == 0) {
+      autohint = 1;
+      --argc;
+    }
+  }
 
   if (argc == 4) {
     last = atoi(argv[3]);
@@ -81,6 +95,9 @@ int main(int argc, char *argv[]) {
     first = atoi(argv[3]);
     last = atoi(argv[4]);
   }
+
+  if (autohint)
+    ft_load_flags |= FT_LOAD_FORCE_AUTOHINT;
 
   if (last < first) {
     i = first;
@@ -118,7 +135,7 @@ int main(int argc, char *argv[]) {
 
   // Init FreeType lib, load font
   if ((err = FT_Init_FreeType(&library))) {
-    fprintf(stderr, "FreeType init error: %d", err);
+    fprintf(stderr, "FreeType init error: %d\n", err);
     return err;
   }
 
@@ -131,7 +148,7 @@ int main(int argc, char *argv[]) {
                   &interpreter_version);
 
   if ((err = FT_New_Face(library, argv[1], 0, &face))) {
-    fprintf(stderr, "Font load error: %d", err);
+    fprintf(stderr, "Font load error: %d\n", err);
     FT_Done_FreeType(library);
     return err;
   }
@@ -151,7 +168,7 @@ int main(int argc, char *argv[]) {
   for (i = first, j = 0; i <= last; i++, j++) {
     // MONO renderer provides clean image with perfect crop
     // (no wasted pixels) via bitmap struct.
-    if ((err = FT_Load_Char(face, i, FT_LOAD_TARGET_MONO))) {
+    if ((err = FT_Load_Char(face, i, ft_load_flags))) {
       fprintf(stderr, "Error %d loading char '%c'\n", err, i);
       continue;
     }
@@ -174,15 +191,38 @@ int main(int argc, char *argv[]) {
     // fully bit-packed; no per-scanline pad, though end of
     // each character may be padded to next byte boundary
     // when needed.  16-bit offset means 64K max for bitmaps,
-    // code currently doesn't check for overflow.  (Doesn't
-    // check that size & offsets are within bounds either for
-    // that matter...please convert fonts responsibly.)
+    // so stop if a glyph would start past that.
+    if (bitmapOffset > 0xFFFF) {
+      fprintf(stderr,
+              "Bitmap data passes 64 KB at char '%c' (0x%02X); "
+              "use a smaller size or a shorter char range\n",
+              i, i);
+      FT_Done_FreeType(library);
+      return 1;
+    }
+    // Width, height and xAdvance are uint8_t, offsets are int8_t.
+    // Stop rather than write a value that wraps around.
+    int xAdvance = face->glyph->advance.x >> 6, xOffset = g->left,
+        yOffset = 1 - g->top;
+    if ((bitmap->width > 255) || (bitmap->rows > 255) || (xAdvance > 255) ||
+        (xOffset < -128) || (xOffset > 127) || (yOffset < -128) ||
+        (yOffset > 127)) {
+      fprintf(stderr,
+              "Char '%c' (0x%02X) is too big for the GFX font format "
+              "(width %d, height %d, xAdvance %d, xOffset %d, yOffset %d); "
+              "use a smaller size, then setTextSize(2) if needed\n",
+              i, i, (int)bitmap->width, (int)bitmap->rows, xAdvance, xOffset,
+              yOffset);
+      FT_Done_FreeType(library);
+      return 1;
+    }
+
     table[j].bitmapOffset = bitmapOffset;
     table[j].width = bitmap->width;
     table[j].height = bitmap->rows;
-    table[j].xAdvance = face->glyph->advance.x >> 6;
-    table[j].xOffset = g->left;
-    table[j].yOffset = 1 - g->top;
+    table[j].xAdvance = xAdvance;
+    table[j].xOffset = xOffset;
+    table[j].yOffset = yOffset;
 
     for (y = 0; y < bitmap->rows; y++) {
       for (x = 0; x < bitmap->width; x++) {

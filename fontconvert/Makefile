@@ -1,8 +1,8 @@
 all: fontconvert
 
 CC     = gcc
-CFLAGS = -Wall -I/usr/local/include/freetype2 -I/usr/include/freetype2 -I/usr/include
-LIBS   = -lfreetype
+CFLAGS = -Wall $(shell pkg-config --cflags freetype2)
+LIBS   = $(shell pkg-config --libs freetype2)
 
 fontconvert: fontconvert.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@

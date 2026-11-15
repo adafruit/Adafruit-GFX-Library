@@ -5,3 +5,4 @@ Doxyfile*
 doxygen_sqlite3.db
 html
 .DS_Store
+fontconvert/web/fontconvert.js

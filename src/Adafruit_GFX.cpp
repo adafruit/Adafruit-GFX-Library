@@ -101,7 +101,7 @@ inline uint8_t *pgm_read_bitmap_ptr(const GFXfont *gfxFont) {
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX context for graphics! Can only be done by a
+   @brief    Instantiate a GFX context for graphics! Can only be done by a
    superclass
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
@@ -121,7 +121,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) : WIDTH(w), HEIGHT(h) {
 
 /**************************************************************************/
 /*!
-   @brief    Write a line.  Bresenham's algorithm - thx wikpedia
+   @brief    Write a line.  Bresenham's algorithm - thx Wikipedia
     @param    x0  Start point x coordinate
     @param    y0  Start point y coordinate
     @param    x1  End point x coordinate
@@ -132,7 +132,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) : WIDTH(w), HEIGHT(h) {
 void Adafruit_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                              uint16_t color) {
 #if defined(ESP8266)
-  yield();
+  optimistic_yield(10000);
 #endif
   int16_t steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
@@ -171,6 +171,20 @@ void Adafruit_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     }
   }
 }
+
+/**************************************************************************/
+/*!
+   @brief    Clear the display, overwrite in subclasses.
+*/
+/**************************************************************************/
+void Adafruit_GFX::clearDisplay() {}
+
+/**************************************************************************/
+/*!
+   @brief    Update the display, overwrite in subclasses.
+*/
+/**************************************************************************/
+void Adafruit_GFX::display() {}
 
 /**************************************************************************/
 /*!
@@ -347,6 +361,121 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 
 /**************************************************************************/
 /*!
+   @brief    Draw an ellipse outline
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    rw   Horizontal radius of ellipse
+    @param    rh   Vertical radius of ellipse
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
+                               uint16_t color) {
+#if defined(ESP8266)
+  optimistic_yield(10000);
+#endif
+  // Bresenham's ellipse algorithm
+  int16_t x = 0, y = rh;
+  int32_t rw2 = rw * rw, rh2 = rh * rh;
+  int32_t twoRw2 = 2 * rw2, twoRh2 = 2 * rh2;
+
+  int32_t decision = rh2 - (rw2 * rh) + (rw2 / 4);
+
+  startWrite();
+
+  // region 1
+  while ((twoRh2 * x) < (twoRw2 * y)) {
+    writePixel(x0 + x, y0 + y, color);
+    writePixel(x0 - x, y0 + y, color);
+    writePixel(x0 + x, y0 - y, color);
+    writePixel(x0 - x, y0 - y, color);
+    x++;
+    if (decision < 0) {
+      decision += rh2 + (twoRh2 * x);
+    } else {
+      decision += rh2 + (twoRh2 * x) - (twoRw2 * y);
+      y--;
+    }
+  }
+
+  // region 2
+  decision = ((rh2 * (2 * x + 1) * (2 * x + 1)) >> 2) +
+             (rw2 * (y - 1) * (y - 1)) - (rw2 * rh2);
+  while (y >= 0) {
+    writePixel(x0 + x, y0 + y, color);
+    writePixel(x0 - x, y0 + y, color);
+    writePixel(x0 + x, y0 - y, color);
+    writePixel(x0 - x, y0 - y, color);
+    y--;
+    if (decision > 0) {
+      decision += rw2 - (twoRw2 * y);
+    } else {
+      decision += rw2 + (twoRh2 * x) - (twoRw2 * y);
+      x++;
+    }
+  }
+
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
+   @brief    Draw an ellipse with filled colour
+    @param    x0   Center-point x coordinate
+    @param    y0   Center-point y coordinate
+    @param    rw   Horizontal radius of ellipse
+    @param    rh   Vertical radius of ellipse
+    @param    color 16-bit 5-6-5 Color to draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
+                               uint16_t color) {
+#if defined(ESP8266)
+  optimistic_yield(10000);
+#endif
+  // Bresenham's ellipse algorithm
+  int16_t x = 0, y = rh;
+  int32_t rw2 = rw * rw, rh2 = rh * rh;
+  int32_t twoRw2 = 2 * rw2, twoRh2 = 2 * rh2;
+
+  int32_t decision = rh2 - (rw2 * rh) + (rw2 / 4);
+
+  startWrite();
+
+  // region 1
+  while ((twoRh2 * x) < (twoRw2 * y)) {
+    x++;
+    if (decision < 0) {
+      decision += rh2 + (twoRh2 * x);
+    } else {
+      decision += rh2 + (twoRh2 * x) - (twoRw2 * y);
+      writeFastHLine(x0 - (x - 1), y0 + y, 2 * (x - 1) + 1, color);
+      writeFastHLine(x0 - (x - 1), y0 - y, 2 * (x - 1) + 1, color);
+      y--;
+    }
+  }
+
+  // region 2
+  decision = ((rh2 * (2 * x + 1) * (2 * x + 1)) >> 2) +
+             (rw2 * (y - 1) * (y - 1)) - (rw2 * rh2);
+  while (y >= 0) {
+    writeFastHLine(x0 - x, y0 + y, 2 * x + 1, color);
+    writeFastHLine(x0 - x, y0 - y, 2 * x + 1, color);
+
+    y--;
+    if (decision > 0) {
+      decision += rw2 - (twoRw2 * y);
+    } else {
+      decision += rw2 + (twoRh2 * x) - (twoRw2 * y);
+      x++;
+    }
+  }
+
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
    @brief    Draw a circle outline
     @param    x0   Center-point x coordinate
     @param    y0   Center-point y coordinate
@@ -357,7 +486,7 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
                               uint16_t color) {
 #if defined(ESP8266)
-  yield();
+  optimistic_yield(10000);
 #endif
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
@@ -399,8 +528,8 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
     @param    x0   Center-point x coordinate
     @param    y0   Center-point y coordinate
     @param    r   Radius of circle
-    @param    cornername  Mask bit #1 or bit #2 to indicate which quarters of
-   the circle we're doing
+    @param    cornername  Mask bit #1, #2, #4, and #8 to indicate which quarters
+              of the circle we're doing
     @param    color 16-bit 5-6-5 Color to draw with
 */
 /**************************************************************************/
@@ -412,6 +541,7 @@ void Adafruit_GFX::drawCircleHelper(int16_t x0, int16_t y0, int16_t r,
   int16_t x = 0;
   int16_t y = r;
 
+  startWrite();
   while (x < y) {
     if (f >= 0) {
       y--;
@@ -438,6 +568,7 @@ void Adafruit_GFX::drawCircleHelper(int16_t x0, int16_t y0, int16_t r,
       writePixel(x0 - x, y0 - y, color);
     }
   }
+  endWrite();
 }
 
 /**************************************************************************/
@@ -453,17 +584,18 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
                               uint16_t color) {
   startWrite();
   writeFastVLine(x0, y0 - r, 2 * r + 1, color);
-  fillCircleHelper(x0, y0, r, 3, 0, color);
   endWrite();
+  fillCircleHelper(x0, y0, r, 3, 0, color);
 }
 
 /**************************************************************************/
 /*!
-    @brief  Quarter-circle drawer with fill, used for circles and roundrects
+    @brief  Half-circle drawer with fill, used for circles and roundrects
     @param  x0       Center-point x coordinate
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
-    @param  corners  Mask bits indicating which quarters we're doing
+    @param  corners  Mask bits indicating which sides of the circle we are
+                     doing, right (1) and/or left (2)
     @param  delta    Offset from center-point, used for round-rects
     @param  color    16-bit 5-6-5 Color to fill with
 */
@@ -482,6 +614,7 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 
   delta++; // Avoid some +1's in the loop
 
+  startWrite();
   while (x < y) {
     if (f >= 0) {
       y--;
@@ -508,6 +641,74 @@ void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
     }
     px = x;
   }
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
+    @brief  Quarter-circle drawer with fill.
+    @param  x0       Center-point x coordinate
+    @param  y0       Center-point y coordinate
+    @param  r        Radius of circle
+    @param  corners  Mask bits 0x1, 0x2, 0x4, and 0x8 to indicate which quarters
+                     of the circle to fill: 0x1 = top-left, 0x2 = top-right,
+                     0x4 = bottom-right, 0x8 = bottom-left
+    @param  color    16-bit 5-6-5 Color to fill with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillQuarterCircle(int16_t x0, int16_t y0, int16_t r,
+                                     uint8_t corners, uint16_t color) {
+
+  int16_t f = 1 - r;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * r;
+  int16_t x = 0;
+  int16_t y = r;
+  int16_t px = x;
+  int16_t py = y;
+
+  startWrite();
+
+  if (corners & (0x2 | 0x1))
+    writeFastVLine(x0, y0 - r, r + 1, color);
+  if (corners & (0x8 | 0x4))
+    writeFastVLine(x0, y0, r + 1, color);
+
+  while (x < y) {
+    if (f >= 0) {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    if (x < (y + 1)) {
+      if (corners & 0x4)
+        writeFastVLine(x0 + x, y0, y + 1, color);
+      if (corners & 0x2)
+        writeFastVLine(x0 + x, y0 - y, y + 1, color);
+      if (corners & 0x8)
+        writeFastVLine(x0 - x, y0, y + 1, color);
+      if (corners & 0x1)
+        writeFastVLine(x0 - x, y0 - y, y + 1, color);
+    }
+    if (y != py) {
+      if (corners & 0x4)
+        writeFastVLine(x0 + py, y0, px + 1, color);
+      if (corners & 0x2)
+        writeFastVLine(x0 + py, y0 - px, px + 1, color);
+      if (corners & 0x8)
+        writeFastVLine(x0 - py, y0, px + 1, color);
+      if (corners & 0x1)
+        writeFastVLine(x0 - py, y0 - px, px + 1, color);
+      py = y;
+    }
+    px = x;
+  }
+
+  endWrite();
 }
 
 /**************************************************************************/
@@ -552,12 +753,12 @@ void Adafruit_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
   writeFastHLine(x + r, y + h - 1, w - 2 * r, color); // Bottom
   writeFastVLine(x, y + r, h - 2 * r, color);         // Left
   writeFastVLine(x + w - 1, y + r, h - 2 * r, color); // Right
-  // draw four corners
+  endWrite();
+  // draw four corners (helpers open their own transaction)
   drawCircleHelper(x + r, y + r, r, 1, color);
   drawCircleHelper(x + w - r - 1, y + r, r, 2, color);
   drawCircleHelper(x + w - r - 1, y + h - r - 1, r, 4, color);
   drawCircleHelper(x + r, y + h - r - 1, r, 8, color);
-  endWrite();
 }
 
 /**************************************************************************/
@@ -579,10 +780,151 @@ void Adafruit_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h,
   // smarter version
   startWrite();
   writeFillRect(x + r, y, w - 2 * r, h, color);
-  // draw four corners
+  endWrite();
+  // draw four corners (helpers open their own transaction)
   fillCircleHelper(x + w - r - 1, y + r, r, 1, h - 2 * r - 1, color);
   fillCircleHelper(x + r, y + r, r, 2, h - 2 * r - 1, color);
-  endWrite();
+}
+
+/**************************************************************************/
+/*!
+   @brief     Draw a rotated rectangle
+    @param    cenX  x coordinate of center of rectangle.
+                    For even width rectangles, this point
+                    represents the pixel to the left of
+                    true center.
+    @param    cenY  y coordinate of center of rectangle.
+                    For even height rectangles, this point
+                    represents the pixel above
+                    true center.
+    @param    w  width of rectangle
+    @param    h  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                                   int16_t h, int16_t angleDeg,
+                                   uint16_t color) {
+
+  if (w < 1 || h < 1)
+    return; // We don't draw zero dimensioned objects
+
+  int16_t W = w - 1;
+  int16_t H = h - 1;
+
+  int16_t halfW = (W / 2); // Midpoint should always be integer
+  int16_t halfH = (H / 2); // Midpoint should always be integer
+
+  int16_t x0 = W - halfW; // bottom-right
+  int16_t y0 = H - halfH; // bottom-right
+  int16_t x1 = -halfW;    // bottom-left
+  int16_t y1 = H - halfH; // bottom-left
+  int16_t x2 = -halfW;    // top-left
+  int16_t y2 = -halfH;    // top-left
+  int16_t x3 = W - halfW; // top-right
+  int16_t y3 = -halfH;    // top-right
+
+  rotatePoint(x0, y0, angleDeg);
+  rotatePoint(x1, y1, angleDeg);
+  rotatePoint(x2, y2, angleDeg);
+  rotatePoint(x3, y3, angleDeg);
+
+  x0 += cenX;
+  x1 += cenX;
+  x2 += cenX;
+  x3 += cenX;
+
+  y0 += cenY;
+  y1 += cenY;
+  y2 += cenY;
+  y3 += cenY;
+
+  drawLine(x0, y0, x1, y1, color); // bottom right to bottom left
+  drawLine(x1, y1, x2, y2, color); // bottom left to top left
+  drawLine(x2, y2, x3, y3, color); // top left to top right
+  drawLine(x3, y3, x0, y0, color); // top right to bottom right
+}
+
+/**************************************************************************/
+/*!
+   @brief     Draw a filled rotated rectangle
+    @param    cenX  x coordinate of center of rectangle.
+                    For even width rectangles, this point
+                    represents the pixel to the left of
+                    true center.
+    @param    cenY  y coordinate of center of rectangle.
+                    For even height rectangles, this point
+                    represents the pixel above
+                    true center.
+    @param    w  width of rectangle
+    @param    h  height of rectangle
+    @param    angleDeg  angle of rotation of rectangle
+    @param    color 16-bit 5-6-5 Color to fill/draw with
+*/
+/**************************************************************************/
+void Adafruit_GFX::fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w,
+                                   int16_t h, int16_t angleDeg,
+                                   uint16_t color) {
+
+  if (w < 1 || h < 1)
+    return; // We don't draw zero dimensioned objects
+
+  int16_t W = w - 1;
+  int16_t H = h - 1;
+
+  int16_t halfW = (W / 2); // Midpoint should always be integer
+  int16_t halfH = (H / 2); // Midpoint should always be integer
+
+  int16_t x0 = W - halfW; // bottom-right
+  int16_t y0 = H - halfH; // bottom-right
+  int16_t x1 = -halfW;    // bottom-left
+  int16_t y1 = H - halfH; // bottom-left
+  int16_t x2 = -halfW;    // top-left
+  int16_t y2 = -halfH;    // top-left
+  int16_t x3 = W - halfW; // top-right
+  int16_t y3 = -halfH;    // top-right
+
+  rotatePoint(x0, y0, angleDeg);
+  rotatePoint(x1, y1, angleDeg);
+  rotatePoint(x2, y2, angleDeg);
+  rotatePoint(x3, y3, angleDeg);
+
+  x0 += cenX;
+  x1 += cenX;
+  x2 += cenX;
+  x3 += cenX;
+
+  y0 += cenY;
+  y1 += cenY;
+  y2 += cenY;
+  y3 += cenY;
+
+  fillTriangle(x0, y0, x1, y1, x2, y2, color);
+  fillTriangle(x2, y2, x3, y3, x0, y0, color);
+}
+
+/**************************************************************************/
+/*!
+   @brief     Rotate a point in standard position
+    @param    x0  x coordinate of point to rotate. This is passed by reference
+                  and updated upon return
+    @param    y0  y coordinate of point to rotate. This is passed by reference
+                  and updated upon return
+    @param    angleDeg  angle to rotate the point by (degrees)
+*/
+/**************************************************************************/
+void Adafruit_GFX::rotatePoint(int16_t &x0, int16_t &y0, int16_t angleDeg) {
+  float angleRad = radians(angleDeg);
+  float s = sin(angleRad);
+  float c = cos(angleRad);
+
+  float x = x0;
+  float y = y0;
+
+  // Rotate point
+  x0 = (int16_t)((x * c) - (y * s));
+  y0 = (int16_t)((x * s) + (y * c));
 }
 
 /**************************************************************************/
@@ -872,6 +1214,44 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
 
 /**************************************************************************/
 /*!
+   @brief      Draw PROGMEM-resident XBitMap Files (*.xbm), exported from GIMP.
+   Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+   C Array can be directly used with this function.
+   There is no RAM-resident version of this function; if generating bitmaps
+   in RAM, use the format defined by drawBitmap() and call that instead.
+    @param    x   Top left corner x coordinate
+    @param    y   Top left corner y coordinate
+    @param    bitmap  byte array with monochrome bitmap
+    @param    w   Width of bitmap in pixels
+    @param    h   Height of bitmap in pixels
+    @param    color 16-bit 5-6-5 Color to draw pixels with
+    @param    bg 16-bit 5-6-5 Color to draw background with
+*/
+/**************************************************************************/
+void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
+                               int16_t w, int16_t h, uint16_t color,
+                               uint16_t bg) {
+
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  uint8_t byte = 0;
+
+  startWrite();
+  for (int16_t j = 0; j < h; j++, y++) {
+    for (int16_t i = 0; i < w; i++) {
+      if (i & 7)
+        byte >>= 1;
+      else
+        byte = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
+      // Nearly identical to drawBitmap(), only the bit order
+      // is reversed here (left-to-right = LSB to MSB):
+      writePixel(x + i, y, (byte & 0x01) ? color : bg);
+    }
+  }
+  endWrite();
+}
+
+/**************************************************************************/
+/*!
    @brief   Draw a PROGMEM-resident 8-bit image (grayscale) at the specified
    (x,y) pos. Specifically for 8-bit display devices such as IS31FL3731; no
    color reduction/expansion is performed.
@@ -957,7 +1337,7 @@ void Adafruit_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 /*!
    @brief   Draw a RAM-resident 8-bit image (grayscale) with a 1-bit mask
    (set bits = opaque, unset bits = clear) at the specified (x,y) position.
-   BOTH buffers (grayscale and mask) must be RAM-residentt, no mix-and-match
+   BOTH buffers (grayscale and mask) must be RAM-resident, no mix-and-match
    Specifically for 8-bit display devices such as IS31FL3731; no color
    reduction/expansion is performed.
     @param    x   Top left corner x coordinate
@@ -1106,7 +1486,7 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
     @param    c   The 8-bit font-indexed character (likely ascii)
-    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size  Font magnification level, 1 is 'original' size
@@ -1124,7 +1504,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
     @param    c   The 8-bit font-indexed character (likely ascii)
-    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size_x  Font magnification level in X-axis, 1 is 'original' size
@@ -1147,20 +1527,34 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       c++; // Handle 'classic' charset behavior
 
     startWrite();
-    for (int8_t i = 0; i < 5; i++) { // Char bitmap = 5 columns
+    int8_t rp = 0, rb = 0; // Count sequential FG and BG pixels in column
+    for (int8_t i = 0; i < 5; i++, rp = 0, rb = 0) { // Char bitmap = 5 columns
       uint8_t line = pgm_read_byte(&font[c * 5 + i]);
       for (int8_t j = 0; j < 8; j++, line >>= 1) {
         if (line & 1) {
-          if (size_x == 1 && size_y == 1)
-            writePixel(x + i, y + j, color);
-          else
-            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y,
-                          color);
+          rp++;
+          if (!(1 & (line >> 1)) ||
+              j == 7) { // write sequential pixels with writeFillRect
+            if (rp == 1 && size_x == 1 && size_y == 1) {
+              writePixel(x + i, y + j, color);
+            } else if (rp > 0) {
+              writeFillRect(x + i * size_x, y + (j - (rp - 1)) * size_y, size_x,
+                            size_y * rp, color);
+            }
+            rp = 0;
+          }
         } else if (bg != color) {
-          if (size_x == 1 && size_y == 1)
-            writePixel(x + i, y + j, bg);
-          else
-            writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y, bg);
+          rb++;
+          if (1 & (line >> 1) ||
+              j == 7) { // write sequential pixels with writeFillRect
+            if (rb == 1 && size_x == 1 && size_y == 1) {
+              writePixel(x + i, y + j, bg);
+            } else if (rb > 0) {
+              writeFillRect(x + i * size_x, y + (j - (rb - 1)) * size_y, size_x,
+                            size_y * rb, bg);
+            }
+            rb = 0;
+          }
         }
       }
     }
@@ -1178,7 +1572,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // newlines, returns, non-printable characters, etc.  Calling
     // drawChar() directly with 'bad' characters of font may cause mayhem!
 
-    c -= (uint8_t)pgm_read_byte(&gfxFont->first);
+    c -= (uint8_t)pgm_read_word(&gfxFont->first);
     GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c);
     uint8_t *bitmap = pgm_read_bitmap_ptr(gfxFont);
 
@@ -1194,7 +1588,12 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
       yo16 = yo;
     }
 
-    // Todo: Add character clipping here
+    // Skip glyphs that are entirely off-screen
+    int16_t gx = x + xo * size_x, gy = y + yo * size_y;
+    if ((gx >= _width) || (gy >= _height) || // Clip right, bottom
+        ((gx + w * size_x - 1) < 0) ||       // Clip left
+        ((gy + h * size_y - 1) < 0))         // Clip top
+      return;
 
     // NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS.
     // THIS IS ON PURPOSE AND BY DESIGN.  The background color feature
@@ -1205,7 +1604,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // may overlap).  To replace previously-drawn text when using a custom
     // font, use the getTextBounds() function to determine the smallest
     // rectangle encompassing a string, erase the area with fillRect(),
-    // then draw new text.  This WILL infortunately 'blink' the text, but
+    // then draw new text.  This WILL unfortunately 'blink' the text, but
     // is unavoidable.  Drawing 'background' pixels will NOT fix this,
     // only creates a new set of problems.  Have an idea to work around
     // this (a canvas object type for MCUs that can afford the RAM and
@@ -1262,8 +1661,8 @@ size_t Adafruit_GFX::write(uint8_t c) {
       cursor_y +=
           (int16_t)textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
     } else if (c != '\r') {
-      uint8_t first = pgm_read_byte(&gfxFont->first);
-      if ((c >= first) && (c <= (uint8_t)pgm_read_byte(&gfxFont->last))) {
+      uint16_t first = pgm_read_word(&gfxFont->first);
+      if ((c >= first) && (c <= pgm_read_word(&gfxFont->last))) {
         GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c - first);
         uint8_t w = pgm_read_byte(&glyph->width),
                 h = pgm_read_byte(&glyph->height);
@@ -1339,13 +1738,13 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   if (f) {          // Font struct pointer passed in?
     if (!gfxFont) { // And no current font struct?
       // Switching from classic to new font behavior.
-      // Move cursor pos down 6 pixels so it's on baseline.
-      cursor_y += 6;
+      // Move cursor down to the classic font baseline (6 rows, scaled).
+      cursor_y += 6 * textsize_y;
     }
   } else if (gfxFont) { // NULL passed.  Current font struct defined?
     // Switching from new to classic font behavior.
-    // Move cursor pos up 6 pixels so it's at top-left of char.
-    cursor_y -= 6;
+    // Move cursor up to the top-left of a classic char (6 rows, scaled).
+    cursor_y -= 6 * textsize_y;
   }
   gfxFont = (GFXfont *)f;
 }
@@ -1378,8 +1777,8 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
       *x = 0;        // Reset x to zero, advance y by one line
       *y += textsize_y * (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
     } else if (c != '\r') { // Not a carriage return; is normal char
-      uint8_t first = pgm_read_byte(&gfxFont->first),
-              last = pgm_read_byte(&gfxFont->last);
+      uint16_t first = pgm_read_word(&gfxFont->first),
+               last = pgm_read_word(&gfxFont->last);
       if ((c >= first) && (c <= last)) { // Char present in this font?
         GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c - first);
         uint8_t gw = pgm_read_byte(&glyph->width),
@@ -1411,7 +1810,7 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     if (c == '\n') {        // Newline?
       *x = 0;               // Reset x to zero,
       *y += textsize_y * 8; // advance y one line
-      // min/max x/y unchaged -- that waits for next 'normal' character
+      // min/max x/y unchanged -- that waits for next 'normal' character
     } else if (c != '\r') { // Normal char; ignore carriage returns
       if (wrap && ((*x + textsize_x * 6) > _width)) { // Off right?
         *x = 0;                                       // Reset x to zero,
@@ -1441,9 +1840,11 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  x    Starting cursor X (left side, first character)
     @param  y    Starting cursor Y (on baseline, first character)
     @param  x1   Left text boundary X coordinate, returned by function
+                 (may be NULL)
     @param  y1   Top text boundary Y coordinate, returned by function
-    @param  w    Text boundary width, returned by function
-    @param  h    Text boundary height, returned by function
+                 (may be NULL)
+    @param  w    Text boundary width, returned by function (may be NULL)
+    @param  h    Text boundary height, returned by function (may be NULL)
     @param  xF   Ending cursor X (right side of baseline, last char), if not
                  NULL
     @param  yF   Ending cursor Y (on baseline, last char), returned if not NULL
@@ -1513,9 +1914,8 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
-  *x1 = x; // This initialization SHOULD be overwritten below after charBounds()
-  *y1 = y; //     is called. (Unless string is empty).
-  *w = *h = 0; // Initial size is zero
+  int16_t bx = x, by = y;  // Initial position is value passed in
+  uint16_t bw = 0, bh = 0; // Initial size is zero
 
   while ((c = *str++)) {
     // charBounds() modifies x/y to advance for each character,
@@ -1524,19 +1924,28 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   }
 
   if (maxx >= minx) {     // If legit string bounds were found...
-    *x1 = minx;           // Update x1 to least X coord,
-    *w = maxx - minx + 1; // And w to bound rect width
+    bx = minx;            // Update x1 to least X coord,
+    bw = maxx - minx + 1; // And w to bound rect width
+  }
+  if (maxy >= miny) { // Same for height
+    by = miny;
+    bh = maxy - miny + 1;
   }
 
-  if (maxy >= miny) { // Same for height as for width
-    *y1 = miny;
-    *h = maxy - miny + 1;
-  }
+  // Any of the outputs may be NULL if the caller doesn't need it
+  if (x1)
+    *x1 = bx;
+  if (y1)
+    *y1 = by;
+  if (w)
+    *w = bw;
+  if (h)
+    *h = bh;
 
   // If xF and yF arguments provided, return final cursor x and y position.
-  if (xF != NULL)
+  if (xF)
     *xF = x;
-  if (yF != NULL)
+  if (yF)
     *yF = y;
 }
 
@@ -1548,9 +1957,11 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     @param    x       The current cursor X
     @param    y       The current cursor Y
     @param    x1      The left boundary X coordinate, set by function
+                      (may be NULL)
     @param    y1      The top boundary Y coordinate, set by function
-    @param    w       The boundary width, set by function
-    @param    h       The boundary height, set by function
+                      (may be NULL)
+    @param    w       The boundary width, set by function (may be NULL)
+    @param    h       The boundary height, set by function (may be NULL)
     @param    xF      Ending cursor X (right side of baseline, last char), if
                       not NULL
     @param    yF      Ending cursor Y (on baseline, last char), returned if not
@@ -1573,9 +1984,11 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
     @param    x       The current cursor X
     @param    y       The current cursor Y
     @param    x1      The left boundary X coordinate, set by function
+                      (may be NULL)
     @param    y1      The top boundary Y coordinate, set by function
-    @param    w       The boundary width, set by function
-    @param    h       The boundary height, set by function
+                      (may be NULL)
+    @param    w       The boundary width, set by function (may be NULL)
+    @param    h       The boundary height, set by function (may be NULL)
     @param    xF      Ending cursor X (right side of baseline, last char), if
                       not NULL
     @param    yF      Ending cursor Y (on baseline, last char), returned if not
@@ -1588,9 +2001,8 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
                                  int16_t *yF) {
   uint8_t *s = (uint8_t *)str, c;
 
-  *x1 = x;
-  *y1 = y;
-  *w = *h = 0;
+  int16_t bx = x, by = y;
+  uint16_t bw = 0, bh = 0;
 
   int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
 
@@ -1598,18 +2010,28 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
 
   if (maxx >= minx) {
-    *x1 = minx;
-    *w = maxx - minx + 1;
+    bx = minx;
+    bw = maxx - minx + 1;
   }
   if (maxy >= miny) {
-    *y1 = miny;
-    *h = maxy - miny + 1;
+    by = miny;
+    bh = maxy - miny + 1;
   }
 
+  // Any of the outputs may be NULL if the caller doesn't need it
+  if (x1)
+    *x1 = bx;
+  if (y1)
+    *y1 = by;
+  if (w)
+    *w = bw;
+  if (h)
+    *h = bh;
+
   // If xF and yF arguments provided, return final cursor x and y position.
-  if (xF != NULL)
+  if (xF)
     *xF = x;
-  if (yF != NULL)
+  if (yF)
     *yF = y;
 }
 
@@ -1631,7 +2053,10 @@ void Adafruit_GFX::invertDisplay(bool i) {
    @brief    Create a simple drawn button UI element
 */
 /**************************************************************************/
-Adafruit_GFX_Button::Adafruit_GFX_Button(void) { _gfx = 0; }
+Adafruit_GFX_Button::Adafruit_GFX_Button(void) {
+  _gfx = 0;
+  currstate = laststate = false;
+}
 
 /**************************************************************************/
 /*!
@@ -1639,8 +2064,8 @@ Adafruit_GFX_Button::Adafruit_GFX_Button(void) { _gfx = 0; }
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x       The X coordinate of the center of the button
    @param    y       The Y coordinate of the center of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1652,7 +2077,7 @@ Adafruit_GFX_Button::Adafruit_GFX_Button(void) { _gfx = 0; }
 void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t w, uint16_t h, uint16_t outline,
                                      uint16_t fill, uint16_t textcolor,
-                                     char *label, uint8_t textsize) {
+                                     const char *label, uint8_t textsize) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
                label, textsize);
@@ -1664,8 +2089,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x       The X coordinate of the center of the button
    @param    y       The Y coordinate of the center of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1678,7 +2103,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
 void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
                                      uint16_t w, uint16_t h, uint16_t outline,
                                      uint16_t fill, uint16_t textcolor,
-                                     char *label, uint8_t textsize_x,
+                                     const char *label, uint8_t textsize_x,
                                      uint8_t textsize_y) {
   // Tweak arguments and pass to the newer initButtonUL() function...
   initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, textcolor,
@@ -1692,8 +2117,8 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x1       The X coordinate of the Upper-Left corner of the button
    @param    y1       The Y coordinate of the Upper-Left corner of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1704,7 +2129,7 @@ void Adafruit_GFX_Button::initButton(Adafruit_GFX *gfx, int16_t x, int16_t y,
 void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
-                                       uint16_t textcolor, char *label,
+                                       uint16_t textcolor, const char *label,
                                        uint8_t textsize) {
   initButtonUL(gfx, x1, y1, w, h, outline, fill, textcolor, label, textsize,
                textsize);
@@ -1717,8 +2142,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
    @param    gfx     Pointer to our display so we can draw to it!
    @param    x1       The X coordinate of the Upper-Left corner of the button
    @param    y1       The Y coordinate of the Upper-Left corner of the button
-   @param    w       Width of the buttton
-   @param    h       Height of the buttton
+   @param    w       Width of the button
+   @param    h       Height of the button
    @param    outline  Color of the outline (16-bit 5-6-5 standard)
    @param    fill  Color of the button fill (16-bit 5-6-5 standard)
    @param    textcolor  Color of the button label (16-bit 5-6-5 standard)
@@ -1730,7 +2155,7 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
 void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
                                        int16_t y1, uint16_t w, uint16_t h,
                                        uint16_t outline, uint16_t fill,
-                                       uint16_t textcolor, char *label,
+                                       uint16_t textcolor, const char *label,
                                        uint8_t textsize_x, uint8_t textsize_y) {
   _x1 = x1;
   _y1 = y1;
@@ -1756,6 +2181,8 @@ void Adafruit_GFX_Button::initButtonUL(Adafruit_GFX *gfx, int16_t x1,
 /**************************************************************************/
 void Adafruit_GFX_Button::drawButton(bool inverted) {
   uint16_t fill, outline, text;
+  int16_t x, y;
+  uint16_t w, h;
 
   if (!inverted) {
     fill = _fillcolor;
@@ -1770,11 +2197,13 @@ void Adafruit_GFX_Button::drawButton(bool inverted) {
   uint8_t r = min(_w, _h) / 4; // Corner radius
   _gfx->fillRoundRect(_x1, _y1, _w, _h, r, fill);
   _gfx->drawRoundRect(_x1, _y1, _w, _h, r, outline);
-
-  _gfx->setCursor(_x1 + (_w / 2) - (strlen(_label) * 3 * _textsize_x),
-                  _y1 + (_h / 2) - (4 * _textsize_y));
   _gfx->setTextColor(text);
   _gfx->setTextSize(_textsize_x, _textsize_y);
+  // System font is drawn from the upper left, but custom fonts are
+  // drawn from the lower left. Measure at (0,0) so a button near the
+  // right edge doesn't predict a wrap, then offset by the returned x/y.
+  _gfx->getTextBounds(_label, 0, 0, &x, &y, &w, &h);
+  _gfx->setCursor(_x1 + (_w / 2) - (w / 2) - x, _y1 + (_h / 2) - (h / 2) - y);
   _gfx->print(_label);
 }
 
@@ -1808,6 +2237,17 @@ bool Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
 /**************************************************************************/
 bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 
+/**************************************************************************/
+/*!
+   @brief    Change the button label. Call drawButton() to show it.
+   @param    label  New label text, up to 9 characters (longer is cut off)
+*/
+/**************************************************************************/
+void Adafruit_GFX_Button::setLabel(const char *label) {
+  strncpy(_label, label, 9);
+  _label[9] = 0; // strncpy does not place a null at the end.
+}
+
 // -------------------------------------------------------------------------
 
 // GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
@@ -1819,10 +2259,10 @@ bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 // screen without a massive flickering clear-and-redraw...but maybe you'll
 // find other uses too.  VERY RAM-intensive, since the buffer is in MCU
 // memory and not the display driver...GXFcanvas1 might be minimally useful
-// on an Uno-class board, but this and the others are much more likely to
+// on a Uno-class board, but this and the others are much more likely to
 // require at least a Mega or various recent ARM-type boards (recommended,
 // as the text+bitmap draw can be pokey).  GFXcanvas1 requires 1 bit per
-// pixel (rounded up to nearest byte per scanline), GFXcanvas8 is 1 byte
+// pixel (rounded up to the nearest byte per scanline), GFXcanvas8 is 1 byte
 // per pixel (no scanline pad), and GFXcanvas16 uses 2 bytes per pixel (no
 // scanline pad).
 // NOT EXTENSIVELY TESTED YET.  MAY CONTAIN WORST BUGS KNOWN TO HUMANKIND.
@@ -1837,15 +2277,27 @@ const uint8_t PROGMEM GFXcanvas1::GFXclrBit[] = {0x7F, 0xBF, 0xDF, 0xEF,
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 1-bit canvas context for graphics
+   @brief    Instantiate a GFX 1-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
+   @param    allocate_buffer If true, a buffer is allocated with malloc. If
+   false, the subclass must initialize the buffer before any drawing operation,
+   and free it in the destructor. If false (the default), the buffer is
+   allocated and freed by the library.
 */
 /**************************************************************************/
-GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = ((w + 7) / 8) * h;
-  if ((buffer = (uint8_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
+GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h, bool allocate_buffer)
+    : Adafruit_GFX(w, h), buffer_owned(allocate_buffer) {
+  if (allocate_buffer) {
+    uint32_t bytes = ((w + 7) / 8) * h;
+    if ((buffer = (uint8_t *)malloc(bytes))) {
+      memset(buffer, 0, bytes);
+    } else {
+      // No buffer: make the canvas 0x0 so every draw call clips out.
+      WIDTH = HEIGHT = _width = _height = 0;
+    }
+  } else {
+    buffer = nullptr;
   }
 }
 
@@ -1855,7 +2307,7 @@ GFXcanvas1::GFXcanvas1(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 */
 /**************************************************************************/
 GFXcanvas1::~GFXcanvas1(void) {
-  if (buffer)
+  if (buffer && buffer_owned)
     free(buffer);
 }
 
@@ -1872,23 +2324,7 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
 #ifdef __AVR__
@@ -1915,29 +2351,13 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
 /**********************************************************************/
 /*!
-        @brief    Get the pixel color value at a given, unrotated coordinate.
+        @brief    Get the pixel color value at a given, non-rotated coordinate.
               This method is intended for hardware drivers to get pixel value
               in physical coordinates.
         @param    x   x coordinate
@@ -2190,16 +2610,27 @@ void GFXcanvas1::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 8-bit canvas context for graphics
+   @brief    Instantiate a GFX 8-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
+   @param    allocate_buffer If true, a buffer is allocated with malloc. If
+   false, the subclass must initialize the buffer before any drawing operation,
+   and free it in the destructor. If false (the default), the buffer is
+   allocated and freed by the library.
 */
 /**************************************************************************/
-GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = w * h;
-  if ((buffer = (uint8_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
-  }
+GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h, bool allocate_buffer)
+    : Adafruit_GFX(w, h), buffer_owned(allocate_buffer) {
+  if (allocate_buffer) {
+    uint32_t bytes = w * h;
+    if ((buffer = (uint8_t *)malloc(bytes))) {
+      memset(buffer, 0, bytes);
+    } else {
+      // No buffer: make the canvas 0x0 so every draw call clips out.
+      WIDTH = HEIGHT = _width = _height = 0;
+    }
+  } else
+    buffer = nullptr;
 }
 
 /**************************************************************************/
@@ -2208,7 +2639,7 @@ GFXcanvas8::GFXcanvas8(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 */
 /**************************************************************************/
 GFXcanvas8::~GFXcanvas8(void) {
-  if (buffer)
+  if (buffer && buffer_owned)
     free(buffer);
 }
 
@@ -2225,23 +2656,7 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     buffer[x + y * WIDTH] = color;
   }
@@ -2256,29 +2671,13 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 uint8_t GFXcanvas8::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
 /**********************************************************************/
 /*!
-        @brief    Get the pixel color value at a given, unrotated coordinate.
+        @brief    Get the pixel color value at a given, non-rotated coordinate.
               This method is intended for hardware drivers to get pixel value
               in physical coordinates.
         @param    x   x coordinate
@@ -2458,15 +2857,27 @@ void GFXcanvas8::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
 
 /**************************************************************************/
 /*!
-   @brief    Instatiate a GFX 16-bit canvas context for graphics
+   @brief    Instantiate a GFX 16-bit canvas context for graphics
    @param    w   Display width, in pixels
    @param    h   Display height, in pixels
+   @param    allocate_buffer If true, a buffer is allocated with malloc. If
+   false, the subclass must initialize the buffer before any drawing operation,
+   and free it in the destructor. If false (the default), the buffer is
+   allocated and freed by the library.
 */
 /**************************************************************************/
-GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
-  uint32_t bytes = w * h * 2;
-  if ((buffer = (uint16_t *)malloc(bytes))) {
-    memset(buffer, 0, bytes);
+GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h, bool allocate_buffer)
+    : Adafruit_GFX(w, h), buffer_owned(allocate_buffer) {
+  if (allocate_buffer) {
+    uint32_t bytes = w * h * 2;
+    if ((buffer = (uint16_t *)malloc(bytes))) {
+      memset(buffer, 0, bytes);
+    } else {
+      // No buffer: make the canvas 0x0 so every draw call clips out.
+      WIDTH = HEIGHT = _width = _height = 0;
+    }
+  } else {
+    buffer = nullptr;
   }
 }
 
@@ -2476,7 +2887,7 @@ GFXcanvas16::GFXcanvas16(uint16_t w, uint16_t h) : Adafruit_GFX(w, h) {
 */
 /**************************************************************************/
 GFXcanvas16::~GFXcanvas16(void) {
-  if (buffer)
+  if (buffer && buffer_owned)
     free(buffer);
 }
 
@@ -2493,23 +2904,7 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     buffer[x + y * WIDTH] = color;
   }
@@ -2524,29 +2919,13 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 uint16_t GFXcanvas16::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
 /**********************************************************************/
 /*!
-        @brief    Get the pixel color value at a given, unrotated coordinate.
+        @brief    Get the pixel color value at a given, non-rotated coordinate.
               This method is intended for hardware drivers to get pixel value
               in physical coordinates.
         @param    x   x coordinate

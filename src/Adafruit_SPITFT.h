@@ -20,52 +20,19 @@
 #ifndef _ADAFRUIT_SPITFT_H_
 #define _ADAFRUIT_SPITFT_H_
 
-#if !defined(__AVR_ATtiny85__) // Not for ATtiny, at all
+// Not for ATtiny, at all
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 
 #include "Adafruit_GFX.h"
 #include <SPI.h>
 
 // HARDWARE CONFIG ---------------------------------------------------------
 
-#if defined(__AVR__)
-typedef uint8_t ADAGFX_PORT_t;       ///< PORT values are 8-bit
-#define USE_FAST_PINIO               ///< Use direct PORT register access
-#elif defined(ARDUINO_STM32_FEATHER) // WICED
-typedef class HardwareSPI SPIClass;        ///< SPI is a bit odd on WICED
-typedef uint32_t ADAGFX_PORT_t;            ///< PORT values are 32-bit
-#elif defined(__arm__)
-#if defined(ARDUINO_ARCH_SAMD)
-// Adafruit M0, M4
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-#define USE_FAST_PINIO   ///< Use direct PORT register access
-#define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
-#elif defined(CORE_TEENSY)
-// PJRC Teensy 4.x
-#if defined(__IMXRT1052__) || defined(__IMXRT1062__) // Teensy 4.x
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-                                // PJRC Teensy 3.x
-#else
-typedef uint8_t ADAGFX_PORT_t; ///< PORT values are 8-bit
-#endif
-#define USE_FAST_PINIO   ///< Use direct PORT register access
-#define HAS_PORT_SET_CLR ///< PORTs have set & clear registers
-#else
-// Arduino Due?
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-// USE_FAST_PINIO not available here (yet)...Due has a totally different
-// GPIO register set and will require some changes elsewhere (e.g. in
-// constructors especially).
-#endif
-#else                                      // !ARM
-// Probably ESP8266 or ESP32. USE_FAST_PINIO is not available here (yet)
-// but don't worry about it too much...the digitalWrite() implementation
-// on these platforms is reasonably efficient and already RAM-resident,
-// only gotcha then is no parallel connection support for now.
-typedef uint32_t ADAGFX_PORT_t; ///< PORT values are 32-bit
-#endif                                     // end !ARM
+#include "arch/arch.h"
+
 typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
 #define DEFAULT_SPI_FREQ 8000000L ///< Hardware SPI default speed
 #else
 #define DEFAULT_SPI_FREQ 16000000L ///< Hardware SPI default speed
@@ -75,11 +42,13 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
     defined(ADAFRUIT_PYBADGE_M4_EXPRESS) ||                                    \
     defined(ADAFRUIT_PYGAMER_M4_EXPRESS) ||                                    \
     defined(ADAFRUIT_MONSTER_M4SK_EXPRESS) || defined(NRF52_SERIES) ||         \
-    defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
+    defined(ADAFRUIT_CIRCUITPLAYGROUND_M0) ||                                  \
+    defined(ARDUINO_ADAFRUIT_FEATHER_ESP32S3_TFT) ||                           \
+    defined(ARDUINO_FUNHOUSE_ESP32S2)
 #define USE_SPI_DMA ///< Auto DMA
 #else
-                                           //#define USE_SPI_DMA ///< If set,
-                                           // use DMA if available
+                                           // #define USE_SPI_DMA ///< If set,
+                                           //  use DMA if available
 #endif
 // Another "oops" name -- this now also handles parallel DMA.
 // If DMA is enabled, Arduino sketch MUST #include <Adafruit_ZeroDMA.h>
@@ -89,6 +58,12 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
 #include <Adafruit_ZeroDMA.h>
+#endif
+
+#if defined(USE_SPI_DMA) &&                                                    \
+    (defined(CONFIG_IDF_TARGET_ESP32S2) || defined(CONFIG_IDF_TARGET_ESP32S3))
+#define ADAGFX_ESP32_DMA ///< ESP-IDF SPI master driver with DMA
+#include <driver/spi_master.h>
 #endif
 
 // This is kind of a kludge. Needed a way to disambiguate the software SPI
@@ -101,6 +76,16 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 // and might never be, still needed that disambiguation from soft SPI.
 /*! For first arg to parallel constructor */
 enum tftBusWidth { tft8bitbus, tft16bitbus };
+
+// SPI defaults for RP2040
+#if defined(ARDUINO_ARCH_RP2040)
+#ifndef __SPI0_DEVICE
+#define __SPI0_DEVICE spi0
+#endif
+#ifndef __SPI1_DEVICE
+#define __SPI1_DEVICE spi1
+#endif
+#endif
 
 // CLASS DEFINITION --------------------------------------------------------
 
@@ -127,23 +112,23 @@ public:
   // (reset, miso). cs argument is required but can be -1 if unused --
   // rather than moving it to the optional arguments, it was done this way
   // to avoid breaking existing code (-1 option was a later addition).
-  Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc, int8_t mosi,
-                  int8_t sck, int8_t rst = -1, int8_t miso = -1);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc, int16_t mosi,
+                  int16_t sck, int16_t rst = -1, int16_t miso = -1);
 
   // Hardware SPI constructor using the default SPI port: expects width &
   // height (at default rotation setting 0), 2 signal pins (cs, dc),
   // optional reset pin. cs is required but can be -1 if unused -- rather
   // than moving it to the optional arguments, it was done this way to
   // avoid breaking existing code (-1 option was a later addition).
-  Adafruit_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc,
-                  int8_t rst = -1);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, int16_t cs, int16_t dc,
+                  int16_t rst = -1);
 
 #if !defined(ESP8266) // See notes in .cpp
   // Hardware SPI constructor using an arbitrary SPI peripheral: expects
   // width & height (rotation 0), SPIClass pointer, 2 signal pins (cs, dc)
   // and optional reset pin. cs is required but can be -1 if unused.
-  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int8_t cs,
-                  int8_t dc, int8_t rst = -1);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, SPIClass *spiClass, int16_t cs,
+                  int16_t dc, int16_t rst = -1);
 #endif // end !ESP8266
 
   // Parallel constructor: expects width & height (rotation 0), flag
@@ -151,13 +136,13 @@ public:
   // pins (d0, wr, dc), 3 optional pins (cs, rst, rd). 16-bit parallel
   // isn't even fully implemented but the 'wide' flag was added as a
   // required argument to avoid ambiguity with other constructors.
-  Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth, int8_t d0,
-                  int8_t wr, int8_t dc, int8_t cs = -1, int8_t rst = -1,
-                  int8_t rd = -1);
+  Adafruit_SPITFT(uint16_t w, uint16_t h, tftBusWidth busWidth, int16_t d0,
+                  int16_t wr, int16_t dc, int16_t cs = -1, int16_t rst = -1,
+                  int16_t rd = -1);
 
   // DESTRUCTOR ----------------------------------------------------------
 
-  ~Adafruit_SPITFT(){};
+  ~Adafruit_SPITFT() {};
 
   // CLASS MEMBER FUNCTIONS ----------------------------------------------
 
@@ -179,7 +164,7 @@ public:
       @param  w  Width of area to be drawn, in pixels (MUST be >0 and,
                  added to x, within display bounds at current rotation).
       @param  h  Height of area to be drawn, in pixels (MUST be >0 and,
-                 added to x, within display bounds at current rotation).
+                 added to y, within display bounds at current rotation).
   */
   virtual void setAddrWindow(uint16_t x, uint16_t y, uint16_t w,
                              uint16_t h) = 0;
@@ -215,6 +200,8 @@ public:
   // before ending the transaction. It's more efficient than starting a
   // transaction every time.
   void writePixel(int16_t x, int16_t y, uint16_t color);
+  void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+                 uint16_t color);
   void writePixels(uint16_t *colors, uint32_t len, bool block = true,
                    bool bigEndian = false);
   void writeColor(uint16_t color, uint32_t len);
@@ -365,6 +352,12 @@ public:
   }
 
 protected:
+  /*!
+      @brief  Family-specific hardware SPI solid fill.
+      @param  color  16-bit pixel color in '565' RGB format.
+      @param  len    Number of pixels to fill.
+  */
+  void writeColorHardSPI(uint16_t color, uint32_t len);
   // A few more low-level member functions -- some may have previously
   // been macros. Shouldn't have a need to access these externally, so
   // they've been moved to the protected section. Additionally, they're
@@ -396,8 +389,8 @@ protected:
   PORTreg_t dcPortSet; ///< PORT register for data/command SET
   PORTreg_t dcPortClr; ///< PORT register for data/command CLEAR
 #else                  // !HAS_PORT_SET_CLR
-  PORTreg_t csPort;                 ///< PORT register for chip select
-  PORTreg_t dcPort;                 ///< PORT register for data/command
+  PORTreg_t csPort; ///< PORT register for chip select
+  PORTreg_t dcPort; ///< PORT register for data/command
 #endif                 // end HAS_PORT_SET_CLR
 #endif                 // end USE_FAST_PINIO
 #if defined(__cplusplus) && (__cplusplus >= 201100)
@@ -436,9 +429,9 @@ protected:
       ADAGFX_PORT_t misoPinMask; ///< Bitmask for MISO
 #endif                           // end !KINETISK
 #endif                           // end USE_FAST_PINIO
-      int8_t _mosi;              ///< MOSI pin #
-      int8_t _miso;              ///< MISO pin #
-      int8_t _sck;               ///< SCK pin #
+      int16_t _mosi;             ///< MOSI pin #
+      int16_t _miso;             ///< MISO pin #
+      int16_t _sck;              ///< SCK pin #
     } swspi;                     ///< Software SPI values
     struct {                     //   Values specific to 8-bit parallel:
 #if defined(USE_FAST_PINIO)
@@ -447,8 +440,8 @@ protected:
       volatile uint32_t *writePort; ///< PORT register for DATA WRITE
       volatile uint32_t *readPort;  ///< PORT (PIN) register for DATA READ
 #else
-      volatile uint8_t *writePort;  ///< PORT register for DATA WRITE
-      volatile uint8_t *readPort;   ///< PORT (PIN) register for DATA READ
+      volatile uint8_t *writePort; ///< PORT register for DATA WRITE
+      volatile uint8_t *readPort;  ///< PORT (PIN) register for DATA READ
 #endif
 #if defined(HAS_PORT_SET_CLR)
       // Port direction register pointers are always 8-bit regardless of
@@ -480,9 +473,9 @@ protected:
       ADAGFX_PORT_t rdPinMaskClr; ///< Bitmask for read strobe CLEAR (AND)
 #endif                         // end HAS_PORT_SET_CLR
 #endif                         // end USE_FAST_PINIO
-      int8_t _d0;              ///< Data pin 0 #
-      int8_t _wr;              ///< Write strobe pin #
-      int8_t _rd;              ///< Read strobe pin # (or -1)
+      int16_t _d0;             ///< Data pin 0 #
+      int16_t _wr;             ///< Write strobe pin #
+      int16_t _rd;             ///< Read strobe pin # (or -1)
       bool wide = 0;           ///< If true, is 16-bit interface
     } tft8;                    ///< Parallel interface settings
 #if defined(__cplusplus) && (__cplusplus >= 201100)
@@ -500,6 +493,19 @@ protected:
   uint32_t lastFillLen = 0;          ///< # of pixels w/last fill
   uint8_t onePixelBuf;               ///< For hi==lo fill
 #endif
+#if defined(ADAGFX_ESP32_DMA)
+  spi_device_handle_t dmaDevice = NULL; ///< ESP-IDF device, NULL if no DMA
+  spi_transaction_t dmaTransaction;     ///< Transaction in flight
+  uint16_t *pixelBuf[2] = {NULL, NULL}; ///< Byte-swapped working buffers
+  uint8_t pixelBufIndex = 0;            ///< Buffer to fill next
+  bool dmaActive = false;               ///< True until dmaWait() runs
+  void dmaBegin(uint32_t freq, uint8_t spiMode);
+  void dmaStart(const uint16_t *buffer, uint32_t pixels);
+  void dmaFinish(void);
+  void dmaWritePixels(uint16_t *colors, uint32_t len, bool block,
+                      bool bigEndian);
+  void dmaWriteColor(uint16_t color, uint32_t len);
+#endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)
 #if !defined(KINETISK)
@@ -507,16 +513,16 @@ protected:
   ADAGFX_PORT_t dcPinMask; ///< Bitmask for data/command
 #endif                     // end !KINETISK
 #else                      // !HAS_PORT_SET_CLR
-  ADAGFX_PORT_t csPinMaskSet;     ///< Bitmask for chip select SET (OR)
-  ADAGFX_PORT_t csPinMaskClr;     ///< Bitmask for chip select CLEAR (AND)
-  ADAGFX_PORT_t dcPinMaskSet;     ///< Bitmask for data/command SET (OR)
-  ADAGFX_PORT_t dcPinMaskClr;     ///< Bitmask for data/command CLEAR (AND)
+  ADAGFX_PORT_t csPinMaskSet; ///< Bitmask for chip select SET (OR)
+  ADAGFX_PORT_t csPinMaskClr; ///< Bitmask for chip select CLEAR (AND)
+  ADAGFX_PORT_t dcPinMaskSet; ///< Bitmask for data/command SET (OR)
+  ADAGFX_PORT_t dcPinMaskClr; ///< Bitmask for data/command CLEAR (AND)
 #endif                     // end HAS_PORT_SET_CLR
 #endif                     // end USE_FAST_PINIO
   uint8_t connection;      ///< TFT_HARD_SPI, TFT_SOFT_SPI, etc.
-  int8_t _rst;             ///< Reset pin # (or -1)
-  int8_t _cs;              ///< Chip select pin # (or -1)
-  int8_t _dc;              ///< Data/command pin #
+  int16_t _rst;            ///< Reset pin # (or -1)
+  int16_t _cs;             ///< Chip select pin # (or -1)
+  int16_t _dc;             ///< Data/command pin #
 
   int16_t _xstart = 0;          ///< Internal framebuffer X offset
   int16_t _ystart = 0;          ///< Internal framebuffer Y offset
@@ -526,5 +532,5 @@ protected:
   uint32_t _freq = 0; ///< Dummy var to keep subclasses happy
 };
 
-#endif // end __AVR_ATtiny85__
+#endif // end __AVR_ATtiny85__ __AVR_ATtiny84__
 #endif // end _ADAFRUIT_SPITFT_H_
