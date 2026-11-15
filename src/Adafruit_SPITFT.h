@@ -42,7 +42,9 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
     defined(ADAFRUIT_PYBADGE_M4_EXPRESS) ||                                    \
     defined(ADAFRUIT_PYGAMER_M4_EXPRESS) ||                                    \
     defined(ADAFRUIT_MONSTER_M4SK_EXPRESS) || defined(NRF52_SERIES) ||         \
-    defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
+    defined(ADAFRUIT_CIRCUITPLAYGROUND_M0) ||                                  \
+    defined(ARDUINO_ADAFRUIT_FEATHER_ESP32S3_TFT) ||                           \
+    defined(ARDUINO_FUNHOUSE_ESP32S2)
 #define USE_SPI_DMA ///< Auto DMA
 #else
                                            // #define USE_SPI_DMA ///< If set,
@@ -56,6 +58,12 @@ typedef volatile ADAGFX_PORT_t *PORTreg_t; ///< PORT register type
 
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
 #include <Adafruit_ZeroDMA.h>
+#endif
+
+#if defined(USE_SPI_DMA) &&                                                    \
+    (defined(CONFIG_IDF_TARGET_ESP32S2) || defined(CONFIG_IDF_TARGET_ESP32S3))
+#define ADAGFX_ESP32_DMA ///< ESP-IDF SPI master driver with DMA
+#include <driver/spi_master.h>
 #endif
 
 // This is kind of a kludge. Needed a way to disambiguate the software SPI
@@ -484,6 +492,19 @@ protected:
   uint16_t lastFillColor = 0;        ///< Last color used w/fill
   uint32_t lastFillLen = 0;          ///< # of pixels w/last fill
   uint8_t onePixelBuf;               ///< For hi==lo fill
+#endif
+#if defined(ADAGFX_ESP32_DMA)
+  spi_device_handle_t dmaDevice = NULL; ///< ESP-IDF device, NULL if no DMA
+  spi_transaction_t dmaTransaction;     ///< Transaction in flight
+  uint16_t *pixelBuf[2] = {NULL, NULL}; ///< Byte-swapped working buffers
+  uint8_t pixelBufIndex = 0;            ///< Buffer to fill next
+  bool dmaActive = false;               ///< True until dmaWait() runs
+  void dmaBegin(uint32_t freq, uint8_t spiMode);
+  void dmaStart(const uint16_t *buffer, uint32_t pixels);
+  void dmaFinish(void);
+  void dmaWritePixels(uint16_t *colors, uint32_t len, bool block,
+                      bool bigEndian);
+  void dmaWriteColor(uint16_t color, uint32_t len);
 #endif
 #if defined(USE_FAST_PINIO)
 #if defined(HAS_PORT_SET_CLR)

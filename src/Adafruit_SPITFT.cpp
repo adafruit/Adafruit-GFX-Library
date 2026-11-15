@@ -100,6 +100,8 @@ static const struct {
 #define TFT_SOFT_SPI 1 ///< Display interface = software SPI
 #define TFT_PARALLEL 2 ///< Display interface = 8- or 16-bit parallel
 
+#include "arch/esp32/arch_dma.h"
+
 // CONSTRUCTORS ------------------------------------------------------------
 
 /*!
@@ -653,6 +655,12 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     delay(200);
   }
 
+#if defined(ADAGFX_ESP32_DMA)
+  if (connection == TFT_HARD_SPI) {
+    dmaBegin(freq, spiMode);
+  }
+#endif
+
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
       (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
@@ -1083,6 +1091,12 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
 
 #if defined(ESP32)
   if (connection == TFT_HARD_SPI) {
+#if defined(ADAGFX_ESP32_DMA)
+    if (dmaDevice) {
+      dmaWritePixels(colors, len, block, bigEndian);
+      return;
+    }
+#endif
     if (!bigEndian) {
       hwspi._spi->writePixels(colors, len * 2); // Inbuilt endian-swap
     } else {
@@ -1281,6 +1295,8 @@ void Adafruit_SPITFT::dmaWait(void) {
     pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
   }
 #endif // end __SAMD51__ || ARDUINO_SAMD_ZERO
+#elif defined(ADAGFX_ESP32_DMA)
+  dmaFinish();
 #endif
 }
 
@@ -1292,6 +1308,8 @@ void Adafruit_SPITFT::dmaWait(void) {
 bool Adafruit_SPITFT::dmaBusy(void) const {
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   return dma_busy;
+#elif defined(ADAGFX_ESP32_DMA)
+  return dmaActive && GPSPI2.cmd.usr;
 #else
   return false;
 #endif
@@ -1312,6 +1330,12 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
 #if defined(ESP32) // ESP32 has a special SPI pixel-writing function...
   if (connection == TFT_HARD_SPI) {
+#if defined(ADAGFX_ESP32_DMA)
+    if (dmaDevice) {
+      dmaWriteColor(color, len);
+      return;
+    }
+#endif
 #define SPI_MAX_PIXELS_AT_ONCE 32
 #define TMPBUF_LONGWORDS (SPI_MAX_PIXELS_AT_ONCE + 1) / 2
 #define TMPBUF_PIXELS (TMPBUF_LONGWORDS * 2)
