@@ -2237,23 +2237,7 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
 #ifdef __AVR__
@@ -2280,23 +2264,7 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
@@ -2601,23 +2569,7 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     buffer[x + y * WIDTH] = color;
   }
@@ -2632,23 +2584,7 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 uint8_t GFXcanvas8::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
@@ -2881,23 +2817,7 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     buffer[x + y * WIDTH] = color;
   }
@@ -2912,23 +2832,7 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 uint16_t GFXcanvas16::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
