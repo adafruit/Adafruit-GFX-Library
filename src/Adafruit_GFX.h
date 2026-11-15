@@ -397,7 +397,7 @@ protected:
   bool _utf8;           ///< If set, use correct UTF-8 charset (default is off)
   GFXfont *gfxFont;     ///< Pointer to special font
 
-  uint8_t decoderState = 0; ///< UTF-8 decoder state
+  uint8_t decoderState = 0;   ///< UTF-8 decoder state
   uint32_t decoderBuffer = 0; ///< Code point being decoded
 };
 
