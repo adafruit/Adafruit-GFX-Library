@@ -100,6 +100,7 @@ static const struct {
 #define TFT_SOFT_SPI 1 ///< Display interface = software SPI
 #define TFT_PARALLEL 2 ///< Display interface = 8- or 16-bit parallel
 
+#include "arch/ch32/arch_dma.h"
 #include "arch/esp32/arch_dma.h"
 
 // CONSTRUCTORS ------------------------------------------------------------
@@ -1089,6 +1090,13 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
   (void)block;
   (void)bigEndian;
 
+#if defined(ADAGFX_CH32_DMA)
+  // Always blocking on CH32, including block=false, like the polling fallback.
+  if (connection == TFT_HARD_SPI &&
+      ch32DmaWrite(hwspi._spi, colors, len, bigEndian, false, 0))
+    return;
+#endif
+
 #if defined(ESP32)
   if (connection == TFT_HARD_SPI) {
 #if defined(ADAGFX_ESP32_DMA)
@@ -1325,6 +1333,12 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
 
   if (!len)
     return; // Avoid 0-byte transfers
+
+#if defined(ADAGFX_CH32_DMA)
+  if (connection == TFT_HARD_SPI &&
+      ch32DmaWrite(hwspi._spi, nullptr, len, false, true, color))
+    return;
+#endif
 
   uint8_t hi = color >> 8, lo = color;
 
