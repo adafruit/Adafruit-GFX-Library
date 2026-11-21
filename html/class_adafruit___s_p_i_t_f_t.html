@@ -181,8 +181,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a53b00726d150600cd8f0feb9a897fb64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Essentially <a class="el" href="class_adafruit___s_p_i_t_f_t.html#a795dcd9f5f850c057b0a896204fc7d55" title="Draw a single pixel to the display at requested coordinates. Not self-contained; should follow a star...">writePixel()</a> with a transaction around it. I don't think this is in use by any of our code anymore (believe it was for some older BMP-reading examples), but is kept here in case any user code relies on it. Consider it DEPRECATED.  <a href="#a53b00726d150600cd8f0feb9a897fb64">More...</a><br /></td></tr>
 <tr class="separator:a53b00726d150600cd8f0feb9a897fb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2984b1d3854ed521259cd8208071b55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#aa2984b1d3854ed521259cd8208071b55">drawRGBBitmap</a> (int16_t x, int16_t y, uint16_t *pcolors, int16_t w, int16_t h)</td></tr>
-<tr class="memdesc:aa2984b1d3854ed521259cd8208071b55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a 16-bit image (565 RGB) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56" title="Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground c...">drawBitmap()</a> with arguments in different order. Handles its own transaction and edge clipping/rejection.  <a href="#aa2984b1d3854ed521259cd8208071b55">More...</a><br /></td></tr>
+<tr class="memdesc:aa2984b1d3854ed521259cd8208071b55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a 16-bit image (565 RGB) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad22a813c659c5ef24ae1a3b6a133ceee" title="Draw a PROGMEM-resident 1-bit image with foreground and background colors. Same result as the Adafrui...">drawBitmap()</a> with arguments in different order. Handles its own transaction and edge clipping/rejection.  <a href="#aa2984b1d3854ed521259cd8208071b55">More...</a><br /></td></tr>
 <tr class="separator:aa2984b1d3854ed521259cd8208071b55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad22a813c659c5ef24ae1a3b6a133ceee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad22a813c659c5ef24ae1a3b6a133ceee">drawBitmap</a> (int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color, uint16_t bg)</td></tr>
+<tr class="memdesc:ad22a813c659c5ef24ae1a3b6a133ceee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a PROGMEM-resident 1-bit image with foreground and background colors. Same result as the <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a> version, but sets the address window once for the whole (clipped) image instead of once per pixel.  <a href="#ad22a813c659c5ef24ae1a3b6a133ceee">More...</a><br /></td></tr>
+<tr class="separator:ad22a813c659c5ef24ae1a3b6a133ceee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f7e07e7c323188dcb2d8304d4e2ec70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a0f7e07e7c323188dcb2d8304d4e2ec70">drawBitmap</a> (int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg)</td></tr>
+<tr class="memdesc:a0f7e07e7c323188dcb2d8304d4e2ec70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a RAM-resident 1-bit image with foreground and background colors, for example a <a class="el" href="class_g_f_xcanvas1.html" title="A GFX 1-bit canvas context for graphics. ">GFXcanvas1</a> buffer. Same result as the <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a> version, but sets the address window once for the whole (clipped) image instead of once per pixel.  <a href="#a0f7e07e7c323188dcb2d8304d4e2ec70">More...</a><br /></td></tr>
+<tr class="separator:a0f7e07e7c323188dcb2d8304d4e2ec70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21a13b3b0e6e0bb1328b5050559dd919"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a21a13b3b0e6e0bb1328b5050559dd919">invertDisplay</a> (bool i)</td></tr>
 <tr class="memdesc:a21a13b3b0e6e0bb1328b5050559dd919"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invert the colors of the display (if supported by hardware). Self-contained, no transaction setup required.  <a href="#a21a13b3b0e6e0bb1328b5050559dd919">More...</a><br /></td></tr>
 <tr class="separator:a21a13b3b0e6e0bb1328b5050559dd919"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -424,6 +430,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a8188f31978b369754999fb7afff35b06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a8188f31978b369754999fb7afff35b06">writeBitmapClipped</a> (int16_t x, int16_t y, const uint8_t *bitmap, bool progmem, int16_t w, int16_t h, uint16_t color, uint16_t bg)</td></tr>
+<tr class="memdesc:a8188f31978b369754999fb7afff35b06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clip a 1-bit image to the display, then stream it through one address window.  <a href="#a8188f31978b369754999fb7afff35b06">More...</a><br /></td></tr>
+<tr class="separator:a8188f31978b369754999fb7afff35b06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ccdd2251f32aee8aa28c2e4e53d1d67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_p_i_t_f_t.html#a7ccdd2251f32aee8aa28c2e4e53d1d67">writeColorHardSPI</a> (uint16_t color, uint32_t len)</td></tr>
 <tr class="memdesc:a7ccdd2251f32aee8aa28c2e4e53d1d67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Family-specific hardware SPI solid fill.  <a href="#a7ccdd2251f32aee8aa28c2e4e53d1d67">More...</a><br /></td></tr>
 <tr class="separator:a7ccdd2251f32aee8aa28c2e4e53d1d67"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2118,7 +2127,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>Draw a 16-bit image (565 RGB) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___g_f_x.html#a805a15f1b3ea9eff5d1666b8e6db1c56" title="Draw a PROGMEM-resident 1-bit image at the specified (x,y) position, using the specified foreground c...">drawBitmap()</a> with arguments in different order. Handles its own transaction and edge clipping/rejection. </p>
+<p>Draw a 16-bit image (565 RGB) at the specified (x,y) position. For 16-bit display devices; no color reduction performed. Adapted from <a href="https://github.com/PaulStoffregen/ILI9341_t3">https://github.com/PaulStoffregen/ILI9341_t3</a> by Marc MERLIN. See examples/pictureEmbed to use this. 5/6/2017: function name and arguments have changed for compatibility with current GFX library and to avoid naming problems in prior implementation. Formerly <a class="el" href="class_adafruit___s_p_i_t_f_t.html#ad22a813c659c5ef24ae1a3b6a133ceee" title="Draw a PROGMEM-resident 1-bit image with foreground and background colors. Same result as the Adafrui...">drawBitmap()</a> with arguments in different order. Handles its own transaction and edge clipping/rejection. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>Top left corner horizontal coordinate. </td></tr>
@@ -2126,6 +2135,150 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">pcolors</td><td>Pointer to 16-bit array of pixel values. </td></tr>
     <tr><td class="paramname">w</td><td>Width of bitmap in pixels. </td></tr>
     <tr><td class="paramname">h</td><td>Height of bitmap in pixels. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad22a813c659c5ef24ae1a3b6a133ceee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad22a813c659c5ef24ae1a3b6a133ceee">&#9670;&nbsp;</a></span>drawBitmap() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::drawBitmap </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t&#160;</td>
+          <td class="paramname"><em>bitmap</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>bg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw a PROGMEM-resident 1-bit image with foreground and background colors. Same result as the <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a> version, but sets the address window once for the whole (clipped) image instead of once per pixel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Top left corner horizontal coordinate. </td></tr>
+    <tr><td class="paramname">y</td><td>Top left corner vertical coordinate. </td></tr>
+    <tr><td class="paramname">bitmap</td><td>Byte array with monochrome bitmap, rows padded to whole bytes, most significant bit first. </td></tr>
+    <tr><td class="paramname">w</td><td>Width of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">h</td><td>Height of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 color for set bits. </td></tr>
+    <tr><td class="paramname">bg</td><td>16-bit 5-6-5 color for unset bits. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0f7e07e7c323188dcb2d8304d4e2ec70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f7e07e7c323188dcb2d8304d4e2ec70">&#9670;&nbsp;</a></span>drawBitmap() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::drawBitmap </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>bitmap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>bg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw a RAM-resident 1-bit image with foreground and background colors, for example a <a class="el" href="class_g_f_xcanvas1.html" title="A GFX 1-bit canvas context for graphics. ">GFXcanvas1</a> buffer. Same result as the <a class="el" href="class_adafruit___g_f_x.html">Adafruit_GFX</a> version, but sets the address window once for the whole (clipped) image instead of once per pixel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Top left corner horizontal coordinate. </td></tr>
+    <tr><td class="paramname">y</td><td>Top left corner vertical coordinate. </td></tr>
+    <tr><td class="paramname">bitmap</td><td>Byte array with monochrome bitmap, rows padded to whole bytes, most significant bit first. </td></tr>
+    <tr><td class="paramname">w</td><td>Width of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">h</td><td>Height of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 color for set bits. </td></tr>
+    <tr><td class="paramname">bg</td><td>16-bit 5-6-5 color for unset bits. </td></tr>
   </table>
   </dd>
 </dl>
@@ -2405,6 +2558,93 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">l</td><td>32-bit value to write. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8188f31978b369754999fb7afff35b06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8188f31978b369754999fb7afff35b06">&#9670;&nbsp;</a></span>writeBitmapClipped()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_SPITFT::writeBitmapClipped </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>bitmap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>progmem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>bg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clip a 1-bit image to the display, then stream it through one address window. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Top left corner horizontal coordinate. </td></tr>
+    <tr><td class="paramname">y</td><td>Top left corner vertical coordinate. </td></tr>
+    <tr><td class="paramname">bitmap</td><td>Byte array with monochrome bitmap. </td></tr>
+    <tr><td class="paramname">progmem</td><td>true if bitmap is in PROGMEM, false if in RAM. </td></tr>
+    <tr><td class="paramname">w</td><td>Width of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">h</td><td>Height of bitmap in pixels. </td></tr>
+    <tr><td class="paramname">color</td><td>16-bit 5-6-5 color for set bits. </td></tr>
+    <tr><td class="paramname">bg</td><td>16-bit 5-6-5 color for unset bits. </td></tr>
   </table>
   </dd>
 </dl>

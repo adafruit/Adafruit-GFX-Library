@@ -1,7 +1,7 @@
 var searchData=
 [
   ['wide',['wide',['../class_adafruit___s_p_i_t_f_t.html#ab49cda19025e4f18f65f1a00ce65693d',1,'Adafruit_SPITFT']]],
-  ['width',['width',['../struct_g_f_xglyph.html#a02bd34fd474af250b230f52cee75a6c1',1,'GFXglyph::width()'],['../class_adafruit___g_f_x.html#a324b5361e7198ef0e79eaf4c80bddfc7',1,'Adafruit_GFX::width(void) const'],['../class_adafruit___g_f_x.html#aded338777abeac3c457660023f5c0724',1,'Adafruit_GFX::WIDTH()']]],
+  ['width',['WIDTH',['../class_adafruit___g_f_x.html#aded338777abeac3c457660023f5c0724',1,'Adafruit_GFX::WIDTH()'],['../struct_g_f_xglyph.html#a02bd34fd474af250b230f52cee75a6c1',1,'GFXglyph::width()'],['../class_adafruit___g_f_x.html#a324b5361e7198ef0e79eaf4c80bddfc7',1,'Adafruit_GFX::width()']]],
   ['window_5fx1',['window_x1',['../class_adafruit___gray_o_l_e_d.html#a83073a894e500684888a4802d49bdf0d',1,'Adafruit_GrayOLED']]],
   ['window_5fx2',['window_x2',['../class_adafruit___gray_o_l_e_d.html#aaeb1bf335e8d97893d9e8b461fb16a76',1,'Adafruit_GrayOLED']]],
   ['window_5fy1',['window_y1',['../class_adafruit___gray_o_l_e_d.html#ae9ea4d1c3be6899b5e65e7e7554498e8',1,'Adafruit_GrayOLED']]],
@@ -9,6 +9,7 @@ var searchData=
   ['wrap',['wrap',['../class_adafruit___g_f_x.html#a8c31e63d43f7285e47aa48c363d86ce9',1,'Adafruit_GFX']]],
   ['write',['write',['../class_adafruit___g_f_x.html#a8773d92cafa93d3f749fb55c535d8f2e',1,'Adafruit_GFX']]],
   ['write16',['write16',['../class_adafruit___s_p_i_t_f_t.html#adef142a386721ffc13b5efbd194d0e69',1,'Adafruit_SPITFT']]],
+  ['writebitmapclipped',['writeBitmapClipped',['../class_adafruit___s_p_i_t_f_t.html#a8188f31978b369754999fb7afff35b06',1,'Adafruit_SPITFT']]],
   ['writecolor',['writeColor',['../class_adafruit___s_p_i_t_f_t.html#a42824e0f1475f2b3df335d31651dc75a',1,'Adafruit_SPITFT']]],
   ['writecolorhardspi',['writeColorHardSPI',['../class_adafruit___s_p_i_t_f_t.html#a7ccdd2251f32aee8aa28c2e4e53d1d67',1,'Adafruit_SPITFT']]],
   ['writecommand',['writeCommand',['../class_adafruit___s_p_i_t_f_t.html#a0169fcf8898413bba568a93c1617e8bb',1,'Adafruit_SPITFT']]],
