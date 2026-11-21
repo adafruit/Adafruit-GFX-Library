@@ -41,13 +41,6 @@
 #if defined(__AVR_XMEGA__) // only tested with __AVR_ATmega4809__
 #define AVR_WRITESPI(x)                                                        \
   for (SPI0_DATA = (x); (!(SPI0_INTFLAGS & _BV(SPI_IF_bp)));)
-#elif defined(__LGT8F__)
-#define AVR_WRITESPI(x)                                                        \
-  SPDR = (x);                                                                  \
-  asm volatile("nop");                                                         \
-  while ((SPFR & _BV(RDEMPT)))                                                 \
-    ;                                                                          \
-  SPFR = _BV(RDEMPT) | _BV(WREMPT)
 #else
 #define AVR_WRITESPI(x) for (SPDR = (x); (!(SPSR & _BV(SPIF)));)
 #endif
@@ -106,6 +99,9 @@ static const struct {
 #define TFT_HARD_SPI 0 ///< Display interface = hardware SPI
 #define TFT_SOFT_SPI 1 ///< Display interface = software SPI
 #define TFT_PARALLEL 2 ///< Display interface = 8- or 16-bit parallel
+
+#include "arch/ch32/arch_dma.h"
+#include "arch/esp32/arch_dma.h"
 
 #if defined(STM32_CORE_VERSION) &&                                             \
     (defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx))
@@ -687,6 +683,12 @@ void Adafruit_SPITFT::initSPI(uint32_t freq, uint8_t spiMode) {
     delay(200);
   }
 
+#if defined(ADAGFX_ESP32_DMA)
+  if (connection == TFT_HARD_SPI) {
+    dmaBegin(freq, spiMode);
+  }
+#endif
+
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if (((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) &&
       (dma.allocate() == DMA_STATUS_OK)) { // Allocate channel
@@ -1115,8 +1117,21 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
   (void)block;
   (void)bigEndian;
 
+#if defined(ADAGFX_CH32_DMA)
+  // Always blocking on CH32, including block=false, like the polling fallback.
+  if (connection == TFT_HARD_SPI &&
+      ch32DmaWrite(hwspi._spi, colors, len, bigEndian, false, 0))
+    return;
+#endif
+
 #if defined(ESP32)
   if (connection == TFT_HARD_SPI) {
+#if defined(ADAGFX_ESP32_DMA)
+    if (dmaDevice) {
+      dmaWritePixels(colors, len, block, bigEndian);
+      return;
+    }
+#endif
     if (!bigEndian) {
       hwspi._spi->writePixels(colors, len * 2); // Inbuilt endian-swap
     } else {
@@ -1173,6 +1188,17 @@ void Adafruit_SPITFT::writePixels(uint16_t *colors, uint32_t len, bool block,
     swapBytes(colors, len); // big-to-little endian to restore pixel buffer
   }
   return;
+#elif defined(ARDUINO_ARCH_SPRESENSE)
+  if (connection == TFT_HARD_SPI) {
+    if (!bigEndian) {
+      swapBytes(colors, len); // convert little-to-big endian for display
+    }
+    hwspi._spi->send16(colors, len);
+    if (!bigEndian) {
+      swapBytes(colors, len); // big-to-little endian to restore pixel buffer
+    }
+    return;
+  }
 #elif defined(USE_SPI_DMA) &&                                                  \
     (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   if ((connection == TFT_HARD_SPI) || (connection == TFT_PARALLEL)) {
@@ -1304,6 +1330,8 @@ void Adafruit_SPITFT::dmaWait(void) {
     pinPeripheral(tft8._wr, PIO_OUTPUT); // Switch WR back to GPIO
   }
 #endif // end __SAMD51__ || ARDUINO_SAMD_ZERO
+#elif defined(ADAGFX_ESP32_DMA)
+  dmaFinish();
 #endif
 }
 
@@ -1315,6 +1343,8 @@ void Adafruit_SPITFT::dmaWait(void) {
 bool Adafruit_SPITFT::dmaBusy(void) const {
 #if defined(USE_SPI_DMA) && (defined(__SAMD51__) || defined(ARDUINO_SAMD_ZERO))
   return dma_busy;
+#elif defined(ADAGFX_ESP32_DMA)
+  return dmaActive && GPSPI2.cmd.usr;
 #else
   return false;
 #endif
@@ -1331,10 +1361,22 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
   if (!len)
     return; // Avoid 0-byte transfers
 
+#if defined(ADAGFX_CH32_DMA)
+  if (connection == TFT_HARD_SPI &&
+      ch32DmaWrite(hwspi._spi, nullptr, len, false, true, color))
+    return;
+#endif
+
   uint8_t hi = color >> 8, lo = color;
 
 #if defined(ESP32) // ESP32 has a special SPI pixel-writing function...
   if (connection == TFT_HARD_SPI) {
+#if defined(ADAGFX_ESP32_DMA)
+    if (dmaDevice) {
+      dmaWriteColor(color, len);
+      return;
+    }
+#endif
 #define SPI_MAX_PIXELS_AT_ONCE 32
 #define TMPBUF_LONGWORDS (SPI_MAX_PIXELS_AT_ONCE + 1) / 2
 #define TMPBUF_PIXELS (TMPBUF_LONGWORDS * 2)
@@ -1351,6 +1393,25 @@ void Adafruit_SPITFT::writeColor(uint16_t color, uint32_t len) {
     while (len) {                              // While pixels remain
       xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
       writePixels((uint16_t *)temp, xferLen);
+      len -= xferLen;
+    }
+    return;
+  }
+#elif defined(ARDUINO_ARCH_SPRESENSE)
+  if (connection == TFT_HARD_SPI) {
+#define SPI_MAX_PIXELS_AT_ONCE 1024
+    static uint16_t temp[SPI_MAX_PIXELS_AT_ONCE];
+    uint16_t bufLen =
+        (len < SPI_MAX_PIXELS_AT_ONCE) ? len : SPI_MAX_PIXELS_AT_ONCE;
+    uint16_t xferLen;
+
+    for (uint32_t t = 0; t < bufLen; t++) {
+      temp[t] = color;
+    }
+    // Issue pixels in blocks from temp buffer
+    while (len) {                              // While pixels remain
+      xferLen = (bufLen < len) ? bufLen : len; // How many this pass?
+      writePixels((uint16_t *)temp, xferLen, true, true);
       len -= xferLen;
     }
     return;
@@ -2004,6 +2065,102 @@ void Adafruit_SPITFT::drawRGBBitmap(int16_t x, int16_t y, uint16_t *pcolors,
   endWrite();
 }
 
+/*!
+    @brief  Draw a PROGMEM-resident 1-bit image with foreground and
+            background colors. Same result as the Adafruit_GFX version, but
+            sets the address window once for the whole (clipped) image
+            instead of once per pixel.
+    @param  x       Top left corner horizontal coordinate.
+    @param  y       Top left corner vertical coordinate.
+    @param  bitmap  Byte array with monochrome bitmap, rows padded to whole
+                    bytes, most significant bit first.
+    @param  w       Width of bitmap in pixels.
+    @param  h       Height of bitmap in pixels.
+    @param  color   16-bit 5-6-5 color for set bits.
+    @param  bg      16-bit 5-6-5 color for unset bits.
+*/
+void Adafruit_SPITFT::drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[],
+                                 int16_t w, int16_t h, uint16_t color,
+                                 uint16_t bg) {
+  writeBitmapClipped(x, y, bitmap, true, w, h, color, bg);
+}
+
+/*!
+    @brief  Draw a RAM-resident 1-bit image with foreground and background
+            colors, for example a GFXcanvas1 buffer. Same result as the
+            Adafruit_GFX version, but sets the address window once for the
+            whole (clipped) image instead of once per pixel.
+    @param  x       Top left corner horizontal coordinate.
+    @param  y       Top left corner vertical coordinate.
+    @param  bitmap  Byte array with monochrome bitmap, rows padded to whole
+                    bytes, most significant bit first.
+    @param  w       Width of bitmap in pixels.
+    @param  h       Height of bitmap in pixels.
+    @param  color   16-bit 5-6-5 color for set bits.
+    @param  bg      16-bit 5-6-5 color for unset bits.
+*/
+void Adafruit_SPITFT::drawBitmap(int16_t x, int16_t y, uint8_t *bitmap,
+                                 int16_t w, int16_t h, uint16_t color,
+                                 uint16_t bg) {
+  writeBitmapClipped(x, y, bitmap, false, w, h, color, bg);
+}
+
+/*!
+    @brief  Clip a 1-bit image to the display, then stream it through one
+            address window.
+    @param  x        Top left corner horizontal coordinate.
+    @param  y        Top left corner vertical coordinate.
+    @param  bitmap   Byte array with monochrome bitmap.
+    @param  progmem  true if bitmap is in PROGMEM, false if in RAM.
+    @param  w        Width of bitmap in pixels.
+    @param  h        Height of bitmap in pixels.
+    @param  color    16-bit 5-6-5 color for set bits.
+    @param  bg       16-bit 5-6-5 color for unset bits.
+*/
+void Adafruit_SPITFT::writeBitmapClipped(int16_t x, int16_t y,
+                                         const uint8_t *bitmap, bool progmem,
+                                         int16_t w, int16_t h, uint16_t color,
+                                         uint16_t bg) {
+  int16_t x2, y2;                 // Lower-right coord
+  if (!bitmap ||                  // No buffer (e.g. canvas alloc failed)
+      (x >= _width) ||            // Off-edge right
+      (y >= _height) ||           // " bottom
+      ((x2 = (x + w - 1)) < 0) || // " left
+      ((y2 = (y + h - 1)) < 0))
+    return; // " top
+
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  int16_t bx1 = 0, by1 = 0;        // Clipped top-left within bitmap
+  if (x < 0) {                     // Clip left
+    w += x;
+    bx1 = -x;
+    x = 0;
+  }
+  if (y < 0) { // Clip top
+    h += y;
+    by1 = -y;
+    y = 0;
+  }
+  if (x2 >= _width)
+    w = _width - x; // Clip right
+  if (y2 >= _height)
+    h = _height - y; // Clip bottom
+
+  startWrite();
+  setAddrWindow(x, y, w, h); // Clipped area
+  for (int16_t j = 0; j < h; j++) {
+    const uint8_t *row = bitmap + (int32_t)(by1 + j) * byteWidth;
+    uint8_t b = 0;
+    for (int16_t i = bx1; i < bx1 + w; i++) {
+      if ((i == bx1) || !(i & 7)) // First pixel of row, or next byte
+        b = (progmem ? pgm_read_byte(&row[i / 8]) : row[i / 8]) << (i & 7);
+      SPI_WRITE16((b & 0x80) ? color : bg);
+      b <<= 1;
+    }
+  }
+  endWrite();
+}
+
 // -------------------------------------------------------------------------
 // Miscellaneous class member functions that don't draw anything.
 
@@ -2250,7 +2407,7 @@ inline void Adafruit_SPITFT::SPI_END_TRANSACTION(void) {
 */
 void Adafruit_SPITFT::spiWrite(uint8_t b) {
   if (connection == TFT_HARD_SPI) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(b);
 #elif defined(ESP8266) || defined(ESP32)
     hwspi._spi->write(b);
@@ -2534,7 +2691,7 @@ inline bool Adafruit_SPITFT::SPI_MISO_READ(void) {
 */
 void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
   if (connection == TFT_HARD_SPI) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(w >> 8);
     AVR_WRITESPI(w);
 #elif defined(ESP8266) || defined(ESP32)
@@ -2543,7 +2700,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
     spi_inst_t *pi_spi = hwspi._spi == &SPI ? __SPI0_DEVICE : __SPI1_DEVICE;
     w = __builtin_bswap16(w);
     spi_write_blocking(pi_spi, (uint8_t *)&w, 2);
-#elif defined(ARDUINO_ARCH_RTTHREAD)
+#elif defined(ARDUINO_ARCH_RTTHREAD) || defined(ARDUINO_ARCH_SPRESENSE)
     hwspi._spi->transfer16(w);
 #else
     // MSB, LSB because TFTs are generally big-endian
@@ -2590,7 +2747,7 @@ void Adafruit_SPITFT::SPI_WRITE16(uint16_t w) {
 */
 void Adafruit_SPITFT::SPI_WRITE32(uint32_t l) {
   if (connection == TFT_HARD_SPI) {
-#if defined(__AVR__)
+#if defined(__AVR__) && !defined(__LGT8F__)
     AVR_WRITESPI(l >> 24);
     AVR_WRITESPI(l >> 16);
     AVR_WRITESPI(l >> 8);

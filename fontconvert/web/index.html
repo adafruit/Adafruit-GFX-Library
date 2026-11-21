@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GFX fontconvert</title>
+<style>
+  body { font-family: sans-serif; max-width: 60em; margin: 1em auto; padding: 0 1em; }
+  label { display: inline-block; margin: 0.3em 1em 0.3em 0; }
+  input[type=number] { width: 5em; }
+  #out { width: 100%; height: 30em; font-family: monospace; font-size: 0.85em; }
+  #msg { white-space: pre-wrap; color: #b00; }
+</style>
+</head>
+<body>
+<h1>Adafruit GFX fontconvert</h1>
+<p>Turns a TrueType/OpenType font into a GFXfont header for the
+<a href="https://github.com/adafruit/Adafruit-GFX-Library">Adafruit GFX Library</a>.
+This is <a href="https://github.com/adafruit/Adafruit-GFX-Library/tree/master/fontconvert">fontconvert.c</a>
+and FreeType compiled to WebAssembly, so the output matches the command-line tool.
+Your font never leaves the browser.</p>
+
+<div>
+  <label>Font file <input type="file" id="font" accept=".ttf,.otf"></label>
+</div>
+<div>
+  <label>Size (pt) <input type="number" id="size" value="12" min="1" max="200"></label>
+  <label>First char <input type="number" id="first" value="32" min="0" max="65535"></label>
+  <label>Last char <input type="number" id="last" value="126" min="0" max="65535"></label>
+  <button id="go" disabled>Convert</button>
+  <button id="save" disabled>Download .h</button>
+  <button id="copy" disabled>Copy</button>
+</div>
+<p>Command line equivalent: <code id="cmd">fontconvert font.ttf 12 32 126</code></p>
+<div id="msg"></div>
+<textarea id="out" readonly spellcheck="false"></textarea>
+
+<script src="fontconvert.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+let fontBytes = null, fontName = 'font.ttf', header = '', headerBytes = null, headerName = 'font.h';
+
+function updateCmd() {
+  $('cmd').textContent = `fontconvert ${fontName} ${$('size').value} ${$('first').value} ${$('last').value}`;
+}
+
+$('font').addEventListener('change', async () => {
+  const f = $('font').files[0];
+  if (!f) return;
+  fontName = f.name;
+  fontBytes = new Uint8Array(await f.arrayBuffer());
+  $('go').disabled = false;
+  updateCmd();
+});
+for (const id of ['size', 'first', 'last']) $(id).addEventListener('input', updateCmd);
+
+$('go').addEventListener('click', async () => {
+  const out = [], err = [];
+  $('msg').textContent = '';
+  // fontconvert keeps static state between calls, so every
+  // conversion gets a fresh module instance.
+  const m = await createFontconvert({
+    stdout: (c) => { if (c !== null) out.push(c); },
+    stderr: (c) => { if (c !== null) err.push(c); },
+  });
+  m.FS.writeFile('/' + fontName, fontBytes);
+  let rc;
+  try {
+    rc = m.callMain([fontName, $('size').value, $('first').value, $('last').value]);
+  } catch (e) {
+    rc = (e && e.status !== undefined) ? e.status : -1;
+  }
+  const dec = new TextDecoder('latin1');
+  headerBytes = new Uint8Array(out);
+  header = dec.decode(headerBytes);
+  const errText = dec.decode(new Uint8Array(err));
+  $('out').value = header;
+  if (rc !== 0 || errText) $('msg').textContent = errText + (rc !== 0 ? `exit code ${rc}` : '');
+  const match = header.match(/^const uint8_t (\w+)Bitmaps\[\]/);
+  headerName = (match ? match[1] : 'font') + '.h';
+  $('save').disabled = $('copy').disabled = (rc !== 0);
+  $('save').textContent = `Download ${headerName}`;
+});
+
+$('save').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([headerBytes], { type: 'text/plain' }));
+  a.download = headerName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+$('copy').addEventListener('click', () => navigator.clipboard.writeText(header));
+</script>
+</body>
+</html>

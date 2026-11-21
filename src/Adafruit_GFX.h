@@ -179,6 +179,22 @@ public:
 
   /**********************************************************************/
   /*!
+    @brief  Set text cursor X location, leaving Y as is
+    @param  x    X coordinate in pixels
+  */
+  /**********************************************************************/
+  void setCursorX(int16_t x) { cursor_x = x; }
+
+  /**********************************************************************/
+  /*!
+    @brief  Set text cursor Y location, leaving X as is
+    @param  y    Y coordinate in pixels
+  */
+  /**********************************************************************/
+  void setCursorY(int16_t y) { cursor_y = y; }
+
+  /**********************************************************************/
+  /*!
     @brief   Set text font color with transparant background
     @param   c   16-bit 5-6-5 Color to draw text with
     @note    For 'transparent' background, background and foreground
@@ -271,6 +287,63 @@ public:
   /************************************************************************/
   uint8_t getRotation(void) const { return rotation; }
 
+  /************************************************************************/
+  /*!
+    @brief  Convert rotated (drawing) coordinates to physical, unrotated
+            display coordinates for the current rotation
+    @param  x  Pointer to x coordinate, converted in place
+    @param  y  Pointer to y coordinate, converted in place
+  */
+  /************************************************************************/
+  [[gnu::always_inline]] void applyRotation(int16_t *x, int16_t *y) const {
+    int16_t t;
+    switch (rotation) {
+    case 1:
+      t = *x;
+      *x = WIDTH - 1 - *y;
+      *y = t;
+      break;
+    case 2:
+      *x = WIDTH - 1 - *x;
+      *y = HEIGHT - 1 - *y;
+      break;
+    case 3:
+      t = *x;
+      *x = *y;
+      *y = HEIGHT - 1 - t;
+      break;
+    }
+  }
+
+  /************************************************************************/
+  /*!
+    @brief  Convert physical, unrotated display coordinates (such as a raw
+            touch point) to rotated (drawing) coordinates. Inverse of
+            applyRotation().
+    @param  x  Pointer to x coordinate, converted in place
+    @param  y  Pointer to y coordinate, converted in place
+  */
+  /************************************************************************/
+  void undoRotation(int16_t *x, int16_t *y) const {
+    int16_t t;
+    switch (rotation) {
+    case 1:
+      t = *x;
+      *x = *y;
+      *y = WIDTH - 1 - t;
+      break;
+    case 2:
+      *x = WIDTH - 1 - *x;
+      *y = HEIGHT - 1 - *y;
+      break;
+    case 3:
+      t = *x;
+      *x = HEIGHT - 1 - *y;
+      *y = t;
+      break;
+    }
+  }
+
   // get current cursor position (get rotation safe maximum values,
   // using: width() for x, height() for y)
   /************************************************************************/
@@ -361,6 +434,8 @@ public:
   */
   /**********************************************************************/
   const char *getLabel(void) const { return _label; };
+
+  void setLabel(const char *label);
 
 private:
   Adafruit_GFX *_gfx;

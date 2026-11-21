@@ -36,4 +36,5 @@ jobs:
       env:
         GH_REPO_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
         PRETTYNAME : "Adafruit GFX Library"
+        PRESERVE_FOLDERS: "fontconvert"
       run: bash ci/doxy_gen_and_deploy.sh

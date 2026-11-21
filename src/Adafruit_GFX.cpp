@@ -595,7 +595,7 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
     @param  y0       Center-point y coordinate
     @param  r        Radius of circle
     @param  corners  Mask bits indicating which sides of the circle we are
-                     doing, left (1) and/or right (2)
+                     doing, right (1) and/or left (2)
     @param  delta    Offset from center-point, used for round-rects
     @param  color    16-bit 5-6-5 Color to fill with
 */
@@ -1738,13 +1738,13 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
   if (f) {          // Font struct pointer passed in?
     if (!gfxFont) { // And no current font struct?
       // Switching from classic to new font behavior.
-      // Move cursor pos down 6 pixels, so it's on baseline.
-      cursor_y += 6;
+      // Move cursor down to the classic font baseline (6 rows, scaled).
+      cursor_y += 6 * textsize_y;
     }
   } else if (gfxFont) { // NULL passed.  Current font struct defined?
     // Switching from new to classic font behavior.
-    // Move cursor pos up 6 pixels, so it's at top-left of char.
-    cursor_y -= 6;
+    // Move cursor up to the top-left of a classic char (6 rows, scaled).
+    cursor_y -= 6 * textsize_y;
   }
   gfxFont = (GFXfont *)f;
 }
@@ -1838,10 +1838,10 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
     @param  str  The ASCII string to measure
     @param  x    The current cursor X
     @param  y    The current cursor Y
-    @param  x1   The boundary X coordinate, returned by function
-    @param  y1   The boundary Y coordinate, returned by function
-    @param  w    The boundary width, returned by function
-    @param  h    The boundary height, returned by function
+    @param  x1   The boundary X coordinate, returned by function (may be NULL)
+    @param  y1   The boundary Y coordinate, returned by function (may be NULL)
+    @param  w    The boundary width, returned by function (may be NULL)
+    @param  h    The boundary height, returned by function (may be NULL)
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
@@ -1852,9 +1852,8 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
-  *x1 = x; // Initial position is value passed in
-  *y1 = y;
-  *w = *h = 0; // Initial size is zero
+  int16_t bx = x, by = y;  // Initial position is value passed in
+  uint16_t bw = 0, bh = 0; // Initial size is zero
 
   while ((c = *str++)) {
     // charBounds() modifies x/y to advance for each character,
@@ -1863,13 +1862,23 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
   }
 
   if (maxx >= minx) {     // If legit string bounds were found...
-    *x1 = minx;           // Update x1 to least X coord,
-    *w = maxx - minx + 1; // And w to bound rect width
+    bx = minx;            // Update x1 to least X coord,
+    bw = maxx - minx + 1; // And w to bound rect width
   }
   if (maxy >= miny) { // Same for height
-    *y1 = miny;
-    *h = maxy - miny + 1;
+    by = miny;
+    bh = maxy - miny + 1;
   }
+
+  // Any of the outputs may be NULL if the caller doesn't need it
+  if (x1)
+    *x1 = bx;
+  if (y1)
+    *y1 = by;
+  if (w)
+    *w = bw;
+  if (h)
+    *h = bh;
 }
 
 /**************************************************************************/
@@ -1879,10 +1888,10 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
     @param    str    The ascii string to measure (as an arduino String() class)
     @param    x      The current cursor X
     @param    y      The current cursor Y
-    @param    x1     The boundary X coordinate, set by function
-    @param    y1     The boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    x1     The boundary X coordinate, set by function (may be NULL)
+    @param    y1     The boundary Y coordinate, set by function (may be NULL)
+    @param    w      The boundary width, set by function (may be NULL)
+    @param    h      The boundary height, set by function (may be NULL)
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
@@ -1900,10 +1909,10 @@ void Adafruit_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
     @param    str     The flash-memory ascii string to measure
     @param    x       The current cursor X
     @param    y       The current cursor Y
-    @param    x1      The boundary X coordinate, set by function
-    @param    y1      The boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    x1      The boundary X coordinate, set by function (may be NULL)
+    @param    y1      The boundary Y coordinate, set by function (may be NULL)
+    @param    w      The boundary width, set by function (may be NULL)
+    @param    h      The boundary height, set by function (may be NULL)
 */
 /**************************************************************************/
 void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
@@ -1911,9 +1920,8 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
                                  uint16_t *w, uint16_t *h) {
   uint8_t *s = (uint8_t *)str, c;
 
-  *x1 = x;
-  *y1 = y;
-  *w = *h = 0;
+  int16_t bx = x, by = y;
+  uint16_t bw = 0, bh = 0;
 
   int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
 
@@ -1921,13 +1929,23 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
 
   if (maxx >= minx) {
-    *x1 = minx;
-    *w = maxx - minx + 1;
+    bx = minx;
+    bw = maxx - minx + 1;
   }
   if (maxy >= miny) {
-    *y1 = miny;
-    *h = maxy - miny + 1;
+    by = miny;
+    bh = maxy - miny + 1;
   }
+
+  // Any of the outputs may be NULL if the caller doesn't need it
+  if (x1)
+    *x1 = bx;
+  if (y1)
+    *y1 = by;
+  if (w)
+    *w = bw;
+  if (h)
+    *h = bh;
 }
 
 /**************************************************************************/
@@ -2132,6 +2150,17 @@ bool Adafruit_GFX_Button::justPressed() { return (currstate && !laststate); }
 /**************************************************************************/
 bool Adafruit_GFX_Button::justReleased() { return (!currstate && laststate); }
 
+/**************************************************************************/
+/*!
+   @brief    Change the button label. Call drawButton() to show it.
+   @param    label  New label text, up to 9 characters (longer is cut off)
+*/
+/**************************************************************************/
+void Adafruit_GFX_Button::setLabel(const char *label) {
+  strncpy(_label, label, 9);
+  _label[9] = 0; // strncpy does not place a null at the end.
+}
+
 // -------------------------------------------------------------------------
 
 // GFXcanvas1, GFXcanvas8 and GFXcanvas16 (currently a WIP, don't get too
@@ -2208,23 +2237,7 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     uint8_t *ptr = &buffer[(x / 8) + y * ((WIDTH + 7) / 8)];
 #ifdef __AVR__
@@ -2251,23 +2264,7 @@ void GFXcanvas1::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 bool GFXcanvas1::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
@@ -2572,23 +2569,7 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     buffer[x + y * WIDTH] = color;
   }
@@ -2603,23 +2584,7 @@ void GFXcanvas8::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 uint8_t GFXcanvas8::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
@@ -2852,23 +2817,7 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if ((x < 0) || (y < 0) || (x >= _width) || (y >= _height))
       return;
 
-    int16_t t;
-    switch (rotation) {
-    case 1:
-      t = x;
-      x = WIDTH - 1 - y;
-      y = t;
-      break;
-    case 2:
-      x = WIDTH - 1 - x;
-      y = HEIGHT - 1 - y;
-      break;
-    case 3:
-      t = x;
-      x = y;
-      y = HEIGHT - 1 - t;
-      break;
-    }
+    applyRotation(&x, &y);
 
     buffer[x + y * WIDTH] = color;
   }
@@ -2883,23 +2832,7 @@ void GFXcanvas16::drawPixel(int16_t x, int16_t y, uint16_t color) {
 */
 /**********************************************************************/
 uint16_t GFXcanvas16::getPixel(int16_t x, int16_t y) const {
-  int16_t t;
-  switch (rotation) {
-  case 1:
-    t = x;
-    x = WIDTH - 1 - y;
-    y = t;
-    break;
-  case 2:
-    x = WIDTH - 1 - x;
-    y = HEIGHT - 1 - y;
-    break;
-  case 3:
-    t = x;
-    x = y;
-    y = HEIGHT - 1 - t;
-    break;
-  }
+  applyRotation(&x, &y);
   return getRawPixel(x, y);
 }
 
