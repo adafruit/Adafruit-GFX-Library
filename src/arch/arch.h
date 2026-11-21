@@ -21,6 +21,7 @@
 #include "avr/avr.h"
 #include "generic/generic.h"
 #include "samd/samd.h"
+#include "stm32/stm32.h"
 #include "teensy/teensy.h"
 #include "wiced/wiced.h"
 
