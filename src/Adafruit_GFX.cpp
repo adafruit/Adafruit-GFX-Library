@@ -62,7 +62,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #define pgm_read_pointer(addr) ((void *)pgm_read_word(addr))
 #endif
 
-inline GFXglyph *pgm_read_glyph_ptr(const GFXfont *gfxFont, uint8_t c) {
+inline GFXglyph *pgm_read_glyph_ptr(const GFXfont *gfxFont, uint16_t c) {
 #ifdef __AVR__
   return &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
 #else
@@ -116,6 +116,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) : WIDTH(w), HEIGHT(h) {
   textcolor = textbgcolor = 0xFFFF;
   wrap = true;
   _cp437 = false;
+  _utf8 = false;
   gfxFont = NULL;
 }
 
@@ -1485,15 +1486,16 @@ void Adafruit_GFX::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,
    @brief   Draw a single character
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
-    @param    c   The 8-bit font-indexed character (likely ascii)
+    @param    c   The font-indexed character (likely ascii, or a code
+                  point with utf8() on)
     @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
     @param    size  Font magnification level, 1 is 'original' size
 */
 /**************************************************************************/
-void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
-                            uint16_t color, uint16_t bg, uint8_t size) {
+void Adafruit_GFX::drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color,
+                            uint16_t bg, uint8_t size) {
   drawChar(x, y, c, color, bg, size, size);
 }
 
@@ -1503,7 +1505,8 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
    @brief   Draw a single character
     @param    x   Bottom left corner x coordinate
     @param    y   Bottom left corner y coordinate
-    @param    c   The 8-bit font-indexed character (likely ascii)
+    @param    c   The font-indexed character (likely ascii, or a code
+                  point with utf8() on)
     @param    color 16-bit 5-6-5 Color to draw character with
     @param    bg 16-bit 5-6-5 Color to fill background with (if same as color,
    no background)
@@ -1511,11 +1514,16 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     @param    size_y  Font magnification level in Y-axis, 1 is 'original' size
 */
 /**************************************************************************/
-void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
-                            uint16_t color, uint16_t bg, uint8_t size_x,
-                            uint8_t size_y) {
+void Adafruit_GFX::drawChar(int16_t x, int16_t y, uint16_t c, uint16_t color,
+                            uint16_t bg, uint8_t size_x, uint8_t size_y) {
+
+  if (!_utf8)
+    c &= 0xFF; // A signed char arrives sign-extended, keep the old 8 bits
 
   if (!gfxFont) { // 'Classic' built-in font
+
+    if (c > 255)
+      return; // The built-in font has 256 characters
 
     if ((x >= _width) ||              // Clip right
         (y >= _height) ||             // Clip bottom
@@ -1572,7 +1580,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
     // newlines, returns, non-printable characters, etc.  Calling
     // drawChar() directly with 'bad' characters of font may cause mayhem!
 
-    c -= (uint8_t)pgm_read_word(&gfxFont->first);
+    c -= pgm_read_word(&gfxFont->first);
     GFXglyph *glyph = pgm_read_glyph_ptr(gfxFont, c);
     uint8_t *bitmap = pgm_read_bitmap_ptr(gfxFont);
 
@@ -1632,15 +1640,61 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
   } // End classic vs custom font
 }
+
+/**************************************************************************/
+/*!
+    @brief  Decode UTF-8 one byte at a time.
+    @param  c  The next byte of UTF-8 text.
+    @returns   The code point once a character is complete. 0 while more
+               bytes are needed, and for code points above U+FFFF or invalid
+               bytes, which draw nothing.
+*/
+/**************************************************************************/
+uint16_t Adafruit_GFX::decodeUTF8(uint8_t c) {
+  if (c < 0x80) { // ASCII
+    decoderState = 0;
+    return c;
+  }
+  if ((c & 0xC0) == 0x80) { // Continuation byte
+    if (decoderState == 0)
+      return 0; // Not part of a character
+    decoderBuffer = (decoderBuffer << 6) | (c & 0x3F);
+    if (--decoderState)
+      return 0; // More bytes to come
+    return (decoderBuffer > 0xFFFF) ? 0 : decoderBuffer;
+  }
+  if ((c & 0xE0) == 0xC0) { // Start of a 2-byte character
+    decoderBuffer = c & 0x1F;
+    decoderState = 1;
+  } else if ((c & 0xF0) == 0xE0) { // 3 bytes
+    decoderBuffer = c & 0x0F;
+    decoderState = 2;
+  } else if ((c & 0xF8) == 0xF0) { // 4 bytes, above U+FFFF
+    decoderBuffer = c & 0x07;
+    decoderState = 3;
+  } else { // Not valid in UTF-8
+    decoderState = 0;
+  }
+  return 0;
+}
+
 /**************************************************************************/
 /*!
     @brief  Print one byte/character of data, used to support print()
-    @param  c  The 8-bit ascii character to write
+    @param  data  The next byte of text, ascii or UTF-8 with utf8() on
 */
 /**************************************************************************/
-size_t Adafruit_GFX::write(uint8_t c) {
-  if (!gfxFont) { // 'Classic' built-in font
+size_t Adafruit_GFX::write(uint8_t data) {
+  uint16_t c = data;
+  if (_utf8) {
+    c = decodeUTF8(data);
+    if (c == 0)
+      return 1; // Partial or invalid UTF-8, nothing to draw yet
+  }
 
+  if (!gfxFont) { // 'Classic' built-in font
+    if (c > 255)
+      return 1;                   // Stop 16 bit characters
     if (c == '\n') {              // Newline?
       cursor_x = 0;               // Reset x to zero,
       cursor_y += textsize_y * 8; // advance y one line
@@ -1767,9 +1821,8 @@ void Adafruit_GFX::setFont(const GFXfont *f) {
     @param  maxy  Pointer to maximum Y coord, passed in AND returned.
 */
 /**************************************************************************/
-void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
-                              int16_t *minx, int16_t *miny, int16_t *maxx,
-                              int16_t *maxy) {
+void Adafruit_GFX::charBounds(uint16_t c, int16_t *x, int16_t *y, int16_t *minx,
+                              int16_t *miny, int16_t *maxx, int16_t *maxy) {
 
   if (gfxFont) {
 
@@ -1811,7 +1864,7 @@ void Adafruit_GFX::charBounds(unsigned char c, int16_t *x, int16_t *y,
       *x = 0;               // Reset x to zero,
       *y += textsize_y * 8; // advance y one line
       // min/max x/y unchanged -- that waits for next 'normal' character
-    } else if (c != '\r') { // Normal char; ignore carriage returns
+    } else if ((c != '\r') && (c <= 255)) { // Skip CR, as write() does
       if (wrap && ((*x + textsize_x * 6) > _width)) { // Off right?
         *x = 0;                                       // Reset x to zero,
         *y += textsize_y * 8;                         // advance y one line
@@ -1910,14 +1963,16 @@ void Adafruit_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
                                  int16_t *x1, int16_t *y1, uint16_t *w,
                                  uint16_t *h, int16_t *xF, int16_t *yF) {
 
-  uint8_t c; // Current character
+  uint16_t c; // Current character
   int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1; // Bound rect
   // Bound rect is intentionally initialized inverted, so 1st char sets it
 
   int16_t bx = x, by = y;  // Initial position is value passed in
   uint16_t bw = 0, bh = 0; // Initial size is zero
 
-  while ((c = *str++)) {
+  while ((c = (uint8_t)*str++)) {
+    if (_utf8 && !(c = decodeUTF8(c)))
+      continue; // Partial or invalid UTF-8, nothing to measure yet
     // charBounds() modifies x/y to advance for each character,
     // and min/max x/y are updated to incrementally build bounding rect.
     charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
@@ -2006,8 +2061,11 @@ void Adafruit_GFX::getTextBounds(const __FlashStringHelper *str, int16_t x,
 
   int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
 
-  while ((c = pgm_read_byte(s++)))
-    charBounds(c, &x, &y, &minx, &miny, &maxx, &maxy);
+  while ((c = pgm_read_byte(s++))) {
+    uint16_t code = _utf8 ? decodeUTF8(c) : c;
+    if (code)
+      charBounds(code, &x, &y, &minx, &miny, &maxx, &maxy);
+  }
 
   if (maxx >= minx) {
     bx = minx;
