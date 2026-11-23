@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['charbounds',['charBounds',['../class_adafruit___g_f_x.html#a682fb355070668dba526be20a9ce45af',1,'Adafruit_GFX']]],
+  ['charbounds',['charBounds',['../class_adafruit___g_f_x.html#a39ea72053c2d6b8cd6bd921b8b9d3577',1,'Adafruit_GFX']]],
   ['cleardisplay',['clearDisplay',['../class_adafruit___g_f_x.html#ab881232133f9946d62c3e81a3a96e1e5',1,'Adafruit_GFX::clearDisplay()'],['../class_adafruit___gray_o_l_e_d.html#ae0b51c6e9ffc7e76060b733a166a2c53',1,'Adafruit_GrayOLED::clearDisplay()']]],
   ['color565',['color565',['../class_adafruit___s_p_i_t_f_t.html#a656f04e5a60f1ff7cddc2934fa676b8b',1,'Adafruit_SPITFT']]],
   ['connection',['connection',['../class_adafruit___s_p_i_t_f_t.html#ae17cc84566e35b026f8b6f38903be80b',1,'Adafruit_SPITFT']]],
