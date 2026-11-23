@@ -9,6 +9,7 @@
 #define _ADAFRUIT_SPITFT_ARCH_GENERIC_H_
 
 #if !defined(__AVR__) && !defined(ARDUINO_STM32_FEATHER) &&                    \
+    !defined(STM32_CORE_VERSION) &&                                            \
     !(defined(__arm__) &&                                                      \
       (defined(ARDUINO_ARCH_SAMD) || defined(CORE_TEENSY)))
 
